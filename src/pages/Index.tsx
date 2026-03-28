@@ -22,8 +22,6 @@ export default function Index() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [txType, setTxType] = useState<'buy' | 'rent'>('buy');
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
 
   const handleSearch = () => {
     navigate(`/properties?transaction=${txType}`);
