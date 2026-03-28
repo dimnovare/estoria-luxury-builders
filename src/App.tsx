@@ -29,7 +29,7 @@ const App = () => (
     <TooltipProvider>
       <Sonner />
       <BrowserRouter>
-        <AnimatePresence mode="wait">
+        
           <Routes>
             <Route element={<MainLayout />}>
               <Route path="/" element={<Index />} />
