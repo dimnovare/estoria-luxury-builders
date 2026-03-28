@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import Newsletter from '@/components/Newsletter';
 
 const languages = ['et', 'en', 'ru'] as const;
 
