@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "home": "Главная",
+    "properties": "Недвижимость",
+    "services": "Услуги",
+    "about": "О нас",
+    "team": "Команда",
+    "blog": "Блог",
+    "contact": "Контакт",
+    "contactUs": "Связаться"
+  },
+  "hero": {
+    "search": "Поиск",
+    "city": "Город",
+    "type": "Тип",
+    "buy": "Купить",
+    "rent": "Аренда",
+    "allCities": "Все города",
+    "allTypes": "Все типы",
+    "apartment": "Квартира",
+    "house": "Дом",
+    "commercial": "Коммерческая",
+    "land": "Земля"
+  },
+  "properties": {
+    "viewAll": "Все объекты",
+    "forSale": "Продажа",
+    "forRent": "Аренда",
+    "rooms": "комн.",
+    "beds": "спальни"
+  },
+  "services": {
+    "viewAll": "Все услуги"
+  },
+  "about": {
+    "learnMore": "Узнать больше"
+  },
+  "newsletter": {
+    "title": "Будьте в курсе",
+    "subtitle": "Узнавайте первыми о новых объектах и обзорах рынка.",
+    "placeholder": "Ваш email",
+    "subscribe": "Подписаться",
+    "success": "Вы подписаны!",
+    "error": "Что-то пошло не так. Попробуйте ещё раз."
+  },
+  "footer": {
+    "tagline": "Где живёт ваше будущее",
+    "quickLinks": "Быстрые ссылки",
+    "services": "Услуги",
+    "contactInfo": "Контакты",
+    "rights": "Все права защищены.",
+    "address": "Таллинн, Эстония"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "error": "Что-то пошло не так",
+    "notFound": "Страница не найдена",
+    "backHome": "На главную"
+  }
+}

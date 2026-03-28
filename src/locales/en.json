@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "home": "Home",
+    "properties": "Properties",
+    "services": "Services",
+    "about": "About",
+    "team": "Team",
+    "blog": "Blog",
+    "contact": "Contact",
+    "contactUs": "Contact Us"
+  },
+  "hero": {
+    "search": "Search",
+    "city": "City",
+    "type": "Type",
+    "buy": "Buy",
+    "rent": "Rent",
+    "allCities": "All Cities",
+    "allTypes": "All Types",
+    "apartment": "Apartment",
+    "house": "House",
+    "commercial": "Commercial",
+    "land": "Land"
+  },
+  "properties": {
+    "viewAll": "View All Properties",
+    "forSale": "For Sale",
+    "forRent": "For Rent",
+    "rooms": "rooms",
+    "beds": "beds"
+  },
+  "services": {
+    "viewAll": "View All Services"
+  },
+  "about": {
+    "learnMore": "Learn More"
+  },
+  "newsletter": {
+    "title": "Stay Updated",
+    "subtitle": "Be the first to know about new listings and market insights.",
+    "placeholder": "Your email address",
+    "subscribe": "Subscribe",
+    "success": "You're subscribed!",
+    "error": "Something went wrong. Please try again."
+  },
+  "footer": {
+    "tagline": "Where Your Future Lives",
+    "quickLinks": "Quick Links",
+    "services": "Services",
+    "contactInfo": "Contact Info",
+    "rights": "All rights reserved.",
+    "address": "Tallinn, Estonia"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "notFound": "Page not found",
+    "backHome": "Back to Home"
+  }
+}
