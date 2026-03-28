@@ -2,37 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { ChevronDown, Search, Building2, Home, Landmark, TreePine, ArrowDown } from 'lucide-react';
+import { Search, Building2, Home, Landmark, TreePine, ArrowDown } from 'lucide-react';
 import PropertyCard from '@/components/PropertyCard';
-import type { Property } from '@/hooks/api/useProperties';
+import { allMockProperties } from '@/data/mockProperties';
 
-// Mock data for demo (API not connected yet)
-const mockProperties: Property[] = [
-  {
-    id: '1', slug: 'luxury-penthouse-tallinn',
-    title: 'Luxury Penthouse in Tallinn Old Town',
-    address: 'Pikk 12, Tallinn', city: 'Tallinn',
-    price: 850000, transactionType: 'sale', propertyType: 'apartment',
-    area: 185, rooms: 5, bedrooms: 3,
-    imageUrl: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-  },
-  {
-    id: '2', slug: 'seaside-villa-pirita',
-    title: 'Seaside Villa with Panoramic Views',
-    address: 'Pirita tee 28, Tallinn', city: 'Tallinn',
-    price: 1250000, transactionType: 'sale', propertyType: 'house',
-    area: 320, rooms: 8, bedrooms: 4,
-    imageUrl: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80',
-  },
-  {
-    id: '3', slug: 'modern-apartment-kalamaja',
-    title: 'Modern Loft in Kalamaja',
-    address: 'Telliskivi 14, Tallinn', city: 'Tallinn',
-    price: 1800, transactionType: 'rent', propertyType: 'apartment',
-    area: 95, rooms: 3, bedrooms: 2,
-    imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
-  },
-];
+const mockProperties = allMockProperties.slice(0, 3);
 
 const mockServices = [
   { icon: 'Building2', title: 'Property Sales', description: 'Expert guidance through every step of buying or selling premium real estate in Estonia.' },
