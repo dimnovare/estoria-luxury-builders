@@ -147,4 +147,42 @@
   .prose-estoria a {
     @apply text-primary hover:underline;
   }
+
+  /* Blog article — more generous reading styles */
+  .prose-estoria-article {
+    @apply font-body text-muted-foreground;
+  }
+  .prose-estoria-article h2 {
+    @apply font-heading text-3xl text-foreground mt-10 mb-5 font-light;
+  }
+  .prose-estoria-article h3 {
+    @apply font-heading text-2xl text-foreground mt-8 mb-4 font-light;
+  }
+  .prose-estoria-article p {
+    @apply mb-5 text-base leading-[1.8];
+  }
+  .prose-estoria-article ul, .prose-estoria-article ol {
+    @apply mb-5 pl-6 space-y-2;
+  }
+  .prose-estoria-article ul {
+    @apply list-disc;
+  }
+  .prose-estoria-article ol {
+    @apply list-decimal;
+  }
+  .prose-estoria-article li {
+    @apply text-muted-foreground leading-relaxed;
+  }
+  .prose-estoria-article blockquote {
+    @apply border-l-2 border-primary pl-6 italic text-foreground/80 my-8 text-lg font-heading;
+  }
+  .prose-estoria-article a {
+    @apply text-primary hover:underline;
+  }
+  .prose-estoria-article img {
+    @apply w-full rounded-sm my-6;
+  }
+  .prose-estoria-article strong {
+    @apply text-foreground font-semibold;
+  }
 }
