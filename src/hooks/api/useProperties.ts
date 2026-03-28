@@ -15,10 +15,25 @@ export interface Property {
   area: number;
   rooms: number;
   bedrooms: number;
+  bathrooms?: number;
+  floor?: number;
+  totalFloors?: number;
+  yearBuilt?: number;
+  energyClass?: string;
   imageUrl: string;
   images?: string[];
   description?: string;
   features?: string[];
+  lat?: number;
+  lng?: number;
+  agent?: {
+    name: string;
+    role: string;
+    imageUrl: string;
+    phone: string;
+    email: string;
+    languages?: string[];
+  };
 }
 
 export function useProperties(filter?: Record<string, string>, page = 1) {

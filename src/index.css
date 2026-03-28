@@ -115,4 +115,36 @@
   .animate-float {
     animation: float 3s ease-in-out infinite;
   }
+
+  /* Rich HTML content styling for property descriptions */
+  .prose-estoria {
+    @apply font-body text-muted-foreground leading-relaxed;
+  }
+  .prose-estoria h2 {
+    @apply font-heading text-2xl text-foreground mt-8 mb-4 font-light;
+  }
+  .prose-estoria h3 {
+    @apply font-heading text-xl text-foreground mt-6 mb-3 font-light;
+  }
+  .prose-estoria p {
+    @apply mb-4 text-sm leading-relaxed;
+  }
+  .prose-estoria ul, .prose-estoria ol {
+    @apply mb-4 pl-5 space-y-2 text-sm;
+  }
+  .prose-estoria ul {
+    @apply list-disc;
+  }
+  .prose-estoria ol {
+    @apply list-decimal;
+  }
+  .prose-estoria li {
+    @apply text-muted-foreground;
+  }
+  .prose-estoria blockquote {
+    @apply border-l-2 border-primary pl-5 italic text-foreground/80 my-6;
+  }
+  .prose-estoria a {
+    @apply text-primary hover:underline;
+  }
 }
