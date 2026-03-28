@@ -56,16 +56,17 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Contact + Newsletter */}
           <div>
             <h4 className="font-nav text-xs uppercase tracking-[0.15em] text-foreground mb-6">
               {t('footer.contactInfo')}
             </h4>
-            <address className="not-italic space-y-3 text-sm text-muted-foreground font-body">
+            <address className="not-italic space-y-3 text-sm text-muted-foreground font-body mb-6">
               <p>{t('footer.address')}</p>
               <p>info@estoria.ee</p>
               <p>+372 600 0000</p>
             </address>
+            <Newsletter variant="inline" />
           </div>
         </div>
       </div>
