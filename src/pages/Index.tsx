@@ -294,39 +294,7 @@ export default function Index() {
             <p className="text-muted-foreground font-body mb-10">
               {t('newsletter.subtitle')}
             </p>
-
-            {subscribed ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-success font-body flex items-center justify-center gap-2"
-              >
-                <span className="text-lg">✓</span> {t('newsletter.success')}
-              </motion.div>
-            ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (email) setSubscribed(true);
-                }}
-                className="flex flex-col sm:flex-row gap-3"
-              >
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t('newsletter.placeholder')}
-                  required
-                  className="flex-1 bg-secondary border border-border text-foreground text-sm font-body px-5 py-3.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
-                />
-                <button
-                  type="submit"
-                  className="gold-gradient text-primary-foreground px-8 py-3.5 rounded-sm font-nav text-xs uppercase tracking-wider hover:opacity-90 transition-opacity"
-                >
-                  {t('newsletter.subscribe')}
-                </button>
-              </form>
-            )}
+            <Newsletter variant="section" />
           </motion.div>
         </div>
       </section>
