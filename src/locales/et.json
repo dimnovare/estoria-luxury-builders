@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "home": "Avaleht",
+    "properties": "Kinnisvara",
+    "services": "Teenused",
+    "about": "Meist",
+    "team": "Meeskond",
+    "blog": "Blogi",
+    "contact": "Kontakt",
+    "contactUs": "Võta ühendust"
+  },
+  "hero": {
+    "search": "Otsi",
+    "city": "Linn",
+    "type": "Tüüp",
+    "buy": "Ost",
+    "rent": "Üür",
+    "allCities": "Kõik linnad",
+    "allTypes": "Kõik tüübid",
+    "apartment": "Korter",
+    "house": "Maja",
+    "commercial": "Äripind",
+    "land": "Maa"
+  },
+  "properties": {
+    "viewAll": "Vaata kõiki",
+    "forSale": "Müük",
+    "forRent": "Üür",
+    "rooms": "tuba",
+    "beds": "magamistuba"
+  },
+  "services": {
+    "viewAll": "Vaata teenuseid"
+  },
+  "about": {
+    "learnMore": "Loe rohkem"
+  },
+  "newsletter": {
+    "title": "Püsi kursis",
+    "subtitle": "Saa esimesena teada uutest pakkumistest ja turuülevaadetest.",
+    "placeholder": "Sinu e-posti aadress",
+    "subscribe": "Telli",
+    "success": "Oled tellinud!",
+    "error": "Midagi läks valesti. Proovi uuesti."
+  },
+  "footer": {
+    "tagline": "Kus sinu tulevik elab",
+    "quickLinks": "Kiirlingid",
+    "services": "Teenused",
+    "contactInfo": "Kontaktinfo",
+    "rights": "Kõik õigused kaitstud.",
+    "address": "Tallinn, Eesti"
+  },
+  "common": {
+    "loading": "Laadimine...",
+    "error": "Midagi läks valesti",
+    "notFound": "Lehte ei leitud",
+    "backHome": "Tagasi avalehele"
+  }
+}
