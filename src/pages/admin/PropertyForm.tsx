@@ -23,7 +23,7 @@ export default function PropertyForm() {
   const existing = isEdit ? allMockProperties.find(p => p.id === id) : null;
 
   const [propertyType, setPropertyType] = useState(existing?.propertyType || '');
-  const [transactionType, setTransactionType] = useState(existing?.transactionType || 'sale');
+  const [transactionType, setTransactionType] = useState<string>(existing?.transactionType || 'sale');
   const [price, setPrice] = useState(existing?.price?.toString() || '');
   const [area, setArea] = useState(existing?.area?.toString() || '');
   const [rooms, setRooms] = useState(existing?.rooms?.toString() || '');
