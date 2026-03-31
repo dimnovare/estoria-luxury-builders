@@ -1,18 +1,26 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { mockBlogPosts } from '@/data/mockBlog';
+import { useAdminBlogPosts, useDeleteBlogPost } from '@/hooks/api/useAdmin';
 import { toast } from 'sonner';
 
 export default function AdminBlog() {
-  const posts = mockBlogPosts.map((p, i) => ({
-    ...p,
-    status: i === 0 ? 'published' : i === 2 ? 'draft' : 'published',
-  }));
+  const { data, isLoading } = useAdminBlogPosts();
+  const deleteBlogPost = useDeleteBlogPost();
+
+  const posts = data?.items ?? [];
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteBlogPost.mutateAsync(id);
+      toast.success('Post deleted');
+    } catch {
+      toast.error('Failed to delete post');
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -36,28 +44,50 @@ export default function AdminBlog() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {posts.map(p => (
+              {isLoading && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">Loading…</TableCell>
+                </TableRow>
+              )}
+              {!isLoading && posts.map(p => (
                 <TableRow key={p.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium max-w-[300px] truncate">{p.title}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{p.author.name}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium max-w-[300px] truncate">
+                    {p.translations?.['En']?.title ?? p.slug}
+                  </TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{p.authorName}</TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={`text-[10px] capitalize ${p.status === 'published' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] ${p.status === 'Published' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-600 border-gray-200'}`}
+                    >
                       {p.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_50%)]">{p.date}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_50%)]">
+                    {p.publishedAt ? new Date(p.publishedAt).toLocaleDateString() : p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '—'}
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]">
                         <Link to={`/admin/blog/${p.id}/edit`}><Pencil className="h-3.5 w-3.5" /></Link>
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-red-500" onClick={() => toast.success('Post deleted')}>
+                      <Button
+                        variant="ghost" size="icon"
+                        className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-red-500"
+                        onClick={() => handleDelete(p.id)}
+                        disabled={deleteBlogPost.isPending}
+                      >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </div>
                   </TableCell>
                 </TableRow>
               ))}
+              {!isLoading && posts.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">No blog posts yet.</TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>

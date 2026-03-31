@@ -4,27 +4,27 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { allMockProperties } from '@/data/mockProperties';
-import { mockBlogPosts } from '@/data/mockBlog';
-import { mockTeam } from '@/data/mockContent';
-import { mockMessages, mockSubscribers } from '@/data/mockAdmin';
-
-const stats = [
-  { label: 'Properties', value: allMockProperties.length, icon: Building2, href: '/admin/properties' },
-  { label: 'Blog Posts', value: mockBlogPosts.length, icon: FileText, href: '/admin/blog' },
-  { label: 'Team Members', value: mockTeam.length, icon: Users, href: '/admin/team' },
-  { label: 'Unread Messages', value: mockMessages.filter(m => m.status === 'new').length, icon: MessageSquare, href: '/admin/messages', highlight: true },
-  { label: 'Subscribers', value: mockSubscribers.filter(s => s.status === 'active').length, icon: Mail, href: '/admin/newsletter' },
-];
+import { useAdminStats, useAdminContacts } from '@/hooks/api/useAdmin';
 
 const statusColor: Record<string, string> = {
-  new: 'bg-primary/20 text-primary border-primary/30',
-  read: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-  replied: 'bg-green-500/20 text-green-400 border-green-500/30',
+  New: 'bg-primary/20 text-primary border-primary/30',
+  Read: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+  Replied: 'bg-green-500/20 text-green-400 border-green-500/30',
 };
 
 export default function AdminDashboard() {
-  const recentMessages = mockMessages.slice(0, 5);
+  const { data: stats } = useAdminStats();
+  const { data: contactsData } = useAdminContacts();
+
+  const statCards = [
+    { label: 'Properties',       value: stats?.properties ?? 0,      icon: Building2,    href: '/admin/properties' },
+    { label: 'Blog Posts',        value: stats?.blogPosts ?? 0,        icon: FileText,     href: '/admin/blog' },
+    { label: 'Team Members',      value: stats?.teamMembers ?? 0,      icon: Users,        href: '/admin/team' },
+    { label: 'Unread Messages',   value: stats?.unreadMessages ?? 0,   icon: MessageSquare,href: '/admin/messages', highlight: true },
+    { label: 'Subscribers',       value: stats?.subscribers ?? 0,      icon: Mail,         href: '/admin/newsletter' },
+  ];
+
+  const recentMessages = (contactsData?.items ?? []).slice(0, 5);
 
   return (
     <div className="space-y-6">
@@ -34,7 +34,7 @@ export default function AdminDashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {stats.map(s => (
+        {statCards.map(s => (
           <Link key={s.label} to={s.href}>
             <Card className="bg-white border-[hsl(0_0%_90%)] hover:border-[hsl(0_0%_80%)] transition-colors shadow-sm">
               <CardContent className="p-4">
@@ -75,14 +75,23 @@ export default function AdminDashboard() {
                     <TableRow key={m.id} className="border-[hsl(0_0%_93%)]">
                       <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium py-3">{m.name}</TableCell>
                       <TableCell className="text-sm text-[hsl(0_0%_40%)] py-3">{m.subject}</TableCell>
-                      <TableCell className="text-sm text-[hsl(0_0%_50%)] py-3">{m.date}</TableCell>
+                      <TableCell className="text-sm text-[hsl(0_0%_50%)] py-3">
+                        {m.createdAt ? new Date(m.createdAt).toLocaleDateString() : '—'}
+                      </TableCell>
                       <TableCell className="py-3">
-                        <Badge variant="outline" className={`text-[10px] capitalize ${statusColor[m.status]}`}>
+                        <Badge variant="outline" className={`text-[10px] ${statusColor[m.status] ?? ''}`}>
                           {m.status}
                         </Badge>
                       </TableCell>
                     </TableRow>
                   ))}
+                  {recentMessages.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center py-8 text-[hsl(0_0%_50%)] text-sm">
+                        No messages yet.
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </CardContent>

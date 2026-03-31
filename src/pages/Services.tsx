@@ -1,16 +1,21 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Building2, Home, TrendingUp, FileCheck, Scale, Paintbrush } from 'lucide-react';
-import { mockServices } from '@/data/mockContent';
+import {
+  Building2, Home, TrendingUp, FileCheck, Scale, Paintbrush,
+} from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import type { LucideIcon } from 'lucide-react';
+import { useServices } from '@/hooks/api/useContent';
 
-const iconMap: Record<string, typeof Building2> = {
+const iconMap: Record<string, LucideIcon> = {
   Building2, Home, TrendingUp, FileCheck, Scale, Paintbrush,
 };
 
 export default function Services() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { data: services, isLoading, error } = useServices();
 
   return (
     <>
@@ -19,11 +24,15 @@ export default function Services() {
         <div className="container mx-auto px-6 pt-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-6">
-              <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+              <Link to="/" className="hover:text-primary transition-colors">
+                Home
+              </Link>
               <span>/</span>
               <span className="text-foreground">{t('nav.services')}</span>
             </nav>
-            <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground mb-3">Our Services</h1>
+            <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground mb-3">
+              Our Services
+            </h1>
             <p className="text-muted-foreground font-body text-lg max-w-xl">
               Comprehensive real estate solutions tailored to your needs.
             </p>
@@ -32,70 +41,95 @@ export default function Services() {
       </section>
 
       {/* Alternating service sections */}
-      <section className="py-16">
-        {mockServices.map((service, i) => {
-          const Icon = iconMap[service.icon] || Building2;
-          const isEven = i % 2 === 1;
-
-          return (
-            <div key={service.id}>
-              <div className="container mx-auto px-6 py-16">
-                <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${isEven ? '' : ''}`}>
-                  {/* Content side */}
-                  <motion.div
-                    initial={{ opacity: 0, x: isEven ? 30 : -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                    className={isEven ? 'lg:order-2' : ''}
-                  >
-                    <Icon className="text-primary mb-5" size={36} />
-                    <h2 className="font-heading text-3xl md:text-4xl text-foreground font-light mb-4">
-                      {service.title}
-                    </h2>
-                    <p className="text-muted-foreground font-body leading-relaxed mb-4">
-                      {service.description}
-                    </p>
-                    {service.price && (
-                      <p className="text-primary font-nav text-xs uppercase tracking-wider">
-                        {service.price}
-                      </p>
-                    )}
-                  </motion.div>
-
-                  {/* Decorative side */}
-                  <motion.div
-                    initial={{ opacity: 0, x: isEven ? -30 : 30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.15 }}
-                    className={isEven ? 'lg:order-1' : ''}
-                  >
-                    <div className="aspect-[4/3] bg-card border border-border rounded-sm flex items-center justify-center relative overflow-hidden">
-                      {/* Abstract decorative pattern */}
-                      <div className="absolute inset-0 opacity-5">
-                        <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-primary rounded-full" />
-                        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 border border-primary/50 rounded-full" />
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-px gold-gradient" />
-                      </div>
-                      <Icon className="text-primary/20" size={80} />
-                    </div>
-                  </motion.div>
+      {isLoading ? (
+        <section className="py-8">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="container mx-auto px-6 py-16">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div className={i % 2 === 1 ? 'lg:order-2' : ''}>
+                  <Skeleton className="h-9 w-9 mb-5" />
+                  <Skeleton className="h-8 w-3/4 mb-4" />
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-2/3 mb-2" />
+                  <Skeleton className="h-3 w-1/3 mt-4" />
                 </div>
+                <Skeleton className={`aspect-[4/3] rounded-sm ${i % 2 === 1 ? 'lg:order-1' : ''}`} />
               </div>
+            </div>
+          ))}
+        </section>
+      ) : error ? (
+        <div className="text-center py-32">
+          <p className="text-muted-foreground font-body">
+            Failed to load services. Please try again.
+          </p>
+        </div>
+      ) : (
+        <section className="py-16">
+          {(services ?? []).map((service, i) => {
+            const Icon = (service.iconName && iconMap[service.iconName]) || Building2;
+            const isEven = i % 2 === 1;
 
-              {/* Divider */}
-              {i < mockServices.length - 1 && (
-                <div className="container mx-auto px-6">
-                  <div className="h-px bg-border relative overflow-hidden">
-                    <div className="absolute left-1/2 -translate-x-1/2 w-24 h-px gold-gradient" />
+            return (
+              <div key={service.id}>
+                <div className="container mx-auto px-6 py-16">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    {/* Content side */}
+                    <motion.div
+                      initial={{ opacity: 0, x: isEven ? 30 : -30 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8 }}
+                      className={isEven ? 'lg:order-2' : ''}
+                    >
+                      <Icon className="text-primary mb-5" size={36} />
+                      <h2 className="font-heading text-3xl md:text-4xl text-foreground font-light mb-4">
+                        {service.name}
+                      </h2>
+                      <p className="text-muted-foreground font-body leading-relaxed mb-4">
+                        {service.description}
+                      </p>
+                      {service.priceInfo && (
+                        <p className="text-primary font-nav text-xs uppercase tracking-wider">
+                          {service.priceInfo}
+                        </p>
+                      )}
+                    </motion.div>
+
+                    {/* Decorative side */}
+                    <motion.div
+                      initial={{ opacity: 0, x: isEven ? -30 : 30 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8, delay: 0.15 }}
+                      className={isEven ? 'lg:order-1' : ''}
+                    >
+                      <div className="aspect-[4/3] bg-card border border-border rounded-sm flex items-center justify-center relative overflow-hidden">
+                        <div className="absolute inset-0 opacity-5">
+                          <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-primary rounded-full" />
+                          <div className="absolute bottom-1/4 right-1/4 w-48 h-48 border border-primary/50 rounded-full" />
+                          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-px gold-gradient" />
+                        </div>
+                        <Icon className="text-primary/20" size={80} />
+                      </div>
+                    </motion.div>
                   </div>
                 </div>
-              )}
-            </div>
-          );
-        })}
-      </section>
+
+                {/* Divider */}
+                {i < (services ?? []).length - 1 && (
+                  <div className="container mx-auto px-6">
+                    <div className="h-px bg-border relative overflow-hidden">
+                      <div className="absolute left-1/2 -translate-x-1/2 w-24 h-px gold-gradient" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </section>
+      )}
 
       {/* Bottom CTA */}
       <section className="py-24 px-6 border-t border-primary/20">

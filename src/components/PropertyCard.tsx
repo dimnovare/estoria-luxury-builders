@@ -12,7 +12,7 @@ interface Props {
 export default function PropertyCard({ property, index = 0 }: Props) {
   const { t } = useTranslation();
 
-  const formatPrice = (price: number, type: 'sale' | 'rent') => {
+  const formatPrice = (price: number, type: string) => {
     const formatted = new Intl.NumberFormat('et-EE').format(price);
     return type === 'rent' ? `€${formatted}/mo` : `€${formatted}`;
   };
@@ -27,7 +27,7 @@ export default function PropertyCard({ property, index = 0 }: Props) {
       <Link to={`/properties/${property.slug}`} className="group block">
         <div className="relative overflow-hidden rounded-sm aspect-[4/3] bg-muted">
           <img
-            src={property.imageUrl}
+            src={property.coverImageUrl || '/placeholder.jpg'}
             alt={property.title}
             loading="lazy"
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -57,16 +57,20 @@ export default function PropertyCard({ property, index = 0 }: Props) {
           <div className="flex items-center gap-4 text-xs text-muted-foreground font-body pt-1">
             <span className="flex items-center gap-1.5">
               <Maximize2 size={12} className="text-primary" />
-              {property.area} m²
+              {property.size} m²
             </span>
-            <span className="flex items-center gap-1.5">
-              <DoorOpen size={12} className="text-primary" />
-              {property.rooms} {t('properties.rooms')}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <BedDouble size={12} className="text-primary" />
-              {property.bedrooms} {t('properties.beds')}
-            </span>
+            {property.rooms != null && (
+              <span className="flex items-center gap-1.5">
+                <DoorOpen size={12} className="text-primary" />
+                {property.rooms} {t('properties.rooms')}
+              </span>
+            )}
+            {property.bedrooms != null && (
+              <span className="flex items-center gap-1.5">
+                <BedDouble size={12} className="text-primary" />
+                {property.bedrooms} {t('properties.beds')}
+              </span>
+            )}
           </div>
         </div>
 

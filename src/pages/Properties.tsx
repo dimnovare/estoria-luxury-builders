@@ -1,11 +1,10 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Search, X, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { Search, X, ChevronLeft, ChevronRight, SlidersHorizontal, Loader2 } from 'lucide-react';
 import PropertyCard from '@/components/PropertyCard';
-import { allMockProperties } from '@/data/mockProperties';
-import type { Property } from '@/hooks/api/useProperties';
+import { useProperties } from '@/hooks/api/useProperties';
 
 const PAGE_SIZE = 12;
 const propertyTypes = ['apartment', 'house', 'commercial', 'land', 'office'];
@@ -31,6 +30,15 @@ export default function Properties() {
   const sort = searchParams.get('sort') || 'newest';
   const page = parseInt(searchParams.get('page') || '1', 10);
 
+  const { data, isLoading, error } = useProperties(
+    { type: propertyType, transaction, city, minPrice, maxPrice, sort },
+    page
+  );
+
+  const properties = data?.data ?? [];
+  const totalCount = data?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+
   const updateFilter = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams);
     if (value) {
@@ -48,35 +56,18 @@ export default function Properties() {
 
   const activeFilters = useMemo(() => {
     const filters: { key: string; label: string; value: string }[] = [];
-    if (transaction) filters.push({ key: 'transaction', label: transaction === 'buy' ? t('hero.buy') : t('hero.rent'), value: transaction });
+    if (transaction)
+      filters.push({
+        key: 'transaction',
+        label: transaction === 'buy' ? t('hero.buy') : t('hero.rent'),
+        value: transaction,
+      });
     if (propertyType) filters.push({ key: 'type', label: propertyType, value: propertyType });
     if (city) filters.push({ key: 'city', label: city, value: city });
     if (minPrice) filters.push({ key: 'minPrice', label: `Min €${minPrice}`, value: minPrice });
     if (maxPrice) filters.push({ key: 'maxPrice', label: `Max €${maxPrice}`, value: maxPrice });
     return filters;
   }, [transaction, propertyType, city, minPrice, maxPrice, t]);
-
-  // Filter and sort mock data
-  const filtered = useMemo(() => {
-    let result = [...allMockProperties];
-    if (transaction === 'buy') result = result.filter(p => p.transactionType === 'sale');
-    if (transaction === 'rent') result = result.filter(p => p.transactionType === 'rent');
-    if (propertyType) result = result.filter(p => p.propertyType === propertyType);
-    if (city) result = result.filter(p => p.city === city);
-    if (minPrice) result = result.filter(p => p.price >= Number(minPrice));
-    if (maxPrice) result = result.filter(p => p.price <= Number(maxPrice));
-
-    switch (sort) {
-      case 'price-asc': result.sort((a, b) => a.price - b.price); break;
-      case 'price-desc': result.sort((a, b) => b.price - a.price); break;
-      case 'size': result.sort((a, b) => b.area - a.area); break;
-      default: break;
-    }
-    return result;
-  }, [transaction, propertyType, city, minPrice, maxPrice, sort]);
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const pageNumbers = useMemo(() => {
     const pages: (number | '...')[] = [];
@@ -85,7 +76,8 @@ export default function Properties() {
     } else {
       pages.push(1);
       if (page > 3) pages.push('...');
-      for (let i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i++) pages.push(i);
+      for (let i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i++)
+        pages.push(i);
       if (page < totalPages - 2) pages.push('...');
       pages.push(totalPages);
     }
@@ -99,7 +91,9 @@ export default function Properties() {
         <button
           onClick={() => updateFilter('transaction', transaction === 'buy' ? '' : 'buy')}
           className={`px-5 py-2.5 text-xs font-nav uppercase tracking-wider transition-colors ${
-            transaction === 'buy' ? 'gold-gradient text-primary-foreground' : 'bg-secondary text-muted-foreground hover:text-foreground'
+            transaction === 'buy'
+              ? 'gold-gradient text-primary-foreground'
+              : 'bg-secondary text-muted-foreground hover:text-foreground'
           }`}
         >
           {t('hero.buy')}
@@ -107,7 +101,9 @@ export default function Properties() {
         <button
           onClick={() => updateFilter('transaction', transaction === 'rent' ? '' : 'rent')}
           className={`px-5 py-2.5 text-xs font-nav uppercase tracking-wider transition-colors ${
-            transaction === 'rent' ? 'gold-gradient text-primary-foreground' : 'bg-secondary text-muted-foreground hover:text-foreground'
+            transaction === 'rent'
+              ? 'gold-gradient text-primary-foreground'
+              : 'bg-secondary text-muted-foreground hover:text-foreground'
           }`}
         >
           {t('hero.rent')}
@@ -121,8 +117,10 @@ export default function Properties() {
         className="bg-secondary text-foreground text-sm font-body px-4 py-2.5 rounded-sm border border-border outline-none cursor-pointer"
       >
         <option value="">{t('hero.allTypes')}</option>
-        {propertyTypes.map(type => (
-          <option key={type} value={type}>{t(`hero.${type}` as any, type.charAt(0).toUpperCase() + type.slice(1))}</option>
+        {propertyTypes.map((type) => (
+          <option key={type} value={type}>
+            {t(`hero.${type}` as Parameters<typeof t>[0], type.charAt(0).toUpperCase() + type.slice(1))}
+          </option>
         ))}
       </select>
 
@@ -133,15 +131,19 @@ export default function Properties() {
         className="bg-secondary text-foreground text-sm font-body px-4 py-2.5 rounded-sm border border-border outline-none cursor-pointer"
       >
         <option value="">{t('hero.allCities')}</option>
-        {cities.map(c => (
-          <option key={c} value={c}>{c}</option>
+        {cities.map((c) => (
+          <option key={c} value={c}>
+            {c}
+          </option>
         ))}
       </select>
 
       {/* Price range */}
       <div className="flex items-center gap-2">
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">€</span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+            €
+          </span>
           <input
             type="number"
             placeholder="Min"
@@ -152,7 +154,9 @@ export default function Properties() {
         </div>
         <span className="text-muted-foreground">–</span>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">€</span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+            €
+          </span>
           <input
             type="number"
             placeholder="Max"
@@ -179,13 +183,12 @@ export default function Properties() {
       {/* Header */}
       <section className="pt-20 pb-12 bg-gradient-to-b from-secondary/80 to-background">
         <div className="container mx-auto px-6 pt-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-6">
-              <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+              <Link to="/" className="hover:text-primary transition-colors">
+                Home
+              </Link>
               <span>/</span>
               <span className="text-foreground">{t('nav.properties')}</span>
             </nav>
@@ -223,8 +226,10 @@ export default function Properties() {
             onChange={(e) => updateFilter('sort', e.target.value)}
             className="bg-secondary text-foreground text-xs font-body px-3 py-2 rounded-sm border border-border outline-none"
           >
-            {sortOptions.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            {sortOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
             ))}
           </select>
         </div>
@@ -250,7 +255,7 @@ export default function Properties() {
               onClick={() => setMobileFiltersOpen(false)}
               className="mt-8 w-full gold-gradient text-primary-foreground py-3 rounded-sm font-nav text-xs uppercase tracking-wider"
             >
-              Show Results ({filtered.length})
+              Show Results ({totalCount})
             </button>
           </div>
         </motion.div>
@@ -260,7 +265,7 @@ export default function Properties() {
       {activeFilters.length > 0 && (
         <div className="container mx-auto px-6 py-3">
           <div className="flex flex-wrap gap-2">
-            {activeFilters.map(f => (
+            {activeFilters.map((f) => (
               <button
                 key={f.key}
                 onClick={() => updateFilter(f.key, '')}
@@ -280,8 +285,16 @@ export default function Properties() {
           {/* Top row */}
           <div className="flex items-center justify-between mb-8">
             <p className="text-sm text-muted-foreground font-body">
-              Showing <span className="text-foreground">{paginated.length}</span> of{' '}
-              <span className="text-foreground">{filtered.length}</span> properties
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 size={14} className="animate-spin" /> Loading…
+                </span>
+              ) : (
+                <>
+                  Showing <span className="text-foreground">{properties.length}</span> of{' '}
+                  <span className="text-foreground">{totalCount}</span> properties
+                </>
+              )}
             </p>
             <div className="hidden md:block">
               <select
@@ -289,17 +302,41 @@ export default function Properties() {
                 onChange={(e) => updateFilter('sort', e.target.value)}
                 className="bg-secondary text-foreground text-sm font-body px-4 py-2 rounded-sm border border-border outline-none cursor-pointer"
               >
-                {sortOptions.map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                {sortOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
 
           {/* Grid */}
-          {paginated.length > 0 ? (
+          {error ? (
+            <div className="text-center py-24">
+              <p className="text-muted-foreground font-body">
+                Failed to load properties. Please try again.
+              </p>
+              <button
+                onClick={resetFilters}
+                className="mt-4 text-xs font-nav uppercase tracking-wider text-primary hover:underline"
+              >
+                Reset filters
+              </button>
+            </div>
+          ) : isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {paginated.map((property, i) => (
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="aspect-[4/3] bg-secondary rounded-sm mb-4" />
+                  <div className="h-5 bg-secondary rounded-sm w-3/4 mb-2" />
+                  <div className="h-4 bg-secondary rounded-sm w-1/2" />
+                </div>
+              ))}
+            </div>
+          ) : properties.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {properties.map((property, i) => (
                 <PropertyCard key={property.id} property={property} index={i} />
               ))}
             </div>
@@ -313,7 +350,9 @@ export default function Properties() {
                 <Search className="text-muted-foreground" size={32} />
               </div>
               <h3 className="font-heading text-2xl text-foreground mb-2">No properties found</h3>
-              <p className="text-muted-foreground font-body text-sm">Try adjusting your filters to see more results.</p>
+              <p className="text-muted-foreground font-body text-sm">
+                Try adjusting your filters to see more results.
+              </p>
               <button
                 onClick={resetFilters}
                 className="mt-6 text-xs font-nav uppercase tracking-wider text-primary hover:underline"
@@ -336,7 +375,9 @@ export default function Properties() {
 
               {pageNumbers.map((p, i) =>
                 p === '...' ? (
-                  <span key={`ellipsis-${i}`} className="px-2 text-muted-foreground">…</span>
+                  <span key={`ellipsis-${i}`} className="px-2 text-muted-foreground">
+                    …
+                  </span>
                 ) : (
                   <button
                     key={p}

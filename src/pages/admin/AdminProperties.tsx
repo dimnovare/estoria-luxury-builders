@@ -1,31 +1,30 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Pencil, Archive } from 'lucide-react';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { allMockProperties } from '@/data/mockProperties';
+import { useAdminProperties, useDeleteProperty } from '@/hooks/api/useAdmin';
 import { toast } from 'sonner';
 
 const statusColors: Record<string, string> = {
-  active: 'bg-green-100 text-green-700 border-green-200',
-  draft: 'bg-gray-100 text-gray-600 border-gray-200',
-  sold: 'bg-blue-100 text-blue-700 border-blue-200',
-  archived: 'bg-red-100 text-red-600 border-red-200',
+  Active: 'bg-green-100 text-green-700 border-green-200',
+  Draft: 'bg-gray-100 text-gray-600 border-gray-200',
+  Sold: 'bg-blue-100 text-blue-700 border-blue-200',
+  Rented: 'bg-purple-100 text-purple-700 border-purple-200',
+  Archived: 'bg-red-100 text-red-600 border-red-200',
 };
 
 export default function AdminProperties() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
 
-  // Mock status for demo
-  const properties = allMockProperties.map((p, i) => ({
-    ...p,
-    status: i === 0 ? 'active' : i === 1 ? 'draft' : i % 5 === 0 ? 'sold' : 'active',
-    updatedAt: '2026-03-' + String(28 - i).padStart(2, '0'),
-  }));
+  const { data, isLoading } = useAdminProperties();
+  const deleteProperty = useDeleteProperty();
+
+  const properties = data?.items ?? [];
 
   const filtered = properties.filter(p => {
     if (statusFilter !== 'all' && p.status !== statusFilter) return false;
@@ -33,7 +32,14 @@ export default function AdminProperties() {
     return true;
   });
 
-  const types = [...new Set(allMockProperties.map(p => p.propertyType))];
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteProperty.mutateAsync(id);
+      toast.success('Property deleted');
+    } catch {
+      toast.error('Failed to delete property');
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -53,10 +59,11 @@ export default function AdminProperties() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="draft">Draft</SelectItem>
-              <SelectItem value="sold">Sold</SelectItem>
-              <SelectItem value="archived">Archived</SelectItem>
+              <SelectItem value="Active">Active</SelectItem>
+              <SelectItem value="Draft">Draft</SelectItem>
+              <SelectItem value="Sold">Sold</SelectItem>
+              <SelectItem value="Rented">Rented</SelectItem>
+              <SelectItem value="Archived">Archived</SelectItem>
             </SelectContent>
           </Select>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
@@ -65,9 +72,11 @@ export default function AdminProperties() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Types</SelectItem>
-              {types.map(t => (
-                <SelectItem key={t} value={t} className="capitalize">{t}</SelectItem>
-              ))}
+              <SelectItem value="Apartment">Apartment</SelectItem>
+              <SelectItem value="House">House</SelectItem>
+              <SelectItem value="Commercial">Commercial</SelectItem>
+              <SelectItem value="Land">Land</SelectItem>
+              <SelectItem value="Office">Office</SelectItem>
             </SelectContent>
           </Select>
         </CardContent>
@@ -85,35 +94,58 @@ export default function AdminProperties() {
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">Transaction</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">Price</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">Status</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Updated</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map(p => (
+              {isLoading && (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">
+                    Loading…
+                  </TableCell>
+                </TableRow>
+              )}
+              {!isLoading && filtered.map(p => (
                 <TableRow key={p.id} className="border-[hsl(0_0%_93%)]">
                   <TableCell className="py-2">
-                    <img src={p.imageUrl} alt="" className="h-10 w-14 object-cover rounded" />
+                    <img
+                      src={p.coverImageUrl || '/placeholder.jpg'}
+                      alt=""
+                      className="h-10 w-14 object-cover rounded"
+                    />
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">{p.title}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] capitalize">{p.propertyType}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] capitalize">{p.transactionType}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">€{p.price.toLocaleString()}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
+                    {p.translations?.['En']?.title ?? p.slug}
+                  </TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{p.propertyType}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{p.transactionType}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
+                    €{p.price.toLocaleString()}
+                  </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={`text-[10px] capitalize ${statusColors[p.status]}`}>{p.status}</Badge>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] ${statusColors[p.status] ?? 'bg-gray-100 text-gray-600 border-gray-200'}`}
+                    >
+                      {p.status}
+                    </Badge>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_50%)]">{p.updatedAt}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]">
+                      <Button
+                        variant="ghost" size="icon"
+                        asChild
+                        className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]"
+                      >
                         <Link to={`/admin/properties/${p.id}/edit`}><Pencil className="h-3.5 w-3.5" /></Link>
                       </Button>
                       <Button
                         variant="ghost" size="icon"
                         className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-red-500"
-                        onClick={() => toast.success('Property archived')}
+                        onClick={() => handleDelete(p.id)}
+                        disabled={deleteProperty.isPending}
                       >
-                        <Archive className="h-3.5 w-3.5" />
+                        <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </div>
                   </TableCell>
@@ -121,7 +153,7 @@ export default function AdminProperties() {
               ))}
             </TableBody>
           </Table>
-          {filtered.length === 0 && (
+          {!isLoading && filtered.length === 0 && (
             <p className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">No properties match your filters.</p>
           )}
         </CardContent>

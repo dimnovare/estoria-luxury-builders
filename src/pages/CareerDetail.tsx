@@ -1,28 +1,41 @@
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { MapPin, ArrowLeft } from 'lucide-react';
-import { mockCareers } from '@/data/mockContent';
+import { MapPin, ArrowLeft, Loader2 } from 'lucide-react';
+import { useCareer } from '@/hooks/api/useContent';
 import { useEffect } from 'react';
 
 export default function CareerDetail() {
   const { slug } = useParams();
   const { t } = useTranslation();
-  const career = mockCareers.find(c => c.slug === slug);
+  const { data: career, isLoading, error } = useCareer(slug);
 
   useEffect(() => {
     if (career) {
       document.title = `${career.title} — Careers — ESTORIA`;
     }
-    return () => { document.title = 'ESTORIA — Where Your Future Lives'; };
+    return () => {
+      document.title = 'ESTORIA — Where Your Future Lives';
+    };
   }, [career]);
 
-  if (!career) {
+  if (isLoading) {
+    return (
+      <div className="pt-20 min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin text-primary" size={32} />
+      </div>
+    );
+  }
+
+  if (error || !career) {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="font-heading text-5xl text-foreground mb-4">{t('common.notFound')}</h1>
-          <Link to="/careers" className="text-primary font-nav text-xs uppercase tracking-wider hover:underline">
+          <Link
+            to="/careers"
+            className="text-primary font-nav text-xs uppercase tracking-wider hover:underline"
+          >
             ← All Positions
           </Link>
         </div>
@@ -34,9 +47,13 @@ export default function CareerDetail() {
     <>
       <div className="pt-24 pb-4 container mx-auto px-6">
         <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body">
-          <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+          <Link to="/" className="hover:text-primary transition-colors">
+            Home
+          </Link>
           <span>/</span>
-          <Link to="/careers" className="hover:text-primary transition-colors">Careers</Link>
+          <Link to="/careers" className="hover:text-primary transition-colors">
+            Careers
+          </Link>
           <span>/</span>
           <span className="text-foreground truncate max-w-[200px]">{career.title}</span>
         </nav>
@@ -48,23 +65,24 @@ export default function CareerDetail() {
             {career.title}
           </h1>
 
-          <div className="flex items-center gap-4 mb-8">
-            <span className="flex items-center gap-1.5 text-sm text-muted-foreground font-body">
-              <MapPin size={14} className="text-primary" />
-              {career.location}
-            </span>
-            <span className="text-[10px] font-nav uppercase tracking-wider bg-secondary text-muted-foreground px-3 py-1.5 rounded-sm">
-              {career.type}
-            </span>
-          </div>
+          {career.location && (
+            <div className="flex items-center gap-4 mb-8">
+              <span className="flex items-center gap-1.5 text-sm text-muted-foreground font-body">
+                <MapPin size={14} className="text-primary" />
+                {career.location}
+              </span>
+            </div>
+          )}
 
           <div className="h-px gold-gradient mb-10" />
 
           {/* Description */}
-          <div
-            className="prose-estoria mb-12"
-            dangerouslySetInnerHTML={{ __html: career.description }}
-          />
+          {career.description && (
+            <div
+              className="prose-estoria mb-12"
+              dangerouslySetInnerHTML={{ __html: career.description }}
+            />
+          )}
 
           {/* Apply CTA */}
           <a

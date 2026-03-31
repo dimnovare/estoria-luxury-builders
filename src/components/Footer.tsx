@@ -74,9 +74,15 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-border">
         <div className="container mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground font-body">
-            © {new Date().getFullYear()} ESTORIA. {t('footer.rights')}
-          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-3 text-xs text-muted-foreground font-body">
+            <span>© {new Date().getFullYear()} ESTORIA OÜ. {t('footer.rights')}</span>
+            <span className="hidden sm:inline text-border">·</span>
+            <span>Reg. [REG_NO]</span>
+            <span className="hidden sm:inline text-border">·</span>
+            <Link to="/privacy" className="hover:text-primary transition-colors">
+              {t('footer.privacy')}
+            </Link>
+          </div>
 
           <div className="flex items-center gap-2 font-nav text-xs uppercase">
             {languages.map((lang, i) => (

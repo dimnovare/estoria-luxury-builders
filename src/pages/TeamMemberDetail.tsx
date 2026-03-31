@@ -1,34 +1,42 @@
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Phone, Mail, ArrowLeft } from 'lucide-react';
-import { mockTeam } from '@/data/mockContent';
-import { allMockProperties } from '@/data/mockProperties';
+import { Phone, Mail, ArrowLeft, Loader2 } from 'lucide-react';
 import PropertyCard from '@/components/PropertyCard';
 import { useEffect } from 'react';
+import { useTeamMember } from '@/hooks/api/useContent';
 
 export default function TeamMemberDetail() {
   const { slug } = useParams();
   const { t } = useTranslation();
-  const member = mockTeam.find(m => m.slug === slug);
-
-  const agentProperties = allMockProperties.filter(
-    p => p.agent?.name === member?.name
-  );
+  const { data: member, isLoading, error } = useTeamMember(slug);
 
   useEffect(() => {
     if (member) {
       document.title = `${member.name} — ESTORIA`;
     }
-    return () => { document.title = 'ESTORIA — Where Your Future Lives'; };
+    return () => {
+      document.title = 'ESTORIA — Where Your Future Lives';
+    };
   }, [member]);
 
-  if (!member) {
+  if (isLoading) {
+    return (
+      <div className="pt-20 min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin text-primary" size={32} />
+      </div>
+    );
+  }
+
+  if (error || !member) {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="font-heading text-5xl text-foreground mb-4">{t('common.notFound')}</h1>
-          <Link to="/team" className="text-primary font-nav text-xs uppercase tracking-wider hover:underline">
+          <Link
+            to="/team"
+            className="text-primary font-nav text-xs uppercase tracking-wider hover:underline"
+          >
             ← Back to Team
           </Link>
         </div>
@@ -40,9 +48,13 @@ export default function TeamMemberDetail() {
     <>
       <div className="pt-24 pb-4 container mx-auto px-6">
         <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body">
-          <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+          <Link to="/" className="hover:text-primary transition-colors">
+            Home
+          </Link>
           <span>/</span>
-          <Link to="/team" className="hover:text-primary transition-colors">{t('nav.team')}</Link>
+          <Link to="/team" className="hover:text-primary transition-colors">
+            {t('nav.team')}
+          </Link>
           <span>/</span>
           <span className="text-foreground">{member.name}</span>
         </nav>
@@ -59,7 +71,7 @@ export default function TeamMemberDetail() {
           >
             <div className="aspect-[3/4] rounded-sm overflow-hidden bg-muted">
               <img
-                src={member.imageUrl}
+                src={member.photoUrl || '/placeholder.jpg'}
                 alt={member.name}
                 className="w-full h-full object-cover"
               />
@@ -76,34 +88,53 @@ export default function TeamMemberDetail() {
             <h1 className="font-heading text-4xl md:text-5xl text-foreground font-light mb-2">
               {member.name}
             </h1>
-            <p className="text-primary font-nav text-xs uppercase tracking-[0.15em] mb-6">{member.role}</p>
+            <p className="text-primary font-nav text-xs uppercase tracking-[0.15em] mb-6">
+              {member.role}
+            </p>
 
             <div className="h-px gold-gradient mb-8" />
 
             {/* Bio */}
-            <div
-              className="prose-estoria mb-8"
-              dangerouslySetInnerHTML={{ __html: member.bio }}
-            />
+            {member.bio && (
+              <div
+                className="prose-estoria mb-8"
+                dangerouslySetInnerHTML={{ __html: member.bio }}
+              />
+            )}
 
             {/* Contact */}
             <div className="space-y-3 mb-6">
-              <a href={`tel:${member.phone}`} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary font-body transition-colors">
-                <Phone size={16} className="text-primary" /> {member.phone}
-              </a>
-              <a href={`mailto:${member.email}`} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary font-body transition-colors">
-                <Mail size={16} className="text-primary" /> {member.email}
-              </a>
+              {member.phone && (
+                <a
+                  href={`tel:${member.phone}`}
+                  className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary font-body transition-colors"
+                >
+                  <Phone size={16} className="text-primary" /> {member.phone}
+                </a>
+              )}
+              {member.email && (
+                <a
+                  href={`mailto:${member.email}`}
+                  className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary font-body transition-colors"
+                >
+                  <Mail size={16} className="text-primary" /> {member.email}
+                </a>
+              )}
             </div>
 
             {/* Languages */}
-            <div className="flex flex-wrap gap-2">
-              {member.languages.map(lang => (
-                <span key={lang} className="text-[10px] font-nav uppercase tracking-wider bg-secondary text-muted-foreground px-3 py-1.5 rounded-sm">
-                  {lang}
-                </span>
-              ))}
-            </div>
+            {member.languages && member.languages.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {member.languages.map((lang) => (
+                  <span
+                    key={lang}
+                    className="text-[10px] font-nav uppercase tracking-wider bg-secondary text-muted-foreground px-3 py-1.5 rounded-sm"
+                  >
+                    {lang}
+                  </span>
+                ))}
+              </div>
+            )}
           </motion.div>
         </div>
       </section>
@@ -122,14 +153,16 @@ export default function TeamMemberDetail() {
             </h2>
           </motion.div>
 
-          {agentProperties.length > 0 ? (
+          {member.properties && member.properties.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {agentProperties.map((p, i) => (
+              {member.properties.map((p, i) => (
                 <PropertyCard key={p.id} property={p} index={i} />
               ))}
             </div>
           ) : (
-            <p className="text-muted-foreground font-body text-sm">No active listings at this time.</p>
+            <p className="text-muted-foreground font-body text-sm">
+              No active listings at this time.
+            </p>
           )}
         </div>
       </section>

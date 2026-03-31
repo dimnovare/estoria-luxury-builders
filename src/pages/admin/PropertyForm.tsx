@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Plus, X, GripVertical, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Plus, X, GripVertical, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,44 +10,92 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { mockTeam } from '@/data/mockContent';
-import { allMockProperties } from '@/data/mockProperties';
+import {
+  useAdminProperty,
+  useCreateProperty,
+  useUpdateProperty,
+  useUploadPropertyImages,
+  useDeletePropertyImage,
+  useAdminTeam,
+  toBeLang,
+} from '@/hooks/api/useAdmin';
 import { toast } from 'sonner';
 
 const langs = ['et', 'en', 'ru'] as const;
+
+type TransFields = { title: string; description: string; address: string; city: string; district: string; };
+const emptyTrans: TransFields = { title: '', description: '', address: '', city: '', district: '' };
 
 export default function PropertyForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEdit = !!id;
-  const existing = isEdit ? allMockProperties.find(p => p.id === id) : null;
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [propertyType, setPropertyType] = useState(existing?.propertyType || '');
-  const [transactionType, setTransactionType] = useState<string>(existing?.transactionType || 'sale');
-  const [price, setPrice] = useState(existing?.price?.toString() || '');
-  const [area, setArea] = useState(existing?.area?.toString() || '');
-  const [rooms, setRooms] = useState(existing?.rooms?.toString() || '');
-  const [bedrooms, setBedrooms] = useState(existing?.bedrooms?.toString() || '');
-  const [bathrooms, setBathrooms] = useState(existing?.bathrooms?.toString() || '');
-  const [floor, setFloor] = useState(existing?.floor?.toString() || '');
-  const [totalFloors, setTotalFloors] = useState(existing?.totalFloors?.toString() || '');
-  const [yearBuilt, setYearBuilt] = useState(existing?.yearBuilt?.toString() || '');
-  const [energyClass, setEnergyClass] = useState(existing?.energyClass || '');
-  const [lat, setLat] = useState(existing?.lat?.toString() || '');
-  const [lng, setLng] = useState(existing?.lng?.toString() || '');
+  const { data: existing, isLoading: loadingProperty } = useAdminProperty(isEdit ? id : undefined);
+  const { data: teamData } = useAdminTeam();
+  const createProperty = useCreateProperty();
+  const updateProperty = useUpdateProperty();
+  const uploadImages = useUploadPropertyImages();
+  const deleteImage = useDeletePropertyImage();
+
+  const [propertyType, setPropertyType] = useState('');
+  const [transactionType, setTransactionType] = useState('sale');
+  const [price, setPrice] = useState('');
+  const [size, setSize] = useState('');
+  const [rooms, setRooms] = useState('');
+  const [bedrooms, setBedrooms] = useState('');
+  const [bathrooms, setBathrooms] = useState('');
+  const [floor, setFloor] = useState('');
+  const [totalFloors, setTotalFloors] = useState('');
+  const [yearBuilt, setYearBuilt] = useState('');
+  const [energyClass, setEnergyClass] = useState('');
+  const [lat, setLat] = useState('');
+  const [lng, setLng] = useState('');
   const [agentId, setAgentId] = useState('');
   const [isFeatured, setIsFeatured] = useState(false);
-  const [status, setStatus] = useState('draft');
 
-  const [translations, setTranslations] = useState<Record<string, { title: string; description: string; address: string; city: string; district: string }>>({
-    et: { title: existing?.title || '', description: '', address: existing?.address || '', city: existing?.city || '', district: '' },
-    en: { title: existing?.title || '', description: '', address: existing?.address || '', city: existing?.city || '', district: '' },
-    ru: { title: '', description: '', address: '', city: '', district: '' },
+  const [translations, setTranslations] = useState<Record<string, TransFields>>({
+    et: { ...emptyTrans },
+    en: { ...emptyTrans },
+    ru: { ...emptyTrans },
   });
 
-  const [features, setFeatures] = useState<string[]>(existing?.features || []);
+  const [features, setFeatures] = useState<string[]>([]);
   const [newFeature, setNewFeature] = useState('');
-  const [images] = useState(existing?.images || []);
+
+  // Pre-fill form when existing property loads
+  useEffect(() => {
+    if (existing) {
+      setPropertyType(existing.propertyType.toLowerCase());
+      setTransactionType(existing.transactionType.toLowerCase());
+      setPrice(existing.price.toString());
+      setSize(existing.size.toString());
+      setRooms(existing.rooms?.toString() ?? '');
+      setBedrooms(existing.bedrooms?.toString() ?? '');
+      setBathrooms(existing.bathrooms?.toString() ?? '');
+      setFloor(existing.floor?.toString() ?? '');
+      setTotalFloors(existing.totalFloors?.toString() ?? '');
+      setYearBuilt(existing.yearBuilt?.toString() ?? '');
+      setEnergyClass(existing.energyClass ?? '');
+      setLat(existing.latitude?.toString() ?? '');
+      setLng(existing.longitude?.toString() ?? '');
+      setAgentId(existing.agent?.id ?? '');
+      setIsFeatured(existing.isFeatured);
+      setFeatures(existing.features ?? []);
+      setTranslations({
+        et: existing.translations['Et']
+          ? { ...emptyTrans, ...existing.translations['Et'], district: existing.translations['Et'].district ?? '' }
+          : { ...emptyTrans },
+        en: existing.translations['En']
+          ? { ...emptyTrans, ...existing.translations['En'], district: existing.translations['En'].district ?? '' }
+          : { ...emptyTrans },
+        ru: existing.translations['Ru']
+          ? { ...emptyTrans, ...existing.translations['Ru'], district: existing.translations['Ru'].district ?? '' }
+          : { ...emptyTrans },
+      });
+    }
+  }, [existing]);
 
   const updateTranslation = (lang: string, field: string, value: string) => {
     setTranslations(prev => ({ ...prev, [lang]: { ...prev[lang], [field]: value } }));
@@ -60,13 +108,78 @@ export default function PropertyForm() {
     }
   };
 
-  const handleSave = (asDraft: boolean) => {
-    toast.success(asDraft ? 'Property saved as draft' : 'Property saved and published');
-    navigate('/admin/properties');
+  const handleSave = async (asDraft: boolean) => {
+    const dto = {
+      transactionType: transactionType === 'sale' ? 'Sale' : 'Rent',
+      propertyType: propertyType.charAt(0).toUpperCase() + propertyType.slice(1),
+      price: parseFloat(price) || 0,
+      currency: 'EUR',
+      size: parseFloat(size) || 0,
+      rooms: rooms ? parseInt(rooms) : null,
+      bedrooms: bedrooms ? parseInt(bedrooms) : null,
+      bathrooms: bathrooms ? parseInt(bathrooms) : null,
+      floor: floor ? parseInt(floor) : null,
+      totalFloors: totalFloors ? parseInt(totalFloors) : null,
+      yearBuilt: yearBuilt ? parseInt(yearBuilt) : null,
+      energyClass: energyClass || null,
+      latitude: lat ? parseFloat(lat) : null,
+      longitude: lng ? parseFloat(lng) : null,
+      isFeatured: asDraft ? false : isFeatured,
+      agentId,
+      features,
+      translations: Object.fromEntries(
+        langs.map(l => [toBeLang(l), translations[l]])
+      ),
+    };
+
+    try {
+      if (isEdit && id) {
+        await updateProperty.mutateAsync({ id, dto });
+        toast.success('Property updated');
+        navigate('/admin/properties');
+      } else {
+        const result = await createProperty.mutateAsync(dto) as { id: string };
+        toast.success('Property created — upload images in the Images tab');
+        navigate(`/admin/properties/${result.id}/edit`);
+      }
+    } catch {
+      toast.error('Failed to save property');
+    }
   };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isEdit || !id || !e.target.files?.length) return;
+    try {
+      await uploadImages.mutateAsync({ id, files: e.target.files });
+      toast.success('Images uploaded');
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    } catch {
+      toast.error('Failed to upload images');
+    }
+  };
+
+  const handleDeleteImage = async (imageId: string) => {
+    if (!id) return;
+    try {
+      await deleteImage.mutateAsync({ propertyId: id, imageId });
+      toast.success('Image removed');
+    } catch {
+      toast.error('Failed to remove image');
+    }
+  };
+
+  const isSaving = createProperty.isPending || updateProperty.isPending;
 
   const inputClass = "border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)] focus:border-[hsl(43_50%_54%)] focus:ring-[hsl(43_50%_54%)]";
   const labelClass = "text-sm text-[hsl(0_0%_40%)] font-medium";
+
+  if (isEdit && loadingProperty) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <Loader2 className="h-6 w-6 animate-spin text-[hsl(43_50%_54%)]" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -119,7 +232,7 @@ export default function PropertyForm() {
                 </div>
                 <div className="space-y-2">
                   <Label className={labelClass}>Size (m²)</Label>
-                  <Input type="number" value={area} onChange={e => setArea(e.target.value)} className={inputClass} />
+                  <Input type="number" value={size} onChange={e => setSize(e.target.value)} className={inputClass} />
                 </div>
                 <div className="space-y-2">
                   <Label className={labelClass}>Rooms</Label>
@@ -167,7 +280,7 @@ export default function PropertyForm() {
                   <Select value={agentId} onValueChange={setAgentId}>
                     <SelectTrigger className={inputClass}><SelectValue placeholder="Select agent" /></SelectTrigger>
                     <SelectContent>
-                      {mockTeam.map(t => (
+                      {(teamData ?? []).map(t => (
                         <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
                       ))}
                     </SelectContent>
@@ -186,23 +299,9 @@ export default function PropertyForm() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className={labelClass}>Status</Label>
-                  <Select value={status} onValueChange={setStatus}>
-                    <SelectTrigger className={inputClass}><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="draft">Draft</SelectItem>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="sold">Sold</SelectItem>
-                      <SelectItem value="archived">Archived</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-center gap-3 pt-7">
-                  <Switch checked={isFeatured} onCheckedChange={setIsFeatured} />
-                  <Label className={labelClass}>Featured Property</Label>
-                </div>
+              <div className="flex items-center gap-3">
+                <Switch checked={isFeatured} onCheckedChange={setIsFeatured} />
+                <Label className={labelClass}>Featured Property</Label>
               </div>
             </CardContent>
           </Card>
@@ -252,23 +351,49 @@ export default function PropertyForm() {
           <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
             <CardContent className="p-6 space-y-4">
               {/* Upload zone */}
-              <div className="border-2 border-dashed border-[hsl(0_0%_85%)] rounded-lg p-8 text-center hover:border-[hsl(43_50%_54%)] transition-colors cursor-pointer">
+              <div
+                className="border-2 border-dashed border-[hsl(0_0%_85%)] rounded-lg p-8 text-center hover:border-[hsl(43_50%_54%)] transition-colors cursor-pointer"
+                onClick={() => fileInputRef.current?.click()}
+              >
                 <ImageIcon className="h-8 w-8 mx-auto text-[hsl(0_0%_70%)] mb-2" />
-                <p className="text-sm text-[hsl(0_0%_50%)]">Drag and drop images here, or click to browse</p>
+                {isEdit ? (
+                  <p className="text-sm text-[hsl(0_0%_50%)]">Click to upload images</p>
+                ) : (
+                  <p className="text-sm text-[hsl(0_0%_50%)]">Save the property first, then add images</p>
+                )}
                 <p className="text-xs text-[hsl(0_0%_70%)] mt-1">JPG, PNG, WebP — max 10MB each</p>
               </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+                disabled={!isEdit}
+              />
+              {uploadImages.isPending && (
+                <div className="flex items-center gap-2 text-sm text-[hsl(0_0%_50%)]">
+                  <Loader2 className="h-4 w-4 animate-spin" /> Uploading…
+                </div>
+              )}
 
               {/* Image grid */}
-              {images.length > 0 && (
+              {(existing?.images ?? []).length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {images.map((img, i) => (
-                    <div key={i} className="relative group rounded-lg overflow-hidden border border-[hsl(0_0%_90%)]">
-                      <img src={img} alt="" className="w-full h-24 object-cover" />
+                  {(existing?.images ?? []).map(img => (
+                    <div key={img.id} className="relative group rounded-lg overflow-hidden border border-[hsl(0_0%_90%)]">
+                      <img src={img.url} alt="" className="w-full h-24 object-cover" />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                         <GripVertical className="h-4 w-4 text-white cursor-grab" />
-                        <button className="text-white hover:text-red-400"><X className="h-4 w-4" /></button>
+                        <button
+                          className="text-white hover:text-red-400"
+                          onClick={() => handleDeleteImage(img.id)}
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
                       </div>
-                      {i === 0 && (
+                      {img.isCover && (
                         <span className="absolute top-1 left-1 text-[8px] bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] px-1.5 py-0.5 rounded font-medium">Cover</span>
                       )}
                     </div>
@@ -310,10 +435,12 @@ export default function PropertyForm() {
 
       {/* Save buttons */}
       <div className="flex gap-3 justify-end pt-2">
-        <Button variant="outline" onClick={() => handleSave(true)} className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)]">
+        <Button variant="outline" onClick={() => handleSave(true)} disabled={isSaving} className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)]">
+          {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           Save as Draft
         </Button>
-        <Button onClick={() => handleSave(false)} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+        <Button onClick={() => handleSave(false)} disabled={isSaving} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+          {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           Save & Publish
         </Button>
       </div>

@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Check, Loader2, Instagram, Facebook, Linkedin } from 'lucide-react';
 import { z } from 'zod';
-import { allMockProperties } from '@/data/mockProperties';
+import api from '@/lib/api';
+import { useProperty } from '@/hooks/api/useProperties';
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
@@ -17,22 +18,36 @@ const contactSchema = z.object({
 export default function Contact() {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
-  const propertySlug = searchParams.get('property');
-  const linkedProperty = propertySlug ? allMockProperties.find(p => p.slug === propertySlug) : null;
+  const propertySlug = searchParams.get('property') || undefined;
+
+  const { data: linkedProperty } = useProperty(propertySlug);
 
   const [form, setForm] = useState({
     name: '',
     email: '',
     phone: '',
-    subject: linkedProperty ? `Inquiry: ${linkedProperty.title}` : '',
-    message: linkedProperty ? `I'm interested in the property "${linkedProperty.title}" at ${linkedProperty.address}.` : '',
+    subject: '',
+    message: '',
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Pre-fill form when linked property loads
+  useEffect(() => {
+    if (linkedProperty) {
+      setForm((f) => ({
+        ...f,
+        subject: f.subject || `Inquiry: ${linkedProperty.title}`,
+        message:
+          f.message ||
+          `I'm interested in the property "${linkedProperty.title}" at ${linkedProperty.address}.`,
+      }));
+    }
+  }, [linkedProperty]);
+
   const handleChange = (key: string, value: string) => {
-    setForm(f => ({ ...f, [key]: value }));
-    if (errors[key]) setErrors(e => ({ ...e, [key]: '' }));
+    setForm((f) => ({ ...f, [key]: value }));
+    if (errors[key]) setErrors((e) => ({ ...e, [key]: '' }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,7 +57,7 @@ export default function Contact() {
     const result = contactSchema.safeParse(form);
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
-      result.error.issues.forEach(issue => {
+      result.error.issues.forEach((issue) => {
         const key = issue.path[0] as string;
         if (!fieldErrors[key]) fieldErrors[key] = issue.message;
       });
@@ -51,8 +66,19 @@ export default function Contact() {
     }
 
     setStatus('loading');
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setStatus('success');
+    try {
+      await api.post('/contact', {
+        name: form.name,
+        email: form.email,
+        phone: form.phone || null,
+        subject: form.subject || null,
+        message: form.message,
+        propertyId: linkedProperty?.id || null,
+      });
+      setStatus('success');
+    } catch {
+      setStatus('error');
+    }
   };
 
   return (
@@ -62,11 +88,15 @@ export default function Contact() {
         <div className="container mx-auto px-6 pt-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-6">
-              <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+              <Link to="/" className="hover:text-primary transition-colors">
+                Home
+              </Link>
               <span>/</span>
               <span className="text-foreground">{t('nav.contact')}</span>
             </nav>
-            <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground mb-3">{t('nav.contact')}</h1>
+            <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground mb-3">
+              {t('nav.contact')}
+            </h1>
             <p className="text-muted-foreground font-body text-lg max-w-xl">
               We'd love to hear from you. Reach out and let's start a conversation.
             </p>
@@ -86,10 +116,19 @@ export default function Contact() {
             >
               {linkedProperty && (
                 <div className="bg-card border border-border rounded-sm p-4 mb-6 flex items-center gap-3">
-                  <img src={linkedProperty.imageUrl} alt="" className="w-16 h-12 rounded-sm object-cover" />
+                  {linkedProperty.coverImageUrl && (
+                    <img
+                      src={linkedProperty.coverImageUrl}
+                      alt=""
+                      className="w-16 h-12 rounded-sm object-cover"
+                    />
+                  )}
                   <div>
                     <p className="text-xs text-muted-foreground font-body">Inquiry about:</p>
-                    <Link to={`/properties/${linkedProperty.slug}`} className="text-sm text-primary font-body hover:underline">
+                    <Link
+                      to={`/properties/${linkedProperty.slug}`}
+                      className="text-sm text-primary font-body hover:underline"
+                    >
                       {linkedProperty.title}
                     </Link>
                   </div>
@@ -106,7 +145,9 @@ export default function Contact() {
                     <Check className="text-success" size={28} />
                   </div>
                   <h2 className="font-heading text-3xl text-foreground mb-3">Thank You</h2>
-                  <p className="text-muted-foreground font-body">We'll be in touch within 24 hours.</p>
+                  <p className="text-muted-foreground font-body">
+                    We'll be in touch within 24 hours.
+                  </p>
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
@@ -115,33 +156,37 @@ export default function Contact() {
                       type="text"
                       placeholder="Your name *"
                       value={form.name}
-                      onChange={e => handleChange('name', e.target.value)}
+                      onChange={(e) => handleChange('name', e.target.value)}
                       className="w-full bg-secondary border border-border text-foreground text-sm font-body px-5 py-3.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
                     />
-                    {errors.name && <p className="text-destructive text-xs mt-1 font-body">{errors.name}</p>}
+                    {errors.name && (
+                      <p className="text-destructive text-xs mt-1 font-body">{errors.name}</p>
+                    )}
                   </div>
                   <div>
                     <input
                       type="email"
                       placeholder="Email address *"
                       value={form.email}
-                      onChange={e => handleChange('email', e.target.value)}
+                      onChange={(e) => handleChange('email', e.target.value)}
                       className="w-full bg-secondary border border-border text-foreground text-sm font-body px-5 py-3.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
                     />
-                    {errors.email && <p className="text-destructive text-xs mt-1 font-body">{errors.email}</p>}
+                    {errors.email && (
+                      <p className="text-destructive text-xs mt-1 font-body">{errors.email}</p>
+                    )}
                   </div>
                   <input
                     type="tel"
                     placeholder="Phone (optional)"
                     value={form.phone}
-                    onChange={e => handleChange('phone', e.target.value)}
+                    onChange={(e) => handleChange('phone', e.target.value)}
                     className="w-full bg-secondary border border-border text-foreground text-sm font-body px-5 py-3.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
                   />
                   <input
                     type="text"
                     placeholder="Subject"
                     value={form.subject}
-                    onChange={e => handleChange('subject', e.target.value)}
+                    onChange={(e) => handleChange('subject', e.target.value)}
                     className="w-full bg-secondary border border-border text-foreground text-sm font-body px-5 py-3.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
                   />
                   <div>
@@ -149,10 +194,12 @@ export default function Contact() {
                       placeholder="Your message *"
                       rows={5}
                       value={form.message}
-                      onChange={e => handleChange('message', e.target.value)}
+                      onChange={(e) => handleChange('message', e.target.value)}
                       className="w-full bg-secondary border border-border text-foreground text-sm font-body px-5 py-3.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground resize-none"
                     />
-                    {errors.message && <p className="text-destructive text-xs mt-1 font-body">{errors.message}</p>}
+                    {errors.message && (
+                      <p className="text-destructive text-xs mt-1 font-body">{errors.message}</p>
+                    )}
                   </div>
                   <button
                     type="submit"
@@ -163,7 +210,9 @@ export default function Contact() {
                     Send Message
                   </button>
                   {status === 'error' && (
-                    <p className="text-destructive text-sm font-body text-center">Something went wrong. Please try again.</p>
+                    <p className="text-destructive text-sm font-body text-center">
+                      Something went wrong. Please try again.
+                    </p>
                   )}
                 </form>
               )}
@@ -183,8 +232,12 @@ export default function Contact() {
                     <MapPin size={18} className="text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">Office Address</h3>
-                    <p className="text-sm text-muted-foreground font-body">Pärnu mnt 15, 10141 Tallinn, Estonia</p>
+                    <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">
+                      Office Address
+                    </h3>
+                    <p className="text-sm text-muted-foreground font-body">
+                      Pärnu mnt 15, 10141 Tallinn, Estonia
+                    </p>
                   </div>
                 </div>
 
@@ -193,8 +246,13 @@ export default function Contact() {
                     <Phone size={18} className="text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">Phone</h3>
-                    <a href="tel:+3726000000" className="text-sm text-muted-foreground hover:text-primary font-body transition-colors">
+                    <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">
+                      Phone
+                    </h3>
+                    <a
+                      href="tel:+3726000000"
+                      className="text-sm text-muted-foreground hover:text-primary font-body transition-colors"
+                    >
                       +372 600 0000
                     </a>
                   </div>
@@ -205,8 +263,13 @@ export default function Contact() {
                     <Mail size={18} className="text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">Email</h3>
-                    <a href="mailto:info@estoria.ee" className="text-sm text-muted-foreground hover:text-primary font-body transition-colors">
+                    <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">
+                      Email
+                    </h3>
+                    <a
+                      href="mailto:info@estoria.ee"
+                      className="text-sm text-muted-foreground hover:text-primary font-body transition-colors"
+                    >
                       info@estoria.ee
                     </a>
                   </div>
@@ -217,9 +280,13 @@ export default function Contact() {
                     <Clock size={18} className="text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">Office Hours</h3>
+                    <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">
+                      Office Hours
+                    </h3>
                     <p className="text-sm text-muted-foreground font-body">Mon – Fri: 9:00 – 18:00</p>
-                    <p className="text-sm text-muted-foreground font-body">Sat: 10:00 – 14:00 (by appointment)</p>
+                    <p className="text-sm text-muted-foreground font-body">
+                      Sat: 10:00 – 14:00 (by appointment)
+                    </p>
                     <p className="text-sm text-muted-foreground font-body">Sun: Closed</p>
                   </div>
                 </div>
@@ -237,7 +304,9 @@ export default function Contact() {
 
               {/* Social */}
               <div>
-                <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-4">Follow Us</h3>
+                <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-4">
+                  Follow Us
+                </h3>
                 <div className="flex items-center gap-4">
                   {[
                     { icon: Instagram, label: 'Instagram', href: '#' },

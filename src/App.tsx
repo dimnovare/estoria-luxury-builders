@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
+import ErrorBoundary from "@/components/ErrorBoundary";
 import MainLayout from "@/layouts/MainLayout";
 import AdminLayout from "@/layouts/AdminLayout";
 
@@ -18,6 +19,7 @@ import BlogPost from "@/pages/BlogPost";
 import Careers from "@/pages/Careers";
 import CareerDetail from "@/pages/CareerDetail";
 import Contact from "@/pages/Contact";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import NotFound from "@/pages/NotFound";
 
 import AdminDashboard from "@/pages/admin/Dashboard";
@@ -39,6 +41,7 @@ const App = () => (
     <TooltipProvider>
       <Sonner />
       <BrowserRouter>
+        <ErrorBoundary>
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Index />} />
@@ -53,6 +56,7 @@ const App = () => (
             <Route path="/careers" element={<Careers />} />
             <Route path="/careers/:slug" element={<CareerDetail />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
           </Route>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
@@ -71,6 +75,7 @@ const App = () => (
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </ErrorBoundary>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

@@ -4,10 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin, Phone, Mail, Share2, X, ChevronLeft, ChevronRight,
-  Maximize2, DoorOpen, BedDouble, Bath, Building, Layers, Calendar, Zap, Check, Copy, ExternalLink,
+  Maximize2, DoorOpen, BedDouble, Bath, Building, Layers, Calendar, Zap,
+  Check,
 } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import PropertyCard from '@/components/PropertyCard';
-import { allMockProperties } from '@/data/mockProperties';
+import { useProperty, useProperties } from '@/hooks/api/useProperties';
+import api from '@/lib/api';
 
 export default function PropertyDetail() {
   const { slug } = useParams();
@@ -16,16 +19,26 @@ export default function PropertyDetail() {
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [copied, setCopied] = useState(false);
   const [formSent, setFormSent] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
+  const [formError, setFormError] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
 
-  const property = allMockProperties.find(p => p.slug === slug);
-  const images = property?.images || (property ? [property.imageUrl] : []);
+  const { data: property, isLoading, error } = useProperty(slug);
 
+  // Similar properties (same type or city, page 1)
+  const { data: similarData } = useProperties(
+    property ? { type: property.propertyType, city: property.city } : undefined
+  );
   const similarProperties = useMemo(() => {
+    if (!property || !similarData?.data) return [];
+    return similarData.data.filter(p => p.id !== property.id).slice(0, 3);
+  }, [property, similarData]);
+
+  const images = useMemo(() => {
     if (!property) return [];
-    return allMockProperties
-      .filter(p => p.id !== property.id && (p.propertyType === property.propertyType || p.city === property.city))
-      .slice(0, 3);
+    if (property.images && property.images.length > 0) return property.images.map(i => i.url);
+    if (property.coverImageUrl) return [property.coverImageUrl];
+    return [];
   }, [property]);
 
   // SEO
@@ -33,17 +46,67 @@ export default function PropertyDetail() {
     if (property) {
       document.title = `${property.title} — ESTORIA`;
       const meta = document.querySelector('meta[name="description"]');
-      if (meta) meta.setAttribute('content', `${property.title} · ${property.address} · ${formatPrice(property.price, property.transactionType)}`);
+      if (meta)
+        meta.setAttribute(
+          'content',
+          `${property.title} · ${property.address} · ${formatPrice(property.price, property.transactionType)}`
+        );
     }
-    return () => { document.title = 'ESTORIA — Where Your Future Lives'; };
+    return () => {
+      document.title = 'ESTORIA — Where Your Future Lives';
+    };
   }, [property]);
 
-  if (!property) {
+  if (isLoading) {
+    return (
+      <div className="pt-20">
+        {/* Image strip */}
+        <Skeleton className="w-full h-[60vh]" />
+        <div className="container mx-auto px-6 py-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            {/* Left: details */}
+            <div className="lg:col-span-2 space-y-6">
+              <Skeleton className="h-9 w-3/4" />
+              <Skeleton className="h-5 w-1/3" />
+              <div className="grid grid-cols-3 gap-4 pt-2">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="bg-secondary rounded-sm p-4">
+                    <Skeleton className="h-4 w-8 mb-2" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-3 pt-4">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Skeleton key={i} className={`h-4 ${i % 3 === 2 ? 'w-2/3' : 'w-full'}`} />
+                ))}
+              </div>
+            </div>
+            {/* Right: contact panel */}
+            <div>
+              <div className="border border-border rounded-sm p-6 space-y-4">
+                <Skeleton className="h-7 w-1/2 mb-2" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-11 w-full rounded-sm" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !property) {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="font-heading text-5xl text-foreground mb-4">{t('common.notFound')}</h1>
-          <Link to="/properties" className="text-primary font-nav text-xs uppercase tracking-wider hover:underline">
+          <Link
+            to="/properties"
+            className="text-primary font-nav text-xs uppercase tracking-wider hover:underline"
+          >
             ← Back to Properties
           </Link>
         </div>
@@ -51,25 +114,36 @@ export default function PropertyDetail() {
     );
   }
 
-  function formatPrice(price: number, type: 'sale' | 'rent') {
+  function formatPrice(price: number, type: string) {
     const formatted = new Intl.NumberFormat('et-EE').format(price);
     return type === 'rent' ? `€${formatted}/mo` : `€${formatted}`;
   }
 
   const specs = [
-    { icon: Maximize2, label: 'Size', value: `${property.area} m²` },
+    { icon: Maximize2, label: 'Size', value: property.size ? `${property.size} m²` : null },
     { icon: DoorOpen, label: 'Rooms', value: property.rooms || null },
     { icon: BedDouble, label: 'Bedrooms', value: property.bedrooms || null },
     { icon: Bath, label: 'Bathrooms', value: property.bathrooms || null },
-    { icon: Building, label: 'Floor', value: property.floor ? `${property.floor}/${property.totalFloors}` : null },
-    { icon: Layers, label: 'Total Floors', value: !property.floor ? property.totalFloors : null },
+    {
+      icon: Building,
+      label: 'Floor',
+      value: property.floor ? `${property.floor}/${property.totalFloors}` : null,
+    },
+    {
+      icon: Layers,
+      label: 'Total Floors',
+      value: !property.floor ? property.totalFloors : null,
+    },
     { icon: Calendar, label: 'Year Built', value: property.yearBuilt || null },
     { icon: Zap, label: 'Energy Class', value: property.energyClass || null },
-  ].filter(s => s.value !== null && s.value !== 0);
+  ].filter((s) => s.value !== null && s.value !== 0);
 
-  const openLightbox = (i: number) => { setLightboxIndex(i); setLightboxOpen(true); };
-  const nextImage = () => setLightboxIndex(i => (i + 1) % images.length);
-  const prevImage = () => setLightboxIndex(i => (i - 1 + images.length) % images.length);
+  const openLightbox = (i: number) => {
+    setLightboxIndex(i);
+    setLightboxOpen(true);
+  };
+  const nextImage = () => setLightboxIndex((i) => (i + 1) % images.length);
+  const prevImage = () => setLightboxIndex((i) => (i - 1 + images.length) % images.length);
 
   const handleShare = async () => {
     const url = window.location.href;
@@ -82,10 +156,25 @@ export default function PropertyDetail() {
     }
   };
 
-  const handleContact = (e: React.FormEvent) => {
+  const handleContact = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormSent(true);
-    setTimeout(() => setFormSent(false), 4000);
+    setFormLoading(true);
+    setFormError(false);
+    try {
+      await api.post('/contact', {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || null,
+        subject: `Inquiry: ${property.title}`,
+        message: formData.message,
+        propertyId: property.id,
+      });
+      setFormSent(true);
+    } catch {
+      setFormError(true);
+    } finally {
+      setFormLoading(false);
+    }
   };
 
   return (
@@ -93,9 +182,13 @@ export default function PropertyDetail() {
       {/* Breadcrumb */}
       <div className="pt-24 pb-4 container mx-auto px-6">
         <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body">
-          <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+          <Link to="/" className="hover:text-primary transition-colors">
+            Home
+          </Link>
           <span>/</span>
-          <Link to="/properties" className="hover:text-primary transition-colors">{t('nav.properties')}</Link>
+          <Link to="/properties" className="hover:text-primary transition-colors">
+            {t('nav.properties')}
+          </Link>
           <span>/</span>
           <span className="text-foreground truncate max-w-[200px]">{property.title}</span>
         </nav>
@@ -113,7 +206,9 @@ export default function PropertyDetail() {
             className="md:col-span-3 aspect-[16/9] md:aspect-auto md:row-span-2 relative cursor-pointer group bg-muted"
             onClick={() => openLightbox(0)}
           >
-            <img src={images[0]} alt={property.title} className="w-full h-full object-cover" />
+            {images[0] && (
+              <img src={images[0]} alt={property.title} className="w-full h-full object-cover" />
+            )}
             <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors" />
           </div>
 
@@ -140,7 +235,11 @@ export default function PropertyDetail() {
         {/* Mobile gallery dots */}
         <div className="md:hidden flex justify-center gap-2 mt-4">
           {images.slice(0, 5).map((_, i) => (
-            <button key={i} onClick={() => openLightbox(i)} className="w-2 h-2 rounded-full bg-muted-foreground/40 hover:bg-primary transition-colors" />
+            <button
+              key={i}
+              onClick={() => openLightbox(i)}
+              className="w-2 h-2 rounded-full bg-muted-foreground/40 hover:bg-primary transition-colors"
+            />
           ))}
         </div>
       </section>
@@ -150,7 +249,11 @@ export default function PropertyDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
           {/* Left column */}
           <div className="lg:col-span-3">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
               {/* Price */}
               <p className="font-heading text-4xl md:text-5xl text-primary font-medium mb-4">
                 {formatPrice(property.price, property.transactionType)}
@@ -168,7 +271,9 @@ export default function PropertyDetail() {
                   {property.address}
                 </span>
                 <span className="text-[10px] font-nav uppercase tracking-wider bg-secondary text-foreground px-3 py-1 rounded-sm">
-                  {property.transactionType === 'sale' ? t('properties.forSale') : t('properties.forRent')}
+                  {property.transactionType === 'sale'
+                    ? t('properties.forSale')
+                    : t('properties.forRent')}
                 </span>
                 <span className="text-[10px] font-nav uppercase tracking-wider bg-secondary text-muted-foreground px-3 py-1 rounded-sm">
                   {property.propertyType}
@@ -189,10 +294,15 @@ export default function PropertyDetail() {
               {/* Features */}
               {property.features && property.features.length > 0 && (
                 <div className="mb-12">
-                  <h2 className="font-heading text-2xl text-foreground mb-6">Features & Amenities</h2>
+                  <h2 className="font-heading text-2xl text-foreground mb-6">
+                    Features & Amenities
+                  </h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {property.features.map(f => (
-                      <div key={f} className="flex items-center gap-2 bg-secondary border border-border rounded-sm px-4 py-3 text-sm font-body text-foreground">
+                    {property.features.map((f) => (
+                      <div
+                        key={f}
+                        className="flex items-center gap-2 bg-secondary border border-border rounded-sm px-4 py-3 text-sm font-body text-foreground"
+                      >
                         <Check size={14} className="text-primary flex-shrink-0" />
                         {f}
                       </div>
@@ -265,30 +375,45 @@ export default function PropertyDetail() {
                   className="bg-card border border-border rounded-sm p-6"
                 >
                   <div className="flex items-center gap-4 mb-5">
-                    <img
-                      src={property.agent.imageUrl}
-                      alt={property.agent.name}
-                      className="w-14 h-14 rounded-full object-cover"
-                    />
+                    {property.agent.photoUrl && (
+                      <img
+                        src={property.agent.photoUrl}
+                        alt={property.agent.name}
+                        className="w-14 h-14 rounded-full object-cover"
+                      />
+                    )}
                     <div>
-                      <h4 className="font-heading text-lg text-foreground">{property.agent.name}</h4>
-                      <p className="text-xs text-primary font-nav uppercase tracking-wider">{property.agent.role}</p>
+                      <h4 className="font-heading text-lg text-foreground">
+                        {property.agent.name}
+                      </h4>
+                      <p className="text-xs text-primary font-nav uppercase tracking-wider">
+                        {property.agent.role}
+                      </p>
                     </div>
                   </div>
 
                   <div className="space-y-3 mb-5">
-                    <a href={`tel:${property.agent.phone}`} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary font-body transition-colors">
+                    <a
+                      href={`tel:${property.agent.phone}`}
+                      className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary font-body transition-colors"
+                    >
                       <Phone size={14} /> {property.agent.phone}
                     </a>
-                    <a href={`mailto:${property.agent.email}`} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary font-body transition-colors">
+                    <a
+                      href={`mailto:${property.agent.email}`}
+                      className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary font-body transition-colors"
+                    >
                       <Mail size={14} /> {property.agent.email}
                     </a>
                   </div>
 
-                  {property.agent.languages && (
+                  {property.agent.languages && property.agent.languages.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-5">
-                      {property.agent.languages.map(lang => (
-                        <span key={lang} className="text-[10px] font-nav uppercase tracking-wider bg-secondary text-muted-foreground px-2.5 py-1 rounded-sm">
+                      {property.agent.languages.map((lang) => (
+                        <span
+                          key={lang}
+                          className="text-[10px] font-nav uppercase tracking-wider bg-secondary text-muted-foreground px-2.5 py-1 rounded-sm"
+                        >
                           {lang}
                         </span>
                       ))}
@@ -328,7 +453,7 @@ export default function PropertyDetail() {
                       placeholder="Your name"
                       required
                       value={formData.name}
-                      onChange={e => setFormData(d => ({ ...d, name: e.target.value }))}
+                      onChange={(e) => setFormData((d) => ({ ...d, name: e.target.value }))}
                       className="w-full bg-secondary border border-border text-foreground text-sm font-body px-4 py-3 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
                     />
                     <input
@@ -336,14 +461,14 @@ export default function PropertyDetail() {
                       placeholder="Email"
                       required
                       value={formData.email}
-                      onChange={e => setFormData(d => ({ ...d, email: e.target.value }))}
+                      onChange={(e) => setFormData((d) => ({ ...d, email: e.target.value }))}
                       className="w-full bg-secondary border border-border text-foreground text-sm font-body px-4 py-3 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
                     />
                     <input
                       type="tel"
                       placeholder="Phone (optional)"
                       value={formData.phone}
-                      onChange={e => setFormData(d => ({ ...d, phone: e.target.value }))}
+                      onChange={(e) => setFormData((d) => ({ ...d, phone: e.target.value }))}
                       className="w-full bg-secondary border border-border text-foreground text-sm font-body px-4 py-3 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
                     />
                     <textarea
@@ -351,13 +476,20 @@ export default function PropertyDetail() {
                       rows={3}
                       required
                       value={formData.message}
-                      onChange={e => setFormData(d => ({ ...d, message: e.target.value }))}
+                      onChange={(e) => setFormData((d) => ({ ...d, message: e.target.value }))}
                       className="w-full bg-secondary border border-border text-foreground text-sm font-body px-4 py-3 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground resize-none"
                     />
+                    {formError && (
+                      <p className="text-destructive text-xs font-body">
+                        Something went wrong. Please try again.
+                      </p>
+                    )}
                     <button
                       type="submit"
-                      className="w-full gold-gradient text-primary-foreground py-3 rounded-sm font-nav text-xs uppercase tracking-wider hover:opacity-90 transition-opacity"
+                      disabled={formLoading}
+                      className="w-full gold-gradient text-primary-foreground py-3 rounded-sm font-nav text-xs uppercase tracking-wider hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2"
                     >
+                      {formLoading && <Loader2 size={14} className="animate-spin" />}
                       Send Message
                     </button>
                   </form>
@@ -369,7 +501,15 @@ export default function PropertyDetail() {
                 onClick={handleShare}
                 className="w-full flex items-center justify-center gap-2 border border-border text-muted-foreground hover:text-primary hover:border-primary py-3 rounded-sm font-nav text-xs uppercase tracking-wider transition-colors"
               >
-                {copied ? <><Check size={14} /> Link Copied!</> : <><Share2 size={14} /> Share Property</>}
+                {copied ? (
+                  <>
+                    <Check size={14} /> Link Copied!
+                  </>
+                ) : (
+                  <>
+                    <Share2 size={14} /> Share Property
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -406,21 +546,25 @@ export default function PropertyDetail() {
               <X size={28} />
             </button>
 
-            {/* Counter */}
             <span className="absolute top-6 left-6 font-nav text-xs uppercase tracking-wider text-muted-foreground">
               {lightboxIndex + 1} / {images.length}
             </span>
 
-            {/* Nav */}
             <button
               className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-foreground hover:text-primary z-10"
-              onClick={(e) => { e.stopPropagation(); prevImage(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                prevImage();
+              }}
             >
               <ChevronLeft size={32} />
             </button>
             <button
               className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-foreground hover:text-primary z-10"
-              onClick={(e) => { e.stopPropagation(); nextImage(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                nextImage();
+              }}
             >
               <ChevronRight size={32} />
             </button>

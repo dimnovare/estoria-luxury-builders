@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Check, Loader2 } from 'lucide-react';
 import { z } from 'zod';
+import api from '@/lib/api';
 
 interface Props {
   variant?: 'section' | 'inline';
@@ -27,9 +28,21 @@ export default function Newsletter({ variant = 'section' }: Props) {
     }
 
     setStatus('loading');
-    // Simulated API call
-    await new Promise(resolve => setTimeout(resolve, 1200));
-    setStatus('success');
+    try {
+      await api.post('/newsletter/subscribe', {
+        email: parsed.data,
+        language: i18n.language,
+      });
+      setStatus('success');
+    } catch (err: unknown) {
+      const status = (err as { response?: { status?: number } })?.response?.status;
+      if (status === 409) {
+        setStatus('already');
+      } else {
+        setStatus('error');
+        setErrorMsg('Something went wrong. Please try again.');
+      }
+    }
   };
 
   if (status === 'success') {

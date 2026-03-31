@@ -1,24 +1,24 @@
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Share2, Check, Copy } from 'lucide-react';
-import { mockBlogPosts } from '@/data/mockBlog';
+import { ArrowLeft, Share2, Check } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import BlogCard from '@/components/BlogCard';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
+import { useBlogPost, useBlogPosts } from '@/hooks/api/useContent';
 
 export default function BlogPost() {
   const { slug } = useParams();
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
 
-  const post = mockBlogPosts.find(p => p.slug === slug);
+  const { data: post, isLoading, error } = useBlogPost(slug);
 
-  const relatedPosts = useMemo(() => {
-    if (!post) return [];
-    return mockBlogPosts
-      .filter(p => p.id !== post.id)
-      .slice(0, 3);
-  }, [post]);
+  // Fetch a few recent posts for the "Related" section
+  const { data: recentData } = useBlogPosts(1);
+  const relatedPosts = (recentData?.data ?? [])
+    .filter((p) => p.slug !== slug)
+    .slice(0, 3);
 
   useEffect(() => {
     if (post) {
@@ -26,30 +26,15 @@ export default function BlogPost() {
       const meta = document.querySelector('meta[name="description"]');
       if (meta) meta.setAttribute('content', post.excerpt);
     }
-    return () => { document.title = 'ESTORIA — Where Your Future Lives'; };
+    return () => {
+      document.title = 'ESTORIA — Where Your Future Lives';
+    };
   }, [post]);
-
-  if (!post) {
-    return (
-      <div className="pt-20 min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="font-heading text-5xl text-foreground mb-4">{t('common.notFound')}</h1>
-          <Link to="/blog" className="text-primary font-nav text-xs uppercase tracking-wider hover:underline">
-            ← Back to Blog
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  const formattedDate = new Date(post.date).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'long', day: 'numeric',
-  });
 
   const handleShare = async () => {
     const url = window.location.href;
     if (navigator.share) {
-      await navigator.share({ title: post.title, url });
+      await navigator.share({ title: post?.title, url });
     } else {
       await navigator.clipboard.writeText(url);
       setCopied(true);
@@ -57,12 +42,65 @@ export default function BlogPost() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="pt-20">
+        <Skeleton className="w-full h-[55vh]" />
+        <div className="container mx-auto px-6 py-12 max-w-4xl">
+          <Skeleton className="h-10 w-3/4 mb-4" />
+          <Skeleton className="h-10 w-1/2 mb-8" />
+          <div className="flex items-center gap-3 mb-10">
+            <Skeleton className="h-8 w-8 rounded-full" />
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+          <div className="space-y-3">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} className={`h-4 ${i % 4 === 3 ? 'w-2/3' : 'w-full'}`} />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !post) {
+    return (
+      <div className="pt-20 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="font-heading text-5xl text-foreground mb-4">{t('common.notFound')}</h1>
+          <Link
+            to="/blog"
+            className="text-primary font-nav text-xs uppercase tracking-wider hover:underline"
+          >
+            ← Back to Blog
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const formattedDate = post.publishedAt
+    ? new Date(post.publishedAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    : '';
+
+  // Prefer the nested author object (detail response) over flat fields
+  const authorName = post.author?.name ?? post.authorName;
+  const authorPhoto = post.author?.photoUrl ?? post.authorPhotoUrl;
+  const authorSlug = post.author?.slug;
+  const authorRole = post.author?.role;
+  const authorBio = post.author?.bio;
+
   return (
     <>
       {/* Hero cover */}
       <section className="relative h-[50vh] min-h-[360px] overflow-hidden">
         <img
-          src={post.imageUrl}
+          src={post.coverImageUrl || '/placeholder.jpg'}
           alt={post.title}
           className="w-full h-full object-cover"
         />
@@ -74,15 +112,23 @@ export default function BlogPost() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-8">
-            <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+            <Link to="/" className="hover:text-primary transition-colors">
+              Home
+            </Link>
             <span>/</span>
-            <Link to="/blog" className="hover:text-primary transition-colors">{t('nav.blog')}</Link>
+            <Link to="/blog" className="hover:text-primary transition-colors">
+              {t('nav.blog')}
+            </Link>
             <span>/</span>
             <span className="text-foreground truncate max-w-[200px]">{post.title}</span>
           </nav>
 
           {/* Category */}
-          <span className="text-[10px] font-nav uppercase tracking-wider text-primary">{post.category}</span>
+          {post.category && (
+            <span className="text-[10px] font-nav uppercase tracking-wider text-primary">
+              {post.category}
+            </span>
+          )}
 
           {/* Title */}
           <h1 className="font-heading text-4xl md:text-5xl text-foreground font-light mt-3 mb-6 leading-tight">
@@ -91,16 +137,29 @@ export default function BlogPost() {
 
           {/* Meta row */}
           <div className="flex items-center gap-4 mb-8">
-            <img src={post.author.imageUrl} alt={post.author.name} className="w-10 h-10 rounded-full object-cover" />
+            {authorPhoto && (
+              <img
+                src={authorPhoto}
+                alt={authorName}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            )}
             <div>
-              <Link to={`/team/${post.author.slug}`} className="text-sm text-foreground font-body hover:text-primary transition-colors">
-                {post.author.name}
-              </Link>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground font-body">
-                <span>{formattedDate}</span>
-                <span>·</span>
-                <span>{post.readingTime} min read</span>
-              </div>
+              {authorSlug ? (
+                <Link
+                  to={`/team/${authorSlug}`}
+                  className="text-sm text-foreground font-body hover:text-primary transition-colors"
+                >
+                  {authorName}
+                </Link>
+              ) : (
+                <span className="text-sm text-foreground font-body">{authorName}</span>
+              )}
+              {formattedDate && (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground font-body">
+                  <span>{formattedDate}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -108,49 +167,75 @@ export default function BlogPost() {
           <div className="h-px gold-gradient mb-10" />
 
           {/* Content */}
-          <div
-            className="prose-estoria-article"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
+          {post.content && (
+            <div
+              className="prose-estoria-article"
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
+          )}
 
           {/* Share */}
           <div className="mt-12 pt-8 border-t border-border flex items-center gap-4">
-            <span className="text-xs text-muted-foreground font-nav uppercase tracking-wider">Share</span>
+            <span className="text-xs text-muted-foreground font-nav uppercase tracking-wider">
+              Share
+            </span>
             <button
               onClick={handleShare}
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary font-body transition-colors border border-border rounded-sm px-4 py-2"
             >
-              {copied ? <><Check size={14} /> Copied!</> : <><Share2 size={14} /> Copy Link</>}
+              {copied ? (
+                <>
+                  <Check size={14} /> Copied!
+                </>
+              ) : (
+                <>
+                  <Share2 size={14} /> Copy Link
+                </>
+              )}
             </button>
           </div>
         </motion.div>
 
         {/* Author card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-16 bg-card border border-border rounded-sm p-8"
-        >
-          <div className="flex items-start gap-5">
-            <img
-              src={post.author.imageUrl}
-              alt={post.author.name}
-              className="w-16 h-16 rounded-full object-cover flex-shrink-0"
-            />
-            <div>
-              <h3 className="font-heading text-xl text-foreground">{post.author.name}</h3>
-              <p className="text-xs text-primary font-nav uppercase tracking-wider mb-3">{post.author.role}</p>
-              <p className="text-sm text-muted-foreground font-body leading-relaxed">{post.author.bio}</p>
-              <Link
-                to={`/team/${post.author.slug}`}
-                className="inline-block mt-4 text-xs font-nav uppercase tracking-wider text-primary hover:underline"
-              >
-                View Profile →
-              </Link>
+        {(authorName || authorPhoto) && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-16 bg-card border border-border rounded-sm p-8"
+          >
+            <div className="flex items-start gap-5">
+              {authorPhoto && (
+                <img
+                  src={authorPhoto}
+                  alt={authorName}
+                  className="w-16 h-16 rounded-full object-cover flex-shrink-0"
+                />
+              )}
+              <div>
+                <h3 className="font-heading text-xl text-foreground">{authorName}</h3>
+                {authorRole && (
+                  <p className="text-xs text-primary font-nav uppercase tracking-wider mb-3">
+                    {authorRole}
+                  </p>
+                )}
+                {authorBio && (
+                  <p className="text-sm text-muted-foreground font-body leading-relaxed">
+                    {authorBio}
+                  </p>
+                )}
+                {authorSlug && (
+                  <Link
+                    to={`/team/${authorSlug}`}
+                    className="inline-block mt-4 text-xs font-nav uppercase tracking-wider text-primary hover:underline"
+                  >
+                    View Profile →
+                  </Link>
+                )}
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
       </article>
 
       {/* Related posts */}
