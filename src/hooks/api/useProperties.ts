@@ -1,6 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { useTranslation } from 'react-i18next';
+import { demoProperties } from '@/data/demoData';
+
+const asArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : []);
+
+const asObject = <T extends object>(value: unknown, fallback: T): T =>
+  value && typeof value === 'object' && !Array.isArray(value) ? (value as T) : fallback;
 
 export interface PropertyImage {
   id: string;
@@ -57,7 +63,6 @@ export interface PropertyFilter {
   sort?: string;
 }
 
-/** Map frontend filter values to backend-compatible query params. */
 function buildParams(filter?: PropertyFilter, page?: number): Record<string, unknown> {
   const params: Record<string, unknown> = { page };
   if (!filter) return params;
@@ -70,13 +75,43 @@ function buildParams(filter?: PropertyFilter, page?: number): Record<string, unk
   return params;
 }
 
-/** Normalise enum strings from the backend (PascalCase → lowercase). */
 function normalise(p: Property): Property {
+  const safe = asObject<Partial<Property>>(p, {});
   return {
-    ...p,
-    transactionType: p.transactionType?.toLowerCase(),
-    propertyType: p.propertyType?.toLowerCase(),
+    ...safe,
+    id: safe.id ?? '',
+    slug: safe.slug ?? '',
+    title: safe.title ?? '',
+    address: safe.address ?? '',
+    city: safe.city ?? '',
+    price: typeof safe.price === 'number' ? safe.price : 0,
+    size: typeof safe.size === 'number' ? safe.size : 0,
+    transactionType: safe.transactionType?.toLowerCase() ?? '',
+    propertyType: safe.propertyType?.toLowerCase() ?? '',
+    images: asArray<PropertyImage>(safe.images),
+    features: asArray<string>(safe.features),
+    agent: safe.agent
+      ? {
+          ...safe.agent,
+          name: safe.agent.name ?? '',
+          role: safe.agent.role ?? '',
+          phone: safe.agent.phone ?? '',
+          email: safe.agent.email ?? '',
+          languages: asArray<string>(safe.agent.languages),
+        }
+      : undefined,
   };
+}
+
+function filterDemoProperties(filter?: PropertyFilter, page = 1) {
+  let filtered = [...demoProperties];
+  if (filter?.transaction === 'buy') filtered = filtered.filter(p => p.transactionType === 'sale');
+  if (filter?.transaction === 'rent') filtered = filtered.filter(p => p.transactionType === 'rent');
+  if (filter?.type) filtered = filtered.filter(p => p.propertyType === filter.type);
+  if (filter?.city) filtered = filtered.filter(p => p.city.toLowerCase() === filter.city!.toLowerCase());
+  if (filter?.minPrice) filtered = filtered.filter(p => p.price >= Number(filter.minPrice));
+  if (filter?.maxPrice) filtered = filtered.filter(p => p.price <= Number(filter.maxPrice));
+  return { data: filtered, total: filtered.length, page };
 }
 
 export function useProperties(filter?: PropertyFilter, page = 1) {
@@ -86,24 +121,26 @@ export function useProperties(filter?: PropertyFilter, page = 1) {
     queryFn: () =>
       api
         .get('/properties', { params: buildParams(filter, page) })
-        .then(r => {
-          const items = Array.isArray(r.data?.items) ? r.data.items : [];
-          return {
-            data: (items as Property[]).map(normalise),
-            total: (r.data?.totalCount as number) ?? 0,
-            page: (r.data?.page as number) ?? page,
-          };
-        }),
+        .then(r => ({
+          data: asArray<Property>(r.data?.items).map(normalise),
+          total: (r.data?.totalCount as number) ?? 0,
+          page: (r.data?.page as number) ?? page,
+        }))
+        .catch(() => filterDemoProperties(filter, page)),
+    retry: false,
   });
 }
 
 export function useProperty(slug?: string) {
   const { i18n } = useTranslation();
-  return useQuery<Property>({
+  return useQuery<Property | undefined>({
     queryKey: ['property', slug, i18n.language],
     queryFn: () =>
-      api.get(`/properties/${slug}`).then(r => normalise(r.data as Property)),
+      api.get(`/properties/${slug}`)
+        .then(r => normalise(asObject<Property>(r.data, {} as Property)))
+        .catch(() => demoProperties.find(p => p.slug === slug)),
     enabled: !!slug,
+    retry: false,
   });
 }
 
@@ -112,9 +149,9 @@ export function useFeaturedProperties() {
   return useQuery<Property[]>({
     queryKey: ['properties', 'featured', i18n.language],
     queryFn: () =>
-      api.get('/properties/featured').then(r => {
-        const data = Array.isArray(r.data) ? r.data : [];
-        return (data as Property[]).map(normalise);
-      }),
+      api.get('/properties/featured')
+        .then(r => asArray<Property>(r.data).map(normalise))
+        .catch(() => demoProperties.filter(p => p.isFeatured)),
+    retry: false,
   });
 }
