@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import logoImg from '@/assets/logo.png';
 import Newsletter from '@/components/Newsletter';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
