@@ -112,8 +112,9 @@ export function useFeaturedProperties() {
   return useQuery<Property[]>({
     queryKey: ['properties', 'featured', i18n.language],
     queryFn: () =>
-      api.get('/properties/featured').then(r =>
-        (r.data as Property[]).map(normalise)
-      ),
+      api.get('/properties/featured').then(r => {
+        const data = Array.isArray(r.data) ? r.data : [];
+        return (data as Property[]).map(normalise);
+      }),
   });
 }
