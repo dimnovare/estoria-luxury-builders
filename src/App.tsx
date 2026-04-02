@@ -34,7 +34,14 @@ import AdminCareers from "@/pages/admin/AdminCareers";
 import AdminNewsletter from "@/pages/admin/AdminNewsletter";
 import AdminMessages from "@/pages/admin/AdminMessages";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
