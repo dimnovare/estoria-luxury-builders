@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { useTranslation } from 'react-i18next';
 import type { Property } from './useProperties';
+import { demoTeam, demoServices, demoBlogPosts, demoCareers } from '@/data/demoData';
 
 const asArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : []);
 
@@ -98,7 +99,6 @@ export interface BlogPost {
   authorName?: string;
   authorPhotoUrl?: string;
   category?: string;
-  /** Only present on detail responses (BlogPostDetailDto.Author). */
   author?: {
     id?: string;
     slug?: string;
@@ -148,6 +148,7 @@ export function usePageContent(pageKey: string) {
   return useQuery<PageContent>({
     queryKey: ['pageContent', pageKey, i18n.language],
     queryFn: () => api.get(`/pages/${pageKey}`).then(r => asObject<PageContent>(r.data, {})),
+    retry: false,
   });
 }
 
@@ -160,6 +161,8 @@ export function useBlogPosts(page = 1) {
         data: asArray<BlogPost>(r.data?.items).map(normaliseBlogPost),
         total: (r.data?.totalCount as number) ?? 0,
       })),
+    placeholderData: { data: demoBlogPosts, total: demoBlogPosts.length },
+    retry: false,
   });
 }
 
@@ -168,7 +171,9 @@ export function useBlogPost(slug?: string) {
   return useQuery<BlogPost>({
     queryKey: ['blog', slug, i18n.language],
     queryFn: () => api.get(`/blog/${slug}`).then(r => normaliseBlogPost(r.data)),
+    placeholderData: () => demoBlogPosts.find(p => p.slug === slug),
     enabled: !!slug,
+    retry: false,
   });
 }
 
@@ -177,6 +182,8 @@ export function useTeam() {
   return useQuery<TeamMember[]>({
     queryKey: ['team', i18n.language],
     queryFn: () => api.get('/team').then(r => asArray<TeamMember>(r.data).map(normaliseTeamMember)),
+    placeholderData: demoTeam,
+    retry: false,
   });
 }
 
@@ -185,7 +192,12 @@ export function useTeamMember(slug?: string) {
   return useQuery<TeamMemberDetail>({
     queryKey: ['team', slug, i18n.language],
     queryFn: () => api.get(`/team/${slug}`).then(r => normaliseTeamMemberDetail(r.data)),
+    placeholderData: () => {
+      const member = demoTeam.find(m => m.slug === slug);
+      return member ? { ...member, bio: 'Experienced real estate professional with deep knowledge of the Estonian market.' } : undefined;
+    },
     enabled: !!slug,
+    retry: false,
   });
 }
 
@@ -194,6 +206,8 @@ export function useServices() {
   return useQuery<Service[]>({
     queryKey: ['services', i18n.language],
     queryFn: () => api.get('/services').then(r => asArray<Service>(r.data).map(normaliseService)),
+    placeholderData: demoServices,
+    retry: false,
   });
 }
 
@@ -202,6 +216,8 @@ export function useCareers() {
   return useQuery<Career[]>({
     queryKey: ['careers', i18n.language],
     queryFn: () => api.get('/careers').then(r => asArray<Career>(r.data).map(normaliseCareer)),
+    placeholderData: demoCareers,
+    retry: false,
   });
 }
 
@@ -210,6 +226,8 @@ export function useCareer(slug?: string) {
   return useQuery<Career>({
     queryKey: ['career', slug, i18n.language],
     queryFn: () => api.get(`/careers/${slug}`).then(r => normaliseCareer(r.data)),
+    placeholderData: () => demoCareers.find(c => c.slug === slug),
     enabled: !!slug,
+    retry: false,
   });
 }

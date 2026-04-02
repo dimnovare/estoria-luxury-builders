@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { useTranslation } from 'react-i18next';
+import { demoProperties } from '@/data/demoData';
 
 const asArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : []);
 
@@ -105,6 +106,18 @@ function normalise(p: Property): Property {
   };
 }
 
+/** Filter demo properties client-side to mimic backend filtering. */
+function filterDemoProperties(filter?: PropertyFilter, page = 1) {
+  let filtered = [...demoProperties];
+  if (filter?.transaction === 'buy') filtered = filtered.filter(p => p.transactionType === 'sale');
+  if (filter?.transaction === 'rent') filtered = filtered.filter(p => p.transactionType === 'rent');
+  if (filter?.type) filtered = filtered.filter(p => p.propertyType === filter.type);
+  if (filter?.city) filtered = filtered.filter(p => p.city.toLowerCase() === filter.city!.toLowerCase());
+  if (filter?.minPrice) filtered = filtered.filter(p => p.price >= Number(filter.minPrice));
+  if (filter?.maxPrice) filtered = filtered.filter(p => p.price <= Number(filter.maxPrice));
+  return { data: filtered, total: filtered.length, page };
+}
+
 export function useProperties(filter?: PropertyFilter, page = 1) {
   const { i18n } = useTranslation();
   return useQuery<{ data: Property[]; total: number; page: number }>({
@@ -120,6 +133,8 @@ export function useProperties(filter?: PropertyFilter, page = 1) {
             page: (r.data?.page as number) ?? page,
           };
         }),
+    placeholderData: filterDemoProperties(filter, page),
+    retry: false,
   });
 }
 
@@ -128,7 +143,9 @@ export function useProperty(slug?: string) {
   return useQuery<Property>({
     queryKey: ['property', slug, i18n.language],
     queryFn: () => api.get(`/properties/${slug}`).then(r => normalise(asObject<Property>(r.data, {} as Property))),
+    placeholderData: () => demoProperties.find(p => p.slug === slug),
     enabled: !!slug,
+    retry: false,
   });
 }
 
@@ -140,5 +157,7 @@ export function useFeaturedProperties() {
       api.get('/properties/featured').then(r => {
         return asArray<Property>(r.data).map(normalise);
       }),
+    placeholderData: demoProperties.filter(p => p.isFeatured),
+    retry: false,
   });
 }
