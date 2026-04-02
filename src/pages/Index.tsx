@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import logoImg from '@/assets/logo.png';
 import Newsletter from '@/components/Newsletter';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -64,9 +65,7 @@ export default function Index() {
             transition={{ duration: 0.8 }}
             className="animate-float mb-8"
           >
-            <div className="w-16 h-16 mx-auto border border-primary rounded-sm flex items-center justify-center">
-              <Building2 className="text-primary" size={28} />
-            </div>
+            <img src={logoImg} alt="ESTORIA" className="w-20 h-20 mx-auto object-contain drop-shadow-[0_0_15px_hsl(var(--primary)/0.4)]" />
           </motion.div>
 
           <motion.h1
@@ -87,7 +86,7 @@ export default function Index() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="mt-6 text-muted-foreground text-lg md:text-xl font-body max-w-2xl mx-auto"
+            className="mt-6 text-foreground/80 text-lg md:text-xl font-body max-w-2xl mx-auto drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
           >
             {hero?.body ||
               "Discover Estonia's most exclusive properties, curated for those who demand excellence."}

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import logoImg from '@/assets/logo.png';
 
 const navLinks = [
   { key: 'home', path: '/' },
@@ -41,8 +42,9 @@ export default function Navbar() {
       >
         <div className="container mx-auto flex items-center justify-between h-20 px-6">
           {/* Logo */}
-          <Link to="/" className="font-heading text-2xl tracking-[0.3em] text-primary font-semibold">
-            ESTORIA
+          <Link to="/" className="flex items-center gap-2.5">
+            <img src={logoImg} alt="ESTORIA" className="w-9 h-9 object-contain" />
+            <span className="font-heading text-2xl tracking-[0.3em] text-primary font-semibold">ESTORIA</span>
           </Link>
 
           {/* Desktop Nav */}
