@@ -87,6 +87,7 @@ function normalise(p: Property): Property {
     address: safe.address ?? '',
     city: safe.city ?? '',
     price: typeof safe.price === 'number' ? safe.price : 0,
+    size: typeof safe.size === 'number' ? safe.size : 0,
     transactionType: safe.transactionType?.toLowerCase() ?? '',
     propertyType: safe.propertyType?.toLowerCase() ?? '',
     images: asArray<PropertyImage>(safe.images),
