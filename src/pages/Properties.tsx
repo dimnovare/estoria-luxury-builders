@@ -119,7 +119,7 @@ export default function Properties() {
         <option value="">{t('hero.allTypes')}</option>
         {propertyTypes.map((type) => (
           <option key={type} value={type}>
-            {t(`hero.${type}` as Parameters<typeof t>[0], type.charAt(0).toUpperCase() + type.slice(1))}
+            {t(`hero.${type}` as any, { defaultValue: type.charAt(0).toUpperCase() + type.slice(1) })}
           </option>
         ))}
       </select>
