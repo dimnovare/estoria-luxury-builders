@@ -82,8 +82,8 @@ export function useBlogPosts(page = 1) {
     queryKey: ['blog', page, i18n.language],
     queryFn: () =>
       api.get('/blog', { params: { page } }).then(r => ({
-        data: r.data.items as BlogPost[],
-        total: r.data.totalCount as number,
+        data: Array.isArray(r.data?.items) ? (r.data.items as BlogPost[]) : [],
+        total: (r.data?.totalCount as number) ?? 0,
       })),
   });
 }
