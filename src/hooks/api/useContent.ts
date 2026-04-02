@@ -11,7 +11,6 @@ const asObject = <T extends object>(value: unknown, fallback: T): T =>
 
 const normaliseTeamMember = (member: unknown): TeamMember => {
   const safe = asObject<Partial<TeamMember>>(member, {});
-
   return {
     id: safe.id ?? '',
     slug: safe.slug ?? '',
@@ -26,7 +25,6 @@ const normaliseTeamMember = (member: unknown): TeamMember => {
 
 const normaliseTeamMemberDetail = (member: unknown): TeamMemberDetail => {
   const safe = asObject<Partial<TeamMemberDetail>>(member, {});
-
   return {
     ...normaliseTeamMember(safe),
     bio: safe.bio,
@@ -36,7 +34,6 @@ const normaliseTeamMemberDetail = (member: unknown): TeamMemberDetail => {
 
 const normaliseService = (service: unknown): Service => {
   const safe = asObject<Partial<Service>>(service, {});
-
   return {
     id: safe.id ?? '',
     slug: safe.slug,
@@ -49,7 +46,6 @@ const normaliseService = (service: unknown): Service => {
 
 const normaliseCareer = (career: unknown): Career => {
   const safe = asObject<Partial<Career>>(career, {});
-
   return {
     id: safe.id ?? '',
     slug: safe.slug ?? '',
@@ -63,7 +59,6 @@ const normaliseCareer = (career: unknown): Career => {
 const normaliseBlogPost = (post: unknown): BlogPost => {
   const safe = asObject<Partial<BlogPost>>(post, {});
   const author = safe.author ? asObject<NonNullable<BlogPost['author']>>(safe.author, { name: '' }) : undefined;
-
   return {
     id: safe.id ?? '',
     slug: safe.slug ?? '',
@@ -147,7 +142,7 @@ export function usePageContent(pageKey: string) {
   const { i18n } = useTranslation();
   return useQuery<PageContent>({
     queryKey: ['pageContent', pageKey, i18n.language],
-    queryFn: () => api.get(`/pages/${pageKey}`).then(r => asObject<PageContent>(r.data, {})),
+    queryFn: () => api.get(`/pages/${pageKey}`).then(r => asObject<PageContent>(r.data, {})).catch(() => ({})),
     retry: false,
   });
 }
@@ -160,18 +155,17 @@ export function useBlogPosts(page = 1) {
       api.get('/blog', { params: { page } }).then(r => ({
         data: asArray<BlogPost>(r.data?.items).map(normaliseBlogPost),
         total: (r.data?.totalCount as number) ?? 0,
-      })),
-    placeholderData: { data: demoBlogPosts, total: demoBlogPosts.length },
+      })).catch(() => ({ data: demoBlogPosts, total: demoBlogPosts.length })),
     retry: false,
   });
 }
 
 export function useBlogPost(slug?: string) {
   const { i18n } = useTranslation();
-  return useQuery<BlogPost>({
+  return useQuery<BlogPost | undefined>({
     queryKey: ['blog', slug, i18n.language],
-    queryFn: () => api.get(`/blog/${slug}`).then(r => normaliseBlogPost(r.data)),
-    placeholderData: () => demoBlogPosts.find(p => p.slug === slug),
+    queryFn: () =>
+      api.get(`/blog/${slug}`).then(r => normaliseBlogPost(r.data)).catch(() => demoBlogPosts.find(p => p.slug === slug)),
     enabled: !!slug,
     retry: false,
   });
@@ -181,21 +175,21 @@ export function useTeam() {
   const { i18n } = useTranslation();
   return useQuery<TeamMember[]>({
     queryKey: ['team', i18n.language],
-    queryFn: () => api.get('/team').then(r => asArray<TeamMember>(r.data).map(normaliseTeamMember)),
-    placeholderData: demoTeam,
+    queryFn: () =>
+      api.get('/team').then(r => asArray<TeamMember>(r.data).map(normaliseTeamMember)).catch(() => demoTeam),
     retry: false,
   });
 }
 
 export function useTeamMember(slug?: string) {
   const { i18n } = useTranslation();
-  return useQuery<TeamMemberDetail>({
+  return useQuery<TeamMemberDetail | undefined>({
     queryKey: ['team', slug, i18n.language],
-    queryFn: () => api.get(`/team/${slug}`).then(r => normaliseTeamMemberDetail(r.data)),
-    placeholderData: () => {
-      const member = demoTeam.find(m => m.slug === slug);
-      return member ? { ...member, bio: 'Experienced real estate professional with deep knowledge of the Estonian market.' } : undefined;
-    },
+    queryFn: () =>
+      api.get(`/team/${slug}`).then(r => normaliseTeamMemberDetail(r.data)).catch(() => {
+        const member = demoTeam.find(m => m.slug === slug);
+        return member ? { ...member, bio: 'Experienced real estate professional with deep knowledge of the Estonian market.' } : undefined;
+      }),
     enabled: !!slug,
     retry: false,
   });
@@ -205,8 +199,8 @@ export function useServices() {
   const { i18n } = useTranslation();
   return useQuery<Service[]>({
     queryKey: ['services', i18n.language],
-    queryFn: () => api.get('/services').then(r => asArray<Service>(r.data).map(normaliseService)),
-    placeholderData: demoServices,
+    queryFn: () =>
+      api.get('/services').then(r => asArray<Service>(r.data).map(normaliseService)).catch(() => demoServices),
     retry: false,
   });
 }
@@ -215,18 +209,18 @@ export function useCareers() {
   const { i18n } = useTranslation();
   return useQuery<Career[]>({
     queryKey: ['careers', i18n.language],
-    queryFn: () => api.get('/careers').then(r => asArray<Career>(r.data).map(normaliseCareer)),
-    placeholderData: demoCareers,
+    queryFn: () =>
+      api.get('/careers').then(r => asArray<Career>(r.data).map(normaliseCareer)).catch(() => demoCareers),
     retry: false,
   });
 }
 
 export function useCareer(slug?: string) {
   const { i18n } = useTranslation();
-  return useQuery<Career>({
+  return useQuery<Career | undefined>({
     queryKey: ['career', slug, i18n.language],
-    queryFn: () => api.get(`/careers/${slug}`).then(r => normaliseCareer(r.data)),
-    placeholderData: () => demoCareers.find(c => c.slug === slug),
+    queryFn: () =>
+      api.get(`/careers/${slug}`).then(r => normaliseCareer(r.data)).catch(() => demoCareers.find(c => c.slug === slug)),
     enabled: !!slug,
     retry: false,
   });

@@ -63,7 +63,6 @@ export interface PropertyFilter {
   sort?: string;
 }
 
-/** Map frontend filter values to backend-compatible query params. */
 function buildParams(filter?: PropertyFilter, page?: number): Record<string, unknown> {
   const params: Record<string, unknown> = { page };
   if (!filter) return params;
@@ -76,10 +75,8 @@ function buildParams(filter?: PropertyFilter, page?: number): Record<string, unk
   return params;
 }
 
-/** Normalise enum strings from the backend (PascalCase → lowercase). */
 function normalise(p: Property): Property {
   const safe = asObject<Partial<Property>>(p, {});
-
   return {
     ...safe,
     id: safe.id ?? '',
@@ -106,7 +103,6 @@ function normalise(p: Property): Property {
   };
 }
 
-/** Filter demo properties client-side to mimic backend filtering. */
 function filterDemoProperties(filter?: PropertyFilter, page = 1) {
   let filtered = [...demoProperties];
   if (filter?.transaction === 'buy') filtered = filtered.filter(p => p.transactionType === 'sale');
@@ -125,25 +121,24 @@ export function useProperties(filter?: PropertyFilter, page = 1) {
     queryFn: () =>
       api
         .get('/properties', { params: buildParams(filter, page) })
-        .then(r => {
-          const items = asArray<Property>(r.data?.items);
-          return {
-            data: items.map(normalise),
-            total: (r.data?.totalCount as number) ?? 0,
-            page: (r.data?.page as number) ?? page,
-          };
-        }),
-    placeholderData: filterDemoProperties(filter, page),
+        .then(r => ({
+          data: asArray<Property>(r.data?.items).map(normalise),
+          total: (r.data?.totalCount as number) ?? 0,
+          page: (r.data?.page as number) ?? page,
+        }))
+        .catch(() => filterDemoProperties(filter, page)),
     retry: false,
   });
 }
 
 export function useProperty(slug?: string) {
   const { i18n } = useTranslation();
-  return useQuery<Property>({
+  return useQuery<Property | undefined>({
     queryKey: ['property', slug, i18n.language],
-    queryFn: () => api.get(`/properties/${slug}`).then(r => normalise(asObject<Property>(r.data, {} as Property))),
-    placeholderData: () => demoProperties.find(p => p.slug === slug),
+    queryFn: () =>
+      api.get(`/properties/${slug}`)
+        .then(r => normalise(asObject<Property>(r.data, {} as Property)))
+        .catch(() => demoProperties.find(p => p.slug === slug)),
     enabled: !!slug,
     retry: false,
   });
@@ -154,10 +149,9 @@ export function useFeaturedProperties() {
   return useQuery<Property[]>({
     queryKey: ['properties', 'featured', i18n.language],
     queryFn: () =>
-      api.get('/properties/featured').then(r => {
-        return asArray<Property>(r.data).map(normalise);
-      }),
-    placeholderData: demoProperties.filter(p => p.isFeatured),
+      api.get('/properties/featured')
+        .then(r => asArray<Property>(r.data).map(normalise))
+        .catch(() => demoProperties.filter(p => p.isFeatured)),
     retry: false,
   });
 }
