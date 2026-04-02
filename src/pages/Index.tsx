@@ -65,7 +65,9 @@ export default function Index() {
             transition={{ duration: 0.8 }}
             className="animate-float mb-8"
           >
-            <img src={logoImg} alt="ESTORIA" className="w-20 h-20 mx-auto object-contain drop-shadow-[0_0_15px_hsl(var(--primary)/0.4)]" />
+            <div className="w-16 h-16 mx-auto border border-primary rounded-sm flex items-center justify-center">
+              <Building2 className="text-primary" size={28} />
+            </div>
           </motion.div>
 
           <motion.h1
