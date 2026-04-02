@@ -86,11 +86,14 @@ export function useProperties(filter?: PropertyFilter, page = 1) {
     queryFn: () =>
       api
         .get('/properties', { params: buildParams(filter, page) })
-        .then(r => ({
-          data: (r.data.items as Property[]).map(normalise),
-          total: r.data.totalCount as number,
-          page: r.data.page as number,
-        })),
+        .then(r => {
+          const items = Array.isArray(r.data?.items) ? r.data.items : [];
+          return {
+            data: (items as Property[]).map(normalise),
+            total: (r.data?.totalCount as number) ?? 0,
+            page: (r.data?.page as number) ?? page,
+          };
+        }),
   });
 }
 
@@ -109,8 +112,9 @@ export function useFeaturedProperties() {
   return useQuery<Property[]>({
     queryKey: ['properties', 'featured', i18n.language],
     queryFn: () =>
-      api.get('/properties/featured').then(r =>
-        (r.data as Property[]).map(normalise)
-      ),
+      api.get('/properties/featured').then(r => {
+        const data = Array.isArray(r.data) ? r.data : [];
+        return (data as Property[]).map(normalise);
+      }),
   });
 }

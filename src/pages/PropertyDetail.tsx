@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin, Phone, Mail, Share2, X, ChevronLeft, ChevronRight,
   Maximize2, DoorOpen, BedDouble, Bath, Building, Layers, Calendar, Zap,
-  Check,
+  Check, Loader2,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import PropertyCard from '@/components/PropertyCard';
