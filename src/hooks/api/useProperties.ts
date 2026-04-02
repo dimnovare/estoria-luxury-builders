@@ -2,6 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { useTranslation } from 'react-i18next';
 
+const asArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : []);
+
+const asObject = <T extends object>(value: unknown, fallback: T): T =>
+  value && typeof value === 'object' && !Array.isArray(value) ? (value as T) : fallback;
+
 export interface PropertyImage {
   id: string;
   url: string;
@@ -72,10 +77,30 @@ function buildParams(filter?: PropertyFilter, page?: number): Record<string, unk
 
 /** Normalise enum strings from the backend (PascalCase → lowercase). */
 function normalise(p: Property): Property {
+  const safe = asObject<Partial<Property>>(p, {});
+
   return {
-    ...p,
-    transactionType: p.transactionType?.toLowerCase(),
-    propertyType: p.propertyType?.toLowerCase(),
+    ...safe,
+    id: safe.id ?? '',
+    slug: safe.slug ?? '',
+    title: safe.title ?? '',
+    address: safe.address ?? '',
+    city: safe.city ?? '',
+    price: typeof safe.price === 'number' ? safe.price : 0,
+    transactionType: safe.transactionType?.toLowerCase() ?? '',
+    propertyType: safe.propertyType?.toLowerCase() ?? '',
+    images: asArray<PropertyImage>(safe.images),
+    features: asArray<string>(safe.features),
+    agent: safe.agent
+      ? {
+          ...safe.agent,
+          name: safe.agent.name ?? '',
+          role: safe.agent.role ?? '',
+          phone: safe.agent.phone ?? '',
+          email: safe.agent.email ?? '',
+          languages: asArray<string>(safe.agent.languages),
+        }
+      : undefined,
   };
 }
 
@@ -87,9 +112,9 @@ export function useProperties(filter?: PropertyFilter, page = 1) {
       api
         .get('/properties', { params: buildParams(filter, page) })
         .then(r => {
-          const items = Array.isArray(r.data?.items) ? r.data.items : [];
+          const items = asArray<Property>(r.data?.items);
           return {
-            data: (items as Property[]).map(normalise),
+            data: items.map(normalise),
             total: (r.data?.totalCount as number) ?? 0,
             page: (r.data?.page as number) ?? page,
           };
@@ -101,8 +126,7 @@ export function useProperty(slug?: string) {
   const { i18n } = useTranslation();
   return useQuery<Property>({
     queryKey: ['property', slug, i18n.language],
-    queryFn: () =>
-      api.get(`/properties/${slug}`).then(r => normalise(r.data as Property)),
+    queryFn: () => api.get(`/properties/${slug}`).then(r => normalise(asObject<Property>(r.data, {} as Property))),
     enabled: !!slug,
   });
 }
@@ -113,8 +137,7 @@ export function useFeaturedProperties() {
     queryKey: ['properties', 'featured', i18n.language],
     queryFn: () =>
       api.get('/properties/featured').then(r => {
-        const data = Array.isArray(r.data) ? r.data : [];
-        return (data as Property[]).map(normalise);
+        return asArray<Property>(r.data).map(normalise);
       }),
   });
 }
