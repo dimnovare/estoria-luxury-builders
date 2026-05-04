@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { useTranslation } from 'react-i18next';
 import type { Property } from './useProperties';
+import { DEMO_SERVICES, DEMO_TEAM, DEMO_BLOG } from '@/data/demoData';
 
 const asArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : []);
 
@@ -150,11 +151,14 @@ export function useBlogPosts(page = 1) {
   const { i18n } = useTranslation();
   return useQuery<{ data: BlogPost[]; total: number }>({
     queryKey: ['blog', page, i18n.language],
-    queryFn: () =>
-      api.get('/blog', { params: { page } }).then(r => ({
-        data: asArray<BlogPost>(r.data?.items).map(normaliseBlogPost),
-        total: (r.data?.totalCount as number) ?? 0,
-      })),
+    queryFn: async () => {
+      try {
+        const r = await api.get('/blog', { params: { page } });
+        const items = asArray<BlogPost>(r.data?.items).map(normaliseBlogPost);
+        if (items.length > 0) return { data: items, total: r.data?.totalCount ?? 0 };
+      } catch { /* fall through */ }
+      return { data: DEMO_BLOG.map(normaliseBlogPost), total: DEMO_BLOG.length };
+    },
     retry: false,
   });
 }
@@ -163,8 +167,13 @@ export function useBlogPost(slug?: string) {
   const { i18n } = useTranslation();
   return useQuery<BlogPost | undefined>({
     queryKey: ['blog', slug, i18n.language],
-    queryFn: () =>
-      api.get(`/blog/${slug}`).then(r => normaliseBlogPost(r.data)),
+    queryFn: async () => {
+      try {
+        const r = await api.get(`/blog/${slug}`);
+        return normaliseBlogPost(r.data);
+      } catch { /* fall through */ }
+      return DEMO_BLOG.map(normaliseBlogPost).find(p => p.slug === slug);
+    },
     enabled: !!slug,
     retry: false,
   });
@@ -174,8 +183,14 @@ export function useTeam() {
   const { i18n } = useTranslation();
   return useQuery<TeamMember[]>({
     queryKey: ['team', i18n.language],
-    queryFn: () =>
-      api.get('/team').then(r => asArray<TeamMember>(r.data).map(normaliseTeamMember)),
+    queryFn: async () => {
+      try {
+        const r = await api.get('/team');
+        const items = asArray<TeamMember>(r.data).map(normaliseTeamMember);
+        if (items.length > 0) return items;
+      } catch { /* fall through */ }
+      return DEMO_TEAM.map(normaliseTeamMember);
+    },
     retry: false,
   });
 }
@@ -184,8 +199,13 @@ export function useTeamMember(slug?: string) {
   const { i18n } = useTranslation();
   return useQuery<TeamMemberDetail | undefined>({
     queryKey: ['team', slug, i18n.language],
-    queryFn: () =>
-      api.get(`/team/${slug}`).then(r => normaliseTeamMemberDetail(r.data)),
+    queryFn: async () => {
+      try {
+        const r = await api.get(`/team/${slug}`);
+        return normaliseTeamMemberDetail(r.data);
+      } catch { /* fall through */ }
+      return DEMO_TEAM.map(normaliseTeamMemberDetail).find(m => m.slug === slug);
+    },
     enabled: !!slug,
     retry: false,
   });
@@ -195,8 +215,14 @@ export function useServices() {
   const { i18n } = useTranslation();
   return useQuery<Service[]>({
     queryKey: ['services', i18n.language],
-    queryFn: () =>
-      api.get('/services').then(r => asArray<Service>(r.data).map(normaliseService)),
+    queryFn: async () => {
+      try {
+        const r = await api.get('/services');
+        const items = asArray<Service>(r.data).map(normaliseService);
+        if (items.length > 0) return items;
+      } catch { /* fall through */ }
+      return DEMO_SERVICES.map(normaliseService);
+    },
     retry: false,
   });
 }
@@ -205,8 +231,14 @@ export function useCareers() {
   const { i18n } = useTranslation();
   return useQuery<Career[]>({
     queryKey: ['careers', i18n.language],
-    queryFn: () =>
-      api.get('/careers').then(r => asArray<Career>(r.data).map(normaliseCareer)),
+    queryFn: async () => {
+      try {
+        const r = await api.get('/careers');
+        const items = asArray<Career>(r.data).map(normaliseCareer);
+        if (items.length > 0) return items;
+      } catch { /* fall through */ }
+      return [];
+    },
     retry: false,
   });
 }
@@ -215,8 +247,13 @@ export function useCareer(slug?: string) {
   const { i18n } = useTranslation();
   return useQuery<Career | undefined>({
     queryKey: ['career', slug, i18n.language],
-    queryFn: () =>
-      api.get(`/careers/${slug}`).then(r => normaliseCareer(r.data)),
+    queryFn: async () => {
+      try {
+        const r = await api.get(`/careers/${slug}`);
+        return normaliseCareer(r.data);
+      } catch { /* fall through */ }
+      return undefined;
+    },
     enabled: !!slug,
     retry: false,
   });

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { useTranslation } from 'react-i18next';
+import { DEMO_PROPERTIES, DEMO_SERVICES, DEMO_TEAM, DEMO_BLOG } from '@/data/demoData';
 
 const asArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : []);
 
@@ -106,14 +107,20 @@ export function useProperties(filter?: PropertyFilter, page = 1) {
   const { i18n } = useTranslation();
   return useQuery<{ data: Property[]; total: number; page: number }>({
     queryKey: ['properties', filter, page, i18n.language],
-    queryFn: () =>
-      api
-        .get('/properties', { params: buildParams(filter, page) })
-        .then(r => ({
-          data: asArray<Property>(r.data?.items).map(normalise),
-          total: (r.data?.totalCount as number) ?? 0,
-          page: (r.data?.page as number) ?? page,
-        })),
+    queryFn: async () => {
+      try {
+        const r = await api.get('/properties', { params: buildParams(filter, page) });
+        const items = asArray<Property>(r.data?.items).map(normalise);
+        if (items.length > 0) return { data: items, total: r.data?.totalCount ?? 0, page: r.data?.page ?? page };
+      } catch { /* fall through to demo */ }
+      // Demo fallback
+      let items = DEMO_PROPERTIES;
+      if (filter?.transaction === 'buy') items = items.filter(p => p.transactionType === 'sale');
+      else if (filter?.transaction === 'rent') items = items.filter(p => p.transactionType === 'rent');
+      if (filter?.type) items = items.filter(p => p.propertyType === filter.type);
+      if (filter?.city) items = items.filter(p => p.city === filter.city);
+      return { data: items, total: items.length, page: 1 };
+    },
     retry: false,
   });
 }
@@ -122,9 +129,13 @@ export function useProperty(slug?: string) {
   const { i18n } = useTranslation();
   return useQuery<Property | undefined>({
     queryKey: ['property', slug, i18n.language],
-    queryFn: () =>
-      api.get(`/properties/${slug}`)
-        .then(r => normalise(asObject<Property>(r.data, {} as Property))),
+    queryFn: async () => {
+      try {
+        const r = await api.get(`/properties/${slug}`);
+        return normalise(asObject<Property>(r.data, {} as Property));
+      } catch { /* fall through to demo */ }
+      return DEMO_PROPERTIES.find(p => p.slug === slug);
+    },
     enabled: !!slug,
     retry: false,
   });
@@ -134,9 +145,14 @@ export function useFeaturedProperties() {
   const { i18n } = useTranslation();
   return useQuery<Property[]>({
     queryKey: ['properties', 'featured', i18n.language],
-    queryFn: () =>
-      api.get('/properties/featured')
-        .then(r => asArray<Property>(r.data).map(normalise)),
+    queryFn: async () => {
+      try {
+        const r = await api.get('/properties/featured');
+        const items = asArray<Property>(r.data).map(normalise);
+        if (items.length > 0) return items;
+      } catch { /* fall through to demo */ }
+      return DEMO_PROPERTIES.filter(p => p.isFeatured);
+    },
     retry: false,
   });
 }
