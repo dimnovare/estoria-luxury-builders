@@ -36,25 +36,14 @@ export default function Index() {
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         {/* BG Image / Video */}
         <div className="absolute inset-0">
-          {hero?.videoUrl ? (
-            <video
-              src={hero.videoUrl}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <img
-              src={
-                hero?.imageUrl ||
-                'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80'
-              }
-              alt="Luxury estate"
-              className="w-full h-full object-cover"
-            />
-          )}
+          <video
+            src={hero?.videoUrl || heroVideoAsset.url}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+          />
           <div className="absolute inset-0 dark-overlay" />
         </div>
 
