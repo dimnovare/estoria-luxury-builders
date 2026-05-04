@@ -25,7 +25,7 @@ export default function PropertyCard({ property, index = 0 }: Props) {
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <Link to={`/properties/${property.slug}`} className="group block">
-        <div className="relative overflow-hidden rounded-sm aspect-[4/3] bg-muted">
+        <div className="relative overflow-hidden  aspect-[4/3] bg-muted">
           <img
             src={property.coverImageUrl || '/placeholder.jpg'}
             alt={property.title}
@@ -36,12 +36,12 @@ export default function PropertyCard({ property, index = 0 }: Props) {
           <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-500" />
 
           {/* Transaction badge */}
-          <span className="absolute top-4 left-4 bg-background/90 text-foreground text-[10px] font-nav uppercase tracking-wider px-3 py-1.5 rounded-sm">
+          <span className="absolute top-4 left-4 bg-background/90 text-foreground text-[10px] font-nav uppercase tracking-wider px-3 py-1.5 ">
             {property.transactionType === 'sale' ? t('properties.forSale') : t('properties.forRent')}
           </span>
 
           {/* Price badge */}
-          <span className="absolute bottom-4 right-4 gold-gradient text-primary-foreground text-sm font-semibold font-body px-4 py-2 rounded-sm">
+          <span className="absolute bottom-4 right-4 gold-gradient text-primary-foreground text-sm font-semibold font-body px-4 py-2 ">
             {formatPrice(property.price, property.transactionType)}
           </span>
         </div>

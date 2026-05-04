@@ -78,12 +78,12 @@ export default function Newsletter({ variant = 'section' }: Props) {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t('newsletter.placeholder')}
             required
-            className="flex-1 bg-secondary border border-border text-foreground text-sm font-body px-4 py-2.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
+            className="flex-1 bg-secondary border border-border text-foreground text-sm font-body px-4 py-2.5  outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
           />
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="gold-gradient text-primary-foreground px-5 py-2.5 rounded-sm font-nav text-[10px] uppercase tracking-wider hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-2"
+            className="gold-gradient text-primary-foreground px-5 py-2.5  font-nav text-[10px] uppercase tracking-wider hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-2"
           >
             {status === 'loading' ? <Loader2 size={12} className="animate-spin" /> : null}
             {t('newsletter.subscribe')}
@@ -103,12 +103,12 @@ export default function Newsletter({ variant = 'section' }: Props) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t('newsletter.placeholder')}
           required
-          className="flex-1 bg-secondary border border-border text-foreground text-sm font-body px-5 py-3.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
+          className="flex-1 bg-secondary border border-border text-foreground text-sm font-body px-5 py-3.5  outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
         />
         <button
           type="submit"
           disabled={status === 'loading'}
-          className="gold-gradient text-primary-foreground px-8 py-3.5 rounded-sm font-nav text-xs uppercase tracking-wider hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2"
+          className="gold-gradient text-primary-foreground px-8 py-3.5  font-nav text-xs uppercase tracking-wider hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2"
         >
           {status === 'loading' ? <Loader2 size={14} className="animate-spin" /> : null}
           {t('newsletter.subscribe')}

@@ -85,7 +85,7 @@ export default function Navbar() {
 
             <Link
               to="/contact"
-              className="font-nav text-xs uppercase tracking-[0.15em] border border-primary text-primary px-5 py-2.5 rounded-sm transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
+              className="font-nav text-xs uppercase tracking-[0.15em] border border-primary text-primary px-5 py-2.5  transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
             >
               {t('nav.contactUs')}
             </Link>
