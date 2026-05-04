@@ -75,9 +75,9 @@ export default function Footer() {
       <div className="border-t border-border">
         <div className="container mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex flex-col sm:flex-row items-center gap-3 text-xs text-muted-foreground font-body">
-            <span>© {new Date().getFullYear()} ESTORIA OÜ. {t('footer.rights')}</span>
+            <span>© {new Date().getFullYear()} {t('footer.rights')}</span>
             <span className="hidden sm:inline text-border">·</span>
-            <span>Reg. [REG_NO]</span>
+            <span>Estoria OÜ · Reg.nr: [REG_NO] · estoria.estate</span>
             <span className="hidden sm:inline text-border">·</span>
             <Link to="/privacy" className="hover:text-primary transition-colors">
               {t('footer.privacy')}

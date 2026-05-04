@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { useTranslation } from 'react-i18next';
 import type { Property } from './useProperties';
-import { demoTeam, demoServices, demoBlogPosts, demoCareers } from '@/data/demoData';
 
 const asArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : []);
 
@@ -155,7 +154,7 @@ export function useBlogPosts(page = 1) {
       api.get('/blog', { params: { page } }).then(r => ({
         data: asArray<BlogPost>(r.data?.items).map(normaliseBlogPost),
         total: (r.data?.totalCount as number) ?? 0,
-      })).catch(() => ({ data: demoBlogPosts, total: demoBlogPosts.length })),
+      })),
     retry: false,
   });
 }
@@ -165,7 +164,7 @@ export function useBlogPost(slug?: string) {
   return useQuery<BlogPost | undefined>({
     queryKey: ['blog', slug, i18n.language],
     queryFn: () =>
-      api.get(`/blog/${slug}`).then(r => normaliseBlogPost(r.data)).catch(() => demoBlogPosts.find(p => p.slug === slug)),
+      api.get(`/blog/${slug}`).then(r => normaliseBlogPost(r.data)),
     enabled: !!slug,
     retry: false,
   });
@@ -176,7 +175,7 @@ export function useTeam() {
   return useQuery<TeamMember[]>({
     queryKey: ['team', i18n.language],
     queryFn: () =>
-      api.get('/team').then(r => asArray<TeamMember>(r.data).map(normaliseTeamMember)).catch(() => demoTeam),
+      api.get('/team').then(r => asArray<TeamMember>(r.data).map(normaliseTeamMember)),
     retry: false,
   });
 }
@@ -186,10 +185,7 @@ export function useTeamMember(slug?: string) {
   return useQuery<TeamMemberDetail | undefined>({
     queryKey: ['team', slug, i18n.language],
     queryFn: () =>
-      api.get(`/team/${slug}`).then(r => normaliseTeamMemberDetail(r.data)).catch(() => {
-        const member = demoTeam.find(m => m.slug === slug);
-        return member ? { ...member, bio: 'Experienced real estate professional with deep knowledge of the Estonian market.' } : undefined;
-      }),
+      api.get(`/team/${slug}`).then(r => normaliseTeamMemberDetail(r.data)),
     enabled: !!slug,
     retry: false,
   });
@@ -200,7 +196,7 @@ export function useServices() {
   return useQuery<Service[]>({
     queryKey: ['services', i18n.language],
     queryFn: () =>
-      api.get('/services').then(r => asArray<Service>(r.data).map(normaliseService)).catch(() => demoServices),
+      api.get('/services').then(r => asArray<Service>(r.data).map(normaliseService)),
     retry: false,
   });
 }
@@ -210,7 +206,7 @@ export function useCareers() {
   return useQuery<Career[]>({
     queryKey: ['careers', i18n.language],
     queryFn: () =>
-      api.get('/careers').then(r => asArray<Career>(r.data).map(normaliseCareer)).catch(() => demoCareers),
+      api.get('/careers').then(r => asArray<Career>(r.data).map(normaliseCareer)),
     retry: false,
   });
 }
@@ -220,7 +216,7 @@ export function useCareer(slug?: string) {
   return useQuery<Career | undefined>({
     queryKey: ['career', slug, i18n.language],
     queryFn: () =>
-      api.get(`/careers/${slug}`).then(r => normaliseCareer(r.data)).catch(() => demoCareers.find(c => c.slug === slug)),
+      api.get(`/careers/${slug}`).then(r => normaliseCareer(r.data)),
     enabled: !!slug,
     retry: false,
   });

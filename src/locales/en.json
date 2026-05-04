@@ -57,5 +57,10 @@
     "error": "Something went wrong",
     "notFound": "Page not found",
     "backHome": "Back to Home"
+  },
+  "cookies": {
+    "message": "We use cookies to improve your experience",
+    "accept": "Accept",
+    "privacy": "Privacy Policy"
   }
 }

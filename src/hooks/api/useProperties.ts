@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { useTranslation } from 'react-i18next';
-import { demoProperties } from '@/data/demoData';
 
 const asArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : []);
 
@@ -103,17 +102,6 @@ function normalise(p: Property): Property {
   };
 }
 
-function filterDemoProperties(filter?: PropertyFilter, page = 1) {
-  let filtered = [...demoProperties];
-  if (filter?.transaction === 'buy') filtered = filtered.filter(p => p.transactionType === 'sale');
-  if (filter?.transaction === 'rent') filtered = filtered.filter(p => p.transactionType === 'rent');
-  if (filter?.type) filtered = filtered.filter(p => p.propertyType === filter.type);
-  if (filter?.city) filtered = filtered.filter(p => p.city.toLowerCase() === filter.city!.toLowerCase());
-  if (filter?.minPrice) filtered = filtered.filter(p => p.price >= Number(filter.minPrice));
-  if (filter?.maxPrice) filtered = filtered.filter(p => p.price <= Number(filter.maxPrice));
-  return { data: filtered, total: filtered.length, page };
-}
-
 export function useProperties(filter?: PropertyFilter, page = 1) {
   const { i18n } = useTranslation();
   return useQuery<{ data: Property[]; total: number; page: number }>({
@@ -125,8 +113,7 @@ export function useProperties(filter?: PropertyFilter, page = 1) {
           data: asArray<Property>(r.data?.items).map(normalise),
           total: (r.data?.totalCount as number) ?? 0,
           page: (r.data?.page as number) ?? page,
-        }))
-        .catch(() => filterDemoProperties(filter, page)),
+        })),
     retry: false,
   });
 }
@@ -137,8 +124,7 @@ export function useProperty(slug?: string) {
     queryKey: ['property', slug, i18n.language],
     queryFn: () =>
       api.get(`/properties/${slug}`)
-        .then(r => normalise(asObject<Property>(r.data, {} as Property)))
-        .catch(() => demoProperties.find(p => p.slug === slug)),
+        .then(r => normalise(asObject<Property>(r.data, {} as Property))),
     enabled: !!slug,
     retry: false,
   });
@@ -150,8 +136,7 @@ export function useFeaturedProperties() {
     queryKey: ['properties', 'featured', i18n.language],
     queryFn: () =>
       api.get('/properties/featured')
-        .then(r => asArray<Property>(r.data).map(normalise))
-        .catch(() => demoProperties.filter(p => p.isFeatured)),
+        .then(r => asArray<Property>(r.data).map(normalise)),
     retry: false,
   });
 }

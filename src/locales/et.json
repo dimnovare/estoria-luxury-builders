@@ -57,5 +57,10 @@
     "error": "Midagi läks valesti",
     "notFound": "Lehte ei leitud",
     "backHome": "Tagasi avalehele"
+  },
+  "cookies": {
+    "message": "Kasutame küpsiseid teie kogemuse parandamiseks",
+    "accept": "Nõustun",
+    "privacy": "Privaatsuspoliitika"
   }
 }

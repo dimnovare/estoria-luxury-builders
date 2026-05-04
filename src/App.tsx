@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import ErrorBoundary from "@/components/ErrorBoundary";
+import CookieBanner from "@/components/CookieBanner";
 import MainLayout from "@/layouts/MainLayout";
 import AdminLayout from "@/layouts/AdminLayout";
 
@@ -49,6 +50,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ErrorBoundary>
+        <CookieBanner />
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Index />} />
