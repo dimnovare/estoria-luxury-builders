@@ -253,7 +253,7 @@ export default function Index() {
 
       {/* ===== FEATURED PROPERTIES ===== */}
       {(!featured || featured.length > 0 || featuredLoading) && (
-      <section className="py-24 px-6 md:px-16 bg-card">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 md:px-16 bg-card">
         <div className="container mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -281,11 +281,11 @@ export default function Index() {
           </motion.div>
 
           {featuredLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0.5">
               {Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="bg-card border border-border">
                   <Skeleton className="aspect-[4/3]" />
-                  <div className="p-6">
+                  <div className="p-5 sm:p-6">
                     <Skeleton className="h-5 w-3/4 mb-3" />
                     <Skeleton className="h-4 w-1/2 mb-2" />
                     <Skeleton className="h-4 w-1/4" />
@@ -294,7 +294,7 @@ export default function Index() {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0.5">
               {(featured ?? []).map((property, i) => (
                 <PropertyCard key={property.id} property={property} index={i} />
               ))}
@@ -306,7 +306,7 @@ export default function Index() {
 
       {/* ===== SERVICES ===== */}
       {(!services || services.length > 0 || servicesLoading) && (
-      <section className="py-24 px-6 md:px-16">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 md:px-16">
         <div className="container mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -324,9 +324,9 @@ export default function Index() {
           </motion.div>
 
           {servicesLoading ? (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-0.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0.5">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-card border border-border p-10">
+                <div key={i} className="bg-card border border-border p-8 sm:p-10">
                   <Skeleton className="h-11 w-11 rounded-full mb-6" />
                   <Skeleton className="h-5 w-2/3 mb-3" />
                   <Skeleton className="h-4 w-full mb-1.5" />
@@ -335,7 +335,7 @@ export default function Index() {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-0.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0.5">
               {(services ?? []).map((service, i) => {
                 const Icon = resolveServiceIcon(service.iconName);
                 return (
@@ -391,7 +391,7 @@ export default function Index() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex flex-col justify-center px-6 py-12 md:px-[72px] md:py-20"
+            className="flex flex-col justify-center px-5 py-10 sm:px-6 sm:py-12 md:px-[72px] md:py-20"
           >
             <div className="w-10 h-px gold-gradient mb-5" />
             <div className="font-nav text-[10px] tracking-[0.3em] text-primary uppercase mb-3.5">
@@ -430,7 +430,7 @@ export default function Index() {
       </section>
 
       {/* ===== NEWSLETTER ===== */}
-      <section className="py-20 px-6 border-t border-b border-border">
+      <section className="py-16 sm:py-20 px-4 sm:px-6 border-t border-b border-border">
         <div className="container mx-auto max-w-[480px] text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
