@@ -113,21 +113,19 @@ export default function AuditLog() {
             className="w-full sm:w-[140px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]"
           />
 
-          <div className="flex gap-3 w-full sm:w-auto">
-            <Input
-              type="date"
-              value={from}
-              onChange={e => setFrom(e.target.value)}
-              className="flex-1 sm:w-[150px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]"
-              placeholder={t('admin.audit.filters.dateRange')}
-            />
-            <Input
-              type="date"
-              value={to}
-              onChange={e => setTo(e.target.value)}
-              className="flex-1 sm:w-[150px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]"
-            />
-          </div>
+          <Input
+            type="date"
+            value={from}
+            onChange={e => setFrom(e.target.value)}
+            className="w-full sm:w-[150px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]"
+            placeholder={t('admin.audit.filters.dateRange')}
+          />
+          <Input
+            type="date"
+            value={to}
+            onChange={e => setTo(e.target.value)}
+            className="w-full sm:w-[150px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]"
+          />
         </CardContent>
       </Card>
 

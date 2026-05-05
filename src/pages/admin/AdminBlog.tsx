@@ -42,9 +42,9 @@ export default function AdminBlog() {
               <TableRow className="border-[hsl(0_0%_93%)]">
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.blog.table.title')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.blog.table.author')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.blog.table.status')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.blog.table.status')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.blog.table.date')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-20">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -55,11 +55,14 @@ export default function AdminBlog() {
               )}
               {!isLoading && posts.map(p => (
                 <TableRow key={p.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium max-w-[300px] truncate">
-                    {p.translations?.['En']?.title ?? p.slug}
+                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium max-w-[200px] sm:max-w-[300px] truncate">
+                    <div className="truncate">{p.translations?.['En']?.title ?? p.slug}</div>
+                    <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">
+                      {blogStatusLabel(p.status, t)}
+                    </div>
                   </TableCell>
                   <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{p.authorName}</TableCell>
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     <Badge
                       variant="outline"
                       className={`text-[10px] ${p.status === 'Published' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-600 border-gray-200'}`}
