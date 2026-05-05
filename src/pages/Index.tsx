@@ -253,7 +253,7 @@ export default function Index() {
 
       {/* ===== FEATURED PROPERTIES ===== */}
       {(!featured || featured.length > 0 || featuredLoading) && (
-      <section className="py-24 px-6 md:px-16 bg-card">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 md:px-16 bg-card">
         <div className="container mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -306,7 +306,7 @@ export default function Index() {
 
       {/* ===== SERVICES ===== */}
       {(!services || services.length > 0 || servicesLoading) && (
-      <section className="py-24 px-6 md:px-16">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 md:px-16">
         <div className="container mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -324,9 +324,9 @@ export default function Index() {
           </motion.div>
 
           {servicesLoading ? (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-0.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0.5">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-card border border-border p-10">
+                <div key={i} className="bg-card border border-border p-8 sm:p-10">
                   <Skeleton className="h-11 w-11 rounded-full mb-6" />
                   <Skeleton className="h-5 w-2/3 mb-3" />
                   <Skeleton className="h-4 w-full mb-1.5" />
@@ -335,7 +335,7 @@ export default function Index() {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-0.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0.5">
               {(services ?? []).map((service, i) => {
                 const Icon = resolveServiceIcon(service.iconName);
                 return (
