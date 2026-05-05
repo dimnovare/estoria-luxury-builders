@@ -7,20 +7,28 @@ import {
   ExternalLink, Menu, LogOut,
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth, type UserRole } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 
-const navItemDefs = [
+interface NavItemDef {
+  key: string;
+  icon: typeof LayoutDashboard;
+  path: string;
+  /** Roles allowed to see this item. Omit = any authenticated user. */
+  roles?: UserRole[];
+}
+
+const navItemDefs: NavItemDef[] = [
   { key: 'dashboard',  icon: LayoutDashboard, path: '/admin' },
   { key: 'properties', icon: Building2,       path: '/admin/properties' },
   { key: 'blog',       icon: FileText,        path: '/admin/blog' },
-  { key: 'team',       icon: Users,           path: '/admin/team' },
-  { key: 'services',   icon: Briefcase,       path: '/admin/services' },
-  { key: 'pages',      icon: Globe,           path: '/admin/pages' },
-  { key: 'careers',    icon: GraduationCap,   path: '/admin/careers' },
-  { key: 'newsletter', icon: Mail,            path: '/admin/newsletter' },
+  { key: 'team',       icon: Users,           path: '/admin/team',       roles: ['Admin'] },
+  { key: 'services',   icon: Briefcase,       path: '/admin/services',   roles: ['Admin', 'Editor'] },
+  { key: 'pages',      icon: Globe,           path: '/admin/pages',      roles: ['Admin', 'Editor'] },
+  { key: 'careers',    icon: GraduationCap,   path: '/admin/careers',    roles: ['Admin', 'Editor'] },
+  { key: 'newsletter', icon: Mail,            path: '/admin/newsletter', roles: ['Admin', 'Marketing'] },
   { key: 'messages',   icon: MessageSquare,   path: '/admin/messages' },
-] as const;
+];
 
 function getBreadcrumbs(pathname: string, t: TFunction) {
   const parts = pathname.split('/').filter(Boolean);
@@ -46,8 +54,14 @@ export default function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { logout, email } = useAuth();
+  const { logout, email, hasAnyRole } = useAuth();
   const crumbs = useMemo(() => getBreadcrumbs(pathname, t), [pathname, t]);
+
+  // Filter nav by role. Items without `roles` are visible to any authenticated user.
+  const visibleNavItems = useMemo(
+    () => navItemDefs.filter((item) => !item.roles || hasAnyRole(...item.roles)),
+    [hasAnyRole]
+  );
 
   const handleLogout = () => {
     logout();
@@ -74,7 +88,7 @@ export default function AdminLayout() {
 
       {/* Nav */}
       <nav className="flex-1 py-4 space-y-1 overflow-y-auto">
-        {navItemDefs.map(item => (
+        {visibleNavItems.map(item => (
           <Link
             key={item.path}
             to={item.path}

@@ -22,8 +22,16 @@ export default function Login() {
     try {
       await login(email, password);
       navigate('/admin');
-    } catch {
-      setError(t('admin.login.invalidCredentials'));
+    } catch (err: unknown) {
+      // Backend now returns { error: "Invalid credentials" } on 401. Surface it
+      // verbatim if present, fall back to the localized generic message.
+      const status = (err as { response?: { status?: number; data?: { error?: string } } })?.response?.status;
+      const apiMessage = (err as { response?: { data?: { error?: string } } })?.response?.data?.error;
+      if (status === 401 && apiMessage) {
+        setError(apiMessage);
+      } else {
+        setError(t('admin.login.invalidCredentials'));
+      }
     } finally {
       setLoading(false);
     }
