@@ -40,7 +40,14 @@ export default function AdminLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { logout, email } = useAuth();
   const crumbs = getBreadcrumbs(pathname);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/admin/login');
+  };
 
   const isActive = (path: string) => {
     if (path === '/admin') return pathname === '/admin';
