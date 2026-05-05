@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Building2, FileText, Users, Briefcase,
   Globe, GraduationCap, Mail, MessageSquare, ChevronLeft,
   ExternalLink, Menu, LogOut, ScrollText, UserCog, Contact, Handshake,
-  ListTodo, Cake, Bell,
+  ListTodo, Cake, Bell, Settings,
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
 import { useAuth, type UserRole } from '@/hooks/useAuth';
@@ -41,9 +41,10 @@ const navItemDefs: NavItemDef[] = [
   { key: 'birthdays',     icon: Cake,       path: '/admin/birthdays',      section: 'CRM' },
   { key: 'savedSearches', icon: Bell,       path: '/admin/saved-searches', section: 'CRM' },
   { key: 'activities',    icon: ScrollText, path: '/admin/activities',     section: 'CRM' },
-  // Admin section
-  { key: 'users',      icon: UserCog,         path: '/admin/users',      roles: ['Admin'] },
-  { key: 'auditLog',   icon: ScrollText,      path: '/admin/audit-log',  roles: ['Admin'] },
+  // Admin / System section
+  { key: 'settings',   icon: Settings,        path: '/admin/settings',   roles: ['Admin'], section: 'System' },
+  { key: 'users',      icon: UserCog,         path: '/admin/users',      roles: ['Admin'], section: 'System' },
+  { key: 'auditLog',   icon: ScrollText,      path: '/admin/audit-log',  roles: ['Admin'], section: 'System' },
 ];
 
 function getBreadcrumbs(pathname: string, t: TFunction) {

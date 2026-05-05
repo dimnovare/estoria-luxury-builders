@@ -355,7 +355,8 @@
       "tasks": "Ülesanded",
       "birthdays": "Sünnipäevad",
       "savedSearches": "Salvestatud otsingud",
-      "activities": "Tegevused"
+      "activities": "Tegevused",
+      "settings": "Seaded"
     },
     "login": {
       "portalTitle": "Administraatori portaal",
@@ -631,7 +632,7 @@
       }
     },
     "newsletter": {
-      "title": "Uudiskirja tellijad",
+      "title": "Uudiskiri",
       "exportCsv": "Ekspordi CSV",
       "table": {
         "language": "Keel",
@@ -644,6 +645,44 @@
         "exported": "CSV eksporditud",
         "removed": "Tellija eemaldatud",
         "removeFailed": "Tellija eemaldamine ebaõnnestus"
+      },
+      "tabs": {
+        "compose": "Koosta",
+        "campaigns": "Kampaaniad",
+        "subscribers": "Tellijad"
+      },
+      "compose": {
+        "subject": "Teema",
+        "languageFilter": "Keelefilter",
+        "langAll": "Kõik",
+        "langEt": "Eesti keel",
+        "langEn": "Inglise keel",
+        "langRu": "Vene keel",
+        "body": "Sisu (HTML)",
+        "bodyHelp": "HTML lubatud. Isikupärastamise märgised: {{firstName}}. Minimaalne tellimuse tühistamise jalus lisatakse automaatselt — ärge lisage oma.",
+        "willReach": "Jõuab {{count}} tellijani",
+        "sendNow": "Saada kohe",
+        "sendTest": "Saada test ainult mulle",
+        "from": "Saatja",
+        "to": "Saaja",
+        "subscribers": "tellijat",
+        "previewPlaceholder": "Eelvaade ilmub siia",
+        "confirmTitle": "Kinnita saatmine",
+        "confirmDesc": "Kavatsete saata {{count}} tellijale. Seda ei saa tagasi võtta. Kas jätkata?",
+        "confirmSend": "Jah, saada",
+        "toast": {
+          "sent": "Kampaania saadetud — {{delivered}} edastatud, {{failed}} ebaõnnestunud.",
+          "testSent": "Testkiri saadetud teie aadressile.",
+          "sendFailed": "Kampaania saatmine ebaõnnestus"
+        }
+      },
+      "campaigns": {
+        "subject": "Teema",
+        "sentAt": "Saadetud",
+        "recipients": "Saajad",
+        "success": "Õnnestunud",
+        "failed": "Ebaõnnestunud",
+        "empty": "Kampaaniaid pole veel."
       }
     },
     "users": {
@@ -714,12 +753,63 @@
       "emptyDescription": "Lisage oma esimene kontakt, et alustada.",
       "confirmDelete": "Kustuta kontakt",
       "confirmDeleteDesc": "Kas olete kindel, et soovite selle kontakti kustutada? Seda toimingut ei saa tagasi võtta.",
-      "filters": { "agent": "Maakler", "source": "Allikas", "all": "Kõik", "buyer": "Ostjad", "seller": "Müüjad" },
-      "table": { "tags": "Sildid", "roles": "Rollid", "agent": "Maakler", "lastActivity": "Viimane tegevus" },
-      "roles": { "buyer": "Ostja", "seller": "Müüja", "tenant": "Üürnik", "landlord": "Üürileandja" },
-      "sections": { "identity": "Isikuandmed", "address": "Aadress ja ettevõte", "classification": "Klassifikatsioon", "assignment": "Määramine", "privacy": "Privaatsus", "notes": "Märkmed" },
-      "fields": { "fullName": "Täisnimi", "secondaryPhone": "Teine telefon", "preferredLang": "Eelistatud keel", "dateOfBirth": "Sünnipäev", "address": "Aadress", "company": "Ettevõte", "position": "Ametikoht", "isBuyer": "Ostja", "isSeller": "Müüja", "isTenant": "Üürnik", "isLandlord": "Üürileandja", "isPartner": "Partner", "source": "Allikas", "selectSource": "Vali allikas", "sourceDetail": "Allika detail", "tags": "Sildid", "addTag": "Lisa silt…", "assignedAgent": "Määratud maakler", "selectAgent": "Vali maakler", "consentToMarketing": "Turundusnõusolek", "notesPlaceholder": "Sisemised märkmed kontakti kohta…" },
-      "tabs": { "timeline": "Ajajoon", "deals": "Tehingud", "notes": "Märkmed", "tasks": "Ülesanded", "properties": "Huvipakkuvad objektid" },
+      "filters": {
+        "agent": "Maakler",
+        "source": "Allikas",
+        "all": "Kõik",
+        "buyer": "Ostjad",
+        "seller": "Müüjad"
+      },
+      "table": {
+        "tags": "Sildid",
+        "roles": "Rollid",
+        "agent": "Maakler",
+        "lastActivity": "Viimane tegevus"
+      },
+      "roles": {
+        "buyer": "Ostja",
+        "seller": "Müüja",
+        "tenant": "Üürnik",
+        "landlord": "Üürileandja"
+      },
+      "sections": {
+        "identity": "Isikuandmed",
+        "address": "Aadress ja ettevõte",
+        "classification": "Klassifikatsioon",
+        "assignment": "Määramine",
+        "privacy": "Privaatsus",
+        "notes": "Märkmed"
+      },
+      "fields": {
+        "fullName": "Täisnimi",
+        "secondaryPhone": "Teine telefon",
+        "preferredLang": "Eelistatud keel",
+        "dateOfBirth": "Sünnipäev",
+        "address": "Aadress",
+        "company": "Ettevõte",
+        "position": "Ametikoht",
+        "isBuyer": "Ostja",
+        "isSeller": "Müüja",
+        "isTenant": "Üürnik",
+        "isLandlord": "Üürileandja",
+        "isPartner": "Partner",
+        "source": "Allikas",
+        "selectSource": "Vali allikas",
+        "sourceDetail": "Allika detail",
+        "tags": "Sildid",
+        "addTag": "Lisa silt…",
+        "assignedAgent": "Määratud maakler",
+        "selectAgent": "Vali maakler",
+        "consentToMarketing": "Turundusnõusolek",
+        "notesPlaceholder": "Sisemised märkmed kontakti kohta…"
+      },
+      "tabs": {
+        "timeline": "Ajajoon",
+        "deals": "Tehingud",
+        "notes": "Märkmed",
+        "tasks": "Ülesanded",
+        "properties": "Huvipakkuvad objektid"
+      },
       "quickNotePlaceholder": "Kiirmärkus…",
       "logActivity": "Lisa tegevus",
       "activityBodyPlaceholder": "Üksikasjad…",
@@ -738,7 +828,15 @@
         "emailInvalid": "E-post ei ole kehtiv",
         "dobPast": "Sünnipäev peab olema minevikus"
       },
-      "toast": { "deleted": "Kontakt kustutatud", "deleteFailed": "Kontakti kustutamine ebaõnnestus", "updated": "Kontakt uuendatud", "created": "Kontakt loodud", "saveFailed": "Kontakti salvestamine ebaõnnestus", "activityAdded": "Tegevus lisatud", "noteAdded": "Märkus lisatud" }
+      "toast": {
+        "deleted": "Kontakt kustutatud",
+        "deleteFailed": "Kontakti kustutamine ebaõnnestus",
+        "updated": "Kontakt uuendatud",
+        "created": "Kontakt loodud",
+        "saveFailed": "Kontakti salvestamine ebaõnnestus",
+        "activityAdded": "Tegevus lisatud",
+        "noteAdded": "Märkus lisatud"
+      }
     },
     "deals": {
       "title": "Tehingud",
@@ -759,12 +857,51 @@
       "kanbanEmpty": "Tehinguid pole",
       "documentsPlaceholder": "Dokumendihaldus on saadaval tulevases uuenduses.",
       "tasksPlaceholder": "Ülesannete haldus on saadaval tulevases uuenduses.",
-      "filters": { "dealType": "Tehingu tüüp", "side": "Pool", "mineOnly": "Ainult minu" },
-      "stages": { "Lead": "Huvi", "Qualified": "Kvalifitseeritud", "Viewing": "Vaatamine", "Offer": "Pakkumine", "Negotiation": "Läbirääkimised", "ContractSigned": "Leping allkirjastatud", "ClosingPending": "Sulgemine ootel", "Won": "Võidetud", "Lost": "Kaotatud" },
-      "dealTypes": { "Sale": "Müük", "Rent": "Üür" },
-      "sides": { "BuySide": "Ostja pool", "SellSide": "Müüja pool" },
-      "fields": { "title": "Pealkiri", "primaryContact": "Põhikontakt", "searchContact": "Otsi kontakte…", "contactRequired": "Põhikontakt on kohustuslik", "assignedAgent": "Määratud maakler", "dealType": "Tehingu tüüp", "side": "Pool", "expectedValue": "Eeldatav väärtus", "actualValue": "Tegelik väärtus", "currency": "Valuuta", "commissionPercent": "Vahendustasu %", "expectedCloseDate": "Eeldatav sulgemiskuupäev", "lossReason": "Kaotuse põhjus", "participantRole": "Roll" },
-      "tabs": { "participants": "Osalejad", "documents": "Dokumendid", "tasks": "Ülesanded" },
+      "filters": {
+        "dealType": "Tehingu tüüp",
+        "side": "Pool",
+        "mineOnly": "Ainult minu"
+      },
+      "stages": {
+        "Lead": "Huvi",
+        "Qualified": "Kvalifitseeritud",
+        "Viewing": "Vaatamine",
+        "Offer": "Pakkumine",
+        "Negotiation": "Läbirääkimised",
+        "ContractSigned": "Leping allkirjastatud",
+        "ClosingPending": "Sulgemine ootel",
+        "Won": "Võidetud",
+        "Lost": "Kaotatud"
+      },
+      "dealTypes": {
+        "Sale": "Müük",
+        "Rent": "Üür"
+      },
+      "sides": {
+        "BuySide": "Ostja pool",
+        "SellSide": "Müüja pool"
+      },
+      "fields": {
+        "title": "Pealkiri",
+        "primaryContact": "Põhikontakt",
+        "searchContact": "Otsi kontakte…",
+        "contactRequired": "Põhikontakt on kohustuslik",
+        "assignedAgent": "Määratud maakler",
+        "dealType": "Tehingu tüüp",
+        "side": "Pool",
+        "expectedValue": "Eeldatav väärtus",
+        "actualValue": "Tegelik väärtus",
+        "currency": "Valuuta",
+        "commissionPercent": "Vahendustasu %",
+        "expectedCloseDate": "Eeldatav sulgemiskuupäev",
+        "lossReason": "Kaotuse põhjus",
+        "participantRole": "Roll"
+      },
+      "tabs": {
+        "participants": "Osalejad",
+        "documents": "Dokumendid",
+        "tasks": "Ülesanded"
+      },
       "errors": {
         "titleMin": "Pealkiri peab olema vähemalt 3 tähemärki",
         "contactRequired": "Põhikontakt on kohustuslik",
@@ -772,47 +909,17 @@
         "expectedValuePositive": "Eeldatav väärtus peab olema suurem kui null",
         "closeDateFuture": "Eeldatav sulgemiskuupäev peab olema tulevikus"
       },
-      "toast": { "updated": "Tehing uuendatud", "created": "Tehing loodud", "saveFailed": "Tehingu salvestamine ebaõnnestus", "stageChanged": "Etapp uuendatud", "stageChangeFailed": "Etapi muutmine ebaõnnestus", "actualValueRequired": "Võidu märkimiseks on nõutud nullist suurem tegelik väärtus", "lossReasonRequired": "Kaotuse märkimiseks on nõutud vähemalt 5-tähemärgiline põhjus", "participantAdded": "Osaleja lisatud", "participantRemoved": "Osaleja eemaldatud" }
-    },
-    "activities": {
-      "types": { "Note": "Märkus", "Call": "Kõne", "Email": "E-kiri", "Meeting": "Kohtumine", "Viewing": "Vaatamine", "OfferMade": "Pakkumine tehtud", "StageChange": "Etapi muutus", "ContractEvent": "Lepingusündmus", "SystemEvent": "Süsteemisündmus" }
-    },
-    "crm": {
-      "toast": { "forbidden": "Teil puudub õigus selle toimingu tegemiseks", "saveFailed": "Salvestamine ebaõnnestus" }
-    },
-    "tasks": {
-      "title": "Minu ülesanded",
-      "addNew": "Uus ülesanne",
-      "editTitle": "Muuda ülesannet",
-      "newTitle": "Uus ülesanne",
-      "empty": "Ülesandeid pole. Hinga sügavalt sisse.",
-      "emptyDescription": "Kõik on tehtud — praegu pole midagi teha.",
-      "confirmDelete": "Kustuta ülesanne",
-      "confirmDeleteDesc": "Kas olete kindel, et soovite selle ülesande kustutada?",
-      "reschedule": "Ajasta ümber",
-      "late": "hilja",
-      "tabs": { "today": "Täna", "week": "See nädal", "overdue": "Üle tähtaja", "all": "Kõik" },
-      "filters": { "assignedTo": "Määratud", "me": "Mina", "everyone": "Kõik", "allPriorities": "Kõik prioriteedid", "anyReminder": "Kõik meeldetuletused", "hasReminder": "Meeldetuletusega" },
-      "priority": { "Low": "Madal", "Normal": "Tavaline", "High": "Kõrge" },
-      "recurrence": { "None": "Puudub", "Daily": "Igapäevane", "Weekly": "Iganädalane", "Monthly": "Igakuine" },
-      "fields": { "description": "Kirjeldus", "dueAt": "Tähtaeg", "priority": "Prioriteet", "assignedTo": "Määratud", "linkedTo": "Seotud", "reminderAt": "Meeldetuletus", "recurrence": "Korduvus" },
-      "link": { "contact": "Kontakt", "deal": "Tehing", "property": "Objekt", "dealIdPlaceholder": "Tehingu ID…", "propertyIdPlaceholder": "Objekti ID…" },
-      "toast": { "created": "Ülesanne loodud", "updated": "Ülesanne uuendatud", "deleted": "Ülesanne kustutatud", "deleteFailed": "Ülesande kustutamine ebaõnnestus", "saveFailed": "Ülesande salvestamine ebaõnnestus", "toggleFailed": "Ülesande oleku muutmine ebaõnnestus", "requiredFields": "Pealkiri ja tähtaeg on kohustuslikud", "reminderBeforeDue": "Meeldetuletus peab olema enne tähtaega" }
-    },
-    "birthday": {
-      "title": "Sünnipäevad",
-      "upcoming": "Eelseisvad sünnipäevad",
-      "thisWeek": "See nädal",
-      "noBirthdays": "Järgmise 30 päeva jooksul sünnipäevi pole.",
-      "turningAge": "Saab {{age}}-aastaseks",
-      "today": "Täna!",
-      "sendNow": "Saada kohe",
-      "templateEditor": "Sünnipäeva e-kirja mall",
-      "variablesHint": "Saadaolevad muutujad",
-      "autoSend": "Saada sünnipäevatervitused automaatselt",
-      "autoSendDescription": "Kui lubatud, saadetakse sünnipäevatervitused automaatselt keskööl kontaktidele, kellel on e-posti aadress.",
-      "fields": { "subject": "Teema", "bodyHtml": "Sisu (HTML)" },
-      "toast": { "sent": "Sünnipäevatervitus saadetud", "sendFailed": "Sünnipäevatervituse saatmine ebaõnnestus", "templateSaved": "Mall salvestatud", "templateSaveFailed": "Malli salvestamine ebaõnnestus", "autoSendUpdated": "Automaatse saatmise seadistus uuendatud", "autoSendFailed": "Automaatse saatmise seadistuse muutmine ebaõnnestus" }
+      "toast": {
+        "updated": "Tehing uuendatud",
+        "created": "Tehing loodud",
+        "saveFailed": "Tehingu salvestamine ebaõnnestus",
+        "stageChanged": "Etapp uuendatud",
+        "stageChangeFailed": "Etapi muutmine ebaõnnestus",
+        "actualValueRequired": "Võidu märkimiseks on nõutud nullist suurem tegelik väärtus",
+        "lossReasonRequired": "Kaotuse märkimiseks on nõutud vähemalt 5-tähemärgiline põhjus",
+        "participantAdded": "Osaleja lisatud",
+        "participantRemoved": "Osaleja eemaldatud"
+      }
     },
     "activities": {
       "title": "Tegevused",
@@ -849,6 +956,100 @@
         "SystemEvent": "Süsteem"
       }
     },
+    "crm": {
+      "toast": {
+        "forbidden": "Teil puudub õigus selle toimingu tegemiseks",
+        "saveFailed": "Salvestamine ebaõnnestus"
+      }
+    },
+    "tasks": {
+      "title": "Minu ülesanded",
+      "addNew": "Uus ülesanne",
+      "editTitle": "Muuda ülesannet",
+      "newTitle": "Uus ülesanne",
+      "empty": "Ülesandeid pole. Hinga sügavalt sisse.",
+      "emptyDescription": "Kõik on tehtud — praegu pole midagi teha.",
+      "confirmDelete": "Kustuta ülesanne",
+      "confirmDeleteDesc": "Kas olete kindel, et soovite selle ülesande kustutada?",
+      "reschedule": "Ajasta ümber",
+      "late": "hilja",
+      "tabs": {
+        "today": "Täna",
+        "week": "See nädal",
+        "overdue": "Üle tähtaja",
+        "all": "Kõik"
+      },
+      "filters": {
+        "assignedTo": "Määratud",
+        "me": "Mina",
+        "everyone": "Kõik",
+        "allPriorities": "Kõik prioriteedid",
+        "anyReminder": "Kõik meeldetuletused",
+        "hasReminder": "Meeldetuletusega"
+      },
+      "priority": {
+        "Low": "Madal",
+        "Normal": "Tavaline",
+        "High": "Kõrge"
+      },
+      "recurrence": {
+        "None": "Puudub",
+        "Daily": "Igapäevane",
+        "Weekly": "Iganädalane",
+        "Monthly": "Igakuine"
+      },
+      "fields": {
+        "description": "Kirjeldus",
+        "dueAt": "Tähtaeg",
+        "priority": "Prioriteet",
+        "assignedTo": "Määratud",
+        "linkedTo": "Seotud",
+        "reminderAt": "Meeldetuletus",
+        "recurrence": "Korduvus"
+      },
+      "link": {
+        "contact": "Kontakt",
+        "deal": "Tehing",
+        "property": "Objekt",
+        "dealIdPlaceholder": "Tehingu ID…",
+        "propertyIdPlaceholder": "Objekti ID…"
+      },
+      "toast": {
+        "created": "Ülesanne loodud",
+        "updated": "Ülesanne uuendatud",
+        "deleted": "Ülesanne kustutatud",
+        "deleteFailed": "Ülesande kustutamine ebaõnnestus",
+        "saveFailed": "Ülesande salvestamine ebaõnnestus",
+        "toggleFailed": "Ülesande oleku muutmine ebaõnnestus",
+        "requiredFields": "Pealkiri ja tähtaeg on kohustuslikud",
+        "reminderBeforeDue": "Meeldetuletus peab olema enne tähtaega"
+      }
+    },
+    "birthday": {
+      "title": "Sünnipäevad",
+      "upcoming": "Eelseisvad sünnipäevad",
+      "thisWeek": "See nädal",
+      "noBirthdays": "Järgmise 30 päeva jooksul sünnipäevi pole.",
+      "turningAge": "Saab {{age}}-aastaseks",
+      "today": "Täna!",
+      "sendNow": "Saada kohe",
+      "templateEditor": "Sünnipäeva e-kirja mall",
+      "variablesHint": "Saadaolevad muutujad",
+      "autoSend": "Saada sünnipäevatervitused automaatselt",
+      "autoSendDescription": "Kui lubatud, saadetakse sünnipäevatervitused automaatselt keskööl kontaktidele, kellel on e-posti aadress.",
+      "fields": {
+        "subject": "Teema",
+        "bodyHtml": "Sisu (HTML)"
+      },
+      "toast": {
+        "sent": "Sünnipäevatervitus saadetud",
+        "sendFailed": "Sünnipäevatervituse saatmine ebaõnnestus",
+        "templateSaved": "Mall salvestatud",
+        "templateSaveFailed": "Malli salvestamine ebaõnnestus",
+        "autoSendUpdated": "Automaatse saatmise seadistus uuendatud",
+        "autoSendFailed": "Automaatse saatmise seadistuse muutmine ebaõnnestus"
+      }
+    },
     "savedSearches": {
       "title": "Salvestatud otsingud",
       "empty": "Salvestatud otsinguid pole",
@@ -857,8 +1058,15 @@
       "inactive": "Mitteaktiivne",
       "confirmDelete": "Kustuta salvestatud otsing",
       "confirmDeleteDesc": "See tühistab tellimuse jäädavalt. Kasutaja saab uuesti tellida avalikust saidist.",
-      "filters": { "frequency": "Sagedus", "active": "Olek" },
-      "frequency": { "Instant": "Kohe", "Daily": "Iga päev", "Weekly": "Iga nädal" },
+      "filters": {
+        "frequency": "Sagedus",
+        "active": "Olek"
+      },
+      "frequency": {
+        "Instant": "Kohe",
+        "Daily": "Iga päev",
+        "Weekly": "Iga nädal"
+      },
       "fields": {
         "email": "E-post",
         "name": "Nimi",
@@ -867,12 +1075,52 @@
         "lastSent": "Viimati saadetud",
         "results": "Viimane vastete arv"
       },
-      "actions": { "forceSend": "Saada kohe" },
+      "actions": {
+        "forceSend": "Saada kohe"
+      },
       "toast": {
         "sent": "Saatmine lõpetatud — {{count}} vastet",
         "sendFailed": "Saatmine ebaõnnestus",
         "deleted": "Salvestatud otsing kustutatud",
         "deleteFailed": "Kustutamine ebaõnnestus"
+      }
+    },
+    "settings": {
+      "title": "Seaded",
+      "subtitle": "Need väärtused loetakse avalikult saidilt ja süsteemist reaalajas. Enamik muudatusi jõustub sekunditega; avalik sait puhverdab statistikat ja kontaktandmeid kuni 5 minutit.",
+      "save": "Salvesta",
+      "sections": {
+        "identity": "Saidi identiteet",
+        "social": "Sotsiaalmeedia lingid",
+        "socialHelp": "Jätke tühjaks, et peita ikoon avalikul saidil.",
+        "stats": "Statistika ja bränding",
+        "features": "Funktsioonilülitid",
+        "featuresHelp": "Enamik neist on ohutuse huvides vaikimisi välja lülitatud. Lülitage need sisse, kui olete veendunud, et vastav funktsioon teie keskkonnas töötab.",
+        "other": "Muud seaded"
+      },
+      "fields": {
+        "contactEmail": "Kontakt-e-post",
+        "phone": "Telefon",
+        "address": "Kontori aadress",
+        "hours": "Lahtiolekuajad",
+        "facebook": "Facebooki URL",
+        "instagram": "Instagrami URL",
+        "linkedin": "LinkedIni URL",
+        "yearsExperience": "Kogemust aastates",
+        "satisfactionPercent": "Kliendi rahulolu (%)",
+        "watermarkText": "Vesimärgi tekst",
+        "watermarkEnabled": "Rakenda vesimärk kinnisvarapiltidele",
+        "aiDescriptions": "Tehisintellektiga loodud kirjeldused",
+        "aiReplies": "Tehisintellekti soovitatud e-kirja vastused",
+        "birthdayAutoSend": "Saada sünnipäevaõnnitlused automaatselt",
+        "savedSearchAutoSend": "Saada salvestatud otsingukokkuvõtted automaatselt"
+      },
+      "validation": {
+        "positiveInteger": "Peab olema positiivne täisarv",
+        "urlWarning": "See ei paista täielik URL (oodatud https://…). Saate siiski salvestada."
+      },
+      "toast": {
+        "saveFailed": "Seade salvestamine ebaõnnestus"
       }
     }
   }
