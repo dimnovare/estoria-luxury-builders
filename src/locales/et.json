@@ -306,7 +306,10 @@
       "newsletter": "Uudiskiri",
       "messages": "Sõnumid",
       "users": "Kasutajad",
-      "auditLog": "Tegevuslogi"
+      "auditLog": "Tegevuslogi",
+      "contacts": "Kontaktid",
+      "deals": "Tehingud",
+      "activities": "Tegevused"
     },
     "login": {
       "portalTitle": "Administraatori portaal",
@@ -648,6 +651,65 @@
         "entityType": "Objekti tüüp",
         "dateRange": "Ajavahemik"
       }
+    },
+    "contacts": {
+      "title": "Kontaktid",
+      "addNew": "Lisa kontakt",
+      "editTitle": "Muuda kontakti",
+      "newTitle": "Uus kontakt",
+      "saveContact": "Salvesta kontakt",
+      "searchPlaceholder": "Otsi nime, e-posti või telefoni järgi…",
+      "empty": "Kontakte pole veel. Lisage oma esimene kontakt.",
+      "confirmDelete": "Kustuta kontakt",
+      "confirmDeleteDesc": "Kas olete kindel, et soovite selle kontakti kustutada? Seda toimingut ei saa tagasi võtta.",
+      "filters": { "agent": "Maakler", "source": "Allikas", "all": "Kõik", "buyer": "Ostjad", "seller": "Müüjad" },
+      "table": { "tags": "Sildid", "roles": "Rollid", "agent": "Maakler", "lastActivity": "Viimane tegevus" },
+      "roles": { "buyer": "Ostja", "seller": "Müüja", "tenant": "Üürnik", "landlord": "Üürileandja" },
+      "sections": { "identity": "Isikuandmed", "address": "Aadress ja ettevõte", "classification": "Klassifikatsioon", "assignment": "Määramine", "privacy": "Privaatsus", "notes": "Märkmed" },
+      "fields": { "fullName": "Täisnimi", "secondaryPhone": "Teine telefon", "preferredLang": "Eelistatud keel", "dateOfBirth": "Sünnipäev", "address": "Aadress", "company": "Ettevõte", "position": "Ametikoht", "isBuyer": "Ostja", "isSeller": "Müüja", "isTenant": "Üürnik", "isLandlord": "Üürileandja", "isPartner": "Partner", "source": "Allikas", "selectSource": "Vali allikas", "sourceDetail": "Allika detail", "tags": "Sildid", "addTag": "Lisa silt…", "assignedAgent": "Määratud maakler", "selectAgent": "Vali maakler", "consentToMarketing": "Turundusnõusolek", "notesPlaceholder": "Sisemised märkmed kontakti kohta…" },
+      "tabs": { "timeline": "Ajajoon", "deals": "Tehingud", "notes": "Märkmed", "properties": "Huvipakkuvad objektid" },
+      "quickNotePlaceholder": "Kiirmärkus…",
+      "logActivity": "Lisa tegevus",
+      "activityBodyPlaceholder": "Üksikasjad…",
+      "activityOutcome": "Tulemus",
+      "activityDuration": "Kestus (min)",
+      "noActivities": "Tegevusi pole veel.",
+      "noDeals": "Selle kontaktiga seotud tehinguid ei ole.",
+      "noNotes": "Märkmeid pole veel.",
+      "propertiesPlaceholder": "Huvipakkuvad objektid on saadaval tulevases uuenduses.",
+      "noteBodyPlaceholder": "Kirjuta märkus…",
+      "toast": { "deleted": "Kontakt kustutatud", "deleteFailed": "Kontakti kustutamine ebaõnnestus", "updated": "Kontakt uuendatud", "created": "Kontakt loodud", "saveFailed": "Kontakti salvestamine ebaõnnestus", "activityAdded": "Tegevus lisatud", "noteAdded": "Märkus lisatud" }
+    },
+    "deals": {
+      "title": "Tehingud",
+      "addNew": "Uus tehing",
+      "editTitle": "Muuda tehingut",
+      "newTitle": "Uus tehing",
+      "saveDeal": "Salvesta tehing",
+      "changeStage": "Muuda etappi",
+      "currentStage": "Praegune etapp",
+      "newStage": "Uus etapp",
+      "selectStage": "Vali etapp",
+      "confirmStageChange": "Kinnita",
+      "stageHint": "Etappi saab muuta ainult kanban-tahvli või etapi muutmise nupu kaudu.",
+      "agentLocked": "Maakler on lukustatud teie kontole. Ümberassigneerimiseks pöörduge administraatori poole.",
+      "addParticipant": "Lisa osaleja",
+      "noParticipants": "Osalejaid pole veel.",
+      "documentsPlaceholder": "Dokumendihaldus on saadaval tulevases uuenduses.",
+      "tasksPlaceholder": "Ülesannete haldus on saadaval tulevases uuenduses.",
+      "filters": { "dealType": "Tehingu tüüp", "side": "Pool", "mineOnly": "Ainult minu" },
+      "stages": { "Lead": "Huvi", "Qualified": "Kvalifitseeritud", "Viewing": "Vaatamine", "Offer": "Pakkumine", "Negotiation": "Läbirääkimised", "ContractSigned": "Leping allkirjastatud", "ClosingPending": "Sulgemine ootel", "Won": "Võidetud", "Lost": "Kaotatud" },
+      "dealTypes": { "Sale": "Müük", "Rent": "Üür" },
+      "sides": { "BuySide": "Ostja pool", "SellSide": "Müüja pool" },
+      "fields": { "title": "Pealkiri", "primaryContact": "Põhikontakt", "searchContact": "Otsi kontakte…", "contactRequired": "Põhikontakt on kohustuslik", "assignedAgent": "Määratud maakler", "dealType": "Tehingu tüüp", "side": "Pool", "expectedValue": "Eeldatav väärtus", "actualValue": "Tegelik väärtus", "currency": "Valuuta", "commissionPercent": "Vahendustasu %", "expectedCloseDate": "Eeldatav sulgemiskuupäev", "lossReason": "Kaotuse põhjus", "participantRole": "Roll" },
+      "tabs": { "participants": "Osalejad", "documents": "Dokumendid", "tasks": "Ülesanded" },
+      "toast": { "updated": "Tehing uuendatud", "created": "Tehing loodud", "saveFailed": "Tehingu salvestamine ebaõnnestus", "stageChanged": "Etapp uuendatud", "stageChangeFailed": "Etapi muutmine ebaõnnestus", "actualValueRequired": "Tegelik väärtus on nõutud võidu märkimisel", "lossReasonRequired": "Kaotuse põhjus on nõutud", "participantAdded": "Osaleja lisatud", "participantRemoved": "Osaleja eemaldatud" }
+    },
+    "activities": {
+      "types": { "Note": "Märkus", "Call": "Kõne", "Email": "E-kiri", "Meeting": "Kohtumine", "Viewing": "Vaatamine", "OfferMade": "Pakkumine tehtud", "StageChange": "Etapi muutus", "ContractEvent": "Lepingusündmus", "SystemEvent": "Süsteemisündmus" }
+    },
+    "crm": {
+      "toast": { "forbidden": "Teil puudub õigus selle toimingu tegemiseks", "saveFailed": "Salvestamine ebaõnnestus" }
     }
   }
 }

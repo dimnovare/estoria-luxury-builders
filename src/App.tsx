@@ -39,6 +39,12 @@ import AdminMessages from "@/pages/admin/AdminMessages";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import UserForm from "@/pages/admin/UserForm";
 import AuditLog from "@/pages/admin/AuditLog";
+import AdminContacts from "@/pages/admin/AdminContacts";
+import ContactForm from "@/pages/admin/ContactForm";
+import ContactDetail from "@/pages/admin/ContactDetail";
+import AdminDeals from "@/pages/admin/AdminDeals";
+import DealForm from "@/pages/admin/DealForm";
+import DealDetail from "@/pages/admin/DealDetail";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -91,6 +97,14 @@ const App = () => (
             <Route path="users/new" element={<UserForm />} />
             <Route path="users/:id/edit" element={<UserForm />} />
             <Route path="audit-log" element={<AuditLog />} />
+            <Route path="contacts" element={<AdminContacts />} />
+            <Route path="contacts/new" element={<ContactForm />} />
+            <Route path="contacts/:id" element={<ContactDetail />} />
+            <Route path="contacts/:id/edit" element={<ContactForm />} />
+            <Route path="deals" element={<AdminDeals />} />
+            <Route path="deals/new" element={<DealForm />} />
+            <Route path="deals/:id" element={<DealDetail />} />
+            <Route path="deals/:id/edit" element={<DealForm />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

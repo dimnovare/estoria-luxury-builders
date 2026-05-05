@@ -306,7 +306,10 @@
       "newsletter": "Newsletter",
       "messages": "Messages",
       "users": "Users",
-      "auditLog": "Audit Log"
+      "auditLog": "Audit Log",
+      "contacts": "Contacts",
+      "deals": "Deals",
+      "activities": "Activities"
     },
     "login": {
       "portalTitle": "Admin Portal",
@@ -649,5 +652,185 @@
         "entityType": "Entity Type",
         "dateRange": "Date Range"
       }
+    },
+    "contacts": {
+      "title": "Contacts",
+      "addNew": "Add Contact",
+      "editTitle": "Edit Contact",
+      "newTitle": "New Contact",
+      "saveContact": "Save Contact",
+      "searchPlaceholder": "Search by name, email, or phone…",
+      "empty": "No contacts yet. Add your first contact to get started.",
+      "confirmDelete": "Delete Contact",
+      "confirmDeleteDesc": "Are you sure you want to delete this contact? This action cannot be undone.",
+      "filters": {
+        "agent": "Agent",
+        "source": "Source",
+        "all": "All",
+        "buyer": "Buyers",
+        "seller": "Sellers"
+      },
+      "table": {
+        "tags": "Tags",
+        "roles": "Roles",
+        "agent": "Agent",
+        "lastActivity": "Last Activity"
+      },
+      "roles": {
+        "buyer": "Buyer",
+        "seller": "Seller",
+        "tenant": "Tenant",
+        "landlord": "Landlord"
+      },
+      "sections": {
+        "identity": "Identity",
+        "address": "Address & Company",
+        "classification": "Classification",
+        "assignment": "Assignment",
+        "privacy": "Privacy",
+        "notes": "Notes"
+      },
+      "fields": {
+        "fullName": "Full Name",
+        "secondaryPhone": "Secondary Phone",
+        "preferredLang": "Preferred Language",
+        "dateOfBirth": "Date of Birth",
+        "address": "Address",
+        "company": "Company",
+        "position": "Position",
+        "isBuyer": "Buyer",
+        "isSeller": "Seller",
+        "isTenant": "Tenant",
+        "isLandlord": "Landlord",
+        "isPartner": "Partner",
+        "source": "Source",
+        "selectSource": "Select source",
+        "sourceDetail": "Source Detail",
+        "tags": "Tags",
+        "addTag": "Add a tag…",
+        "assignedAgent": "Assigned Agent",
+        "selectAgent": "Select agent",
+        "consentToMarketing": "Consent to Marketing",
+        "notesPlaceholder": "Internal notes about this contact…"
+      },
+      "tabs": {
+        "timeline": "Timeline",
+        "deals": "Deals",
+        "notes": "Notes",
+        "properties": "Properties of Interest"
+      },
+      "quickNotePlaceholder": "Quick note…",
+      "logActivity": "Log Activity",
+      "activityBodyPlaceholder": "Details…",
+      "activityOutcome": "Outcome",
+      "activityDuration": "Duration (min)",
+      "noActivities": "No activities yet.",
+      "noDeals": "No deals associated with this contact.",
+      "noNotes": "No notes yet.",
+      "propertiesPlaceholder": "Properties of interest will be available in a future update.",
+      "noteBodyPlaceholder": "Write a note…",
+      "toast": {
+        "deleted": "Contact deleted",
+        "deleteFailed": "Failed to delete contact",
+        "updated": "Contact updated",
+        "created": "Contact created",
+        "saveFailed": "Failed to save contact",
+        "activityAdded": "Activity logged",
+        "noteAdded": "Note added"
+      }
+    },
+    "deals": {
+      "title": "Deals",
+      "addNew": "New Deal",
+      "editTitle": "Edit Deal",
+      "newTitle": "New Deal",
+      "saveDeal": "Save Deal",
+      "changeStage": "Change Stage",
+      "currentStage": "Current Stage",
+      "newStage": "New Stage",
+      "selectStage": "Select stage",
+      "confirmStageChange": "Confirm",
+      "stageHint": "Stage can only be changed via the kanban board or stage change button to ensure activity tracking.",
+      "agentLocked": "Agent is locked to your account. Contact an admin to reassign.",
+      "addParticipant": "Add Participant",
+      "noParticipants": "No participants yet.",
+      "documentsPlaceholder": "Document management will be available in a future update.",
+      "tasksPlaceholder": "Task management will be available in a future update.",
+      "filters": {
+        "dealType": "Deal Type",
+        "side": "Side",
+        "mineOnly": "Mine Only"
+      },
+      "stages": {
+        "Lead": "Lead",
+        "Qualified": "Qualified",
+        "Viewing": "Viewing",
+        "Offer": "Offer",
+        "Negotiation": "Negotiation",
+        "ContractSigned": "Contract Signed",
+        "ClosingPending": "Closing Pending",
+        "Won": "Won",
+        "Lost": "Lost"
+      },
+      "dealTypes": {
+        "Sale": "Sale",
+        "Rent": "Rent"
+      },
+      "sides": {
+        "BuySide": "Buy Side",
+        "SellSide": "Sell Side"
+      },
+      "fields": {
+        "title": "Title",
+        "primaryContact": "Primary Contact",
+        "searchContact": "Search contacts…",
+        "contactRequired": "A primary contact is required",
+        "assignedAgent": "Assigned Agent",
+        "dealType": "Deal Type",
+        "side": "Side",
+        "expectedValue": "Expected Value",
+        "actualValue": "Actual Value",
+        "currency": "Currency",
+        "commissionPercent": "Commission %",
+        "expectedCloseDate": "Expected Close Date",
+        "lossReason": "Loss Reason",
+        "participantRole": "Role"
+      },
+      "tabs": {
+        "participants": "Participants",
+        "documents": "Documents",
+        "tasks": "Tasks"
+      },
+      "toast": {
+        "updated": "Deal updated",
+        "created": "Deal created",
+        "saveFailed": "Failed to save deal",
+        "stageChanged": "Stage updated",
+        "stageChangeFailed": "Failed to change stage",
+        "actualValueRequired": "Actual value is required when marking as Won",
+        "lossReasonRequired": "Loss reason is required when marking as Lost",
+        "participantAdded": "Participant added",
+        "participantRemoved": "Participant removed"
+      }
+    },
+    "activities": {
+      "types": {
+        "Note": "Note",
+        "Call": "Call",
+        "Email": "Email",
+        "Meeting": "Meeting",
+        "Viewing": "Viewing",
+        "OfferMade": "Offer Made",
+        "StageChange": "Stage Change",
+        "ContractEvent": "Contract Event",
+        "SystemEvent": "System Event"
+      }
+    },
+    "crm": {
+      "toast": {
+        "forbidden": "You don't have permission to perform this action",
+        "saveFailed": "Failed to save"
+      }
     }
   }
+}
