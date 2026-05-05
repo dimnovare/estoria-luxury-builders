@@ -227,17 +227,18 @@ function CampaignsTab() {
 
   return (
     <>
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.newsletter.campaigns.subject')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.newsletter.campaigns.sentAt')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.newsletter.table.language')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.newsletter.campaigns.recipients')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.newsletter.campaigns.success')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.newsletter.campaigns.failed')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.newsletter.campaigns.sentAt')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden lg:table-cell">{t('admin.newsletter.table.language')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.newsletter.campaigns.recipients')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.newsletter.campaigns.success')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.newsletter.campaigns.failed')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
               </TableRow>
             </TableHeader>
@@ -247,12 +248,15 @@ function CampaignsTab() {
               )}
               {!isLoading && campaigns.map(c => (
                 <TableRow key={c.id} className="border-[hsl(0_0%_93%)] cursor-pointer hover:bg-[hsl(0_0%_97%)]" onClick={() => setDetailId(c.id)}>
-                  <TableCell className="text-sm font-medium text-[hsl(0_0%_20%)]">{c.subject}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy HH:mm') : '—'}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] uppercase">{c.language ?? t('admin.newsletter.compose.langAll')}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{c.recipientsCount}</TableCell>
-                  <TableCell className="text-sm text-green-600">{c.successCount}</TableCell>
-                  <TableCell className="text-sm text-red-500">{c.failureCount}</TableCell>
+                  <TableCell className="text-sm font-medium text-[hsl(0_0%_20%)]">
+                    <div>{c.subject}</div>
+                    <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy') : '—'}</div>
+                  </TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy HH:mm') : '—'}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] uppercase hidden lg:table-cell">{c.language ?? t('admin.newsletter.compose.langAll')}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell">{c.recipientsCount}</TableCell>
+                  <TableCell className="text-sm text-green-600 hidden md:table-cell">{c.successCount}</TableCell>
+                  <TableCell className="text-sm text-red-500 hidden md:table-cell">{c.failureCount}</TableCell>
                   <TableCell><StatusPill status={c.status} /></TableCell>
                 </TableRow>
               ))}
@@ -261,6 +265,7 @@ function CampaignsTab() {
               )}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
 
@@ -326,14 +331,15 @@ function SubscribersTab() {
           <Download className="h-4 w-4 mr-2" />{t('admin.newsletter.exportCsv')}
         </Button>
       </div>
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.email')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.newsletter.table.language')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.newsletter.table.subscribed')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.newsletter.table.language')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.newsletter.table.subscribed')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-16"></TableHead>
               </TableRow>
@@ -344,9 +350,9 @@ function SubscribersTab() {
               )}
               {!isLoading && subscribers.map(s => (
                 <TableRow key={s.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">{s.email}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] uppercase">{s.language}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_50%)]">
+                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium break-all">{s.email}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] uppercase hidden sm:table-cell">{s.language}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_50%)] hidden sm:table-cell">
                     {s.subscribedAt ? new Date(s.subscribedAt).toLocaleDateString() : '—'}
                   </TableCell>
                   <TableCell>
@@ -374,6 +380,7 @@ function SubscribersTab() {
               )}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
