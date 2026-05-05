@@ -589,6 +589,63 @@
         "removed": "Subscriber removed",
         "removeFailed": "Failed to remove subscriber"
       }
+      }
+    },
+    "users": {
+      "title": "Users",
+      "addUser": "Add User",
+      "editTitle": "Edit User",
+      "newTitle": "New User",
+      "saveUser": "Save User",
+      "searchPlaceholder": "Search users…",
+      "active": "Active",
+      "inactive": "Inactive",
+      "empty": "No users found.",
+      "lastLogin": "Last Login",
+      "neverLoggedIn": "Never",
+      "fields": {
+        "email": "Email",
+        "fullName": "Full Name",
+        "phone": "Phone",
+        "photoUrl": "Photo URL",
+        "languages": "Languages",
+        "roles": "Roles",
+        "teamMember": "Team Member",
+        "active": "Active",
+        "password": "Password"
+      },
+      "actions": {
+        "resetPassword": "Reset Password",
+        "deactivate": "Deactivate",
+        "reactivate": "Reactivate"
+      },
+      "confirmDeactivate": "Are you sure you want to deactivate this user?",
+      "toast": {
+        "updated": "User updated",
+        "created": "User created",
+        "saveFailed": "Failed to save user",
+        "emailExists": "A user with this email already exists",
+        "deactivated": "User deactivated",
+        "deactivateFailed": "Failed to deactivate user",
+        "reactivated": "User reactivated",
+        "reactivateFailed": "Failed to reactivate user",
+        "passwordReset": "Password reset successfully",
+        "passwordResetFailed": "Failed to reset password"
+      }
+    },
+    "audit": {
+      "title": "Audit Log",
+      "when": "When",
+      "who": "Who",
+      "action": "Action",
+      "entity": "Entity",
+      "details": "Details",
+      "empty": "No audit log entries found.",
+      "filters": {
+        "user": "User",
+        "action": "Action",
+        "entityType": "Entity Type",
+        "dateRange": "Date Range"
+      }
     }
   }
-}
