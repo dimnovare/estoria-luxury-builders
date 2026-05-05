@@ -189,6 +189,7 @@ export default function AdminActivities() {
               })}
             </TableBody>
           </Table>
+          </div>
           {!isLoading && activities.length === 0 && (
             <EmptyState
               icon={ScrollText}
