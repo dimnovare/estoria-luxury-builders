@@ -6,7 +6,10 @@ import { useSiteSettings } from '@/hooks/api/useSiteSettings';
 export default function PrivacyPolicy() {
   const { t } = useTranslation();
   const { data: settings } = useSiteSettings();
-  const contactEmail = settings?.['contact.email'] || 'info@estoria.estate';
+  const contactEmail   = settings?.['contact.email']         || 'info@estoria.estate';
+  const companyName    = settings?.['legal.company_name']    || 'ESTORIA CAPITAL GROUP OÜ';
+  const registryCode   = settings?.['legal.registry_code']   || '17477775';
+  const contactAddress = settings?.['contact.address']       || 'Katusepapi 6, Tallinn 11412, Estonia';
 
   return (
     <>
@@ -44,8 +47,8 @@ export default function PrivacyPolicy() {
             <div>
               <h2 className="font-heading text-2xl text-foreground font-light mb-4">1. Who We Are</h2>
               <p>
-                ESTORIA OÜ (registry code: <strong className="text-foreground">[REG_NO]</strong>),
-                registered address <strong className="text-foreground">[ADDRESS], Tallinn, Estonia</strong>,
+                {companyName} (registry code: <strong className="text-foreground">{registryCode}</strong>),
+                registered address <strong className="text-foreground">{contactAddress}</strong>,
                 is the data controller responsible for the personal data collected through this website
                 (estoria.estate).
               </p>

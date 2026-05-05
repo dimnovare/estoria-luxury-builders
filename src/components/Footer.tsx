@@ -13,6 +13,8 @@ export default function Footer() {
   const contactEmail   = settings?.['contact.email']   || 'info@estoria.estate';
   const contactPhone   = settings?.['contact.phone']   || '+372 600 0000';
   const contactAddress = settings?.['contact.address'] || t('footer.address');
+  const companyName    = settings?.['legal.company_name']  || 'ESTORIA CAPITAL GROUP OÜ';
+  const registryCode   = settings?.['legal.registry_code'] || '17477775';
   const social = [
     { href: settings?.['social.facebook'],  Icon: Facebook,  label: 'Facebook'  },
     { href: settings?.['social.instagram'], Icon: Instagram, label: 'Instagram' },
@@ -116,10 +118,14 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-border">
         <div className="container mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex flex-col sm:flex-row items-center gap-3 text-xs text-muted-foreground font-body">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground font-body">
             <span>© {new Date().getFullYear()} {t('footer.rights')}</span>
             <span className="hidden sm:inline text-border">·</span>
-            <span>Estoria OÜ · Reg.nr: [REG_NO] · estoria.estate</span>
+            <span>{companyName}</span>
+            <span className="hidden sm:inline text-border">·</span>
+            <span>Reg.nr: {registryCode}</span>
+            <span className="hidden sm:inline text-border">·</span>
+            <span>estoria.estate</span>
             <span className="hidden sm:inline text-border">·</span>
             <Link to="/privacy" className="hover:text-primary transition-colors">
               {t('footer.privacy')}
