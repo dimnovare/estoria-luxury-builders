@@ -1,0 +1,264 @@
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useTask, useCreateTask, useUpdateTask, type TaskPriority, type TaskRecurrence, type CreateTaskDto } from '@/hooks/api/useTasks';
+import { useContactSearch, useAgents } from '@/hooks/api/useCrm';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
+import { handleCrmError } from '@/hooks/api/useCrm';
+import { Loader2 } from 'lucide-react';
+
+const PRIORITIES: TaskPriority[] = ['Low', 'Normal', 'High'];
+const RECURRENCES: TaskRecurrence[] = ['None', 'Daily', 'Weekly', 'Monthly'];
+
+interface TaskFormProps {
+  taskId?: string;
+  open: boolean;
+  onClose: () => void;
+  /** Pre-fill linked entity */
+  defaultContactId?: string;
+  defaultDealId?: string;
+  defaultPropertyId?: string;
+}
+
+export default function TaskForm({ taskId, open, onClose, defaultContactId, defaultDealId, defaultPropertyId }: TaskFormProps) {
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const isEdit = !!taskId;
+
+  const { data: existingTask, isLoading: loadingTask } = useTask(taskId);
+  const { data: agents } = useAgents();
+  const createMutation = useCreateTask();
+  const updateMutation = useUpdateTask();
+
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [dueAt, setDueAt] = useState('');
+  const [priority, setPriority] = useState<TaskPriority>('Normal');
+  const [assignedToId, setAssignedToId] = useState(user?.id ?? '');
+  const [reminderAt, setReminderAt] = useState('');
+  const [recurrence, setRecurrence] = useState<TaskRecurrence>('None');
+
+  // Link tabs
+  const [linkType, setLinkType] = useState<'contact' | 'deal' | 'property'>(
+    defaultContactId ? 'contact' : defaultDealId ? 'deal' : 'contact'
+  );
+  const [contactId, setContactId] = useState(defaultContactId ?? '');
+  const [dealId, setDealId] = useState(defaultDealId ?? '');
+  const [propertyId, setPropertyId] = useState(defaultPropertyId ?? '');
+
+  // Contact search
+  const [contactSearch, setContactSearch] = useState('');
+  const { data: contactResults } = useContactSearch(contactSearch);
+
+  // Populate on edit
+  useEffect(() => {
+    if (existingTask) {
+      setTitle(existingTask.title);
+      setDescription(existingTask.description ?? '');
+      setDueAt(existingTask.dueAt?.slice(0, 16) ?? '');
+      setPriority(existingTask.priority);
+      setAssignedToId(existingTask.assignedToId);
+      setReminderAt(existingTask.reminderAt?.slice(0, 16) ?? '');
+      setRecurrence(existingTask.recurrence ?? 'None');
+      if (existingTask.contactId) { setLinkType('contact'); setContactId(existingTask.contactId); }
+      else if (existingTask.dealId) { setLinkType('deal'); setDealId(existingTask.dealId); }
+      else if (existingTask.propertyId) { setLinkType('property'); setPropertyId(existingTask.propertyId); }
+    }
+  }, [existingTask]);
+
+  const handleSubmit = async () => {
+    if (!title.trim() || !dueAt) {
+      toast.error(t('admin.tasks.toast.requiredFields'));
+      return;
+    }
+    if (reminderAt && new Date(reminderAt) > new Date(dueAt)) {
+      toast.error(t('admin.tasks.toast.reminderBeforeDue'));
+      return;
+    }
+
+    const dto: CreateTaskDto = {
+      title: title.trim(),
+      description: description.trim() || undefined,
+      dueAt: new Date(dueAt).toISOString(),
+      priority,
+      assignedToId,
+      reminderAt: reminderAt ? new Date(reminderAt).toISOString() : undefined,
+      recurrence: recurrence !== 'None' ? recurrence : undefined,
+      contactId: linkType === 'contact' && contactId ? contactId : undefined,
+      dealId: linkType === 'deal' && dealId ? dealId : undefined,
+      propertyId: linkType === 'property' && propertyId ? propertyId : undefined,
+    };
+
+    try {
+      if (isEdit) {
+        await updateMutation.mutateAsync({ id: taskId!, dto });
+        toast.success(t('admin.tasks.toast.updated'));
+      } else {
+        await createMutation.mutateAsync(dto);
+        toast.success(t('admin.tasks.toast.created'));
+      }
+      onClose();
+    } catch (err) {
+      handleCrmError(err, t('admin.tasks.toast.saveFailed'));
+    }
+  };
+
+  const isPending = createMutation.isPending || updateMutation.isPending;
+
+  return (
+    <Dialog open={open} onOpenChange={() => onClose()}>
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{isEdit ? t('admin.tasks.editTitle') : t('admin.tasks.newTitle')}</DialogTitle>
+        </DialogHeader>
+
+        {isEdit && loadingTask ? (
+          <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-[hsl(43_50%_54%)]" /></div>
+        ) : (
+          <div className="space-y-4">
+            {/* Title */}
+            <div>
+              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.common.title')} *</Label>
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1 bg-secondary border-border" />
+            </div>
+
+            {/* Description */}
+            <div>
+              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.description')}</Label>
+              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} className="mt-1 bg-secondary border-border" rows={3} />
+            </div>
+
+            {/* Due At */}
+            <div>
+              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.dueAt')} *</Label>
+              <Input type="datetime-local" value={dueAt} onChange={(e) => setDueAt(e.target.value)} className="mt-1 bg-secondary border-border" />
+            </div>
+
+            {/* Priority segmented */}
+            <div>
+              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.priority')}</Label>
+              <div className="flex gap-1 mt-1">
+                {PRIORITIES.map(p => (
+                  <Button
+                    key={p}
+                    type="button"
+                    variant={priority === p ? 'default' : 'outline'}
+                    size="sm"
+                    className={priority === p ? 'bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]' : ''}
+                    onClick={() => setPriority(p)}
+                  >
+                    {t(`admin.tasks.priority.${p}`)}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Assigned To */}
+            <div>
+              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.assignedTo')}</Label>
+              <Select value={assignedToId} onValueChange={setAssignedToId}>
+                <SelectTrigger className="mt-1 bg-secondary border-border"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {(agents ?? []).map(a => (
+                    <SelectItem key={a.id} value={a.id}>{a.fullName}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Linked to */}
+            <div>
+              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.linkedTo')}</Label>
+              <Tabs value={linkType} onValueChange={(v) => setLinkType(v as typeof linkType)} className="mt-1">
+                <TabsList className="bg-[hsl(0_0%_95%)]">
+                  <TabsTrigger value="contact">{t('admin.tasks.link.contact')}</TabsTrigger>
+                  <TabsTrigger value="deal">{t('admin.tasks.link.deal')}</TabsTrigger>
+                  <TabsTrigger value="property">{t('admin.tasks.link.property')}</TabsTrigger>
+                </TabsList>
+                <TabsContent value="contact" className="mt-2">
+                  <div className="relative">
+                    <Input
+                      value={contactSearch}
+                      onChange={(e) => { setContactSearch(e.target.value); setContactId(''); }}
+                      placeholder={t('admin.deals.fields.searchContact')}
+                      className="bg-secondary border-border"
+                    />
+                    {contactResults && contactResults.length > 0 && !contactId && (
+                      <div className="absolute z-10 top-full mt-1 w-full bg-white border border-[hsl(0_0%_90%)] rounded-md shadow-lg max-h-40 overflow-y-auto">
+                        {contactResults.map(c => (
+                          <button
+                            key={c.id}
+                            type="button"
+                            className="w-full px-3 py-2 text-left text-sm hover:bg-[hsl(0_0%_96%)]"
+                            onClick={() => { setContactId(c.id); setContactSearch(c.fullName); }}
+                          >
+                            {c.fullName} {c.email ? `· ${c.email}` : ''}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+                <TabsContent value="deal" className="mt-2">
+                  <Input
+                    value={dealId}
+                    onChange={(e) => setDealId(e.target.value)}
+                    placeholder={t('admin.tasks.link.dealIdPlaceholder')}
+                    className="bg-secondary border-border"
+                  />
+                </TabsContent>
+                <TabsContent value="property" className="mt-2">
+                  <Input
+                    value={propertyId}
+                    onChange={(e) => setPropertyId(e.target.value)}
+                    placeholder={t('admin.tasks.link.propertyIdPlaceholder')}
+                    className="bg-secondary border-border"
+                  />
+                </TabsContent>
+              </Tabs>
+            </div>
+
+            {/* Reminder */}
+            <div>
+              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.reminderAt')}</Label>
+              <Input type="datetime-local" value={reminderAt} onChange={(e) => setReminderAt(e.target.value)} className="mt-1 bg-secondary border-border" />
+            </div>
+
+            {/* Recurrence */}
+            <div>
+              {/* TODO: P2.6 recurrence engine — currently UI-only, backend ignores */}
+              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.recurrence')}</Label>
+              <Select value={recurrence} onValueChange={(v) => setRecurrence(v as TaskRecurrence)}>
+                <SelectTrigger className="mt-1 bg-secondary border-border"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {RECURRENCES.map(r => (
+                    <SelectItem key={r} value={r}>{t(`admin.tasks.recurrence.${r}`)}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        )}
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>{t('admin.common.cancel')}</Button>
+          <Button
+            className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]"
+            onClick={handleSubmit}
+            disabled={isPending}
+          >
+            {isPending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
+            {t('admin.common.save')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

@@ -309,6 +309,8 @@
       "auditLog": "Журнал действий",
       "contacts": "Контакты",
       "deals": "Сделки",
+      "tasks": "Задачи",
+      "birthdays": "Дни рождения",
       "activities": "Действия"
     },
     "login": {
@@ -668,7 +670,7 @@
       "roles": { "buyer": "Покупатель", "seller": "Продавец", "tenant": "Арендатор", "landlord": "Арендодатель" },
       "sections": { "identity": "Личные данные", "address": "Адрес и компания", "classification": "Классификация", "assignment": "Назначение", "privacy": "Конфиденциальность", "notes": "Заметки" },
       "fields": { "fullName": "Полное имя", "secondaryPhone": "Дополнительный телефон", "preferredLang": "Предпочитаемый язык", "dateOfBirth": "Дата рождения", "address": "Адрес", "company": "Компания", "position": "Должность", "isBuyer": "Покупатель", "isSeller": "Продавец", "isTenant": "Арендатор", "isLandlord": "Арендодатель", "isPartner": "Партнёр", "source": "Источник", "selectSource": "Выберите источник", "sourceDetail": "Детали источника", "tags": "Теги", "addTag": "Добавить тег…", "assignedAgent": "Назначенный агент", "selectAgent": "Выберите агента", "consentToMarketing": "Согласие на рассылку", "notesPlaceholder": "Внутренние заметки о контакте…" },
-      "tabs": { "timeline": "Хронология", "deals": "Сделки", "notes": "Заметки", "properties": "Интересующие объекты" },
+      "tabs": { "timeline": "Хронология", "deals": "Сделки", "notes": "Заметки", "tasks": "Задачи", "properties": "Интересующие объекты" },
       "quickNotePlaceholder": "Быстрая заметка…",
       "logActivity": "Записать действие",
       "activityBodyPlaceholder": "Подробности…",
@@ -728,6 +730,40 @@
     },
     "crm": {
       "toast": { "forbidden": "У вас нет прав для выполнения этого действия", "saveFailed": "Не удалось сохранить" }
+    },
+    "tasks": {
+      "title": "Мои задачи",
+      "addNew": "Новая задача",
+      "editTitle": "Редактировать задачу",
+      "newTitle": "Новая задача",
+      "empty": "Нет задач. Можно выдохнуть.",
+      "emptyDescription": "Всё сделано — пока нечего делать.",
+      "confirmDelete": "Удалить задачу",
+      "confirmDeleteDesc": "Вы уверены, что хотите удалить эту задачу?",
+      "reschedule": "Перенести",
+      "late": "просрочено",
+      "tabs": { "today": "Сегодня", "week": "Эта неделя", "overdue": "Просроченные", "all": "Все" },
+      "filters": { "assignedTo": "Назначено", "me": "Мне", "everyone": "Всем", "allPriorities": "Все приоритеты", "anyReminder": "Все напоминания", "hasReminder": "С напоминанием" },
+      "priority": { "Low": "Низкий", "Normal": "Обычный", "High": "Высокий" },
+      "recurrence": { "None": "Нет", "Daily": "Ежедневно", "Weekly": "Еженедельно", "Monthly": "Ежемесячно" },
+      "fields": { "description": "Описание", "dueAt": "Срок", "priority": "Приоритет", "assignedTo": "Назначено", "linkedTo": "Связано с", "reminderAt": "Напоминание", "recurrence": "Повторение" },
+      "link": { "contact": "Контакт", "deal": "Сделка", "property": "Объект", "dealIdPlaceholder": "ID сделки…", "propertyIdPlaceholder": "ID объекта…" },
+      "toast": { "created": "Задача создана", "updated": "Задача обновлена", "deleted": "Задача удалена", "deleteFailed": "Не удалось удалить задачу", "saveFailed": "Не удалось сохранить задачу", "toggleFailed": "Не удалось обновить статус задачи", "requiredFields": "Название и срок обязательны", "reminderBeforeDue": "Напоминание должно быть до срока" }
+    },
+    "birthday": {
+      "title": "Дни рождения",
+      "upcoming": "Предстоящие дни рождения",
+      "thisWeek": "На этой неделе",
+      "noBirthdays": "Нет предстоящих дней рождения в ближайшие 30 дней.",
+      "turningAge": "Исполняется {{age}}",
+      "today": "Сегодня!",
+      "sendNow": "Отправить сейчас",
+      "templateEditor": "Шаблон поздравительного письма",
+      "variablesHint": "Доступные переменные",
+      "autoSend": "Автоматическая отправка поздравлений",
+      "autoSendDescription": "Если включено, поздравления с днём рождения отправляются автоматически в полночь контактам с адресом электронной почты.",
+      "fields": { "subject": "Тема", "bodyHtml": "Тело (HTML)" },
+      "toast": { "sent": "Поздравление отправлено", "sendFailed": "Не удалось отправить поздравление", "templateSaved": "Шаблон сохранён", "templateSaveFailed": "Не удалось сохранить шаблон", "autoSendUpdated": "Настройка автоотправки обновлена", "autoSendFailed": "Не удалось обновить настройку автоотправки" }
     }
   }
 }

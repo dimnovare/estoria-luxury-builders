@@ -309,6 +309,8 @@
       "auditLog": "Tegevuslogi",
       "contacts": "Kontaktid",
       "deals": "Tehingud",
+      "tasks": "Ülesanded",
+      "birthdays": "Sünnipäevad",
       "activities": "Tegevused"
     },
     "login": {
@@ -668,7 +670,7 @@
       "roles": { "buyer": "Ostja", "seller": "Müüja", "tenant": "Üürnik", "landlord": "Üürileandja" },
       "sections": { "identity": "Isikuandmed", "address": "Aadress ja ettevõte", "classification": "Klassifikatsioon", "assignment": "Määramine", "privacy": "Privaatsus", "notes": "Märkmed" },
       "fields": { "fullName": "Täisnimi", "secondaryPhone": "Teine telefon", "preferredLang": "Eelistatud keel", "dateOfBirth": "Sünnipäev", "address": "Aadress", "company": "Ettevõte", "position": "Ametikoht", "isBuyer": "Ostja", "isSeller": "Müüja", "isTenant": "Üürnik", "isLandlord": "Üürileandja", "isPartner": "Partner", "source": "Allikas", "selectSource": "Vali allikas", "sourceDetail": "Allika detail", "tags": "Sildid", "addTag": "Lisa silt…", "assignedAgent": "Määratud maakler", "selectAgent": "Vali maakler", "consentToMarketing": "Turundusnõusolek", "notesPlaceholder": "Sisemised märkmed kontakti kohta…" },
-      "tabs": { "timeline": "Ajajoon", "deals": "Tehingud", "notes": "Märkmed", "properties": "Huvipakkuvad objektid" },
+      "tabs": { "timeline": "Ajajoon", "deals": "Tehingud", "notes": "Märkmed", "tasks": "Ülesanded", "properties": "Huvipakkuvad objektid" },
       "quickNotePlaceholder": "Kiirmärkus…",
       "logActivity": "Lisa tegevus",
       "activityBodyPlaceholder": "Üksikasjad…",
@@ -728,6 +730,40 @@
     },
     "crm": {
       "toast": { "forbidden": "Teil puudub õigus selle toimingu tegemiseks", "saveFailed": "Salvestamine ebaõnnestus" }
+    },
+    "tasks": {
+      "title": "Minu ülesanded",
+      "addNew": "Uus ülesanne",
+      "editTitle": "Muuda ülesannet",
+      "newTitle": "Uus ülesanne",
+      "empty": "Ülesandeid pole. Hinga sügavalt sisse.",
+      "emptyDescription": "Kõik on tehtud — praegu pole midagi teha.",
+      "confirmDelete": "Kustuta ülesanne",
+      "confirmDeleteDesc": "Kas olete kindel, et soovite selle ülesande kustutada?",
+      "reschedule": "Ajasta ümber",
+      "late": "hilja",
+      "tabs": { "today": "Täna", "week": "See nädal", "overdue": "Üle tähtaja", "all": "Kõik" },
+      "filters": { "assignedTo": "Määratud", "me": "Mina", "everyone": "Kõik", "allPriorities": "Kõik prioriteedid", "anyReminder": "Kõik meeldetuletused", "hasReminder": "Meeldetuletusega" },
+      "priority": { "Low": "Madal", "Normal": "Tavaline", "High": "Kõrge" },
+      "recurrence": { "None": "Puudub", "Daily": "Igapäevane", "Weekly": "Iganädalane", "Monthly": "Igakuine" },
+      "fields": { "description": "Kirjeldus", "dueAt": "Tähtaeg", "priority": "Prioriteet", "assignedTo": "Määratud", "linkedTo": "Seotud", "reminderAt": "Meeldetuletus", "recurrence": "Korduvus" },
+      "link": { "contact": "Kontakt", "deal": "Tehing", "property": "Objekt", "dealIdPlaceholder": "Tehingu ID…", "propertyIdPlaceholder": "Objekti ID…" },
+      "toast": { "created": "Ülesanne loodud", "updated": "Ülesanne uuendatud", "deleted": "Ülesanne kustutatud", "deleteFailed": "Ülesande kustutamine ebaõnnestus", "saveFailed": "Ülesande salvestamine ebaõnnestus", "toggleFailed": "Ülesande oleku muutmine ebaõnnestus", "requiredFields": "Pealkiri ja tähtaeg on kohustuslikud", "reminderBeforeDue": "Meeldetuletus peab olema enne tähtaega" }
+    },
+    "birthday": {
+      "title": "Sünnipäevad",
+      "upcoming": "Eelseisvad sünnipäevad",
+      "thisWeek": "See nädal",
+      "noBirthdays": "Järgmise 30 päeva jooksul sünnipäevi pole.",
+      "turningAge": "Saab {{age}}-aastaseks",
+      "today": "Täna!",
+      "sendNow": "Saada kohe",
+      "templateEditor": "Sünnipäeva e-kirja mall",
+      "variablesHint": "Saadaolevad muutujad",
+      "autoSend": "Saada sünnipäevatervitused automaatselt",
+      "autoSendDescription": "Kui lubatud, saadetakse sünnipäevatervitused automaatselt keskööl kontaktidele, kellel on e-posti aadress.",
+      "fields": { "subject": "Teema", "bodyHtml": "Sisu (HTML)" },
+      "toast": { "sent": "Sünnipäevatervitus saadetud", "sendFailed": "Sünnipäevatervituse saatmine ebaõnnestus", "templateSaved": "Mall salvestatud", "templateSaveFailed": "Malli salvestamine ebaõnnestus", "autoSendUpdated": "Automaatse saatmise seadistus uuendatud", "autoSendFailed": "Automaatse saatmise seadistuse muutmine ebaõnnestus" }
     }
   }
 }

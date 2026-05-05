@@ -6,6 +6,7 @@ import {
   StickyNote, Phone, Mail, Users, Eye, FileSignature, ArrowRightLeft, Settings,
   Plus, Trash2, UserPlus, Clock, FileText, ListTodo, Loader2,
 } from 'lucide-react';
+import TaskListInline from '@/components/admin/TaskListInline';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -294,13 +295,9 @@ export default function DealDetail() {
               />
             </TabsContent>
 
-            {/* Tasks — placeholder */}
+            {/* Tasks */}
             <TabsContent value="tasks" className="mt-4">
-              {/* TODO: P2.5 — task management */}
-              <EmptyState
-                icon={ListTodo}
-                title={t('admin.deals.tasksPlaceholder')}
-              />
+              <TaskListInline dealId={id} />
             </TabsContent>
           </Tabs>
         </div>

@@ -4,12 +4,13 @@ import { useTranslation } from 'react-i18next';
 import {
   ArrowLeft, Pencil, Trash2, Phone as PhoneIcon, Mail, Eye, Home, User,
   StickyNote, Clock, Users, FileSignature, ArrowRightLeft, Settings, Plus,
-  Briefcase, Loader2,
+  Briefcase, Loader2, ListTodo,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import TaskListInline from '@/components/admin/TaskListInline';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -194,6 +195,7 @@ export default function ContactDetail() {
               <TabsTrigger value="timeline">{t('admin.contacts.tabs.timeline')}</TabsTrigger>
               <TabsTrigger value="deals">{t('admin.contacts.tabs.deals')}</TabsTrigger>
               <TabsTrigger value="notes">{t('admin.contacts.tabs.notes')}</TabsTrigger>
+              <TabsTrigger value="tasks">{t('admin.contacts.tabs.tasks')}</TabsTrigger>
               <TabsTrigger value="properties">{t('admin.contacts.tabs.properties')}</TabsTrigger>
             </TabsList>
 
@@ -337,6 +339,11 @@ export default function ContactDetail() {
                   description={t('admin.contacts.noNotesDescription')}
                 />
               )}
+            </TabsContent>
+
+            {/* Tasks */}
+            <TabsContent value="tasks" className="mt-4">
+              <TaskListInline contactId={id} />
             </TabsContent>
 
             {/* Properties of interest */}
