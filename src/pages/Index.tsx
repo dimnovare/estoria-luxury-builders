@@ -430,7 +430,7 @@ export default function Index() {
       </section>
 
       {/* ===== NEWSLETTER ===== */}
-      <section className="py-20 px-6 border-t border-b border-border">
+      <section className="py-16 sm:py-20 px-4 sm:px-6 border-t border-b border-border">
         <div className="container mx-auto max-w-[480px] text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
