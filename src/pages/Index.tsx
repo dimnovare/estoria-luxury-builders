@@ -391,7 +391,7 @@ export default function Index() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex flex-col justify-center px-6 py-12 md:px-[72px] md:py-20"
+            className="flex flex-col justify-center px-5 py-10 sm:px-6 sm:py-12 md:px-[72px] md:py-20"
           >
             <div className="w-10 h-px gold-gradient mb-5" />
             <div className="font-nav text-[10px] tracking-[0.3em] text-primary uppercase mb-3.5">
