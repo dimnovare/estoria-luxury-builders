@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pencil, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useAdminPages, useUpdatePage, type AdminPage, toBeLang, toFeLang } from '@/hooks/api/useAdmin';
+import { useAdminPages, useUpdatePage, type AdminPage, toBeLang } from '@/hooks/api/useAdmin';
 import { toast } from 'sonner';
 
 const langs = ['et', 'en', 'ru'] as const;
@@ -24,6 +25,7 @@ function pageLabel(key: string) {
 }
 
 export default function AdminPages() {
+  const { t } = useTranslation();
   const { data: pages, isLoading } = useAdminPages();
   const updatePage = useUpdatePage();
 
@@ -79,10 +81,10 @@ export default function AdminPages() {
 
     try {
       await updatePage.mutateAsync({ id: editingPage.id, dto });
-      toast.success('Page content saved');
+      toast.success(t('admin.pages.toast.saved'));
       setDialogOpen(false);
     } catch {
-      toast.error('Failed to save page content');
+      toast.error(t('admin.pages.toast.saveFailed'));
     }
   };
 
@@ -91,22 +93,22 @@ export default function AdminPages() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">Pages</h1>
+      <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.pages.title')}</h1>
 
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Key</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Label</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-20">Actions</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.pages.table.key')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.pages.table.label')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-20">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">Loading…</TableCell>
+                  <TableCell colSpan={3} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
                 </TableRow>
               )}
               {!isLoading && (pages ?? []).map(p => (
@@ -143,22 +145,22 @@ export default function AdminPages() {
                 {langs.map(lang => (
                   <TabsContent key={lang} value={lang} className="mt-3 space-y-3">
                     <div className="space-y-2">
-                      <Label className={labelClass}>Title</Label>
+                      <Label className={labelClass}>{t('admin.pages.fields.title')}</Label>
                       <Input value={translations[lang]?.title || ''} onChange={e => updateTrans(lang, 'title', e.target.value)} className={inputClass} />
                     </div>
                     <div className="space-y-2">
-                      <Label className={labelClass}>Body</Label>
+                      <Label className={labelClass}>{t('admin.pages.fields.body')}</Label>
                       <Textarea rows={6} value={translations[lang]?.body || ''} onChange={e => updateTrans(lang, 'body', e.target.value)} className={inputClass} />
                     </div>
                     <div className="space-y-2">
-                      <Label className={labelClass}>Image URL</Label>
+                      <Label className={labelClass}>{t('admin.pages.fields.imageUrl')}</Label>
                       <Input value={translations[lang]?.imageUrl || ''} onChange={e => updateTrans(lang, 'imageUrl', e.target.value)} className={inputClass} />
                     </div>
                     <div className="space-y-2">
-                      <Label className={labelClass}>Video URL</Label>
+                      <Label className={labelClass}>{t('admin.pages.fields.videoUrl')}</Label>
                       <Input value={translations[lang]?.videoUrl || ''} onChange={e => updateTrans(lang, 'videoUrl', e.target.value)} className={inputClass} />
                       <p className="text-xs text-[hsl(0_0%_50%)] mt-1">
-                        Direct video URL ending in .mp4, .webm, or .mov. YouTube URLs are not supported. Free sources: pexels.com/videos, coverr.co, pixabay.com/videos
+                        {t('admin.pages.fields.videoUrlHint')}
                       </p>
                     </div>
                   </TabsContent>
@@ -169,7 +171,7 @@ export default function AdminPages() {
           <div className="flex justify-end pt-2">
             <Button onClick={handleSave} disabled={updatePage.isPending} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
               {updatePage.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              Save Page
+              {t('admin.pages.savePage')}
             </Button>
           </div>
         </DialogContent>

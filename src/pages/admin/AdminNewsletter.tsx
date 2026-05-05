@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Download, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -7,6 +8,7 @@ import { useAdminSubscribers, useUnsubscribe } from '@/hooks/api/useAdmin';
 import { toast } from 'sonner';
 
 export default function AdminNewsletter() {
+  const { t } = useTranslation();
   const { data, isLoading } = useAdminSubscribers();
   const unsubscribe = useUnsubscribe();
 
@@ -24,24 +26,24 @@ export default function AdminNewsletter() {
     a.download = 'newsletter-subscribers.csv';
     a.click();
     URL.revokeObjectURL(url);
-    toast.success('CSV exported');
+    toast.success(t('admin.newsletter.toast.exported'));
   };
 
   const handleUnsubscribe = async (id: string) => {
     try {
       await unsubscribe.mutateAsync(id);
-      toast.success('Subscriber removed');
+      toast.success(t('admin.newsletter.toast.removed'));
     } catch {
-      toast.error('Failed to remove subscriber');
+      toast.error(t('admin.newsletter.toast.removeFailed'));
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">Newsletter Subscribers</h1>
+        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.newsletter.title')}</h1>
         <Button onClick={exportCsv} variant="outline" className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_30%)]">
-          <Download className="h-4 w-4 mr-2" />Export CSV
+          <Download className="h-4 w-4 mr-2" />{t('admin.newsletter.exportCsv')}
         </Button>
       </div>
 
@@ -50,17 +52,17 @@ export default function AdminNewsletter() {
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Email</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Language</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Subscribed</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Status</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.email')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.newsletter.table.language')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.newsletter.table.subscribed')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-16"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">Loading…</TableCell>
+                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
                 </TableRow>
               )}
               {!isLoading && subscribers.map(s => (
@@ -75,7 +77,7 @@ export default function AdminNewsletter() {
                       variant="outline"
                       className={`text-[10px] ${s.isActive ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-600 border-gray-200'}`}
                     >
-                      {s.isActive ? 'Active' : 'Unsubscribed'}
+                      {s.isActive ? t('admin.newsletter.active') : t('admin.newsletter.unsubscribed')}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -92,7 +94,7 @@ export default function AdminNewsletter() {
               ))}
               {!isLoading && subscribers.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">No subscribers yet.</TableCell>
+                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.newsletter.empty')}</TableCell>
                 </TableRow>
               )}
             </TableBody>

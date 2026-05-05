@@ -73,7 +73,7 @@ export default function BlogPost() {
             to="/blog"
             className="text-primary font-nav text-xs uppercase tracking-wider hover:underline"
           >
-            ← Back to Blog
+            {t('blog.backToBlog')}
           </Link>
         </div>
       </div>
@@ -113,7 +113,7 @@ export default function BlogPost() {
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-8">
             <Link to="/" className="hover:text-primary transition-colors">
-              Home
+              {t('nav.home')}
             </Link>
             <span>/</span>
             <Link to="/blog" className="hover:text-primary transition-colors">
@@ -177,7 +177,7 @@ export default function BlogPost() {
           {/* Share */}
           <div className="mt-12 pt-8 border-t border-border flex items-center gap-4">
             <span className="text-xs text-muted-foreground font-nav uppercase tracking-wider">
-              Share
+              {t('blog.share')}
             </span>
             <button
               onClick={handleShare}
@@ -185,11 +185,11 @@ export default function BlogPost() {
             >
               {copied ? (
                 <>
-                  <Check size={14} /> Copied!
+                  <Check size={14} /> {t('blog.copied')}
                 </>
               ) : (
                 <>
-                  <Share2 size={14} /> Copy Link
+                  <Share2 size={14} /> {t('blog.copyLink')}
                 </>
               )}
             </button>
@@ -229,7 +229,7 @@ export default function BlogPost() {
                     to={`/team/${authorSlug}`}
                     className="inline-block mt-4 text-xs font-nav uppercase tracking-wider text-primary hover:underline"
                   >
-                    View Profile →
+                    {t('blog.viewProfile')}
                   </Link>
                 )}
               </div>
@@ -243,7 +243,7 @@ export default function BlogPost() {
         <section className="py-16 px-6 bg-secondary/20">
           <div className="container mx-auto">
             <div className="w-12 h-px gold-gradient mb-6" />
-            <h2 className="font-heading text-3xl text-foreground mb-10">Related Posts</h2>
+            <h2 className="font-heading text-3xl text-foreground mb-10">{t('blog.relatedTitle')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {relatedPosts.map((p, i) => (
                 <BlogCard key={p.id} post={p} index={i} />
@@ -259,7 +259,7 @@ export default function BlogPost() {
           to="/blog"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary font-nav uppercase tracking-wider transition-colors"
         >
-          <ArrowLeft size={14} /> Back to Blog
+          <ArrowLeft size={14} /> {t('blog.backLink')}
         </Link>
       </div>
     </>

@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 export default function Login() {
+  const { t } = useTranslation();
   const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -21,7 +23,7 @@ export default function Login() {
       await login(email, password);
       navigate('/admin');
     } catch {
-      setError('Invalid email or password');
+      setError(t('admin.login.invalidCredentials'));
     } finally {
       setLoading(false);
     }
@@ -38,13 +40,13 @@ export default function Login() {
             ESTORIA
           </h1>
           <p className="text-sm tracking-widest uppercase text-[#888]">
-            Admin Portal
+            {t('admin.login.portalTitle')}
           </p>
         </div>
 
         <div className="space-y-5">
           <div>
-            <Label className="text-[#aaa] text-xs tracking-wider uppercase">Email</Label>
+            <Label className="text-[#aaa] text-xs tracking-wider uppercase">{t('admin.login.emailLabel')}</Label>
             <Input
               type="email"
               value={email}
@@ -56,7 +58,7 @@ export default function Login() {
           </div>
 
           <div>
-            <Label className="text-[#aaa] text-xs tracking-wider uppercase">Password</Label>
+            <Label className="text-[#aaa] text-xs tracking-wider uppercase">{t('admin.login.passwordLabel')}</Label>
             <Input
               type="password"
               value={password}
@@ -75,7 +77,7 @@ export default function Login() {
             disabled={loading}
             className="w-full bg-gradient-to-r from-[hsl(43_50%_54%)] to-[hsl(43_40%_45%)] text-[#0a0a0a] font-semibold tracking-wider uppercase hover:opacity-90"
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? t('admin.login.signingIn') : t('admin.login.signIn')}
           </Button>
         </div>
       </form>

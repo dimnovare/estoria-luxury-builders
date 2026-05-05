@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -22,12 +23,21 @@ import {
 import { toast } from 'sonner';
 
 const langs = ['et', 'en', 'ru'] as const;
-const allLanguages = ['Estonian', 'English', 'Russian', 'Finnish', 'German', 'French', 'Swedish'];
+const allLanguages = [
+  { value: 'Estonian', labelKey: 'admin.team.languages.estonian' },
+  { value: 'English',  labelKey: 'admin.team.languages.english'  },
+  { value: 'Russian',  labelKey: 'admin.team.languages.russian'  },
+  { value: 'Finnish',  labelKey: 'admin.team.languages.finnish'  },
+  { value: 'German',   labelKey: 'admin.team.languages.german'   },
+  { value: 'French',   labelKey: 'admin.team.languages.french'   },
+  { value: 'Swedish',  labelKey: 'admin.team.languages.swedish'  },
+];
 
 type TransFields = { name: string; role: string; bio: string; };
 const emptyTrans: TransFields = { name: '', role: '', bio: '' };
 
 export default function AdminTeam() {
+  const { t } = useTranslation();
   const { data: team, isLoading } = useAdminTeam();
   const createMember = useCreateTeamMember();
   const updateMember = useUpdateTeamMember();
@@ -89,9 +99,9 @@ export default function AdminTeam() {
     try {
       const result = await uploadPhoto.mutateAsync({ id: editingMember.id, file });
       setPhotoPreview(result.url);
-      toast.success('Photo uploaded');
+      toast.success(t('admin.team.toast.photoUploaded'));
     } catch {
-      toast.error('Failed to upload photo');
+      toast.error(t('admin.team.toast.photoUploadFailed'));
     }
   };
 
@@ -110,23 +120,23 @@ export default function AdminTeam() {
     try {
       if (editingMember) {
         await updateMember.mutateAsync({ id: editingMember.id, dto });
-        toast.success('Member updated');
+        toast.success(t('admin.team.toast.updated'));
       } else {
         await createMember.mutateAsync(dto);
-        toast.success('Member added');
+        toast.success(t('admin.team.toast.added'));
       }
       setDialogOpen(false);
     } catch {
-      toast.error('Failed to save member');
+      toast.error(t('admin.team.toast.saveFailed'));
     }
   };
 
   const handleDelete = async (id: string) => {
     try {
       await deleteMember.mutateAsync(id);
-      toast.success('Member removed');
+      toast.success(t('admin.team.toast.removed'));
     } catch {
-      toast.error('Failed to remove member');
+      toast.error(t('admin.team.toast.removeFailed'));
     }
   };
 
@@ -138,9 +148,9 @@ export default function AdminTeam() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">Team Members</h1>
+        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.team.title')}</h1>
         <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
-          <Plus className="h-4 w-4 mr-2" />Add Member
+          <Plus className="h-4 w-4 mr-2" />{t('admin.team.addNew')}
         </Button>
       </div>
 
@@ -150,17 +160,17 @@ export default function AdminTeam() {
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12"></TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Name</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Role</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Languages</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Contact</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">Actions</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.team.table.name')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.team.table.role')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.team.table.languages')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.team.table.contact')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">Loading…</TableCell>
+                  <TableCell colSpan={6} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
                 </TableRow>
               )}
               {!isLoading && (team ?? []).map(m => (
@@ -205,18 +215,18 @@ export default function AdminTeam() {
         <DialogContent className="max-w-2xl bg-white border-[hsl(0_0%_90%)]">
           <DialogHeader>
             <DialogTitle className="text-[hsl(0_0%_15%)]">
-              {editingMember ? 'Edit Member' : 'New Team Member'}
+              {editingMember ? t('admin.team.editTitle') : t('admin.team.newTitle')}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
             {/* Photo */}
             <div className="space-y-2">
-              <Label className={labelClass}>Photo</Label>
+              <Label className={labelClass}>{t('admin.team.fields.photo')}</Label>
               {photoPreview ? (
                 <div className="flex items-center gap-3">
                   <img src={photoPreview} alt="" className="h-16 w-16 rounded-full object-cover border border-[hsl(0_0%_90%)]" />
                   <Button variant="outline" size="sm" onClick={() => photoInputRef.current?.click()} className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)]">
-                    Change
+                    {t('admin.team.fields.change')}
                   </Button>
                 </div>
               ) : (
@@ -225,7 +235,7 @@ export default function AdminTeam() {
                   onClick={() => editingMember && photoInputRef.current?.click()}
                 >
                   <p className="text-sm text-[hsl(0_0%_50%)]">
-                    {editingMember ? 'Upload photo' : 'Save member first to upload photo'}
+                    {editingMember ? t('admin.team.fields.uploadPhoto') : t('admin.team.fields.saveFirst')}
                   </p>
                 </div>
               )}
@@ -234,27 +244,27 @@ export default function AdminTeam() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className={labelClass}>Phone</Label>
+                <Label className={labelClass}>{t('admin.team.fields.phone')}</Label>
                 <Input value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} />
               </div>
               <div className="space-y-2">
-                <Label className={labelClass}>Email</Label>
+                <Label className={labelClass}>{t('admin.team.fields.email')}</Label>
                 <Input value={email} onChange={e => setEmail(e.target.value)} className={inputClass} />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label className={labelClass}>Sort Order</Label>
+              <Label className={labelClass}>{t('admin.team.fields.sortOrder')}</Label>
               <Input type="number" value={sortOrder} onChange={e => setSortOrder(e.target.value)} className={`w-32 ${inputClass}`} />
             </div>
 
             <div className="space-y-2">
-              <Label className={labelClass}>Spoken Languages</Label>
+              <Label className={labelClass}>{t('admin.team.fields.spokenLanguages')}</Label>
               <div className="flex flex-wrap gap-3">
                 {allLanguages.map(l => (
-                  <label key={l} className="flex items-center gap-1.5 text-sm text-[hsl(0_0%_30%)]">
-                    <Checkbox checked={selectedLangs.includes(l)} onCheckedChange={() => toggleLang(l)} />
-                    {l}
+                  <label key={l.value} className="flex items-center gap-1.5 text-sm text-[hsl(0_0%_30%)]">
+                    <Checkbox checked={selectedLangs.includes(l.value)} onCheckedChange={() => toggleLang(l.value)} />
+                    {t(l.labelKey)}
                   </label>
                 ))}
               </div>
@@ -270,15 +280,15 @@ export default function AdminTeam() {
               {langs.map(lang => (
                 <TabsContent key={lang} value={lang} className="mt-3 space-y-3">
                   <div className="space-y-2">
-                    <Label className={labelClass}>Name</Label>
+                    <Label className={labelClass}>{t('admin.team.fields.name')}</Label>
                     <Input value={translations[lang]?.name || ''} onChange={e => updateTrans(lang, 'name', e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>Role</Label>
+                    <Label className={labelClass}>{t('admin.team.fields.role')}</Label>
                     <Input value={translations[lang]?.role || ''} onChange={e => updateTrans(lang, 'role', e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>Bio</Label>
+                    <Label className={labelClass}>{t('admin.team.fields.bio')}</Label>
                     <Textarea rows={4} value={translations[lang]?.bio || ''} onChange={e => updateTrans(lang, 'bio', e.target.value)} className={inputClass} />
                   </div>
                 </TabsContent>
@@ -289,7 +299,7 @@ export default function AdminTeam() {
           <div className="flex justify-end pt-2">
             <Button onClick={handleSave} disabled={isSaving} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
               {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              Save Member
+              {t('admin.team.saveMember')}
             </Button>
           </div>
         </DialogContent>

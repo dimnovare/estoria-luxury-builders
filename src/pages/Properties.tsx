@@ -8,7 +8,13 @@ import { useProperties } from '@/hooks/api/useProperties';
 import { usePublicCities, usePropertyTypeOptions } from '@/hooks/api/usePublic';
 
 const PAGE_SIZE = 12;
-const sortOptionKeys = ['newest', 'price-asc', 'price-desc', 'size'] as const;
+// URL param value → translation key under filters.sort.*
+const sortOptionMap = [
+  { value: 'newest',     labelKey: 'newest'    },
+  { value: 'price-asc',  labelKey: 'priceAsc'  },
+  { value: 'price-desc', labelKey: 'priceDesc' },
+  { value: 'size',       labelKey: 'sizeDesc'  },
+] as const;
 
 export default function Properties() {
   const { t } = useTranslation();
@@ -35,7 +41,7 @@ export default function Properties() {
   const propertyTypes = useMemo(() => typeOptions?.propertyTypes ?? [], [typeOptions]);
 
   const sortOptions = useMemo(
-    () => sortOptionKeys.map((value) => ({ value, label: t(`properties.sort.${value}`) })),
+    () => sortOptionMap.map(({ value, labelKey }) => ({ value, label: t(`filters.sort.${labelKey}`) })),
     [t]
   );
 
@@ -71,8 +77,8 @@ export default function Properties() {
       filters.push({ key: 'type', label: matched?.label ?? propertyType, value: propertyType });
     }
     if (city) filters.push({ key: 'city', label: city, value: city });
-    if (minPrice) filters.push({ key: 'minPrice', label: `${t('properties.filter.min')} €${minPrice}`, value: minPrice });
-    if (maxPrice) filters.push({ key: 'maxPrice', label: `${t('properties.filter.max')} €${maxPrice}`, value: maxPrice });
+    if (minPrice) filters.push({ key: 'minPrice', label: `${t('filters.min')} €${minPrice}`, value: minPrice });
+    if (maxPrice) filters.push({ key: 'maxPrice', label: `${t('filters.max')} €${maxPrice}`, value: maxPrice });
     return filters;
   }, [transaction, propertyType, city, minPrice, maxPrice, propertyTypes, t]);
 
@@ -154,7 +160,7 @@ export default function Properties() {
           </span>
           <input
             type="number"
-            placeholder={t('properties.filter.min')}
+            placeholder={t('filters.min')}
             value={minPrice}
             onChange={(e) => updateFilter('minPrice', e.target.value)}
             className="bg-secondary text-foreground text-sm font-body pl-7 pr-3 py-2.5 rounded-sm border border-border outline-none w-28 focus:border-primary transition-colors"
@@ -167,7 +173,7 @@ export default function Properties() {
           </span>
           <input
             type="number"
-            placeholder={t('properties.filter.max')}
+            placeholder={t('filters.max')}
             value={maxPrice}
             onChange={(e) => updateFilter('maxPrice', e.target.value)}
             className="bg-secondary text-foreground text-sm font-body pl-7 pr-3 py-2.5 rounded-sm border border-border outline-none w-28 focus:border-primary transition-colors"
@@ -180,7 +186,7 @@ export default function Properties() {
           onClick={resetFilters}
           className="text-xs text-muted-foreground hover:text-primary font-nav uppercase tracking-wider transition-colors"
         >
-          {t('properties.filter.reset')}
+          {t('filters.reset')}
         </button>
       )}
     </div>
@@ -222,7 +228,7 @@ export default function Properties() {
             className="flex items-center gap-2 text-sm font-nav uppercase tracking-wider text-muted-foreground"
           >
             <SlidersHorizontal size={16} />
-            {t('properties.filter.filters')}
+            {t('filters.filters')}
             {activeFilters.length > 0 && (
               <span className="gold-gradient text-primary-foreground text-[10px] w-5 h-5 rounded-full flex items-center justify-center">
                 {activeFilters.length}
@@ -253,7 +259,7 @@ export default function Properties() {
         >
           <div className="container mx-auto px-6 py-8">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="font-heading text-2xl text-foreground">{t('properties.filter.filters')}</h2>
+              <h2 className="font-heading text-2xl text-foreground">{t('filters.filters')}</h2>
               <button onClick={() => setMobileFiltersOpen(false)} className="text-foreground">
                 <X size={24} />
               </button>
@@ -263,7 +269,7 @@ export default function Properties() {
               onClick={() => setMobileFiltersOpen(false)}
               className="mt-8 w-full gold-gradient text-primary-foreground py-3 rounded-sm font-nav text-xs uppercase tracking-wider"
             >
-              {t('properties.filter.showResults', { count: totalCount })}
+              {t('filters.showResults', { count: totalCount })}
             </button>
           </div>
         </motion.div>
@@ -299,9 +305,7 @@ export default function Properties() {
                 </span>
               ) : (
                 <>
-                  {t('properties.showingPrefix')} <span className="text-foreground">{properties.length}</span>{' '}
-                  {t('properties.showingOf')} <span className="text-foreground">{totalCount}</span>{' '}
-                  {t('properties.showingSuffix')}
+                  {t('properties.showing', { count: properties.length, total: totalCount })}
                 </>
               )}
             </p>
@@ -324,13 +328,13 @@ export default function Properties() {
           {error ? (
             <div className="text-center py-24">
               <p className="text-muted-foreground font-body">
-                {t('properties.error.loadFailed')}
+                {t('properties.loadFailed')}
               </p>
               <button
                 onClick={resetFilters}
                 className="mt-4 text-xs font-nav uppercase tracking-wider text-primary hover:underline"
               >
-                {t('properties.filter.resetFilters')}
+                {t('filters.resetFilters')}
               </button>
             </div>
           ) : isLoading ? (
@@ -366,7 +370,7 @@ export default function Properties() {
                 onClick={resetFilters}
                 className="mt-6 text-xs font-nav uppercase tracking-wider text-primary hover:underline"
               >
-                {t('properties.filter.resetAll')}
+                {t('filters.resetAll')}
               </button>
             </motion.div>
           )}

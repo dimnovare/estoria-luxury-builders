@@ -26,16 +26,16 @@ export default function Team() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-6">
               <Link to="/" className="hover:text-primary transition-colors">
-                Home
+                {t('nav.home')}
               </Link>
               <span>/</span>
               <span className="text-foreground">{t('nav.team')}</span>
             </nav>
             <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground mb-3">
-              Our Team
+              {t('team.title')}
             </h1>
             <p className="text-muted-foreground font-body text-lg max-w-xl">
-              The experts behind Estonia's most exclusive properties.
+              {t('team.subtitle')}
             </p>
           </motion.div>
         </div>
@@ -61,7 +61,7 @@ export default function Team() {
           ) : error ? (
             <div className="text-center py-32">
               <p className="text-muted-foreground font-body">
-                Failed to load team. Please try again.
+                {t('team.loadFailed')}
               </p>
             </div>
           ) : (

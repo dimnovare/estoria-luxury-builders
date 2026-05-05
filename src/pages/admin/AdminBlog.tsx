@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useAdminBlogPosts, useDeleteBlogPost } from '@/hooks/api/useAdmin';
+import { blogStatusLabel } from '@/lib/enumLabels';
 import { toast } from 'sonner';
 
 export default function AdminBlog() {
+  const { t } = useTranslation();
   const { data, isLoading } = useAdminBlogPosts();
   const deleteBlogPost = useDeleteBlogPost();
 
@@ -16,18 +19,18 @@ export default function AdminBlog() {
   const handleDelete = async (id: string) => {
     try {
       await deleteBlogPost.mutateAsync(id);
-      toast.success('Post deleted');
+      toast.success(t('admin.blog.toast.deleted'));
     } catch {
-      toast.error('Failed to delete post');
+      toast.error(t('admin.blog.toast.deleteFailed'));
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">Blog Posts</h1>
+        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.blog.title')}</h1>
         <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
-          <Link to="/admin/blog/new"><Plus className="h-4 w-4 mr-2" />New Post</Link>
+          <Link to="/admin/blog/new"><Plus className="h-4 w-4 mr-2" />{t('admin.blog.addNew')}</Link>
         </Button>
       </div>
 
@@ -36,17 +39,17 @@ export default function AdminBlog() {
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Title</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Author</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Status</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Date</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">Actions</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.blog.table.title')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.blog.table.author')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.blog.table.status')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.blog.table.date')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">Loading…</TableCell>
+                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
                 </TableRow>
               )}
               {!isLoading && posts.map(p => (
@@ -60,7 +63,7 @@ export default function AdminBlog() {
                       variant="outline"
                       className={`text-[10px] ${p.status === 'Published' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-600 border-gray-200'}`}
                     >
-                      {p.status}
+                      {blogStatusLabel(p.status, t)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-sm text-[hsl(0_0%_50%)]">
@@ -85,7 +88,7 @@ export default function AdminBlog() {
               ))}
               {!isLoading && posts.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">No blog posts yet.</TableCell>
+                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.blog.empty')}</TableCell>
                 </TableRow>
               )}
             </TableBody>

@@ -1,48 +1,53 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard, Building2, FileText, Users, Briefcase,
   Globe, GraduationCap, Mail, MessageSquare, ChevronLeft,
   ExternalLink, Menu, LogOut,
 } from 'lucide-react';
+import type { TFunction } from 'i18next';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 
-const navItems = [
-  { label: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
-  { label: 'Properties', icon: Building2, path: '/admin/properties' },
-  { label: 'Blog', icon: FileText, path: '/admin/blog' },
-  { label: 'Team', icon: Users, path: '/admin/team' },
-  { label: 'Services', icon: Briefcase, path: '/admin/services' },
-  { label: 'Pages', icon: Globe, path: '/admin/pages' },
-  { label: 'Careers', icon: GraduationCap, path: '/admin/careers' },
-  { label: 'Newsletter', icon: Mail, path: '/admin/newsletter' },
-  { label: 'Messages', icon: MessageSquare, path: '/admin/messages' },
-];
+const navItemDefs = [
+  { key: 'dashboard',  icon: LayoutDashboard, path: '/admin' },
+  { key: 'properties', icon: Building2,       path: '/admin/properties' },
+  { key: 'blog',       icon: FileText,        path: '/admin/blog' },
+  { key: 'team',       icon: Users,           path: '/admin/team' },
+  { key: 'services',   icon: Briefcase,       path: '/admin/services' },
+  { key: 'pages',      icon: Globe,           path: '/admin/pages' },
+  { key: 'careers',    icon: GraduationCap,   path: '/admin/careers' },
+  { key: 'newsletter', icon: Mail,            path: '/admin/newsletter' },
+  { key: 'messages',   icon: MessageSquare,   path: '/admin/messages' },
+] as const;
 
-function getBreadcrumbs(pathname: string) {
+function getBreadcrumbs(pathname: string, t: TFunction) {
   const parts = pathname.split('/').filter(Boolean);
-  const crumbs = [{ label: 'Admin', path: '/admin' }];
+  const crumbs: { label: string; path: string }[] = [
+    { label: t('admin.layout.breadcrumbAdmin'), path: '/admin' },
+  ];
   if (parts.length > 1) {
-    const item = navItems.find(n => n.path === `/admin/${parts[1]}`);
-    if (item) crumbs.push({ label: item.label, path: item.path });
+    const item = navItemDefs.find(n => n.path === `/admin/${parts[1]}`);
+    if (item) crumbs.push({ label: t(`admin.nav.${item.key}`), path: item.path });
   }
   if (parts.length > 2) {
     const last = parts[parts.length - 1];
-    if (last === 'new') crumbs.push({ label: 'New', path: pathname });
-    else if (parts.includes('edit')) crumbs.push({ label: 'Edit', path: pathname });
+    if (last === 'new') crumbs.push({ label: t('admin.layout.breadcrumbNew'), path: pathname });
+    else if (parts.includes('edit')) crumbs.push({ label: t('admin.layout.breadcrumbEdit'), path: pathname });
     else crumbs.push({ label: last, path: pathname });
   }
   return crumbs;
 }
 
 export default function AdminLayout() {
+  const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { logout, email } = useAuth();
-  const crumbs = getBreadcrumbs(pathname);
+  const crumbs = useMemo(() => getBreadcrumbs(pathname, t), [pathname, t]);
 
   const handleLogout = () => {
     logout();
@@ -61,7 +66,7 @@ export default function AdminLayout() {
         {!collapsed && (
           <div className="flex items-center gap-2">
             <span className="font-heading text-xl tracking-[0.2em] text-foreground">ESTORIA</span>
-            <span className="text-[10px] font-body uppercase tracking-wider bg-primary/20 text-primary px-1.5 py-0.5 rounded">Admin</span>
+            <span className="text-[10px] font-body uppercase tracking-wider bg-primary/20 text-primary px-1.5 py-0.5 rounded">{t('admin.layout.adminBadge')}</span>
           </div>
         )}
         {collapsed && <span className="font-heading text-xl text-primary mx-auto">E</span>}
@@ -69,7 +74,7 @@ export default function AdminLayout() {
 
       {/* Nav */}
       <nav className="flex-1 py-4 space-y-1 overflow-y-auto">
-        {navItems.map(item => (
+        {navItemDefs.map(item => (
           <Link
             key={item.path}
             to={item.path}
@@ -85,7 +90,7 @@ export default function AdminLayout() {
               <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary" />
             )}
             <item.icon className="h-4 w-4 shrink-0" />
-            {!collapsed && <span>{item.label}</span>}
+            {!collapsed && <span>{t(`admin.nav.${item.key}`)}</span>}
           </Link>
         ))}
       </nav>
@@ -99,7 +104,7 @@ export default function AdminLayout() {
           className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
         >
           <ExternalLink className="h-4 w-4" />
-          {!collapsed && <span>View Site</span>}
+          {!collapsed && <span>{t('admin.layout.viewSite')}</span>}
         </a>
         {!collapsed && email && (
           <p className="text-xs text-muted-foreground truncate">{email}</p>
@@ -109,7 +114,7 @@ export default function AdminLayout() {
           className="flex items-center gap-2 text-sm text-muted-foreground hover:text-red-400 transition-colors"
         >
           <LogOut className="h-4 w-4" />
-          {!collapsed && <span>Sign out</span>}
+          {!collapsed && <span>{t('admin.layout.signOut')}</span>}
         </button>
       </div>
     </div>
@@ -168,7 +173,7 @@ export default function AdminLayout() {
             className="hidden sm:flex items-center gap-1.5 text-sm text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)] transition-colors"
           >
             <ExternalLink className="h-3.5 w-3.5" />
-            View Site
+            {t('admin.layout.viewSite')}
           </a>
         </header>
 

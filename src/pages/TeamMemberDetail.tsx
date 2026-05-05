@@ -37,7 +37,7 @@ export default function TeamMemberDetail() {
             to="/team"
             className="text-primary font-nav text-xs uppercase tracking-wider hover:underline"
           >
-            ← Back to Team
+            {t('team.backToTeam')}
           </Link>
         </div>
       </div>
@@ -49,7 +49,7 @@ export default function TeamMemberDetail() {
       <div className="pt-24 pb-4 container mx-auto px-6">
         <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body">
           <Link to="/" className="hover:text-primary transition-colors">
-            Home
+            {t('nav.home')}
           </Link>
           <span>/</span>
           <Link to="/team" className="hover:text-primary transition-colors">
@@ -149,7 +149,7 @@ export default function TeamMemberDetail() {
           >
             <div className="w-12 h-px gold-gradient mb-6" />
             <h2 className="font-heading text-3xl text-foreground mb-10">
-              Properties by {member.name.split(' ')[0]}
+              {t('team.propertiesByAgent', { name: member.name.split(' ')[0] })}
             </h2>
           </motion.div>
 
@@ -161,7 +161,7 @@ export default function TeamMemberDetail() {
             </div>
           ) : (
             <p className="text-muted-foreground font-body text-sm">
-              No active listings at this time.
+              {t('team.noActiveListings')}
             </p>
           )}
         </div>
@@ -173,7 +173,7 @@ export default function TeamMemberDetail() {
           to="/team"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary font-nav uppercase tracking-wider transition-colors"
         >
-          <ArrowLeft size={14} /> Back to Team
+          <ArrowLeft size={14} /> {t('team.backLink')}
         </Link>
       </div>
     </>

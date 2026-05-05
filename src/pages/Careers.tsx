@@ -17,16 +17,16 @@ export default function Careers() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-6">
               <Link to="/" className="hover:text-primary transition-colors">
-                Home
+                {t('nav.home')}
               </Link>
               <span>/</span>
-              <span className="text-foreground">Careers</span>
+              <span className="text-foreground">{t('nav.careers')}</span>
             </nav>
             <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground mb-3">
-              Join Our Team
+              {t('careers.title')}
             </h1>
             <p className="text-muted-foreground font-body text-lg max-w-xl">
-              Build your career at Estonia's leading luxury real estate brand.
+              {t('careers.subtitle')}
             </p>
           </motion.div>
         </div>
@@ -42,7 +42,7 @@ export default function Careers() {
           ) : error ? (
             <div className="text-center py-32">
               <p className="text-muted-foreground font-body">
-                Failed to load positions. Please try again.
+                {t('careers.loadFailed')}
               </p>
             </div>
           ) : careers && careers.length > 0 ? (
@@ -77,7 +77,7 @@ export default function Careers() {
                     </div>
 
                     <span className="flex items-center gap-2 text-xs text-muted-foreground group-hover:text-primary font-nav uppercase tracking-wider transition-colors">
-                      View Details <ArrowRight size={14} />
+                      {t('careers.viewDetails')} <ArrowRight size={14} />
                     </span>
                   </Link>
                 </motion.div>
@@ -90,10 +90,9 @@ export default function Careers() {
               className="text-center py-24"
             >
               <Mail className="text-primary mx-auto mb-6" size={40} />
-              <h3 className="font-heading text-2xl text-foreground mb-3">No Current Openings</h3>
+              <h3 className="font-heading text-2xl text-foreground mb-3">{t('careers.noOpeningsTitle')}</h3>
               <p className="text-muted-foreground font-body text-sm max-w-md mx-auto mb-6">
-                We're always interested in hearing from talented people. Send us your CV and we'll
-                keep you in mind for future opportunities.
+                {t('careers.noOpeningsSubtitle')}
               </p>
               <button
                 onClick={() => navigate('/contact')}

@@ -23,7 +23,7 @@ export default function Newsletter({ variant = 'section' }: Props) {
 
     const parsed = emailSchema.safeParse(email);
     if (!parsed.success) {
-      setErrorMsg('Please enter a valid email address.');
+      setErrorMsg(t('newsletter.invalidEmail'));
       return;
     }
 
@@ -40,7 +40,7 @@ export default function Newsletter({ variant = 'section' }: Props) {
         setStatus('already');
       } else {
         setStatus('error');
-        setErrorMsg('Something went wrong. Please try again.');
+        setErrorMsg(t('newsletter.error'));
       }
     }
   };
@@ -55,7 +55,7 @@ export default function Newsletter({ variant = 'section' }: Props) {
         <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center">
           <Check className="text-success" size={16} />
         </div>
-        <span className="text-success font-body text-sm">Welcome aboard!</span>
+        <span className="text-success font-body text-sm">{t('newsletter.welcomeAboard')}</span>
       </motion.div>
     );
   }
@@ -63,7 +63,7 @@ export default function Newsletter({ variant = 'section' }: Props) {
   if (status === 'already') {
     return (
       <div className={`text-center ${variant === 'section' ? 'py-4' : ''}`}>
-        <span className="text-muted-foreground font-body text-sm">You're already subscribed!</span>
+        <span className="text-muted-foreground font-body text-sm">{t('newsletter.alreadySubscribed')}</span>
       </div>
     );
   }

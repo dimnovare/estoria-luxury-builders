@@ -18,7 +18,7 @@ export default function PagePlaceholder({ title, subtitle }: Props) {
         <div className="w-12 h-px gold-gradient mx-auto mb-6" />
         <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground mb-4">{title}</h1>
         {subtitle && <p className="text-muted-foreground font-body">{subtitle}</p>}
-        <p className="text-muted-foreground/50 font-body text-sm mt-8">Coming soon</p>
+        <p className="text-muted-foreground/50 font-body text-sm mt-8">{t('common.comingSoon')}</p>
       </motion.div>
     </div>
   );

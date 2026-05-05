@@ -63,10 +63,10 @@ export default function Footer() {
               {t('footer.services')}
             </h4>
             <ul className="space-y-3 text-sm text-muted-foreground font-body">
-              <li>Property Sales</li>
-              <li>Rental Management</li>
-              <li>Valuation</li>
-              <li>Investment Advisory</li>
+              <li>{t('footer.serviceList.sales')}</li>
+              <li>{t('footer.serviceList.rental')}</li>
+              <li>{t('footer.serviceList.valuation')}</li>
+              <li>{t('footer.serviceList.investment')}</li>
             </ul>
           </div>
 
@@ -123,7 +123,7 @@ export default function Footer() {
             <span className="hidden sm:inline text-border">·</span>
             <span>{companyName}</span>
             <span className="hidden sm:inline text-border">·</span>
-            <span>Reg.nr: {registryCode}</span>
+            <span>{t('footer.regNr')}: {registryCode}</span>
             <span className="hidden sm:inline text-border">·</span>
             <span>estoria.estate</span>
             <span className="hidden sm:inline text-border">·</span>

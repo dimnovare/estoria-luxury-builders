@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Plus, X, GripVertical, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -19,14 +20,18 @@ import {
   useAdminTeam,
   toBeLang,
 } from '@/hooks/api/useAdmin';
+import { propertyTypeLabel, transactionTypeLabel } from '@/lib/enumLabels';
 import { toast } from 'sonner';
 
 const langs = ['et', 'en', 'ru'] as const;
+const PROPERTY_TYPE_VALUES = ['Apartment', 'House', 'Commercial', 'Land', 'Office'] as const;
+const TRANSACTION_TYPE_VALUES = ['Sale', 'Rent'] as const;
 
 type TransFields = { title: string; description: string; address: string; city: string; district: string; };
 const emptyTrans: TransFields = { title: '', description: '', address: '', city: '', district: '' };
 
 export default function PropertyForm() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const isEdit = !!id;
@@ -39,8 +44,9 @@ export default function PropertyForm() {
   const uploadImages = useUploadPropertyImages();
   const deleteImage = useDeletePropertyImage();
 
+  // PascalCase enum values throughout — match server canon and selectable values.
   const [propertyType, setPropertyType] = useState('');
-  const [transactionType, setTransactionType] = useState('sale');
+  const [transactionType, setTransactionType] = useState('Sale');
   const [price, setPrice] = useState('');
   const [size, setSize] = useState('');
   const [rooms, setRooms] = useState('');
@@ -67,8 +73,10 @@ export default function PropertyForm() {
   // Pre-fill form when existing property loads
   useEffect(() => {
     if (existing) {
-      setPropertyType(existing.propertyType.toLowerCase());
-      setTransactionType(existing.transactionType.toLowerCase());
+      // Normalize to PascalCase regardless of what the API returned
+      const norm = (v: string) => v ? v.charAt(0).toUpperCase() + v.slice(1).toLowerCase() : '';
+      setPropertyType(norm(existing.propertyType));
+      setTransactionType(norm(existing.transactionType) || 'Sale');
       setPrice(existing.price.toString());
       setSize(existing.size.toString());
       setRooms(existing.rooms?.toString() ?? '');
@@ -110,8 +118,8 @@ export default function PropertyForm() {
 
   const handleSave = async (asDraft: boolean) => {
     const dto = {
-      transactionType: transactionType === 'sale' ? 'Sale' : 'Rent',
-      propertyType: propertyType.charAt(0).toUpperCase() + propertyType.slice(1),
+      transactionType,
+      propertyType,
       price: parseFloat(price) || 0,
       currency: 'EUR',
       size: parseFloat(size) || 0,
@@ -135,15 +143,15 @@ export default function PropertyForm() {
     try {
       if (isEdit && id) {
         await updateProperty.mutateAsync({ id, dto });
-        toast.success('Property updated');
+        toast.success(t('admin.properties.toast.updated'));
         navigate('/admin/properties');
       } else {
         const result = await createProperty.mutateAsync(dto) as { id: string };
-        toast.success('Property created — upload images in the Images tab');
+        toast.success(t('admin.properties.toast.createdEdit'));
         navigate(`/admin/properties/${result.id}/edit`);
       }
     } catch {
-      toast.error('Failed to save property');
+      toast.error(t('admin.properties.toast.saveFailed'));
     }
   };
 
@@ -151,10 +159,10 @@ export default function PropertyForm() {
     if (!isEdit || !id || !e.target.files?.length) return;
     try {
       await uploadImages.mutateAsync({ id, files: e.target.files });
-      toast.success('Images uploaded');
+      toast.success(t('admin.properties.toast.imagesUploaded'));
       if (fileInputRef.current) fileInputRef.current.value = '';
     } catch {
-      toast.error('Failed to upload images');
+      toast.error(t('admin.properties.toast.imageUploadFailed'));
     }
   };
 
@@ -162,9 +170,9 @@ export default function PropertyForm() {
     if (!id) return;
     try {
       await deleteImage.mutateAsync({ propertyId: id, imageId });
-      toast.success('Image removed');
+      toast.success(t('admin.properties.toast.imageRemoved'));
     } catch {
-      toast.error('Failed to remove image');
+      toast.error(t('admin.properties.toast.imageRemoveFailed'));
     }
   };
 
@@ -187,15 +195,15 @@ export default function PropertyForm() {
         <Button variant="ghost" size="icon" onClick={() => navigate('/admin/properties')} className="text-[hsl(0_0%_50%)]">
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{isEdit ? 'Edit Property' : 'New Property'}</h1>
+        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{isEdit ? t('admin.properties.editTitle') : t('admin.properties.newTitle')}</h1>
       </div>
 
       <Tabs defaultValue="general">
         <TabsList className="bg-white border border-[hsl(0_0%_90%)]">
-          <TabsTrigger value="general" className="data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">General</TabsTrigger>
-          <TabsTrigger value="translations" className="data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">Translations</TabsTrigger>
-          <TabsTrigger value="images" className="data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">Images</TabsTrigger>
-          <TabsTrigger value="features" className="data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">Features</TabsTrigger>
+          <TabsTrigger value="general"      className="data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">{t('admin.properties.tabs.general')}</TabsTrigger>
+          <TabsTrigger value="translations" className="data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">{t('admin.properties.tabs.translations')}</TabsTrigger>
+          <TabsTrigger value="images"       className="data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">{t('admin.properties.tabs.images')}</TabsTrigger>
+          <TabsTrigger value="features"     className="data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">{t('admin.properties.tabs.features')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="mt-4">
@@ -203,23 +211,24 @@ export default function PropertyForm() {
             <CardContent className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className={labelClass}>Property Type</Label>
+                  <Label className={labelClass}>{t('admin.properties.fields.propertyType')}</Label>
                   <Select value={propertyType} onValueChange={setPropertyType}>
-                    <SelectTrigger className={inputClass}><SelectValue placeholder="Select type" /></SelectTrigger>
+                    <SelectTrigger className={inputClass}><SelectValue placeholder={t('admin.properties.fields.selectType')} /></SelectTrigger>
                     <SelectContent>
-                      {['apartment', 'house', 'commercial', 'land', 'office'].map(t => (
-                        <SelectItem key={t} value={t} className="capitalize">{t}</SelectItem>
+                      {PROPERTY_TYPE_VALUES.map(v => (
+                        <SelectItem key={v} value={v}>{propertyTypeLabel(v, t)}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className={labelClass}>Transaction Type</Label>
+                  <Label className={labelClass}>{t('admin.properties.fields.transactionType')}</Label>
                   <Select value={transactionType} onValueChange={setTransactionType}>
                     <SelectTrigger className={inputClass}><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="sale">Sale</SelectItem>
-                      <SelectItem value="rent">Rent</SelectItem>
+                      {TRANSACTION_TYPE_VALUES.map(v => (
+                        <SelectItem key={v} value={v}>{transactionTypeLabel(v, t)}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -227,47 +236,47 @@ export default function PropertyForm() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label className={labelClass}>Price (€)</Label>
+                  <Label className={labelClass}>{t('admin.properties.fields.price')}</Label>
                   <Input type="number" value={price} onChange={e => setPrice(e.target.value)} className={inputClass} />
                 </div>
                 <div className="space-y-2">
-                  <Label className={labelClass}>Size (m²)</Label>
+                  <Label className={labelClass}>{t('admin.properties.fields.size')}</Label>
                   <Input type="number" value={size} onChange={e => setSize(e.target.value)} className={inputClass} />
                 </div>
                 <div className="space-y-2">
-                  <Label className={labelClass}>Rooms</Label>
+                  <Label className={labelClass}>{t('admin.properties.fields.rooms')}</Label>
                   <Input type="number" value={rooms} onChange={e => setRooms(e.target.value)} className={inputClass} />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <Label className={labelClass}>Bedrooms</Label>
+                  <Label className={labelClass}>{t('admin.properties.fields.bedrooms')}</Label>
                   <Input type="number" value={bedrooms} onChange={e => setBedrooms(e.target.value)} className={inputClass} />
                 </div>
                 <div className="space-y-2">
-                  <Label className={labelClass}>Bathrooms</Label>
+                  <Label className={labelClass}>{t('admin.properties.fields.bathrooms')}</Label>
                   <Input type="number" value={bathrooms} onChange={e => setBathrooms(e.target.value)} className={inputClass} />
                 </div>
                 <div className="space-y-2">
-                  <Label className={labelClass}>Floor</Label>
+                  <Label className={labelClass}>{t('admin.properties.fields.floor')}</Label>
                   <Input type="number" value={floor} onChange={e => setFloor(e.target.value)} className={inputClass} />
                 </div>
                 <div className="space-y-2">
-                  <Label className={labelClass}>Total Floors</Label>
+                  <Label className={labelClass}>{t('admin.properties.fields.totalFloors')}</Label>
                   <Input type="number" value={totalFloors} onChange={e => setTotalFloors(e.target.value)} className={inputClass} />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label className={labelClass}>Year Built</Label>
+                  <Label className={labelClass}>{t('admin.properties.fields.yearBuilt')}</Label>
                   <Input type="number" value={yearBuilt} onChange={e => setYearBuilt(e.target.value)} className={inputClass} />
                 </div>
                 <div className="space-y-2">
-                  <Label className={labelClass}>Energy Class</Label>
+                  <Label className={labelClass}>{t('admin.properties.fields.energyClass')}</Label>
                   <Select value={energyClass} onValueChange={setEnergyClass}>
-                    <SelectTrigger className={inputClass}><SelectValue placeholder="Select" /></SelectTrigger>
+                    <SelectTrigger className={inputClass}><SelectValue placeholder={t('admin.properties.fields.selectEnergyClass')} /></SelectTrigger>
                     <SelectContent>
                       {['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(c => (
                         <SelectItem key={c} value={c}>{c}</SelectItem>
@@ -276,12 +285,12 @@ export default function PropertyForm() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className={labelClass}>Agent</Label>
+                  <Label className={labelClass}>{t('admin.properties.fields.agent')}</Label>
                   <Select value={agentId} onValueChange={setAgentId}>
-                    <SelectTrigger className={inputClass}><SelectValue placeholder="Select agent" /></SelectTrigger>
+                    <SelectTrigger className={inputClass}><SelectValue placeholder={t('admin.properties.fields.selectAgent')} /></SelectTrigger>
                     <SelectContent>
-                      {(teamData ?? []).map(t => (
-                        <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                      {(teamData ?? []).map(member => (
+                        <SelectItem key={member.id} value={member.id}>{member.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -290,18 +299,18 @@ export default function PropertyForm() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className={labelClass}>Latitude</Label>
+                  <Label className={labelClass}>{t('admin.properties.fields.latitude')}</Label>
                   <Input type="text" value={lat} onChange={e => setLat(e.target.value)} placeholder="59.4370" className={inputClass} />
                 </div>
                 <div className="space-y-2">
-                  <Label className={labelClass}>Longitude</Label>
+                  <Label className={labelClass}>{t('admin.properties.fields.longitude')}</Label>
                   <Input type="text" value={lng} onChange={e => setLng(e.target.value)} placeholder="24.7536" className={inputClass} />
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
                 <Switch checked={isFeatured} onCheckedChange={setIsFeatured} />
-                <Label className={labelClass}>Featured Property</Label>
+                <Label className={labelClass}>{t('admin.properties.fields.featured')}</Label>
               </div>
             </CardContent>
           </Card>
@@ -319,25 +328,25 @@ export default function PropertyForm() {
                 {langs.map(lang => (
                   <TabsContent key={lang} value={lang} className="mt-4 space-y-4">
                     <div className="space-y-2">
-                      <Label className={labelClass}>Title</Label>
+                      <Label className={labelClass}>{t('admin.properties.fields.title')}</Label>
                       <Input value={translations[lang]?.title || ''} onChange={e => updateTranslation(lang, 'title', e.target.value)} className={inputClass} />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label className={labelClass}>Address</Label>
+                        <Label className={labelClass}>{t('admin.properties.fields.address')}</Label>
                         <Input value={translations[lang]?.address || ''} onChange={e => updateTranslation(lang, 'address', e.target.value)} className={inputClass} />
                       </div>
                       <div className="space-y-2">
-                        <Label className={labelClass}>City</Label>
+                        <Label className={labelClass}>{t('admin.properties.fields.city')}</Label>
                         <Input value={translations[lang]?.city || ''} onChange={e => updateTranslation(lang, 'city', e.target.value)} className={inputClass} />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label className={labelClass}>District</Label>
+                      <Label className={labelClass}>{t('admin.properties.fields.district')}</Label>
                       <Input value={translations[lang]?.district || ''} onChange={e => updateTranslation(lang, 'district', e.target.value)} className={inputClass} />
                     </div>
                     <div className="space-y-2">
-                      <Label className={labelClass}>Description</Label>
+                      <Label className={labelClass}>{t('admin.properties.fields.description')}</Label>
                       <Textarea rows={8} value={translations[lang]?.description || ''} onChange={e => updateTranslation(lang, 'description', e.target.value)} className={inputClass} />
                     </div>
                   </TabsContent>
@@ -357,11 +366,11 @@ export default function PropertyForm() {
               >
                 <ImageIcon className="h-8 w-8 mx-auto text-[hsl(0_0%_70%)] mb-2" />
                 {isEdit ? (
-                  <p className="text-sm text-[hsl(0_0%_50%)]">Click to upload images</p>
+                  <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.properties.images.uploadEdit')}</p>
                 ) : (
-                  <p className="text-sm text-[hsl(0_0%_50%)]">Save the property first, then add images</p>
+                  <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.properties.images.uploadCreate')}</p>
                 )}
-                <p className="text-xs text-[hsl(0_0%_70%)] mt-1">JPG, PNG, WebP — max 10MB each</p>
+                <p className="text-xs text-[hsl(0_0%_70%)] mt-1">{t('admin.properties.images.uploadHint')}</p>
               </div>
               <input
                 ref={fileInputRef}
@@ -374,7 +383,7 @@ export default function PropertyForm() {
               />
               {uploadImages.isPending && (
                 <div className="flex items-center gap-2 text-sm text-[hsl(0_0%_50%)]">
-                  <Loader2 className="h-4 w-4 animate-spin" /> Uploading…
+                  <Loader2 className="h-4 w-4 animate-spin" /> {t('admin.properties.images.uploading')}
                 </div>
               )}
 
@@ -394,7 +403,7 @@ export default function PropertyForm() {
                         </button>
                       </div>
                       {img.isCover && (
-                        <span className="absolute top-1 left-1 text-[8px] bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] px-1.5 py-0.5 rounded font-medium">Cover</span>
+                        <span className="absolute top-1 left-1 text-[8px] bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] px-1.5 py-0.5 rounded font-medium">{t('admin.properties.images.cover')}</span>
                       )}
                     </div>
                   ))}
@@ -409,7 +418,7 @@ export default function PropertyForm() {
             <CardContent className="p-6 space-y-4">
               <div className="flex gap-2">
                 <Input
-                  placeholder="Add a feature..."
+                  placeholder={t('admin.properties.features.addPlaceholder')}
                   value={newFeature}
                   onChange={e => setNewFeature(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addFeature())}
@@ -426,7 +435,7 @@ export default function PropertyForm() {
                     <button onClick={() => setFeatures(features.filter(x => x !== f))} className="hover:text-red-500"><X className="h-3 w-3" /></button>
                   </Badge>
                 ))}
-                {features.length === 0 && <p className="text-sm text-[hsl(0_0%_60%)]">No features added yet.</p>}
+                {features.length === 0 && <p className="text-sm text-[hsl(0_0%_60%)]">{t('admin.properties.features.empty')}</p>}
               </div>
             </CardContent>
           </Card>
@@ -437,11 +446,11 @@ export default function PropertyForm() {
       <div className="flex gap-3 justify-end pt-2">
         <Button variant="outline" onClick={() => handleSave(true)} disabled={isSaving} className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)]">
           {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-          Save as Draft
+          {t('admin.properties.saveDraft')}
         </Button>
         <Button onClick={() => handleSave(false)} disabled={isSaving} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
           {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-          Save & Publish
+          {t('admin.properties.savePublish')}
         </Button>
       </div>
     </div>

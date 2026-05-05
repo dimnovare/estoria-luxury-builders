@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -7,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useAdminProperties, useDeleteProperty } from '@/hooks/api/useAdmin';
+import { propertyTypeLabel, transactionTypeLabel, propertyStatusLabel } from '@/lib/enumLabels';
 import { toast } from 'sonner';
 
 const statusColors: Record<string, string> = {
@@ -17,7 +19,11 @@ const statusColors: Record<string, string> = {
   Archived: 'bg-red-100 text-red-600 border-red-200',
 };
 
+const STATUS_VALUES = ['Active', 'Draft', 'Sold', 'Rented', 'Archived'] as const;
+const TYPE_VALUES = ['Apartment', 'House', 'Commercial', 'Land', 'Office'] as const;
+
 export default function AdminProperties() {
+  const { t } = useTranslation();
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
 
@@ -35,18 +41,18 @@ export default function AdminProperties() {
   const handleDelete = async (id: string) => {
     try {
       await deleteProperty.mutateAsync(id);
-      toast.success('Property deleted');
+      toast.success(t('admin.properties.toast.deleted'));
     } catch {
-      toast.error('Failed to delete property');
+      toast.error(t('admin.properties.toast.deleteFailed'));
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">Properties</h1>
+        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.properties.title')}</h1>
         <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
-          <Link to="/admin/properties/new"><Plus className="h-4 w-4 mr-2" />Add Property</Link>
+          <Link to="/admin/properties/new"><Plus className="h-4 w-4 mr-2" />{t('admin.properties.addNew')}</Link>
         </Button>
       </div>
 
@@ -55,28 +61,24 @@ export default function AdminProperties() {
         <CardContent className="p-4 flex flex-wrap gap-3">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
-              <SelectValue placeholder="Status" />
+              <SelectValue placeholder={t('admin.properties.filters.status')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="Active">Active</SelectItem>
-              <SelectItem value="Draft">Draft</SelectItem>
-              <SelectItem value="Sold">Sold</SelectItem>
-              <SelectItem value="Rented">Rented</SelectItem>
-              <SelectItem value="Archived">Archived</SelectItem>
+              <SelectItem value="all">{t('admin.properties.filters.allStatuses')}</SelectItem>
+              {STATUS_VALUES.map(v => (
+                <SelectItem key={v} value={v}>{propertyStatusLabel(v, t)}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
             <SelectTrigger className="w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
-              <SelectValue placeholder="Type" />
+              <SelectValue placeholder={t('admin.properties.filters.type')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="Apartment">Apartment</SelectItem>
-              <SelectItem value="House">House</SelectItem>
-              <SelectItem value="Commercial">Commercial</SelectItem>
-              <SelectItem value="Land">Land</SelectItem>
-              <SelectItem value="Office">Office</SelectItem>
+              <SelectItem value="all">{t('admin.properties.filters.allTypes')}</SelectItem>
+              {TYPE_VALUES.map(v => (
+                <SelectItem key={v} value={v}>{propertyTypeLabel(v, t)}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </CardContent>
@@ -89,19 +91,19 @@ export default function AdminProperties() {
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12"></TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Title</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Type</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Transaction</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Price</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Status</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">Actions</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.title')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.type')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.transaction')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.price')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.status')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">
-                    Loading…
+                    {t('admin.common.loading')}
                   </TableCell>
                 </TableRow>
               )}
@@ -117,8 +119,8 @@ export default function AdminProperties() {
                   <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
                     {p.translations?.['En']?.title ?? p.slug}
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{p.propertyType}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{p.transactionType}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{propertyTypeLabel(p.propertyType, t)}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{transactionTypeLabel(p.transactionType, t)}</TableCell>
                   <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
                     €{p.price.toLocaleString()}
                   </TableCell>
@@ -127,7 +129,7 @@ export default function AdminProperties() {
                       variant="outline"
                       className={`text-[10px] ${statusColors[p.status] ?? 'bg-gray-100 text-gray-600 border-gray-200'}`}
                     >
-                      {p.status}
+                      {propertyStatusLabel(p.status, t)}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -154,7 +156,7 @@ export default function AdminProperties() {
             </TableBody>
           </Table>
           {!isLoading && filtered.length === 0 && (
-            <p className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">No properties match your filters.</p>
+            <p className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.properties.noMatch')}</p>
           )}
         </CardContent>
       </Card>

@@ -14,7 +14,7 @@ export default function PropertyCard({ property, index = 0 }: Props) {
 
   const formatPrice = (price: number, type: string) => {
     const formatted = new Intl.NumberFormat('et-EE').format(price);
-    return type === 'rent' ? `€${formatted}/mo` : `€${formatted}`;
+    return type === 'rent' ? `€${formatted}${t('properties.perMonth')}` : `€${formatted}`;
   };
 
   return (

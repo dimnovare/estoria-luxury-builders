@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -26,6 +27,7 @@ type TransFields = { title: string; location: string; description: string; };
 const emptyTrans: TransFields = { title: '', location: '', description: '' };
 
 export default function AdminCareers() {
+  const { t } = useTranslation();
   const { data: careers, isLoading } = useAdminCareers();
   const createCareer = useCreateCareer();
   const updateCareer = useUpdateCareer();
@@ -72,23 +74,23 @@ export default function AdminCareers() {
     try {
       if (editingCareer) {
         await updateCareer.mutateAsync({ id: editingCareer.id, dto });
-        toast.success('Position updated');
+        toast.success(t('admin.careers.toast.updated'));
       } else {
         await createCareer.mutateAsync(dto);
-        toast.success('Position added');
+        toast.success(t('admin.careers.toast.added'));
       }
       setDialogOpen(false);
     } catch {
-      toast.error('Failed to save position');
+      toast.error(t('admin.careers.toast.saveFailed'));
     }
   };
 
   const handleDelete = async (id: string) => {
     try {
       await deleteCareer.mutateAsync(id);
-      toast.success('Position deleted');
+      toast.success(t('admin.careers.toast.deleted'));
     } catch {
-      toast.error('Failed to delete position');
+      toast.error(t('admin.careers.toast.deleteFailed'));
     }
   };
 
@@ -100,9 +102,9 @@ export default function AdminCareers() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">Careers</h1>
+        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.careers.title')}</h1>
         <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
-          <Plus className="h-4 w-4 mr-2" />Add Position
+          <Plus className="h-4 w-4 mr-2" />{t('admin.careers.addNew')}
         </Button>
       </div>
 
@@ -111,16 +113,16 @@ export default function AdminCareers() {
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Title</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Location</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Status</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">Actions</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.careers.table.title')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.careers.table.location')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">Loading…</TableCell>
+                  <TableCell colSpan={4} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
                 </TableRow>
               )}
               {!isLoading && (careers ?? []).map(c => (
@@ -136,7 +138,7 @@ export default function AdminCareers() {
                       variant="outline"
                       className={`text-[10px] ${c.isActive ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-600 border-gray-200'}`}
                     >
-                      {c.isActive ? 'Active' : 'Inactive'}
+                      {c.isActive ? t('admin.careers.active') : t('admin.careers.inactive')}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -165,13 +167,13 @@ export default function AdminCareers() {
         <DialogContent className="max-w-xl bg-white border-[hsl(0_0%_90%)]">
           <DialogHeader>
             <DialogTitle className="text-[hsl(0_0%_15%)]">
-              {editingCareer ? 'Edit Position' : 'New Position'}
+              {editingCareer ? t('admin.careers.editTitle') : t('admin.careers.newTitle')}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <Switch checked={active} onCheckedChange={setActive} />
-              <Label className={labelClass}>Active</Label>
+              <Label className={labelClass}>{t('admin.careers.fields.active')}</Label>
             </div>
 
             <Tabs defaultValue="et">
@@ -183,15 +185,15 @@ export default function AdminCareers() {
               {langs.map(lang => (
                 <TabsContent key={lang} value={lang} className="mt-3 space-y-3">
                   <div className="space-y-2">
-                    <Label className={labelClass}>Title</Label>
+                    <Label className={labelClass}>{t('admin.careers.fields.title')}</Label>
                     <Input value={translations[lang]?.title || ''} onChange={e => updateTrans(lang, 'title', e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>Location</Label>
+                    <Label className={labelClass}>{t('admin.careers.fields.location')}</Label>
                     <Input value={translations[lang]?.location || ''} onChange={e => updateTrans(lang, 'location', e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>Description (HTML)</Label>
+                    <Label className={labelClass}>{t('admin.careers.fields.description')}</Label>
                     <Textarea rows={8} value={translations[lang]?.description || ''} onChange={e => updateTrans(lang, 'description', e.target.value)} className={inputClass} />
                   </div>
                 </TabsContent>
@@ -201,7 +203,7 @@ export default function AdminCareers() {
           <div className="flex justify-end pt-2">
             <Button onClick={handleSave} disabled={isSaving} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
               {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              Save Position
+              {t('admin.careers.savePosition')}
             </Button>
           </div>
         </DialogContent>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Image as ImageIcon, Loader2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -24,6 +25,7 @@ type TransFields = { title: string; excerpt: string; content: string; metaTitle:
 const emptyTrans: TransFields = { title: '', excerpt: '', content: '', metaTitle: '', metaDescription: '' };
 
 export default function BlogForm() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const isEdit = !!id;
@@ -75,7 +77,7 @@ export default function BlogForm() {
       const result = await uploadFile.mutateAsync({ file, folder: 'blog' });
       setCoverImageUrl(result.url);
     } catch {
-      toast.error('Failed to upload cover image');
+      toast.error(t('admin.blog.fields.uploadFailed'));
     } finally {
       setUploadingCover(false);
     }
@@ -93,14 +95,14 @@ export default function BlogForm() {
     try {
       if (isEdit && id) {
         await updateBlogPost.mutateAsync({ id, dto });
-        toast.success('Post updated');
+        toast.success(t('admin.blog.toast.updated'));
       } else {
         await createBlogPost.mutateAsync(dto);
-        toast.success('Post created');
+        toast.success(t('admin.blog.toast.created'));
       }
       navigate('/admin/blog');
     } catch {
-      toast.error('Failed to save post');
+      toast.error(t('admin.blog.toast.saveFailed'));
     }
   };
 
@@ -123,14 +125,14 @@ export default function BlogForm() {
         <Button variant="ghost" size="icon" onClick={() => navigate('/admin/blog')} className="text-[hsl(0_0%_50%)]">
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{isEdit ? 'Edit Post' : 'New Blog Post'}</h1>
+        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{isEdit ? t('admin.blog.editTitle') : t('admin.blog.newTitle')}</h1>
       </div>
 
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
         <CardContent className="p-6 space-y-4">
           {/* Cover image */}
           <div className="space-y-2">
-            <Label className={labelClass}>Cover Image</Label>
+            <Label className={labelClass}>{t('admin.blog.fields.coverImage')}</Label>
             {coverImageUrl ? (
               <div className="relative rounded-lg overflow-hidden border border-[hsl(0_0%_90%)] group">
                 <img src={coverImageUrl} alt="" className="w-full h-48 object-cover" />
@@ -151,7 +153,7 @@ export default function BlogForm() {
                 ) : (
                   <>
                     <ImageIcon className="h-6 w-6 mx-auto text-[hsl(0_0%_70%)] mb-1" />
-                    <p className="text-sm text-[hsl(0_0%_50%)]">Upload cover image</p>
+                    <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.blog.fields.uploadCover')}</p>
                   </>
                 )}
               </div>
@@ -160,11 +162,11 @@ export default function BlogForm() {
           </div>
 
           <div className="space-y-2">
-            <Label className={labelClass}>Author</Label>
+            <Label className={labelClass}>{t('admin.blog.fields.author')}</Label>
             <Select value={authorId} onValueChange={setAuthorId}>
-              <SelectTrigger className={inputClass}><SelectValue placeholder="Select author" /></SelectTrigger>
+              <SelectTrigger className={inputClass}><SelectValue placeholder={t('admin.blog.fields.selectAuthor')} /></SelectTrigger>
               <SelectContent>
-                {(teamData ?? []).map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
+                {(teamData ?? []).map(member => <SelectItem key={member.id} value={member.id}>{member.name}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -183,24 +185,24 @@ export default function BlogForm() {
             {langs.map(lang => (
               <TabsContent key={lang} value={lang} className="mt-4 space-y-4">
                 <div className="space-y-2">
-                  <Label className={labelClass}>Title</Label>
+                  <Label className={labelClass}>{t('admin.blog.fields.title')}</Label>
                   <Input value={translations[lang]?.title || ''} onChange={e => updateT(lang, 'title', e.target.value)} className={inputClass} />
                 </div>
                 <div className="space-y-2">
-                  <Label className={labelClass}>Excerpt</Label>
+                  <Label className={labelClass}>{t('admin.blog.fields.excerpt')}</Label>
                   <Textarea rows={3} value={translations[lang]?.excerpt || ''} onChange={e => updateT(lang, 'excerpt', e.target.value)} className={inputClass} />
                 </div>
                 <div className="space-y-2">
-                  <Label className={labelClass}>Content (HTML)</Label>
+                  <Label className={labelClass}>{t('admin.blog.fields.content')}</Label>
                   <Textarea rows={12} value={translations[lang]?.content || ''} onChange={e => updateT(lang, 'content', e.target.value)} className={inputClass} />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className={labelClass}>Meta Title</Label>
+                    <Label className={labelClass}>{t('admin.blog.fields.metaTitle')}</Label>
                     <Input value={translations[lang]?.metaTitle || ''} onChange={e => updateT(lang, 'metaTitle', e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>Meta Description</Label>
+                    <Label className={labelClass}>{t('admin.blog.fields.metaDescription')}</Label>
                     <Input value={translations[lang]?.metaDescription || ''} onChange={e => updateT(lang, 'metaDescription', e.target.value)} className={inputClass} />
                   </div>
                 </div>
@@ -213,7 +215,7 @@ export default function BlogForm() {
       <div className="flex justify-end">
         <Button onClick={handleSave} disabled={isSaving} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
           {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-          Save Post
+          {t('admin.blog.savePost')}
         </Button>
       </div>
     </div>

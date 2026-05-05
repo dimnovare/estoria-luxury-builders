@@ -8,6 +8,7 @@
     "blog": "Blogi",
     "careers": "Karjäär",
     "contact": "Kontakt",
+    "careers": "Karjäär",
     "contactUs": "Võta ühendust"
   },
   "hero": {
@@ -17,11 +18,7 @@
     "buy": "Ost",
     "rent": "Üür",
     "allCities": "Kõik linnad",
-    "allTypes": "Kõik tüübid",
-    "apartment": "Korter",
-    "house": "Maja",
-    "commercial": "Äripind",
-    "land": "Maa"
+    "allTypes": "Kõik tüübid"
   },
   "home": {
     "eyebrow": "Tipptasemel kinnisvara · Tallinn · Eesti",
@@ -43,34 +40,69 @@
     "forRent": "Üür",
     "rooms": "tuba",
     "beds": "magamistuba",
-    "showingPrefix": "Kuvatud",
-    "showingOf": "/",
-    "showingSuffix": "objektist",
-    "sort": {
-      "newest": "Uusimad",
-      "price-asc": "Hind: madalaim → kõrgeim",
-      "price-desc": "Hind: kõrgeim → madalaim",
-      "size": "Suurus: suurim"
-    },
-    "filter": {
-      "filters": "Filtrid",
-      "min": "Min",
-      "max": "Max",
-      "reset": "Lähtesta",
-      "resetFilters": "Lähtesta filtrid",
-      "resetAll": "Lähtesta kõik filtrid",
-      "showResults": "Kuva tulemused ({{count}})"
-    },
+    "perMonth": "/kuus",
+    "showing": "Kuvatud {{count}} / {{total}} objekti",
+    "loadFailed": "Objektide laadimine ebaõnnestus. Palun proovige uuesti.",
     "empty": {
       "title": "Objekte ei leitud",
-      "subtitle": "Proovi filtreid muuta, et näha rohkem tulemusi."
+      "subtitle": "Proovige filtreid muuta, et näha rohkem tulemusi."
     },
-    "error": {
-      "loadFailed": "Objektide laadimine ebaõnnestus. Palun proovi uuesti."
+    "detail": {
+      "viewAllPhotos": "Vaata kõiki {{count}} fotot",
+      "featuresTitle": "Eripärad ja mugavused",
+      "locationTitle": "Asukoht",
+      "mapPlaceholder": "Kaardi integratsioon saadaval",
+      "similarTitle": "Sarnased objektid",
+      "specsTitle": "Objekti andmed",
+      "contactAgent": "Võta maakleriga ühendust",
+      "sendMessage": "Saada sõnum",
+      "messageSent": "Sõnum on saadetud!",
+      "messagePlaceholder": "Olen huvitatud objektist „{{title}}\"",
+      "phonePlaceholder": "Telefon (valikuline)",
+      "namePlaceholder": "Teie nimi",
+      "emailPlaceholder": "E-post",
+      "submitError": "Midagi läks valesti. Palun proovige uuesti.",
+      "submitButton": "Saada sõnum",
+      "shareCopied": "Link kopeeritud!",
+      "shareProperty": "Jaga objekti",
+      "mobileContact": "Kontakt",
+      "backToProperties": "← Tagasi kinnisvara loetelusse",
+      "specs": {
+        "size": "Pindala",
+        "rooms": "Toad",
+        "bedrooms": "Magamistoad",
+        "bathrooms": "Vannitoad",
+        "floor": "Korrus",
+        "totalFloors": "Korruseid kokku",
+        "yearBuilt": "Ehitusaasta",
+        "energyClass": "Energiaklass"
+      }
+    }
+  },
+  "filters": {
+    "filters": "Filtrid",
+    "min": "Min",
+    "max": "Max",
+    "minPrice": "Min hind",
+    "maxPrice": "Max hind",
+    "reset": "Lähtesta",
+    "resetFilters": "Lähtesta filtrid",
+    "resetAll": "Lähtesta kõik filtrid",
+    "showResults": "Kuva tulemused ({{count}})",
+    "sort": {
+      "newest": "Uusimad",
+      "priceAsc": "Hind: madalaim → kõrgeim",
+      "priceDesc": "Hind: kõrgeim → madalaim",
+      "sizeDesc": "Suurus: suurim"
     }
   },
   "services": {
-    "viewAll": "Vaata teenuseid"
+    "viewAll": "Vaata teenuseid",
+    "title": "Meie teenused",
+    "subtitle": "Terviklikud kinnisvaralahendused vastavalt Teie vajadustele.",
+    "loadFailed": "Teenuste laadimine ebaõnnestus. Palun proovige uuesti.",
+    "ctaTitle": "Vajate abi? Võtke ühendust tasuta konsultatsiooniks",
+    "ctaSubtitle": "Meie eksperdid on valmis arutlema Teie vajaduste üle ja pakkuma sobiva lahenduse."
   },
   "about": {
     "title": "Estoriast",
@@ -89,35 +121,67 @@
       },
       "discretion": {
         "name": "Diskreetsus",
-        "description": "Sinu privaatsus on meie jaoks ülim. Käsitleme iga tehingut äärmise konfidentsiaalsusega."
+        "description": "Teie privaatsus on meie jaoks ülim. Käsitleme iga tehingut äärmise konfidentsiaalsusega."
       }
     },
     "cta": {
       "title": "Valmis oma tulevikku leidma?",
-      "subtitle": "Lase meie meeskonnal viia sind õige kinnisvarani. Ootame sinuga ühendust.",
+      "subtitle": "Lase meie meeskonnal viia Teid õige kinnisvarani. Ootame Teiega ühendust.",
       "button": "Võta ühendust"
     }
   },
+  "team": {
+    "title": "Meie meeskond",
+    "subtitle": "Eksperdid Eesti kõige eksklusiivsema kinnisvara taga.",
+    "loadFailed": "Meeskonna laadimine ebaõnnestus. Palun proovige uuesti.",
+    "backToTeam": "← Tagasi meeskonna juurde",
+    "backLink": "Tagasi meeskonna juurde",
+    "propertiesByAgent": "{{name}} pakkumised",
+    "noActiveListings": "Hetkel aktiivseid pakkumisi ei ole."
+  },
+  "blog": {
+    "title": "Uudised ja artiklid",
+    "loadFailed": "Postituste laadimine ebaõnnestus. Palun proovige uuesti.",
+    "noMore": "Rohkem postitusi ei ole.",
+    "share": "Jaga",
+    "copyLink": "Kopeeri link",
+    "copied": "Kopeeritud!",
+    "relatedTitle": "Seotud postitused",
+    "backToBlog": "← Tagasi blogisse",
+    "backLink": "Tagasi blogisse",
+    "viewProfile": "Vaata profiili →"
+  },
+  "careers": {
+    "title": "Liitu meeskonnaga",
+    "subtitle": "Loo oma karjäär Eesti juhtivas luksuskinnisvara brändis.",
+    "loadFailed": "Tööpakkumiste laadimine ebaõnnestus. Palun proovige uuesti.",
+    "viewDetails": "Vaata lähemalt",
+    "noOpeningsTitle": "Hetkel avatud positsioone ei ole",
+    "noOpeningsSubtitle": "Oleme alati huvitatud andekate inimeste kohtumisest. Saatke meile oma CV ja arvestame Teiega tulevaste võimaluste puhul.",
+    "applyNow": "Kandideeri",
+    "allPositions": "← Kõik positsioonid",
+    "backLink": "Kõik positsioonid"
+  },
   "contact": {
-    "headerLead": "Meil on hea meel sinust kuulda. Võta ühendust ja alustame vestlust.",
+    "headerLead": "Meil on hea meel Teilt kuulda. Võtke ühendust ja alustame vestlust.",
     "followUs": "Jälgi meid",
     "inquiry": {
       "about": "Päring objekti kohta:",
       "subject": "Päring: {{title}}",
-      "message": "Olen huvitatud objektist \"{{title}}\" aadressil {{address}}."
+      "message": "Olen huvitatud objektist „{{title}}\" aadressil {{address}}."
     },
     "success": {
       "title": "Aitäh!",
-      "subtitle": "Võtame ühendust 24 tunni jooksul."
+      "subtitle": "Võtame Teiega ühendust 24 tunni jooksul."
     },
     "form": {
-      "namePlaceholder": "Sinu nimi *",
+      "namePlaceholder": "Teie nimi *",
       "emailPlaceholder": "E-posti aadress *",
       "phonePlaceholder": "Telefon (valikuline)",
       "subjectPlaceholder": "Teema",
-      "messagePlaceholder": "Sinu sõnum *",
+      "messagePlaceholder": "Teie sõnum *",
       "send": "Saada sõnum",
-      "error": "Midagi läks valesti. Palun proovi uuesti."
+      "error": "Midagi läks valesti. Palun proovige uuesti."
     },
     "info": {
       "address": "Kontori aadress",
@@ -132,29 +196,400 @@
   "newsletter": {
     "title": "Püsi kursis",
     "subtitle": "Saa esimesena teada uutest pakkumistest ja turuülevaadetest.",
-    "placeholder": "Sinu e-posti aadress",
+    "placeholder": "Teie e-posti aadress",
     "subscribe": "Telli",
-    "success": "Oled tellinud!",
-    "error": "Midagi läks valesti. Proovi uuesti."
+    "success": "Olete tellinud!",
+    "welcomeAboard": "Tere tulemast!",
+    "alreadySubscribed": "Olete juba tellinud!",
+    "invalidEmail": "Palun sisestage kehtiv e-posti aadress.",
+    "error": "Midagi läks valesti. Palun proovige uuesti."
   },
   "footer": {
-    "tagline": "Kus sinu tulevik elab",
+    "tagline": "Kus Teie tulevik elab",
     "quickLinks": "Kiirlingid",
     "services": "Teenused",
     "contactInfo": "Kontaktinfo",
     "rights": "Kõik õigused kaitstud.",
     "address": "Tallinn, Eesti",
-    "privacy": "Privaatsuspoliitika"
+    "privacy": "Privaatsuspoliitika",
+    "regNr": "Registrikood",
+    "serviceList": {
+      "sales": "Kinnisvara müük",
+      "rental": "Üürihaldus",
+      "valuation": "Hindamine",
+      "investment": "Investeerimisnõustamine"
+    }
   },
   "common": {
     "loading": "Laadimine…",
     "error": "Midagi läks valesti",
     "notFound": "Lehte ei leitud",
-    "backHome": "Tagasi avalehele"
+    "backHome": "Tagasi avalehele",
+    "comingSoon": "Tulekul",
+    "noSubject": "(teema puudub)"
+  },
+  "errors": {
+    "generic": "Midagi läks valesti. Palun proovige uuesti.",
+    "boundaryTitle": "Midagi läks valesti",
+    "boundaryMessage": "Tekkis ootamatu viga. Palun värskendage lehte ja proovige uuesti.",
+    "boundaryReload": "Värskenda lehte"
   },
   "cookies": {
-    "message": "Kasutame küpsiseid teie kogemuse parandamiseks",
+    "message": "Kasutame küpsiseid Teie kogemuse parandamiseks",
     "accept": "Nõustun",
     "privacy": "Privaatsuspoliitika"
+  },
+  "enums": {
+    "propertyType": {
+      "Apartment": "Korter",
+      "House": "Maja",
+      "Commercial": "Äripind",
+      "Land": "Maa",
+      "Office": "Kontor"
+    },
+    "transactionType": {
+      "Sale": "Müük",
+      "Rent": "Üür"
+    },
+    "propertyStatus": {
+      "Draft": "Mustand",
+      "Active": "Aktiivne",
+      "Sold": "Müüdud",
+      "Rented": "Üüritud",
+      "Archived": "Arhiveeritud"
+    },
+    "contactStatus": {
+      "New": "Uus",
+      "Read": "Loetud",
+      "Replied": "Vastatud"
+    },
+    "blogStatus": {
+      "Draft": "Mustand",
+      "Published": "Avaldatud"
+    }
+  },
+  "admin": {
+    "common": {
+      "save": "Salvesta",
+      "cancel": "Tühista",
+      "delete": "Kustuta",
+      "edit": "Muuda",
+      "back": "Tagasi",
+      "loading": "Laadimine…",
+      "error": "Viga",
+      "success": "Õnnestus",
+      "actions": "Tegevused",
+      "name": "Nimi",
+      "email": "E-post",
+      "phone": "Telefon",
+      "date": "Kuupäev",
+      "status": "Staatus",
+      "title": "Pealkiri",
+      "type": "Tüüp",
+      "all": "Kõik"
+    },
+    "layout": {
+      "adminBadge": "Admin",
+      "viewSite": "Vaata saiti",
+      "signOut": "Logi välja",
+      "breadcrumbAdmin": "Admin",
+      "breadcrumbNew": "Uus",
+      "breadcrumbEdit": "Muuda"
+    },
+    "nav": {
+      "dashboard": "Töölaud",
+      "properties": "Kinnisvara",
+      "blog": "Blogi",
+      "team": "Meeskond",
+      "services": "Teenused",
+      "pages": "Lehed",
+      "careers": "Karjäär",
+      "newsletter": "Uudiskiri",
+      "messages": "Sõnumid"
+    },
+    "login": {
+      "portalTitle": "Administraatori portaal",
+      "emailLabel": "E-post",
+      "passwordLabel": "Parool",
+      "signIn": "Logi sisse",
+      "signingIn": "Sisselogimine…",
+      "invalidCredentials": "Vale e-post või parool"
+    },
+    "dashboard": {
+      "title": "Töölaud",
+      "stats": {
+        "properties": "Kinnisvara",
+        "blogPosts": "Blogipostitused",
+        "teamMembers": "Meeskonnaliikmed",
+        "unreadMessages": "Lugemata sõnumid",
+        "subscribers": "Tellijad"
+      },
+      "recentMessages": "Viimased sõnumid",
+      "viewAll": "Vaata kõiki",
+      "subjectColumn": "Teema",
+      "noMessages": "Sõnumeid pole veel.",
+      "quickActions": "Kiirtoimingud",
+      "addProperty": "Lisa objekt",
+      "newBlogPost": "Uus blogipostitus"
+    },
+    "properties": {
+      "title": "Kinnisvara",
+      "addNew": "Lisa objekt",
+      "editTitle": "Muuda objekti",
+      "newTitle": "Uus objekt",
+      "filters": {
+        "status": "Staatus",
+        "type": "Tüüp",
+        "allStatuses": "Kõik staatused",
+        "allTypes": "Kõik tüübid"
+      },
+      "table": {
+        "title": "Pealkiri",
+        "type": "Tüüp",
+        "transaction": "Tehing",
+        "price": "Hind",
+        "status": "Staatus"
+      },
+      "noMatch": "Ükski objekt ei vasta valitud filtritele.",
+      "tabs": {
+        "general": "Üldine",
+        "translations": "Tõlked",
+        "images": "Pildid",
+        "features": "Eripärad"
+      },
+      "fields": {
+        "propertyType": "Objekti tüüp",
+        "transactionType": "Tehingu tüüp",
+        "selectType": "Vali tüüp",
+        "price": "Hind (€)",
+        "size": "Pindala (m²)",
+        "rooms": "Toad",
+        "bedrooms": "Magamistoad",
+        "bathrooms": "Vannitoad",
+        "floor": "Korrus",
+        "totalFloors": "Korruseid kokku",
+        "yearBuilt": "Ehitusaasta",
+        "energyClass": "Energiaklass",
+        "selectEnergyClass": "Vali",
+        "agent": "Maakler",
+        "selectAgent": "Vali maakler",
+        "latitude": "Laiuskraad",
+        "longitude": "Pikkuskraad",
+        "featured": "Esiletõstetud objekt",
+        "title": "Pealkiri",
+        "address": "Aadress",
+        "city": "Linn",
+        "district": "Linnaosa",
+        "description": "Kirjeldus"
+      },
+      "images": {
+        "uploadEdit": "Klõpsa piltide üleslaadimiseks",
+        "uploadCreate": "Salvesta objekt esmalt, seejärel lisa pildid",
+        "uploadHint": "JPG, PNG, WebP — kuni 10 MB pilt",
+        "uploading": "Laadimine…",
+        "cover": "Kaanepilt"
+      },
+      "features": {
+        "addPlaceholder": "Lisa eripära…",
+        "empty": "Eripärasid pole veel lisatud."
+      },
+      "saveDraft": "Salvesta mustandina",
+      "savePublish": "Salvesta ja avalda",
+      "toast": {
+        "deleted": "Objekt kustutatud",
+        "deleteFailed": "Objekti kustutamine ebaõnnestus",
+        "updated": "Objekt uuendatud",
+        "createdEdit": "Objekt loodud — laadi pildid üles vahekaardil „Pildid\"",
+        "saveFailed": "Objekti salvestamine ebaõnnestus",
+        "imagesUploaded": "Pildid üles laaditud",
+        "imageUploadFailed": "Piltide üleslaadimine ebaõnnestus",
+        "imageRemoved": "Pilt eemaldatud",
+        "imageRemoveFailed": "Pildi eemaldamine ebaõnnestus"
+      }
+    },
+    "blog": {
+      "title": "Blogipostitused",
+      "addNew": "Uus postitus",
+      "editTitle": "Muuda postitust",
+      "newTitle": "Uus blogipostitus",
+      "table": {
+        "title": "Pealkiri",
+        "author": "Autor",
+        "status": "Staatus",
+        "date": "Kuupäev"
+      },
+      "empty": "Blogipostitusi pole veel.",
+      "fields": {
+        "coverImage": "Kaanepilt",
+        "uploadCover": "Laadi kaanepilt üles",
+        "uploadFailed": "Kaanepildi üleslaadimine ebaõnnestus",
+        "author": "Autor",
+        "selectAuthor": "Vali autor",
+        "title": "Pealkiri",
+        "excerpt": "Sissejuhatus",
+        "content": "Sisu (HTML)",
+        "metaTitle": "Meta pealkiri",
+        "metaDescription": "Meta kirjeldus"
+      },
+      "savePost": "Salvesta postitus",
+      "toast": {
+        "deleted": "Postitus kustutatud",
+        "deleteFailed": "Postituse kustutamine ebaõnnestus",
+        "updated": "Postitus uuendatud",
+        "created": "Postitus loodud",
+        "saveFailed": "Postituse salvestamine ebaõnnestus"
+      }
+    },
+    "team": {
+      "title": "Meeskonnaliikmed",
+      "addNew": "Lisa liige",
+      "editTitle": "Muuda liiget",
+      "newTitle": "Uus meeskonnaliige",
+      "table": {
+        "name": "Nimi",
+        "role": "Roll",
+        "languages": "Keeled",
+        "contact": "Kontakt"
+      },
+      "fields": {
+        "photo": "Foto",
+        "uploadPhoto": "Laadi foto üles",
+        "saveFirst": "Foto laadimiseks salvesta liige esmalt",
+        "change": "Muuda",
+        "phone": "Telefon",
+        "email": "E-post",
+        "sortOrder": "Järjekord",
+        "spokenLanguages": "Räägitavad keeled",
+        "name": "Nimi",
+        "role": "Roll",
+        "bio": "Tutvustus"
+      },
+      "languages": {
+        "estonian": "Eesti",
+        "english": "Inglise",
+        "russian": "Vene",
+        "finnish": "Soome",
+        "german": "Saksa",
+        "french": "Prantsuse",
+        "swedish": "Rootsi"
+      },
+      "saveMember": "Salvesta liige",
+      "toast": {
+        "photoUploaded": "Foto üles laaditud",
+        "photoUploadFailed": "Foto üleslaadimine ebaõnnestus",
+        "updated": "Liige uuendatud",
+        "added": "Liige lisatud",
+        "saveFailed": "Liikme salvestamine ebaõnnestus",
+        "removed": "Liige eemaldatud",
+        "removeFailed": "Liikme eemaldamine ebaõnnestus"
+      }
+    },
+    "services": {
+      "title": "Teenused",
+      "addNew": "Lisa teenus",
+      "editTitle": "Muuda teenust",
+      "newTitle": "Uus teenus",
+      "table": {
+        "icon": "Ikoon",
+        "name": "Nimetus",
+        "priceInfo": "Hinnainfo"
+      },
+      "fields": {
+        "iconName": "Ikooni nimi",
+        "sortOrder": "Järjekord",
+        "name": "Nimetus",
+        "description": "Kirjeldus",
+        "priceInfo": "Hinnainfo"
+      },
+      "saveService": "Salvesta teenus",
+      "toast": {
+        "updated": "Teenus uuendatud",
+        "added": "Teenus lisatud",
+        "saveFailed": "Teenuse salvestamine ebaõnnestus",
+        "deleted": "Teenus kustutatud",
+        "deleteFailed": "Teenuse kustutamine ebaõnnestus"
+      }
+    },
+    "pages": {
+      "title": "Lehed",
+      "table": {
+        "key": "Võti",
+        "label": "Nimetus"
+      },
+      "fields": {
+        "title": "Pealkiri",
+        "body": "Sisu",
+        "imageUrl": "Pildi URL",
+        "videoUrl": "Video URL",
+        "videoUrlHint": "Otsene video URL lõpuga .mp4, .webm või .mov. YouTube'i lingid pole toetatud. Tasuta allikad: pexels.com/videos, coverr.co, pixabay.com/videos"
+      },
+      "savePage": "Salvesta leht",
+      "toast": {
+        "saved": "Lehe sisu salvestatud",
+        "saveFailed": "Lehe sisu salvestamine ebaõnnestus"
+      }
+    },
+    "careers": {
+      "title": "Karjäär",
+      "addNew": "Lisa positsioon",
+      "editTitle": "Muuda positsiooni",
+      "newTitle": "Uus positsioon",
+      "table": {
+        "title": "Pealkiri",
+        "location": "Asukoht"
+      },
+      "active": "Aktiivne",
+      "inactive": "Mitteaktiivne",
+      "fields": {
+        "active": "Aktiivne",
+        "title": "Pealkiri",
+        "location": "Asukoht",
+        "description": "Kirjeldus (HTML)"
+      },
+      "savePosition": "Salvesta positsioon",
+      "toast": {
+        "updated": "Positsioon uuendatud",
+        "added": "Positsioon lisatud",
+        "saveFailed": "Positsiooni salvestamine ebaõnnestus",
+        "deleted": "Positsioon kustutatud",
+        "deleteFailed": "Positsiooni kustutamine ebaõnnestus"
+      }
+    },
+    "messages": {
+      "title": "Sõnumid",
+      "table": {
+        "subject": "Teema"
+      },
+      "empty": "Sõnumeid pole veel.",
+      "dialog": {
+        "from": "Saatja:",
+        "email": "E-post:",
+        "phone": "Telefon:",
+        "date": "Kuupäev:",
+        "property": "Objekt:"
+      },
+      "markRead": "Märgi loetuks",
+      "markReplied": "Märgi vastatuks",
+      "toast": {
+        "marked": "Märgitud kui {{status}}",
+        "updateFailed": "Staatuse uuendamine ebaõnnestus"
+      }
+    },
+    "newsletter": {
+      "title": "Uudiskirja tellijad",
+      "exportCsv": "Ekspordi CSV",
+      "table": {
+        "language": "Keel",
+        "subscribed": "Tellitud"
+      },
+      "active": "Aktiivne",
+      "unsubscribed": "Loobutud",
+      "empty": "Tellijaid pole veel.",
+      "toast": {
+        "exported": "CSV eksporditud",
+        "removed": "Tellija eemaldatud",
+        "removeFailed": "Tellija eemaldamine ebaõnnestus"
+      }
+    }
   }
 }

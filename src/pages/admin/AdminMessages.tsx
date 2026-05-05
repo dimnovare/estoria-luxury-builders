@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useAdminContacts, useUpdateContactStatus, type ContactMessage } from '@/hooks/api/useAdmin';
+import { contactStatusLabel } from '@/lib/enumLabels';
 import { toast } from 'sonner';
 
 const statusColors: Record<string, string> = {
@@ -14,6 +16,7 @@ const statusColors: Record<string, string> = {
 };
 
 export default function AdminMessages() {
+  const { t } = useTranslation();
   const { data, isLoading } = useAdminContacts();
   const updateStatus = useUpdateContactStatus();
 
@@ -24,33 +27,33 @@ export default function AdminMessages() {
   const handleStatusUpdate = async (id: string, status: string) => {
     try {
       await updateStatus.mutateAsync({ id, status });
-      toast.success(`Marked as ${status.toLowerCase()}`);
+      toast.success(t('admin.messages.toast.marked', { status: contactStatusLabel(status, t) }));
       setSelected(prev => prev?.id === id ? { ...prev, status } : prev);
     } catch {
-      toast.error('Failed to update status');
+      toast.error(t('admin.messages.toast.updateFailed'));
     }
   };
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">Messages</h1>
+      <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.messages.title')}</h1>
 
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Name</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Email</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Subject</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Date</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">Status</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.name')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.email')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.messages.table.subject')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.date')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">Loading…</TableCell>
+                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
                 </TableRow>
               )}
               {!isLoading && messages.map(m => (
@@ -67,14 +70,14 @@ export default function AdminMessages() {
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className={`text-[10px] ${statusColors[m.status] ?? ''}`}>
-                      {m.status}
+                      {contactStatusLabel(m.status, t)}
                     </Badge>
                   </TableCell>
                 </TableRow>
               ))}
               {!isLoading && messages.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">No messages yet.</TableCell>
+                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.messages.empty')}</TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -87,20 +90,20 @@ export default function AdminMessages() {
           {selected && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-[hsl(0_0%_15%)]">{selected.subject || '(no subject)'}</DialogTitle>
+                <DialogTitle className="text-[hsl(0_0%_15%)]">{selected.subject || t('common.noSubject')}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div><span className="text-[hsl(0_0%_50%)]">From:</span> <span className="text-[hsl(0_0%_20%)] font-medium">{selected.name}</span></div>
-                  <div><span className="text-[hsl(0_0%_50%)]">Email:</span> <a href={`mailto:${selected.email}`} className="text-[hsl(43_50%_54%)] hover:underline">{selected.email}</a></div>
+                  <div><span className="text-[hsl(0_0%_50%)]">{t('admin.messages.dialog.from')}</span> <span className="text-[hsl(0_0%_20%)] font-medium">{selected.name}</span></div>
+                  <div><span className="text-[hsl(0_0%_50%)]">{t('admin.messages.dialog.email')}</span> <a href={`mailto:${selected.email}`} className="text-[hsl(43_50%_54%)] hover:underline">{selected.email}</a></div>
                   {selected.phone && (
-                    <div><span className="text-[hsl(0_0%_50%)]">Phone:</span> <span className="text-[hsl(0_0%_20%)]">{selected.phone}</span></div>
+                    <div><span className="text-[hsl(0_0%_50%)]">{t('admin.messages.dialog.phone')}</span> <span className="text-[hsl(0_0%_20%)]">{selected.phone}</span></div>
                   )}
-                  <div><span className="text-[hsl(0_0%_50%)]">Date:</span> <span className="text-[hsl(0_0%_20%)]">{selected.createdAt ? new Date(selected.createdAt).toLocaleDateString() : '—'}</span></div>
+                  <div><span className="text-[hsl(0_0%_50%)]">{t('admin.messages.dialog.date')}</span> <span className="text-[hsl(0_0%_20%)]">{selected.createdAt ? new Date(selected.createdAt).toLocaleDateString() : '—'}</span></div>
                 </div>
                 {selected.propertyTitle && (
                   <div className="text-sm">
-                    <span className="text-[hsl(0_0%_50%)]">Property:</span>{' '}
+                    <span className="text-[hsl(0_0%_50%)]">{t('admin.messages.dialog.property')}</span>{' '}
                     <span className="text-[hsl(43_50%_54%)]">{selected.propertyTitle}</span>
                   </div>
                 )}
@@ -115,7 +118,7 @@ export default function AdminMessages() {
                       disabled={updateStatus.isPending}
                       onClick={() => handleStatusUpdate(selected.id, 'Read')}
                     >
-                      Mark Read
+                      {t('admin.messages.markRead')}
                     </Button>
                   )}
                   {selected.status !== 'Replied' && (
@@ -124,7 +127,7 @@ export default function AdminMessages() {
                       disabled={updateStatus.isPending}
                       onClick={() => handleStatusUpdate(selected.id, 'Replied')}
                     >
-                      Mark Replied
+                      {t('admin.messages.markReplied')}
                     </Button>
                   )}
                 </div>

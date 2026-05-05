@@ -25,16 +25,16 @@ export default function Services() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-6">
               <Link to="/" className="hover:text-primary transition-colors">
-                Home
+                {t('nav.home')}
               </Link>
               <span>/</span>
               <span className="text-foreground">{t('nav.services')}</span>
             </nav>
             <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground mb-3">
-              Our Services
+              {t('services.title')}
             </h1>
             <p className="text-muted-foreground font-body text-lg max-w-xl">
-              Comprehensive real estate solutions tailored to your needs.
+              {t('services.subtitle')}
             </p>
           </motion.div>
         </div>
@@ -62,7 +62,7 @@ export default function Services() {
       ) : error ? (
         <div className="text-center py-32">
           <p className="text-muted-foreground font-body">
-            Failed to load services. Please try again.
+            {t('services.loadFailed')}
           </p>
         </div>
       ) : (
@@ -140,10 +140,10 @@ export default function Services() {
             viewport={{ once: true }}
           >
             <h2 className="font-heading text-3xl md:text-4xl font-light text-foreground mb-4">
-              Need help? Contact us for a free consultation
+              {t('services.ctaTitle')}
             </h2>
             <p className="text-muted-foreground font-body mb-10 max-w-lg mx-auto">
-              Our experts are ready to discuss your specific needs and create a tailored solution.
+              {t('services.ctaSubtitle')}
             </p>
             <button
               onClick={() => navigate('/contact')}

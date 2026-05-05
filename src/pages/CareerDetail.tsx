@@ -36,7 +36,7 @@ export default function CareerDetail() {
             to="/careers"
             className="text-primary font-nav text-xs uppercase tracking-wider hover:underline"
           >
-            ← All Positions
+            {t('careers.allPositions')}
           </Link>
         </div>
       </div>
@@ -48,11 +48,11 @@ export default function CareerDetail() {
       <div className="pt-24 pb-4 container mx-auto px-6">
         <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body">
           <Link to="/" className="hover:text-primary transition-colors">
-            Home
+            {t('nav.home')}
           </Link>
           <span>/</span>
           <Link to="/careers" className="hover:text-primary transition-colors">
-            Careers
+            {t('nav.careers')}
           </Link>
           <span>/</span>
           <span className="text-foreground truncate max-w-[200px]">{career.title}</span>
@@ -90,7 +90,7 @@ export default function CareerDetail() {
             href={`mailto:careers@estoria.estate?subject=Application: ${encodeURIComponent(career.title)}`}
             className="inline-block gold-gradient text-primary-foreground px-10 py-4 rounded-sm font-nav text-xs uppercase tracking-[0.15em] hover:opacity-90 transition-opacity"
           >
-            Apply Now
+            {t('careers.applyNow')}
           </a>
         </motion.div>
       </section>
@@ -101,7 +101,7 @@ export default function CareerDetail() {
           to="/careers"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary font-nav uppercase tracking-wider transition-colors"
         >
-          <ArrowLeft size={14} /> All Positions
+          <ArrowLeft size={14} /> {t('careers.backLink')}
         </Link>
       </div>
     </>

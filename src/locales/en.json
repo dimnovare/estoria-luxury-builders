@@ -8,6 +8,7 @@
     "blog": "Blog",
     "careers": "Careers",
     "contact": "Contact",
+    "careers": "Careers",
     "contactUs": "Contact Us"
   },
   "hero": {
@@ -17,11 +18,7 @@
     "buy": "Buy",
     "rent": "Rent",
     "allCities": "All Cities",
-    "allTypes": "All Types",
-    "apartment": "Apartment",
-    "house": "House",
-    "commercial": "Commercial",
-    "land": "Land"
+    "allTypes": "All Types"
   },
   "home": {
     "eyebrow": "Premium Real Estate · Tallinn · Estonia",
@@ -43,34 +40,69 @@
     "forRent": "For Rent",
     "rooms": "rooms",
     "beds": "beds",
-    "showingPrefix": "Showing",
-    "showingOf": "of",
-    "showingSuffix": "properties",
-    "sort": {
-      "newest": "Newest",
-      "price-asc": "Price: Low → High",
-      "price-desc": "Price: High → Low",
-      "size": "Size: Largest"
-    },
-    "filter": {
-      "filters": "Filters",
-      "min": "Min",
-      "max": "Max",
-      "reset": "Reset",
-      "resetFilters": "Reset filters",
-      "resetAll": "Reset all filters",
-      "showResults": "Show Results ({{count}})"
-    },
+    "perMonth": "/mo",
+    "showing": "Showing {{count}} of {{total}} properties",
+    "loadFailed": "Failed to load properties. Please try again.",
     "empty": {
       "title": "No properties found",
       "subtitle": "Try adjusting your filters to see more results."
     },
-    "error": {
-      "loadFailed": "Failed to load properties. Please try again."
+    "detail": {
+      "viewAllPhotos": "View all {{count}} photos",
+      "featuresTitle": "Features & Amenities",
+      "locationTitle": "Location",
+      "mapPlaceholder": "Map integration available",
+      "similarTitle": "Similar Properties",
+      "specsTitle": "Property Details",
+      "contactAgent": "Contact Agent",
+      "sendMessage": "Send a Message",
+      "messageSent": "Message sent successfully!",
+      "messagePlaceholder": "I'm interested in \"{{title}}\"",
+      "phonePlaceholder": "Phone (optional)",
+      "namePlaceholder": "Your name",
+      "emailPlaceholder": "Email",
+      "submitError": "Something went wrong. Please try again.",
+      "submitButton": "Send Message",
+      "shareCopied": "Link Copied!",
+      "shareProperty": "Share Property",
+      "mobileContact": "Contact",
+      "backToProperties": "← Back to Properties",
+      "specs": {
+        "size": "Size",
+        "rooms": "Rooms",
+        "bedrooms": "Bedrooms",
+        "bathrooms": "Bathrooms",
+        "floor": "Floor",
+        "totalFloors": "Total Floors",
+        "yearBuilt": "Year Built",
+        "energyClass": "Energy Class"
+      }
+    }
+  },
+  "filters": {
+    "filters": "Filters",
+    "min": "Min",
+    "max": "Max",
+    "minPrice": "Min Price",
+    "maxPrice": "Max Price",
+    "reset": "Reset",
+    "resetFilters": "Reset filters",
+    "resetAll": "Reset all filters",
+    "showResults": "Show Results ({{count}})",
+    "sort": {
+      "newest": "Newest",
+      "priceAsc": "Price: Low → High",
+      "priceDesc": "Price: High → Low",
+      "sizeDesc": "Size: Largest"
     }
   },
   "services": {
-    "viewAll": "View All Services"
+    "viewAll": "View All Services",
+    "title": "Our Services",
+    "subtitle": "Comprehensive real estate solutions tailored to your needs.",
+    "loadFailed": "Failed to load services. Please try again.",
+    "ctaTitle": "Need help? Contact us for a free consultation",
+    "ctaSubtitle": "Our experts are ready to discuss your specific needs and create a tailored solution."
   },
   "about": {
     "title": "About Estoria",
@@ -97,6 +129,38 @@
       "subtitle": "Let our team guide you to the perfect property. We'd love to hear from you.",
       "button": "Get in Touch"
     }
+  },
+  "team": {
+    "title": "Our Team",
+    "subtitle": "The experts behind Estonia's most exclusive properties.",
+    "loadFailed": "Failed to load team. Please try again.",
+    "backToTeam": "← Back to Team",
+    "backLink": "Back to Team",
+    "propertiesByAgent": "Properties by {{name}}",
+    "noActiveListings": "No active listings at this time."
+  },
+  "blog": {
+    "title": "Insights & News",
+    "loadFailed": "Failed to load posts. Please try again.",
+    "noMore": "No more posts.",
+    "share": "Share",
+    "copyLink": "Copy Link",
+    "copied": "Copied!",
+    "relatedTitle": "Related Posts",
+    "backToBlog": "← Back to Blog",
+    "backLink": "Back to Blog",
+    "viewProfile": "View Profile →"
+  },
+  "careers": {
+    "title": "Join Our Team",
+    "subtitle": "Build your career at Estonia's leading luxury real estate brand.",
+    "loadFailed": "Failed to load positions. Please try again.",
+    "viewDetails": "View Details",
+    "noOpeningsTitle": "No Current Openings",
+    "noOpeningsSubtitle": "We're always interested in hearing from talented people. Send us your CV and we'll keep you in mind for future opportunities.",
+    "applyNow": "Apply Now",
+    "allPositions": "← All Positions",
+    "backLink": "All Positions"
   },
   "contact": {
     "headerLead": "We'd love to hear from you. Reach out and let's start a conversation.",
@@ -135,6 +199,9 @@
     "placeholder": "Your email address",
     "subscribe": "Subscribe",
     "success": "You're subscribed!",
+    "welcomeAboard": "Welcome aboard!",
+    "alreadySubscribed": "You're already subscribed!",
+    "invalidEmail": "Please enter a valid email address.",
     "error": "Something went wrong. Please try again."
   },
   "footer": {
@@ -144,17 +211,385 @@
     "contactInfo": "Contact Info",
     "rights": "All rights reserved.",
     "address": "Tallinn, Estonia",
-    "privacy": "Privacy Policy"
+    "privacy": "Privacy Policy",
+    "regNr": "Reg.nr",
+    "serviceList": {
+      "sales": "Property Sales",
+      "rental": "Rental Management",
+      "valuation": "Valuation",
+      "investment": "Investment Advisory"
+    }
   },
   "common": {
     "loading": "Loading…",
     "error": "Something went wrong",
     "notFound": "Page not found",
-    "backHome": "Back to Home"
+    "backHome": "Back to Home",
+    "comingSoon": "Coming soon",
+    "noSubject": "(no subject)"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "boundaryTitle": "Something went wrong",
+    "boundaryMessage": "An unexpected error occurred. Please refresh the page to try again.",
+    "boundaryReload": "Refresh Page"
   },
   "cookies": {
     "message": "We use cookies to improve your experience",
     "accept": "Accept",
     "privacy": "Privacy Policy"
+  },
+  "enums": {
+    "propertyType": {
+      "Apartment": "Apartment",
+      "House": "House",
+      "Commercial": "Commercial",
+      "Land": "Land",
+      "Office": "Office"
+    },
+    "transactionType": {
+      "Sale": "For Sale",
+      "Rent": "For Rent"
+    },
+    "propertyStatus": {
+      "Draft": "Draft",
+      "Active": "Active",
+      "Sold": "Sold",
+      "Rented": "Rented",
+      "Archived": "Archived"
+    },
+    "contactStatus": {
+      "New": "New",
+      "Read": "Read",
+      "Replied": "Replied"
+    },
+    "blogStatus": {
+      "Draft": "Draft",
+      "Published": "Published"
+    }
+  },
+  "admin": {
+    "common": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "back": "Back",
+      "loading": "Loading…",
+      "error": "Error",
+      "success": "Success",
+      "actions": "Actions",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "date": "Date",
+      "status": "Status",
+      "title": "Title",
+      "type": "Type",
+      "all": "All"
+    },
+    "layout": {
+      "adminBadge": "Admin",
+      "viewSite": "View Site",
+      "signOut": "Sign out",
+      "breadcrumbAdmin": "Admin",
+      "breadcrumbNew": "New",
+      "breadcrumbEdit": "Edit"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "properties": "Properties",
+      "blog": "Blog",
+      "team": "Team",
+      "services": "Services",
+      "pages": "Pages",
+      "careers": "Careers",
+      "newsletter": "Newsletter",
+      "messages": "Messages"
+    },
+    "login": {
+      "portalTitle": "Admin Portal",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "signIn": "Sign In",
+      "signingIn": "Signing in…",
+      "invalidCredentials": "Invalid email or password"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "stats": {
+        "properties": "Properties",
+        "blogPosts": "Blog Posts",
+        "teamMembers": "Team Members",
+        "unreadMessages": "Unread Messages",
+        "subscribers": "Subscribers"
+      },
+      "recentMessages": "Recent Messages",
+      "viewAll": "View all",
+      "subjectColumn": "Subject",
+      "noMessages": "No messages yet.",
+      "quickActions": "Quick Actions",
+      "addProperty": "Add Property",
+      "newBlogPost": "New Blog Post"
+    },
+    "properties": {
+      "title": "Properties",
+      "addNew": "Add Property",
+      "editTitle": "Edit Property",
+      "newTitle": "New Property",
+      "filters": {
+        "status": "Status",
+        "type": "Type",
+        "allStatuses": "All Statuses",
+        "allTypes": "All Types"
+      },
+      "table": {
+        "title": "Title",
+        "type": "Type",
+        "transaction": "Transaction",
+        "price": "Price",
+        "status": "Status"
+      },
+      "noMatch": "No properties match your filters.",
+      "tabs": {
+        "general": "General",
+        "translations": "Translations",
+        "images": "Images",
+        "features": "Features"
+      },
+      "fields": {
+        "propertyType": "Property Type",
+        "transactionType": "Transaction Type",
+        "selectType": "Select type",
+        "price": "Price (€)",
+        "size": "Size (m²)",
+        "rooms": "Rooms",
+        "bedrooms": "Bedrooms",
+        "bathrooms": "Bathrooms",
+        "floor": "Floor",
+        "totalFloors": "Total Floors",
+        "yearBuilt": "Year Built",
+        "energyClass": "Energy Class",
+        "selectEnergyClass": "Select",
+        "agent": "Agent",
+        "selectAgent": "Select agent",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "featured": "Featured Property",
+        "title": "Title",
+        "address": "Address",
+        "city": "City",
+        "district": "District",
+        "description": "Description"
+      },
+      "images": {
+        "uploadEdit": "Click to upload images",
+        "uploadCreate": "Save the property first, then add images",
+        "uploadHint": "JPG, PNG, WebP — max 10MB each",
+        "uploading": "Uploading…",
+        "cover": "Cover"
+      },
+      "features": {
+        "addPlaceholder": "Add a feature…",
+        "empty": "No features added yet."
+      },
+      "saveDraft": "Save as Draft",
+      "savePublish": "Save & Publish",
+      "toast": {
+        "deleted": "Property deleted",
+        "deleteFailed": "Failed to delete property",
+        "updated": "Property updated",
+        "createdEdit": "Property created — upload images in the Images tab",
+        "saveFailed": "Failed to save property",
+        "imagesUploaded": "Images uploaded",
+        "imageUploadFailed": "Failed to upload images",
+        "imageRemoved": "Image removed",
+        "imageRemoveFailed": "Failed to remove image"
+      }
+    },
+    "blog": {
+      "title": "Blog Posts",
+      "addNew": "New Post",
+      "editTitle": "Edit Post",
+      "newTitle": "New Blog Post",
+      "table": {
+        "title": "Title",
+        "author": "Author",
+        "status": "Status",
+        "date": "Date"
+      },
+      "empty": "No blog posts yet.",
+      "fields": {
+        "coverImage": "Cover Image",
+        "uploadCover": "Upload cover image",
+        "uploadFailed": "Failed to upload cover image",
+        "author": "Author",
+        "selectAuthor": "Select author",
+        "title": "Title",
+        "excerpt": "Excerpt",
+        "content": "Content (HTML)",
+        "metaTitle": "Meta Title",
+        "metaDescription": "Meta Description"
+      },
+      "savePost": "Save Post",
+      "toast": {
+        "deleted": "Post deleted",
+        "deleteFailed": "Failed to delete post",
+        "updated": "Post updated",
+        "created": "Post created",
+        "saveFailed": "Failed to save post"
+      }
+    },
+    "team": {
+      "title": "Team Members",
+      "addNew": "Add Member",
+      "editTitle": "Edit Member",
+      "newTitle": "New Team Member",
+      "table": {
+        "name": "Name",
+        "role": "Role",
+        "languages": "Languages",
+        "contact": "Contact"
+      },
+      "fields": {
+        "photo": "Photo",
+        "uploadPhoto": "Upload photo",
+        "saveFirst": "Save member first to upload photo",
+        "change": "Change",
+        "phone": "Phone",
+        "email": "Email",
+        "sortOrder": "Sort Order",
+        "spokenLanguages": "Spoken Languages",
+        "name": "Name",
+        "role": "Role",
+        "bio": "Bio"
+      },
+      "languages": {
+        "estonian": "Estonian",
+        "english": "English",
+        "russian": "Russian",
+        "finnish": "Finnish",
+        "german": "German",
+        "french": "French",
+        "swedish": "Swedish"
+      },
+      "saveMember": "Save Member",
+      "toast": {
+        "photoUploaded": "Photo uploaded",
+        "photoUploadFailed": "Failed to upload photo",
+        "updated": "Member updated",
+        "added": "Member added",
+        "saveFailed": "Failed to save member",
+        "removed": "Member removed",
+        "removeFailed": "Failed to remove member"
+      }
+    },
+    "services": {
+      "title": "Services",
+      "addNew": "Add Service",
+      "editTitle": "Edit Service",
+      "newTitle": "New Service",
+      "table": {
+        "icon": "Icon",
+        "name": "Name",
+        "priceInfo": "Price Info"
+      },
+      "fields": {
+        "iconName": "Icon Name",
+        "sortOrder": "Sort Order",
+        "name": "Name",
+        "description": "Description",
+        "priceInfo": "Price Info"
+      },
+      "saveService": "Save Service",
+      "toast": {
+        "updated": "Service updated",
+        "added": "Service added",
+        "saveFailed": "Failed to save service",
+        "deleted": "Service deleted",
+        "deleteFailed": "Failed to delete service"
+      }
+    },
+    "pages": {
+      "title": "Pages",
+      "table": {
+        "key": "Key",
+        "label": "Label"
+      },
+      "fields": {
+        "title": "Title",
+        "body": "Body",
+        "imageUrl": "Image URL",
+        "videoUrl": "Video URL",
+        "videoUrlHint": "Direct video URL ending in .mp4, .webm, or .mov. YouTube URLs are not supported. Free sources: pexels.com/videos, coverr.co, pixabay.com/videos"
+      },
+      "savePage": "Save Page",
+      "toast": {
+        "saved": "Page content saved",
+        "saveFailed": "Failed to save page content"
+      }
+    },
+    "careers": {
+      "title": "Careers",
+      "addNew": "Add Position",
+      "editTitle": "Edit Position",
+      "newTitle": "New Position",
+      "table": {
+        "title": "Title",
+        "location": "Location"
+      },
+      "active": "Active",
+      "inactive": "Inactive",
+      "fields": {
+        "active": "Active",
+        "title": "Title",
+        "location": "Location",
+        "description": "Description (HTML)"
+      },
+      "savePosition": "Save Position",
+      "toast": {
+        "updated": "Position updated",
+        "added": "Position added",
+        "saveFailed": "Failed to save position",
+        "deleted": "Position deleted",
+        "deleteFailed": "Failed to delete position"
+      }
+    },
+    "messages": {
+      "title": "Messages",
+      "table": {
+        "subject": "Subject"
+      },
+      "empty": "No messages yet.",
+      "dialog": {
+        "from": "From:",
+        "email": "Email:",
+        "phone": "Phone:",
+        "date": "Date:",
+        "property": "Property:"
+      },
+      "markRead": "Mark Read",
+      "markReplied": "Mark Replied",
+      "toast": {
+        "marked": "Marked as {{status}}",
+        "updateFailed": "Failed to update status"
+      }
+    },
+    "newsletter": {
+      "title": "Newsletter Subscribers",
+      "exportCsv": "Export CSV",
+      "table": {
+        "language": "Language",
+        "subscribed": "Subscribed"
+      },
+      "active": "Active",
+      "unsubscribed": "Unsubscribed",
+      "empty": "No subscribers yet.",
+      "toast": {
+        "exported": "CSV exported",
+        "removed": "Subscriber removed",
+        "removeFailed": "Failed to remove subscriber"
+      }
+    }
   }
 }

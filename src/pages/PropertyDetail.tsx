@@ -10,6 +10,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import PropertyCard from '@/components/PropertyCard';
 import { useProperty, useProperties } from '@/hooks/api/useProperties';
+import { propertyTypeLabel } from '@/lib/enumLabels';
 import api from '@/lib/api';
 
 export default function PropertyDetail() {
@@ -55,6 +56,7 @@ export default function PropertyDetail() {
     return () => {
       document.title = 'ESTORIA — Where Your Future Lives';
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [property]);
 
   if (isLoading) {
@@ -107,7 +109,7 @@ export default function PropertyDetail() {
             to="/properties"
             className="text-primary font-nav text-xs uppercase tracking-wider hover:underline"
           >
-            ← Back to Properties
+            {t('properties.detail.backToProperties')}
           </Link>
         </div>
       </div>
@@ -116,26 +118,26 @@ export default function PropertyDetail() {
 
   function formatPrice(price: number, type: string) {
     const formatted = new Intl.NumberFormat('et-EE').format(price);
-    return type === 'rent' ? `€${formatted}/mo` : `€${formatted}`;
+    return type === 'rent' ? `€${formatted}${t('properties.perMonth')}` : `€${formatted}`;
   }
 
   const specs = [
-    { icon: Maximize2, label: 'Size', value: property.size ? `${property.size} m²` : null },
-    { icon: DoorOpen, label: 'Rooms', value: property.rooms || null },
-    { icon: BedDouble, label: 'Bedrooms', value: property.bedrooms || null },
-    { icon: Bath, label: 'Bathrooms', value: property.bathrooms || null },
+    { icon: Maximize2, label: t('properties.detail.specs.size'),        value: property.size ? `${property.size} m²` : null },
+    { icon: DoorOpen,  label: t('properties.detail.specs.rooms'),       value: property.rooms || null },
+    { icon: BedDouble, label: t('properties.detail.specs.bedrooms'),    value: property.bedrooms || null },
+    { icon: Bath,      label: t('properties.detail.specs.bathrooms'),   value: property.bathrooms || null },
     {
       icon: Building,
-      label: 'Floor',
+      label: t('properties.detail.specs.floor'),
       value: property.floor ? `${property.floor}/${property.totalFloors}` : null,
     },
     {
       icon: Layers,
-      label: 'Total Floors',
+      label: t('properties.detail.specs.totalFloors'),
       value: !property.floor ? property.totalFloors : null,
     },
-    { icon: Calendar, label: 'Year Built', value: property.yearBuilt || null },
-    { icon: Zap, label: 'Energy Class', value: property.energyClass || null },
+    { icon: Calendar, label: t('properties.detail.specs.yearBuilt'),   value: property.yearBuilt || null },
+    { icon: Zap,      label: t('properties.detail.specs.energyClass'), value: property.energyClass || null },
   ].filter((s) => s.value !== null && s.value !== 0);
 
   const openLightbox = (i: number) => {
@@ -165,7 +167,7 @@ export default function PropertyDetail() {
         name: formData.name,
         email: formData.email,
         phone: formData.phone || null,
-        subject: `Inquiry: ${property.title}`,
+        subject: t('contact.inquiry.subject', { title: property.title }),
         message: formData.message,
         propertyId: property.id,
       });
@@ -183,7 +185,7 @@ export default function PropertyDetail() {
       <div className="pt-24 pb-4 container mx-auto px-6">
         <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body">
           <Link to="/" className="hover:text-primary transition-colors">
-            Home
+            {t('nav.home')}
           </Link>
           <span>/</span>
           <Link to="/properties" className="hover:text-primary transition-colors">
@@ -224,7 +226,7 @@ export default function PropertyDetail() {
               {i === 1 && images.length > 3 && (
                 <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
                   <span className="font-nav text-xs uppercase tracking-wider text-foreground">
-                    View all {images.length} photos
+                    {t('properties.detail.viewAllPhotos', { count: images.length })}
                   </span>
                 </div>
               )}
@@ -276,7 +278,7 @@ export default function PropertyDetail() {
                     : t('properties.forRent')}
                 </span>
                 <span className="text-[10px] font-nav uppercase tracking-wider bg-secondary text-muted-foreground px-3 py-1 rounded-sm">
-                  {property.propertyType}
+                  {propertyTypeLabel(property.propertyType, t)}
                 </span>
               </div>
 
@@ -295,7 +297,7 @@ export default function PropertyDetail() {
               {property.features && property.features.length > 0 && (
                 <div className="mb-12">
                   <h2 className="font-heading text-2xl text-foreground mb-6">
-                    Features & Amenities
+                    {t('properties.detail.featuresTitle')}
                   </h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {property.features.map((f) => (
@@ -314,12 +316,12 @@ export default function PropertyDetail() {
               {/* Map placeholder */}
               {property.lat && property.lng && (
                 <div className="mb-12">
-                  <h2 className="font-heading text-2xl text-foreground mb-6">Location</h2>
+                  <h2 className="font-heading text-2xl text-foreground mb-6">{t('properties.detail.locationTitle')}</h2>
                   <div className="aspect-[16/9] bg-secondary rounded-sm border border-border flex items-center justify-center">
                     <div className="text-center text-muted-foreground">
                       <MapPin size={32} className="mx-auto mb-2 text-primary" />
                       <p className="font-body text-sm">{property.address}</p>
-                      <p className="font-body text-xs mt-1">Map integration available</p>
+                      <p className="font-body text-xs mt-1">{t('properties.detail.mapPlaceholder')}</p>
                     </div>
                   </div>
                 </div>
@@ -328,7 +330,7 @@ export default function PropertyDetail() {
               {/* Similar properties */}
               {similarProperties.length > 0 && (
                 <div>
-                  <h2 className="font-heading text-2xl text-foreground mb-6">Similar Properties</h2>
+                  <h2 className="font-heading text-2xl text-foreground mb-6">{t('properties.detail.similarTitle')}</h2>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {similarProperties.map((p, i) => (
                       <PropertyCard key={p.id} property={p} index={i} />
@@ -351,7 +353,7 @@ export default function PropertyDetail() {
               >
                 <div className="h-1 gold-gradient" />
                 <div className="p-6">
-                  <h3 className="font-heading text-xl text-foreground mb-5">Property Details</h3>
+                  <h3 className="font-heading text-xl text-foreground mb-5">{t('properties.detail.specsTitle')}</h3>
                   <div className="grid grid-cols-2 gap-4">
                     {specs.map(({ icon: Icon, label, value }) => (
                       <div key={label}>
@@ -424,7 +426,7 @@ export default function PropertyDetail() {
                     href="#contact-form"
                     className="block w-full text-center gold-gradient text-primary-foreground py-3 rounded-sm font-nav text-xs uppercase tracking-wider hover:opacity-90 transition-opacity"
                   >
-                    Contact Agent
+                    {t('properties.detail.contactAgent')}
                   </a>
                 </motion.div>
               )}
@@ -437,20 +439,20 @@ export default function PropertyDetail() {
                 transition={{ delay: 0.4 }}
                 className="bg-card border border-border rounded-sm p-6"
               >
-                <h3 className="font-heading text-xl text-foreground mb-5">Send a Message</h3>
+                <h3 className="font-heading text-xl text-foreground mb-5">{t('properties.detail.sendMessage')}</h3>
 
                 {formSent ? (
                   <div className="text-center py-6">
                     <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-success/10 flex items-center justify-center">
                       <Check className="text-success" size={20} />
                     </div>
-                    <p className="text-foreground font-body text-sm">Message sent successfully!</p>
+                    <p className="text-foreground font-body text-sm">{t('properties.detail.messageSent')}</p>
                   </div>
                 ) : (
                   <form onSubmit={handleContact} className="space-y-3">
                     <input
                       type="text"
-                      placeholder="Your name"
+                      placeholder={t('properties.detail.namePlaceholder')}
                       required
                       value={formData.name}
                       onChange={(e) => setFormData((d) => ({ ...d, name: e.target.value }))}
@@ -458,7 +460,7 @@ export default function PropertyDetail() {
                     />
                     <input
                       type="email"
-                      placeholder="Email"
+                      placeholder={t('properties.detail.emailPlaceholder')}
                       required
                       value={formData.email}
                       onChange={(e) => setFormData((d) => ({ ...d, email: e.target.value }))}
@@ -466,13 +468,13 @@ export default function PropertyDetail() {
                     />
                     <input
                       type="tel"
-                      placeholder="Phone (optional)"
+                      placeholder={t('properties.detail.phonePlaceholder')}
                       value={formData.phone}
                       onChange={(e) => setFormData((d) => ({ ...d, phone: e.target.value }))}
                       className="w-full bg-secondary border border-border text-foreground text-sm font-body px-4 py-3 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
                     />
                     <textarea
-                      placeholder={`I'm interested in "${property.title}"`}
+                      placeholder={t('properties.detail.messagePlaceholder', { title: property.title })}
                       rows={3}
                       required
                       value={formData.message}
@@ -481,7 +483,7 @@ export default function PropertyDetail() {
                     />
                     {formError && (
                       <p className="text-destructive text-xs font-body">
-                        Something went wrong. Please try again.
+                        {t('properties.detail.submitError')}
                       </p>
                     )}
                     <button
@@ -490,7 +492,7 @@ export default function PropertyDetail() {
                       className="w-full gold-gradient text-primary-foreground py-3 rounded-sm font-nav text-xs uppercase tracking-wider hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2"
                     >
                       {formLoading && <Loader2 size={14} className="animate-spin" />}
-                      Send Message
+                      {t('properties.detail.submitButton')}
                     </button>
                   </form>
                 )}
@@ -503,11 +505,11 @@ export default function PropertyDetail() {
               >
                 {copied ? (
                   <>
-                    <Check size={14} /> Link Copied!
+                    <Check size={14} /> {t('properties.detail.shareCopied')}
                   </>
                 ) : (
                   <>
-                    <Share2 size={14} /> Share Property
+                    <Share2 size={14} /> {t('properties.detail.shareProperty')}
                   </>
                 )}
               </button>
@@ -525,7 +527,7 @@ export default function PropertyDetail() {
           href="#contact-form"
           className="gold-gradient text-primary-foreground px-6 py-2.5 rounded-sm font-nav text-xs uppercase tracking-wider"
         >
-          Contact
+          {t('properties.detail.mobileContact')}
         </a>
       </div>
 

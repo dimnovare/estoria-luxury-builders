@@ -52,13 +52,13 @@ export default function Blog() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-6">
               <Link to="/" className="hover:text-primary transition-colors">
-                Home
+                {t('nav.home')}
               </Link>
               <span>/</span>
               <span className="text-foreground">{t('nav.blog')}</span>
             </nav>
             <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground">
-              Insights & News
+              {t('blog.title')}
             </h1>
             <div className="w-16 h-px gold-gradient mt-4" />
           </motion.div>
@@ -84,7 +84,7 @@ export default function Blog() {
         </div>
       ) : error ? (
         <div className="text-center py-32">
-          <p className="text-muted-foreground font-body">Failed to load posts. Please try again.</p>
+          <p className="text-muted-foreground font-body">{t('blog.loadFailed')}</p>
         </div>
       ) : (
         <>
@@ -159,7 +159,7 @@ export default function Blog() {
                   ))}
                 </div>
               ) : (
-                <p className="text-center text-muted-foreground font-body py-16">No more posts.</p>
+                <p className="text-center text-muted-foreground font-body py-16">{t('blog.noMore')}</p>
               )}
 
               {/* Pagination */}
