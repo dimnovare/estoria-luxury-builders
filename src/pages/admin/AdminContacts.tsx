@@ -61,10 +61,10 @@ export default function AdminContacts() {
 
   const roleIcons = (c: typeof contacts[0]) => {
     const icons = [];
-    if (c.isBuyer) icons.push(<Eye key="b" className="h-3.5 w-3.5" title={t('admin.contacts.roles.buyer')} />);
-    if (c.isSeller) icons.push(<Home key="s" className="h-3.5 w-3.5" title={t('admin.contacts.roles.seller')} />);
-    if (c.isTenant) icons.push(<User key="t" className="h-3.5 w-3.5" title={t('admin.contacts.roles.tenant')} />);
-    if (c.isLandlord) icons.push(<Home key="l" className="h-3.5 w-3.5 text-[hsl(43_50%_54%)]" title={t('admin.contacts.roles.landlord')} />);
+    if (c.isBuyer) icons.push(<span key="b" title={t('admin.contacts.roles.buyer')}><Eye className="h-3.5 w-3.5" /></span>);
+    if (c.isSeller) icons.push(<span key="s" title={t('admin.contacts.roles.seller')}><Home className="h-3.5 w-3.5" /></span>);
+    if (c.isTenant) icons.push(<span key="t" title={t('admin.contacts.roles.tenant')}><User className="h-3.5 w-3.5" /></span>);
+    if (c.isLandlord) icons.push(<span key="l" title={t('admin.contacts.roles.landlord')}><Home className="h-3.5 w-3.5 text-[hsl(43_50%_54%)]" /></span>);
     return icons;
   };
 
