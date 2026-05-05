@@ -104,22 +104,23 @@ export default function AdminServices() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.services.title')}</h1>
-        <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+        <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
           <Plus className="h-4 w-4 mr-2" />{t('admin.services.addNew')}
         </Button>
       </div>
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-8"></TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.services.table.icon')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-8 hidden sm:table-cell"></TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.services.table.icon')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.services.table.name')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.services.table.priceInfo')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.services.table.priceInfo')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
@@ -131,10 +132,13 @@ export default function AdminServices() {
               )}
               {!isLoading && (services ?? []).map(s => (
                 <TableRow key={s.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell><GripVertical className="h-4 w-4 text-[hsl(0_0%_70%)] cursor-grab" /></TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{s.iconName || '—'}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">{s.name}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_50%)]">{s.priceInfo || '—'}</TableCell>
+                  <TableCell className="hidden sm:table-cell"><GripVertical className="h-4 w-4 text-[hsl(0_0%_70%)] cursor-grab" /></TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{s.iconName || '—'}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
+                    <div>{s.name}</div>
+                    <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">{s.priceInfo || ''}</div>
+                  </TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_50%)] hidden sm:table-cell">{s.priceInfo || '—'}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]" onClick={() => openEdit(s)}>
@@ -154,6 +158,7 @@ export default function AdminServices() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
 
@@ -165,7 +170,7 @@ export default function AdminServices() {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className={labelClass}>{t('admin.services.fields.iconName')}</Label>
                 <Input value={iconName} onChange={e => setIconName(e.target.value)} placeholder="Building2" className={inputClass} />

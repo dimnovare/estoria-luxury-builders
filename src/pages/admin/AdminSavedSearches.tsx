@@ -60,7 +60,7 @@ export default function AdminSavedSearches() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">
           {t('admin.savedSearches.title')}
         </h1>
@@ -69,7 +69,7 @@ export default function AdminSavedSearches() {
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
         <CardContent className="p-4 flex flex-wrap gap-3 items-center">
           <Select value={frequency} onValueChange={(v) => setFrequency(v as FrequencyFilter)}>
-            <SelectTrigger className="w-[180px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[180px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
               <SelectValue placeholder={t('admin.savedSearches.filters.frequency')} />
             </SelectTrigger>
             <SelectContent>
@@ -80,7 +80,7 @@ export default function AdminSavedSearches() {
             </SelectContent>
           </Select>
           <Select value={active} onValueChange={(v) => setActive(v as ActiveFilter)}>
-            <SelectTrigger className="w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
               <SelectValue placeholder={t('admin.savedSearches.filters.active')} />
             </SelectTrigger>
             <SelectContent>
@@ -92,17 +92,18 @@ export default function AdminSavedSearches() {
         </CardContent>
       </Card>
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
                 <TableHead>{t('admin.savedSearches.fields.email')}</TableHead>
-                <TableHead>{t('admin.savedSearches.fields.name')}</TableHead>
-                <TableHead>{t('admin.savedSearches.fields.frequency')}</TableHead>
+                <TableHead className="hidden md:table-cell">{t('admin.savedSearches.fields.name')}</TableHead>
+                <TableHead className="hidden sm:table-cell">{t('admin.savedSearches.fields.frequency')}</TableHead>
                 <TableHead>{t('admin.savedSearches.fields.status')}</TableHead>
-                <TableHead>{t('admin.savedSearches.fields.lastSent')}</TableHead>
-                <TableHead>{t('admin.savedSearches.fields.results')}</TableHead>
+                <TableHead className="hidden lg:table-cell">{t('admin.savedSearches.fields.lastSent')}</TableHead>
+                <TableHead className="hidden lg:table-cell">{t('admin.savedSearches.fields.results')}</TableHead>
                 <TableHead className="text-right">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
@@ -110,19 +111,19 @@ export default function AdminSavedSearches() {
               {isLoading && Array.from({ length: 4 }).map((_, i) => (
                 <TableRow key={`skeleton-${i}`} className="border-[hsl(0_0%_93%)]">
                   <TableCell><Skeleton className="h-4 w-44" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                  <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-32" /></TableCell>
+                  <TableCell className="hidden sm:table-cell"><Skeleton className="h-4 w-16" /></TableCell>
                   <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-10" /></TableCell>
+                  <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-10" /></TableCell>
                   <TableCell></TableCell>
                 </TableRow>
               ))}
               {!isLoading && rows.map(r => (
                 <TableRow key={r.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)]">{r.email}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{r.name ?? '—'}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_20%)] truncate max-w-[200px]">{r.email}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell">{r.name ?? '—'}</TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     <Badge variant="outline" className="text-[10px]">
                       {t(`admin.savedSearches.frequency.${r.frequency}`)}
                     </Badge>
@@ -135,10 +136,10 @@ export default function AdminSavedSearches() {
                       {r.isActive ? t('admin.savedSearches.active') : t('admin.savedSearches.inactive')}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-xs text-[hsl(0_0%_50%)]">
+                  <TableCell className="text-xs text-[hsl(0_0%_50%)] hidden lg:table-cell whitespace-nowrap">
                     {r.lastSentAt ? format(new Date(r.lastSentAt), 'dd.MM.yyyy HH:mm') : '—'}
                   </TableCell>
-                  <TableCell className="text-xs text-[hsl(0_0%_40%)]">{r.lastResultsCount}</TableCell>
+                  <TableCell className="text-xs text-[hsl(0_0%_40%)] hidden lg:table-cell">{r.lastResultsCount}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
                       <Button
@@ -149,7 +150,7 @@ export default function AdminSavedSearches() {
                         className="h-7"
                       >
                         <Send className="h-3 w-3 mr-1" />
-                        {t('admin.savedSearches.actions.forceSend')}
+                        <span className="hidden sm:inline">{t('admin.savedSearches.actions.forceSend')}</span>
                       </Button>
                       <Button
                         size="sm"
@@ -165,6 +166,7 @@ export default function AdminSavedSearches() {
               ))}
             </TableBody>
           </Table>
+          </div>
           {!isLoading && rows.length === 0 && (
             <EmptyState
               icon={Search}

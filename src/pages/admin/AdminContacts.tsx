@@ -21,7 +21,6 @@ const SOURCES = ['Website', 'Referral', 'SocialMedia', 'ColdCall', 'Event', 'Oth
 export default function AdminContacts() {
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
-  // 250ms debounce so each keystroke doesn't fire a /admin/contacts request.
   const debouncedSearch = useDebouncedValue(search, 250);
   const [agentFilter, setAgentFilter] = useState('all');
   const [sourceFilter, setSourceFilter] = useState('all');
@@ -75,17 +74,17 @@ export default function AdminContacts() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.contacts.title')}</h1>
-        <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+        <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
           <Link to="/admin/contacts/new"><Plus className="h-4 w-4 mr-2" />{t('admin.contacts.addNew')}</Link>
         </Button>
       </div>
 
       {/* Filters */}
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
-        <CardContent className="p-4 flex flex-wrap gap-3 items-center">
-          <div className="relative flex-1 min-w-[200px]">
+        <CardContent className="p-4 space-y-3">
+          <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[hsl(0_0%_50%)]" />
             <Input
               value={search}
@@ -94,80 +93,83 @@ export default function AdminContacts() {
               className="pl-9 border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]"
             />
           </div>
-          <Select value={agentFilter} onValueChange={(v) => { setAgentFilter(v); setPage(1); }}>
-            <SelectTrigger className="w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
-              <SelectValue placeholder={t('admin.contacts.filters.agent')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('admin.common.all')}</SelectItem>
-              {agents.map(a => (
-                <SelectItem key={a.id} value={a.id}>{a.fullName}</SelectItem>
+          <div className="flex flex-wrap gap-3 items-center">
+            <Select value={agentFilter} onValueChange={(v) => { setAgentFilter(v); setPage(1); }}>
+              <SelectTrigger className="w-full sm:w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+                <SelectValue placeholder={t('admin.contacts.filters.agent')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('admin.common.all')}</SelectItem>
+                {agents.map(a => (
+                  <SelectItem key={a.id} value={a.id}>{a.fullName}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={sourceFilter} onValueChange={(v) => { setSourceFilter(v); setPage(1); }}>
+              <SelectTrigger className="w-full sm:w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+                <SelectValue placeholder={t('admin.contacts.filters.source')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('admin.common.all')}</SelectItem>
+                {SOURCES.map(s => (
+                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="flex gap-1">
+              {(['all', 'buyer', 'seller'] as const).map(r => (
+                <button
+                  key={r}
+                  onClick={() => { setRoleFilter(r); setPage(1); }}
+                  className={`px-3 py-1.5 text-xs font-nav uppercase tracking-wider rounded-full border transition-colors ${
+                    roleFilter === r
+                      ? 'bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] border-[hsl(43_50%_54%)]'
+                      : 'border-[hsl(0_0%_85%)] text-[hsl(0_0%_50%)] hover:border-[hsl(0_0%_70%)]'
+                  }`}
+                >
+                  {t(`admin.contacts.filters.${r}`)}
+                </button>
               ))}
-            </SelectContent>
-          </Select>
-          <Select value={sourceFilter} onValueChange={(v) => { setSourceFilter(v); setPage(1); }}>
-            <SelectTrigger className="w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
-              <SelectValue placeholder={t('admin.contacts.filters.source')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('admin.common.all')}</SelectItem>
-              {SOURCES.map(s => (
-                <SelectItem key={s} value={s}>{s}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <div className="flex gap-1">
-            {(['all', 'buyer', 'seller'] as const).map(r => (
-              <button
-                key={r}
-                onClick={() => { setRoleFilter(r); setPage(1); }}
-                className={`px-3 py-1.5 text-xs font-nav uppercase tracking-wider rounded-full border transition-colors ${
-                  roleFilter === r
-                    ? 'bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] border-[hsl(43_50%_54%)]'
-                    : 'border-[hsl(0_0%_85%)] text-[hsl(0_0%_50%)] hover:border-[hsl(0_0%_70%)]'
-                }`}
-              >
-                {t(`admin.contacts.filters.${r}`)}
-              </button>
-            ))}
+            </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Table */}
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12"></TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12 hidden sm:table-cell"></TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.name')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.email')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.phone')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.contacts.table.tags')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.contacts.table.roles')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.contacts.table.agent')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.contacts.table.lastActivity')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.common.email')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden lg:table-cell">{t('admin.common.phone')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden lg:table-cell">{t('admin.contacts.table.tags')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.contacts.table.roles')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden xl:table-cell">{t('admin.contacts.table.agent')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden xl:table-cell">{t('admin.contacts.table.lastActivity')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && Array.from({ length: 6 }).map((_, i) => (
                 <TableRow key={`skeleton-${i}`} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="py-2"><Skeleton className="h-9 w-9 rounded-full" /></TableCell>
+                  <TableCell className="py-2 hidden sm:table-cell"><Skeleton className="h-9 w-9 rounded-full" /></TableCell>
                   <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-40" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-12" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                  <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-40" /></TableCell>
+                  <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-16" /></TableCell>
+                  <TableCell className="hidden sm:table-cell"><Skeleton className="h-4 w-12" /></TableCell>
+                  <TableCell className="hidden xl:table-cell"><Skeleton className="h-4 w-20" /></TableCell>
+                  <TableCell className="hidden xl:table-cell"><Skeleton className="h-4 w-16" /></TableCell>
                   <TableCell><Skeleton className="h-4 w-16" /></TableCell>
                 </TableRow>
               ))}
               {!isLoading && contacts.map(c => (
                 <TableRow key={c.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="py-2">
+                  <TableCell className="py-2 hidden sm:table-cell">
                     <div className="h-9 w-9 rounded-full bg-[hsl(43_50%_54%)]/10 border border-[hsl(43_50%_54%)]/30 flex items-center justify-center">
                       <span className="text-xs font-medium text-[hsl(43_50%_54%)]">{getInitials(c.fullName)}</span>
                     </div>
@@ -176,10 +178,11 @@ export default function AdminContacts() {
                     <Link to={`/admin/contacts/${c.id}`} className="hover:text-[hsl(43_50%_54%)] transition-colors">
                       {c.fullName}
                     </Link>
+                    <div className="text-xs text-[hsl(0_0%_50%)] md:hidden">{c.email || ''}</div>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{c.email || '—'}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{c.phone || '—'}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell">{c.email || '—'}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden lg:table-cell">{c.phone || '—'}</TableCell>
+                  <TableCell className="hidden lg:table-cell">
                     <div className="flex flex-wrap gap-1">
                       {(c.tags ?? []).slice(0, 3).map(tag => (
                         <Badge key={tag} variant="outline" className="text-[10px] bg-[hsl(43_50%_54%)]/10 text-[hsl(43_50%_44%)] border-[hsl(43_50%_54%)]/30">
@@ -191,11 +194,11 @@ export default function AdminContacts() {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     <div className="flex gap-1 text-[hsl(0_0%_50%)]">{roleIcons(c)}</div>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{c.assignedAgentName || '—'}</TableCell>
-                  <TableCell className="text-xs text-[hsl(0_0%_50%)]">
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden xl:table-cell">{c.assignedAgentName || '—'}</TableCell>
+                  <TableCell className="text-xs text-[hsl(0_0%_50%)] hidden xl:table-cell">
                     {c.lastActivityAt ? formatDistanceToNow(new Date(c.lastActivityAt), { addSuffix: true }) : '—'}
                   </TableCell>
                   <TableCell>
@@ -212,6 +215,7 @@ export default function AdminContacts() {
               ))}
             </TableBody>
           </Table>
+          </div>
           {!isLoading && contacts.length === 0 && (
             <EmptyState
               icon={User}
