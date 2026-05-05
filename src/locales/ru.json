@@ -355,7 +355,8 @@
       "tasks": "Задачи",
       "birthdays": "Дни рождения",
       "savedSearches": "Сохранённые поиски",
-      "activities": "Действия"
+      "activities": "Действия",
+      "settings": "Настройки"
     },
     "login": {
       "portalTitle": "Панель администратора",
@@ -631,7 +632,7 @@
       }
     },
     "newsletter": {
-      "title": "Подписчики рассылки",
+      "title": "Рассылка",
       "exportCsv": "Экспорт CSV",
       "table": {
         "language": "Язык",
@@ -644,6 +645,44 @@
         "exported": "CSV экспортирован",
         "removed": "Подписчик удалён",
         "removeFailed": "Не удалось удалить подписчика"
+      },
+      "tabs": {
+        "compose": "Создать",
+        "campaigns": "Кампании",
+        "subscribers": "Подписчики"
+      },
+      "compose": {
+        "subject": "Тема",
+        "languageFilter": "Фильтр по языку",
+        "langAll": "Все",
+        "langEt": "Эстонский",
+        "langEn": "Английский",
+        "langRu": "Русский",
+        "body": "Содержание (HTML)",
+        "bodyHelp": "HTML разрешён. Токены персонализации: {{firstName}}. Минимальный подвал для отписки добавляется автоматически — не добавляйте свой.",
+        "willReach": "Получат {{count}} подписчиков",
+        "sendNow": "Отправить сейчас",
+        "sendTest": "Отправить тест только мне",
+        "from": "От",
+        "to": "Кому",
+        "subscribers": "подписчиков",
+        "previewPlaceholder": "Предпросмотр появится здесь",
+        "confirmTitle": "Подтвердите отправку",
+        "confirmDesc": "Вы собираетесь отправить {{count}} подписчикам. Это действие нельзя отменить. Продолжить?",
+        "confirmSend": "Да, отправить",
+        "toast": {
+          "sent": "Кампания отправлена — {{delivered}} доставлено, {{failed}} не удалось.",
+          "testSent": "Тестовое письмо отправлено на ваш адрес.",
+          "sendFailed": "Не удалось отправить кампанию"
+        }
+      },
+      "campaigns": {
+        "subject": "Тема",
+        "sentAt": "Отправлено",
+        "recipients": "Получатели",
+        "success": "Успешно",
+        "failed": "Неудачно",
+        "empty": "Кампаний пока нет."
       }
     },
     "users": {
@@ -714,12 +753,63 @@
       "emptyDescription": "Добавьте первый контакт, чтобы начать работу.",
       "confirmDelete": "Удалить контакт",
       "confirmDeleteDesc": "Вы уверены, что хотите удалить этот контакт? Это действие нельзя отменить.",
-      "filters": { "agent": "Агент", "source": "Источник", "all": "Все", "buyer": "Покупатели", "seller": "Продавцы" },
-      "table": { "tags": "Теги", "roles": "Роли", "agent": "Агент", "lastActivity": "Последняя активность" },
-      "roles": { "buyer": "Покупатель", "seller": "Продавец", "tenant": "Арендатор", "landlord": "Арендодатель" },
-      "sections": { "identity": "Личные данные", "address": "Адрес и компания", "classification": "Классификация", "assignment": "Назначение", "privacy": "Конфиденциальность", "notes": "Заметки" },
-      "fields": { "fullName": "Полное имя", "secondaryPhone": "Дополнительный телефон", "preferredLang": "Предпочитаемый язык", "dateOfBirth": "Дата рождения", "address": "Адрес", "company": "Компания", "position": "Должность", "isBuyer": "Покупатель", "isSeller": "Продавец", "isTenant": "Арендатор", "isLandlord": "Арендодатель", "isPartner": "Партнёр", "source": "Источник", "selectSource": "Выберите источник", "sourceDetail": "Детали источника", "tags": "Теги", "addTag": "Добавить тег…", "assignedAgent": "Назначенный агент", "selectAgent": "Выберите агента", "consentToMarketing": "Согласие на рассылку", "notesPlaceholder": "Внутренние заметки о контакте…" },
-      "tabs": { "timeline": "Хронология", "deals": "Сделки", "notes": "Заметки", "tasks": "Задачи", "properties": "Интересующие объекты" },
+      "filters": {
+        "agent": "Агент",
+        "source": "Источник",
+        "all": "Все",
+        "buyer": "Покупатели",
+        "seller": "Продавцы"
+      },
+      "table": {
+        "tags": "Теги",
+        "roles": "Роли",
+        "agent": "Агент",
+        "lastActivity": "Последняя активность"
+      },
+      "roles": {
+        "buyer": "Покупатель",
+        "seller": "Продавец",
+        "tenant": "Арендатор",
+        "landlord": "Арендодатель"
+      },
+      "sections": {
+        "identity": "Личные данные",
+        "address": "Адрес и компания",
+        "classification": "Классификация",
+        "assignment": "Назначение",
+        "privacy": "Конфиденциальность",
+        "notes": "Заметки"
+      },
+      "fields": {
+        "fullName": "Полное имя",
+        "secondaryPhone": "Дополнительный телефон",
+        "preferredLang": "Предпочитаемый язык",
+        "dateOfBirth": "Дата рождения",
+        "address": "Адрес",
+        "company": "Компания",
+        "position": "Должность",
+        "isBuyer": "Покупатель",
+        "isSeller": "Продавец",
+        "isTenant": "Арендатор",
+        "isLandlord": "Арендодатель",
+        "isPartner": "Партнёр",
+        "source": "Источник",
+        "selectSource": "Выберите источник",
+        "sourceDetail": "Детали источника",
+        "tags": "Теги",
+        "addTag": "Добавить тег…",
+        "assignedAgent": "Назначенный агент",
+        "selectAgent": "Выберите агента",
+        "consentToMarketing": "Согласие на рассылку",
+        "notesPlaceholder": "Внутренние заметки о контакте…"
+      },
+      "tabs": {
+        "timeline": "Хронология",
+        "deals": "Сделки",
+        "notes": "Заметки",
+        "tasks": "Задачи",
+        "properties": "Интересующие объекты"
+      },
       "quickNotePlaceholder": "Быстрая заметка…",
       "logActivity": "Записать действие",
       "activityBodyPlaceholder": "Подробности…",
@@ -738,7 +828,15 @@
         "emailInvalid": "Email недействителен",
         "dobPast": "Дата рождения должна быть в прошлом"
       },
-      "toast": { "deleted": "Контакт удалён", "deleteFailed": "Не удалось удалить контакт", "updated": "Контакт обновлён", "created": "Контакт создан", "saveFailed": "Не удалось сохранить контакт", "activityAdded": "Действие записано", "noteAdded": "Заметка добавлена" }
+      "toast": {
+        "deleted": "Контакт удалён",
+        "deleteFailed": "Не удалось удалить контакт",
+        "updated": "Контакт обновлён",
+        "created": "Контакт создан",
+        "saveFailed": "Не удалось сохранить контакт",
+        "activityAdded": "Действие записано",
+        "noteAdded": "Заметка добавлена"
+      }
     },
     "deals": {
       "title": "Сделки",
@@ -759,12 +857,51 @@
       "kanbanEmpty": "Сделок нет",
       "documentsPlaceholder": "Управление документами будет доступно в будущем обновлении.",
       "tasksPlaceholder": "Управление задачами будет доступно в будущем обновлении.",
-      "filters": { "dealType": "Тип сделки", "side": "Сторона", "mineOnly": "Только мои" },
-      "stages": { "Lead": "Лид", "Qualified": "Квалифицирован", "Viewing": "Просмотр", "Offer": "Предложение", "Negotiation": "Переговоры", "ContractSigned": "Договор подписан", "ClosingPending": "Закрытие ожидается", "Won": "Выиграна", "Lost": "Проиграна" },
-      "dealTypes": { "Sale": "Продажа", "Rent": "Аренда" },
-      "sides": { "BuySide": "Сторона покупателя", "SellSide": "Сторона продавца" },
-      "fields": { "title": "Название", "primaryContact": "Основной контакт", "searchContact": "Поиск контактов…", "contactRequired": "Основной контакт обязателен", "assignedAgent": "Назначенный агент", "dealType": "Тип сделки", "side": "Сторона", "expectedValue": "Ожидаемая стоимость", "actualValue": "Фактическая стоимость", "currency": "Валюта", "commissionPercent": "Комиссия %", "expectedCloseDate": "Ожидаемая дата закрытия", "lossReason": "Причина проигрыша", "participantRole": "Роль" },
-      "tabs": { "participants": "Участники", "documents": "Документы", "tasks": "Задачи" },
+      "filters": {
+        "dealType": "Тип сделки",
+        "side": "Сторона",
+        "mineOnly": "Только мои"
+      },
+      "stages": {
+        "Lead": "Лид",
+        "Qualified": "Квалифицирован",
+        "Viewing": "Просмотр",
+        "Offer": "Предложение",
+        "Negotiation": "Переговоры",
+        "ContractSigned": "Договор подписан",
+        "ClosingPending": "Закрытие ожидается",
+        "Won": "Выиграна",
+        "Lost": "Проиграна"
+      },
+      "dealTypes": {
+        "Sale": "Продажа",
+        "Rent": "Аренда"
+      },
+      "sides": {
+        "BuySide": "Сторона покупателя",
+        "SellSide": "Сторона продавца"
+      },
+      "fields": {
+        "title": "Название",
+        "primaryContact": "Основной контакт",
+        "searchContact": "Поиск контактов…",
+        "contactRequired": "Основной контакт обязателен",
+        "assignedAgent": "Назначенный агент",
+        "dealType": "Тип сделки",
+        "side": "Сторона",
+        "expectedValue": "Ожидаемая стоимость",
+        "actualValue": "Фактическая стоимость",
+        "currency": "Валюта",
+        "commissionPercent": "Комиссия %",
+        "expectedCloseDate": "Ожидаемая дата закрытия",
+        "lossReason": "Причина проигрыша",
+        "participantRole": "Роль"
+      },
+      "tabs": {
+        "participants": "Участники",
+        "documents": "Документы",
+        "tasks": "Задачи"
+      },
       "errors": {
         "titleMin": "Название должно содержать не менее 3 символов",
         "contactRequired": "Основной контакт обязателен",
@@ -772,47 +909,17 @@
         "expectedValuePositive": "Ожидаемая стоимость должна быть больше нуля",
         "closeDateFuture": "Ожидаемая дата закрытия должна быть в будущем"
       },
-      "toast": { "updated": "Сделка обновлена", "created": "Сделка создана", "saveFailed": "Не удалось сохранить сделку", "stageChanged": "Этап обновлён", "stageChangeFailed": "Не удалось изменить этап", "actualValueRequired": "Для отметки как выигранная требуется фактическая стоимость больше нуля", "lossReasonRequired": "Для отметки как проигранная требуется причина не менее 5 символов", "participantAdded": "Участник добавлен", "participantRemoved": "Участник удалён" }
-    },
-    "activities": {
-      "types": { "Note": "Заметка", "Call": "Звонок", "Email": "Письмо", "Meeting": "Встреча", "Viewing": "Просмотр", "OfferMade": "Предложение сделано", "StageChange": "Смена этапа", "ContractEvent": "Событие договора", "SystemEvent": "Системное событие" }
-    },
-    "crm": {
-      "toast": { "forbidden": "У вас нет прав для выполнения этого действия", "saveFailed": "Не удалось сохранить" }
-    },
-    "tasks": {
-      "title": "Мои задачи",
-      "addNew": "Новая задача",
-      "editTitle": "Редактировать задачу",
-      "newTitle": "Новая задача",
-      "empty": "Нет задач. Можно выдохнуть.",
-      "emptyDescription": "Всё сделано — пока нечего делать.",
-      "confirmDelete": "Удалить задачу",
-      "confirmDeleteDesc": "Вы уверены, что хотите удалить эту задачу?",
-      "reschedule": "Перенести",
-      "late": "просрочено",
-      "tabs": { "today": "Сегодня", "week": "Эта неделя", "overdue": "Просроченные", "all": "Все" },
-      "filters": { "assignedTo": "Назначено", "me": "Мне", "everyone": "Всем", "allPriorities": "Все приоритеты", "anyReminder": "Все напоминания", "hasReminder": "С напоминанием" },
-      "priority": { "Low": "Низкий", "Normal": "Обычный", "High": "Высокий" },
-      "recurrence": { "None": "Нет", "Daily": "Ежедневно", "Weekly": "Еженедельно", "Monthly": "Ежемесячно" },
-      "fields": { "description": "Описание", "dueAt": "Срок", "priority": "Приоритет", "assignedTo": "Назначено", "linkedTo": "Связано с", "reminderAt": "Напоминание", "recurrence": "Повторение" },
-      "link": { "contact": "Контакт", "deal": "Сделка", "property": "Объект", "dealIdPlaceholder": "ID сделки…", "propertyIdPlaceholder": "ID объекта…" },
-      "toast": { "created": "Задача создана", "updated": "Задача обновлена", "deleted": "Задача удалена", "deleteFailed": "Не удалось удалить задачу", "saveFailed": "Не удалось сохранить задачу", "toggleFailed": "Не удалось обновить статус задачи", "requiredFields": "Название и срок обязательны", "reminderBeforeDue": "Напоминание должно быть до срока" }
-    },
-    "birthday": {
-      "title": "Дни рождения",
-      "upcoming": "Предстоящие дни рождения",
-      "thisWeek": "На этой неделе",
-      "noBirthdays": "Нет предстоящих дней рождения в ближайшие 30 дней.",
-      "turningAge": "Исполняется {{age}}",
-      "today": "Сегодня!",
-      "sendNow": "Отправить сейчас",
-      "templateEditor": "Шаблон поздравительного письма",
-      "variablesHint": "Доступные переменные",
-      "autoSend": "Автоматическая отправка поздравлений",
-      "autoSendDescription": "Если включено, поздравления с днём рождения отправляются автоматически в полночь контактам с адресом электронной почты.",
-      "fields": { "subject": "Тема", "bodyHtml": "Тело (HTML)" },
-      "toast": { "sent": "Поздравление отправлено", "sendFailed": "Не удалось отправить поздравление", "templateSaved": "Шаблон сохранён", "templateSaveFailed": "Не удалось сохранить шаблон", "autoSendUpdated": "Настройка автоотправки обновлена", "autoSendFailed": "Не удалось обновить настройку автоотправки" }
+      "toast": {
+        "updated": "Сделка обновлена",
+        "created": "Сделка создана",
+        "saveFailed": "Не удалось сохранить сделку",
+        "stageChanged": "Этап обновлён",
+        "stageChangeFailed": "Не удалось изменить этап",
+        "actualValueRequired": "Для отметки как выигранная требуется фактическая стоимость больше нуля",
+        "lossReasonRequired": "Для отметки как проигранная требуется причина не менее 5 символов",
+        "participantAdded": "Участник добавлен",
+        "participantRemoved": "Участник удалён"
+      }
     },
     "activities": {
       "title": "Действия",
@@ -849,6 +956,100 @@
         "SystemEvent": "Система"
       }
     },
+    "crm": {
+      "toast": {
+        "forbidden": "У вас нет прав для выполнения этого действия",
+        "saveFailed": "Не удалось сохранить"
+      }
+    },
+    "tasks": {
+      "title": "Мои задачи",
+      "addNew": "Новая задача",
+      "editTitle": "Редактировать задачу",
+      "newTitle": "Новая задача",
+      "empty": "Нет задач. Можно выдохнуть.",
+      "emptyDescription": "Всё сделано — пока нечего делать.",
+      "confirmDelete": "Удалить задачу",
+      "confirmDeleteDesc": "Вы уверены, что хотите удалить эту задачу?",
+      "reschedule": "Перенести",
+      "late": "просрочено",
+      "tabs": {
+        "today": "Сегодня",
+        "week": "Эта неделя",
+        "overdue": "Просроченные",
+        "all": "Все"
+      },
+      "filters": {
+        "assignedTo": "Назначено",
+        "me": "Мне",
+        "everyone": "Всем",
+        "allPriorities": "Все приоритеты",
+        "anyReminder": "Все напоминания",
+        "hasReminder": "С напоминанием"
+      },
+      "priority": {
+        "Low": "Низкий",
+        "Normal": "Обычный",
+        "High": "Высокий"
+      },
+      "recurrence": {
+        "None": "Нет",
+        "Daily": "Ежедневно",
+        "Weekly": "Еженедельно",
+        "Monthly": "Ежемесячно"
+      },
+      "fields": {
+        "description": "Описание",
+        "dueAt": "Срок",
+        "priority": "Приоритет",
+        "assignedTo": "Назначено",
+        "linkedTo": "Связано с",
+        "reminderAt": "Напоминание",
+        "recurrence": "Повторение"
+      },
+      "link": {
+        "contact": "Контакт",
+        "deal": "Сделка",
+        "property": "Объект",
+        "dealIdPlaceholder": "ID сделки…",
+        "propertyIdPlaceholder": "ID объекта…"
+      },
+      "toast": {
+        "created": "Задача создана",
+        "updated": "Задача обновлена",
+        "deleted": "Задача удалена",
+        "deleteFailed": "Не удалось удалить задачу",
+        "saveFailed": "Не удалось сохранить задачу",
+        "toggleFailed": "Не удалось обновить статус задачи",
+        "requiredFields": "Название и срок обязательны",
+        "reminderBeforeDue": "Напоминание должно быть до срока"
+      }
+    },
+    "birthday": {
+      "title": "Дни рождения",
+      "upcoming": "Предстоящие дни рождения",
+      "thisWeek": "На этой неделе",
+      "noBirthdays": "Нет предстоящих дней рождения в ближайшие 30 дней.",
+      "turningAge": "Исполняется {{age}}",
+      "today": "Сегодня!",
+      "sendNow": "Отправить сейчас",
+      "templateEditor": "Шаблон поздравительного письма",
+      "variablesHint": "Доступные переменные",
+      "autoSend": "Автоматическая отправка поздравлений",
+      "autoSendDescription": "Если включено, поздравления с днём рождения отправляются автоматически в полночь контактам с адресом электронной почты.",
+      "fields": {
+        "subject": "Тема",
+        "bodyHtml": "Тело (HTML)"
+      },
+      "toast": {
+        "sent": "Поздравление отправлено",
+        "sendFailed": "Не удалось отправить поздравление",
+        "templateSaved": "Шаблон сохранён",
+        "templateSaveFailed": "Не удалось сохранить шаблон",
+        "autoSendUpdated": "Настройка автоотправки обновлена",
+        "autoSendFailed": "Не удалось обновить настройку автоотправки"
+      }
+    },
     "savedSearches": {
       "title": "Сохранённые поиски",
       "empty": "Пока нет сохранённых поисков",
@@ -857,8 +1058,15 @@
       "inactive": "Неактивна",
       "confirmDelete": "Удалить сохранённый поиск",
       "confirmDeleteDesc": "Подписка будет окончательно отменена. Подписаться повторно можно с публичного сайта.",
-      "filters": { "frequency": "Частота", "active": "Статус" },
-      "frequency": { "Instant": "Мгновенно", "Daily": "Ежедневно", "Weekly": "Еженедельно" },
+      "filters": {
+        "frequency": "Частота",
+        "active": "Статус"
+      },
+      "frequency": {
+        "Instant": "Мгновенно",
+        "Daily": "Ежедневно",
+        "Weekly": "Еженедельно"
+      },
       "fields": {
         "email": "Email",
         "name": "Название",
@@ -867,12 +1075,52 @@
         "lastSent": "Последняя отправка",
         "results": "Совпадений"
       },
-      "actions": { "forceSend": "Отправить сейчас" },
+      "actions": {
+        "forceSend": "Отправить сейчас"
+      },
       "toast": {
         "sent": "Отправка завершена — {{count}} совпадений",
         "sendFailed": "Не удалось отправить",
         "deleted": "Сохранённый поиск удалён",
         "deleteFailed": "Не удалось удалить"
+      }
+    },
+    "settings": {
+      "title": "Настройки",
+      "subtitle": "Эти значения считываются публичным сайтом и системой в реальном времени. Большинство изменений вступают в силу за секунды; публичный сайт кэширует статистику и контактную информацию до 5 минут.",
+      "save": "Сохранить",
+      "sections": {
+        "identity": "Идентификация сайта",
+        "social": "Ссылки на соцсети",
+        "socialHelp": "Оставьте пустым, чтобы скрыть иконку на публичном сайте.",
+        "stats": "Статистика и бренд",
+        "features": "Переключатели функций",
+        "featuresHelp": "Большинство из них по умолчанию отключены для безопасности. Включите их после того, как убедитесь, что соответствующая функция работает в вашей среде.",
+        "other": "Прочие настройки"
+      },
+      "fields": {
+        "contactEmail": "Контактный email",
+        "phone": "Телефон",
+        "address": "Адрес офиса",
+        "hours": "Часы работы",
+        "facebook": "Facebook URL",
+        "instagram": "Instagram URL",
+        "linkedin": "LinkedIn URL",
+        "yearsExperience": "Лет опыта",
+        "satisfactionPercent": "Удовлетворённость клиентов (%)",
+        "watermarkText": "Текст водяного знака",
+        "watermarkEnabled": "Применять водяной знак к фото объектов",
+        "aiDescriptions": "Описания объектов на основе ИИ",
+        "aiReplies": "Предложения ответов ИИ на email",
+        "birthdayAutoSend": "Автоматическая отправка поздравлений",
+        "savedSearchAutoSend": "Автоматическая рассылка дайджестов поиска"
+      },
+      "validation": {
+        "positiveInteger": "Должно быть положительное целое число",
+        "urlWarning": "Это не похоже на полный URL (ожидается https://…). Вы всё равно можете сохранить."
+      },
+      "toast": {
+        "saveFailed": "Не удалось сохранить настройку"
       }
     }
   }
