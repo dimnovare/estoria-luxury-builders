@@ -99,25 +99,42 @@ export default function AdminLayout() {
 
       {/* Nav */}
       <nav className="flex-1 py-4 space-y-1 overflow-y-auto">
-        {visibleNavItems.map(item => (
-          <Link
-            key={item.path}
-            to={item.path}
-            onClick={() => setMobileOpen(false)}
-            className={cn(
-              'flex items-center gap-3 px-4 py-2.5 text-sm font-body transition-colors relative',
-              isActive(item.path)
-                ? 'text-primary bg-primary/5'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
-            )}
-          >
-            {isActive(item.path) && (
-              <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary" />
-            )}
-            <item.icon className="h-4 w-4 shrink-0" />
-            {!collapsed && <span>{t(`admin.nav.${item.key}`)}</span>}
-          </Link>
-        ))}
+        {visibleNavItems.map((item, idx) => {
+          const prevItem = visibleNavItems[idx - 1];
+          const showSection = !collapsed && item.section && item.section !== prevItem?.section;
+          return (
+            <div key={item.path}>
+              {showSection && (
+                <div className="px-4 pt-4 pb-1">
+                  <span className="text-[10px] font-nav uppercase tracking-widest text-muted-foreground/60">{item.section}</span>
+                </div>
+              )}
+              {item.disabled ? (
+                <div className="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-muted-foreground/40 cursor-not-allowed">
+                  <item.icon className="h-4 w-4 shrink-0" />
+                  {!collapsed && <span>{t(`admin.nav.${item.key}`)}</span>}
+                </div>
+              ) : (
+                <Link
+                  to={item.path}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    'flex items-center gap-3 px-4 py-2.5 text-sm font-body transition-colors relative',
+                    isActive(item.path)
+                      ? 'text-primary bg-primary/5'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
+                  )}
+                >
+                  {isActive(item.path) && (
+                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary" />
+                  )}
+                  <item.icon className="h-4 w-4 shrink-0" />
+                  {!collapsed && <span>{t(`admin.nav.${item.key}`)}</span>}
+                </Link>
+              )}
+            </div>
+          );
+        })}
       </nav>
 
       {/* Bottom */}
