@@ -5,6 +5,7 @@ import {
   LayoutDashboard, Building2, FileText, Users, Briefcase,
   Globe, GraduationCap, Mail, MessageSquare, ChevronLeft,
   ExternalLink, Menu, LogOut, ScrollText, UserCog, Contact, Handshake,
+  ListTodo, Cake,
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
 import { useAuth, type UserRole } from '@/hooks/useAuth';
@@ -36,6 +37,8 @@ const navItemDefs: NavItemDef[] = [
   // CRM section
   { key: 'contacts',   icon: Contact,         path: '/admin/contacts',   section: 'CRM' },
   { key: 'deals',      icon: Handshake,       path: '/admin/deals',      section: 'CRM' },
+  { key: 'tasks',      icon: ListTodo,        path: '/admin/tasks',      section: 'CRM' },
+  { key: 'birthdays',  icon: Cake,            path: '/admin/birthdays',  section: 'CRM' },
   { key: 'activities', icon: ScrollText,       path: '/admin/activities', section: 'CRM', disabled: true },
   // Admin section
   { key: 'users',      icon: UserCog,         path: '/admin/users',      roles: ['Admin'] },
