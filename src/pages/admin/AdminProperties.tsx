@@ -85,16 +85,17 @@ export default function AdminProperties() {
       </Card>
 
       {/* Table */}
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12"></TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12 hidden sm:table-cell"></TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.title')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.type')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.transaction')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.price')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.properties.table.type')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.properties.table.transaction')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.properties.table.price')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.status')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
@@ -109,7 +110,7 @@ export default function AdminProperties() {
               )}
               {!isLoading && filtered.map(p => (
                 <TableRow key={p.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="py-2">
+                  <TableCell className="py-2 hidden sm:table-cell">
                     <img
                       src={p.coverImageUrl || '/placeholder.jpg'}
                       alt=""
@@ -119,9 +120,9 @@ export default function AdminProperties() {
                   <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
                     {p.translations?.['En']?.title ?? p.slug}
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{propertyTypeLabel(p.propertyType, t)}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{transactionTypeLabel(p.transactionType, t)}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell">{propertyTypeLabel(p.propertyType, t)}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell">{transactionTypeLabel(p.transactionType, t)}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium hidden sm:table-cell">
                     €{p.price.toLocaleString()}
                   </TableCell>
                   <TableCell>
