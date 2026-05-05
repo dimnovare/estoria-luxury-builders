@@ -371,7 +371,7 @@ export default function PropertyDetail() {
               {similarProperties.length > 0 && (
                 <div>
                   <h2 className="font-heading text-2xl text-foreground mb-6">{t('properties.detail.similarTitle')}</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                     {similarProperties.map((p, i) => (
                       <PropertyCard key={p.id} property={p} index={i} />
                     ))}
