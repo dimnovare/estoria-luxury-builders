@@ -98,9 +98,10 @@ export default function AdminPages() {
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
+          <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.pages.table.key')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.pages.table.key')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.pages.table.label')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-20">{t('admin.common.actions')}</TableHead>
               </TableRow>
@@ -113,7 +114,7 @@ export default function AdminPages() {
               )}
               {!isLoading && (pages ?? []).map(p => (
                 <TableRow key={p.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] font-mono">{p.pageKey}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] font-mono hidden sm:table-cell">{p.pageKey}</TableCell>
                   <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">{pageLabel(p.pageKey)}</TableCell>
                   <TableCell>
                     <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]" onClick={() => openEdit(p)}>
@@ -124,6 +125,7 @@ export default function AdminPages() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
 
