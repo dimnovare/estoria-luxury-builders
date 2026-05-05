@@ -6,6 +6,7 @@ import { MapPin, Phone, Mail, Clock, Check, Loader2, Instagram, Facebook, Linked
 import { z } from 'zod';
 import api from '@/lib/api';
 import { useProperty } from '@/hooks/api/useProperties';
+import { useSiteSettings } from '@/hooks/api/useSiteSettings';
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
@@ -21,6 +22,19 @@ export default function Contact() {
   const propertySlug = searchParams.get('property') || undefined;
 
   const { data: linkedProperty } = useProperty(propertySlug);
+  const { data: settings } = useSiteSettings();
+
+  const contactEmail   = settings?.['contact.email']   || 'info@estoria.estate';
+  const contactPhone   = settings?.['contact.phone']   || '+372 600 0000';
+  const contactAddress = settings?.['contact.address'] || 'Pärnu mnt 15, 10141 Tallinn, Estonia';
+  const contactHours   = settings?.['contact.hours']   || '';
+  const phoneHref      = `tel:${contactPhone.replace(/\s+/g, '')}`;
+
+  const socialLinks = [
+    { Icon: Instagram, label: 'Instagram', href: settings?.['social.instagram'] },
+    { Icon: Facebook,  label: 'Facebook',  href: settings?.['social.facebook']  },
+    { Icon: Linkedin,  label: 'LinkedIn',  href: settings?.['social.linkedin']  },
+  ].filter((s) => s.href && s.href.trim().length > 0);
 
   const [form, setForm] = useState({
     name: '',
@@ -37,13 +51,16 @@ export default function Contact() {
     if (linkedProperty) {
       setForm((f) => ({
         ...f,
-        subject: f.subject || `Inquiry: ${linkedProperty.title}`,
+        subject: f.subject || t('contact.inquiry.subject', { title: linkedProperty.title }),
         message:
           f.message ||
-          `I'm interested in the property "${linkedProperty.title}" at ${linkedProperty.address}.`,
+          t('contact.inquiry.message', {
+            title: linkedProperty.title,
+            address: linkedProperty.address,
+          }),
       }));
     }
-  }, [linkedProperty]);
+  }, [linkedProperty, t]);
 
   const handleChange = (key: string, value: string) => {
     setForm((f) => ({ ...f, [key]: value }));
@@ -89,7 +106,7 @@ export default function Contact() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-6">
               <Link to="/" className="hover:text-primary transition-colors">
-                Home
+                {t('nav.home')}
               </Link>
               <span>/</span>
               <span className="text-foreground">{t('nav.contact')}</span>
@@ -98,7 +115,7 @@ export default function Contact() {
               {t('nav.contact')}
             </h1>
             <p className="text-muted-foreground font-body text-lg max-w-xl">
-              We'd love to hear from you. Reach out and let's start a conversation.
+              {t('contact.headerLead')}
             </p>
           </motion.div>
         </div>
@@ -124,7 +141,7 @@ export default function Contact() {
                     />
                   )}
                   <div>
-                    <p className="text-xs text-muted-foreground font-body">Inquiry about:</p>
+                    <p className="text-xs text-muted-foreground font-body">{t('contact.inquiry.about')}</p>
                     <Link
                       to={`/properties/${linkedProperty.slug}`}
                       className="text-sm text-primary font-body hover:underline"
@@ -144,9 +161,9 @@ export default function Contact() {
                   <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-success/10 flex items-center justify-center">
                     <Check className="text-success" size={28} />
                   </div>
-                  <h2 className="font-heading text-3xl text-foreground mb-3">Thank You</h2>
+                  <h2 className="font-heading text-3xl text-foreground mb-3">{t('contact.success.title')}</h2>
                   <p className="text-muted-foreground font-body">
-                    We'll be in touch within 24 hours.
+                    {t('contact.success.subtitle')}
                   </p>
                 </motion.div>
               ) : (
@@ -154,7 +171,7 @@ export default function Contact() {
                   <div>
                     <input
                       type="text"
-                      placeholder="Your name *"
+                      placeholder={t('contact.form.namePlaceholder')}
                       value={form.name}
                       onChange={(e) => handleChange('name', e.target.value)}
                       className="w-full bg-secondary border border-border text-foreground text-sm font-body px-5 py-3.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
@@ -166,7 +183,7 @@ export default function Contact() {
                   <div>
                     <input
                       type="email"
-                      placeholder="Email address *"
+                      placeholder={t('contact.form.emailPlaceholder')}
                       value={form.email}
                       onChange={(e) => handleChange('email', e.target.value)}
                       className="w-full bg-secondary border border-border text-foreground text-sm font-body px-5 py-3.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
@@ -177,21 +194,21 @@ export default function Contact() {
                   </div>
                   <input
                     type="tel"
-                    placeholder="Phone (optional)"
+                    placeholder={t('contact.form.phonePlaceholder')}
                     value={form.phone}
                     onChange={(e) => handleChange('phone', e.target.value)}
                     className="w-full bg-secondary border border-border text-foreground text-sm font-body px-5 py-3.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
                   />
                   <input
                     type="text"
-                    placeholder="Subject"
+                    placeholder={t('contact.form.subjectPlaceholder')}
                     value={form.subject}
                     onChange={(e) => handleChange('subject', e.target.value)}
                     className="w-full bg-secondary border border-border text-foreground text-sm font-body px-5 py-3.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
                   />
                   <div>
                     <textarea
-                      placeholder="Your message *"
+                      placeholder={t('contact.form.messagePlaceholder')}
                       rows={5}
                       value={form.message}
                       onChange={(e) => handleChange('message', e.target.value)}
@@ -207,11 +224,11 @@ export default function Contact() {
                     className="w-full gold-gradient text-primary-foreground py-4 rounded-sm font-nav text-xs uppercase tracking-[0.15em] hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2"
                   >
                     {status === 'loading' && <Loader2 size={14} className="animate-spin" />}
-                    Send Message
+                    {t('contact.form.send')}
                   </button>
                   {status === 'error' && (
                     <p className="text-destructive text-sm font-body text-center">
-                      Something went wrong. Please try again.
+                      {t('contact.form.error')}
                     </p>
                   )}
                 </form>
@@ -233,10 +250,10 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">
-                      Office Address
+                      {t('contact.info.address')}
                     </h3>
                     <p className="text-sm text-muted-foreground font-body">
-                      Pärnu mnt 15, 10141 Tallinn, Estonia
+                      {contactAddress}
                     </p>
                   </div>
                 </div>
@@ -247,13 +264,13 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">
-                      Phone
+                      {t('contact.info.phone')}
                     </h3>
                     <a
-                      href="tel:+3726000000"
+                      href={phoneHref}
                       className="text-sm text-muted-foreground hover:text-primary font-body transition-colors"
                     >
-                      +372 600 0000
+                      {contactPhone}
                     </a>
                   </div>
                 </div>
@@ -264,13 +281,13 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">
-                      Email
+                      {t('contact.info.email')}
                     </h3>
                     <a
-                      href="mailto:info@estoria.estate"
+                      href={`mailto:${contactEmail}`}
                       className="text-sm text-muted-foreground hover:text-primary font-body transition-colors"
                     >
-                      info@estoria.estate
+                      {contactEmail}
                     </a>
                   </div>
                 </div>
@@ -281,13 +298,21 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">
-                      Office Hours
+                      {t('contact.info.hours')}
                     </h3>
-                    <p className="text-sm text-muted-foreground font-body">Mon – Fri: 9:00 – 18:00</p>
-                    <p className="text-sm text-muted-foreground font-body">
-                      Sat: 10:00 – 14:00 (by appointment)
-                    </p>
-                    <p className="text-sm text-muted-foreground font-body">Sun: Closed</p>
+                    {contactHours ? (
+                      <p className="text-sm text-muted-foreground font-body whitespace-pre-line">
+                        {contactHours}
+                      </p>
+                    ) : (
+                      <>
+                        <p className="text-sm text-muted-foreground font-body">{t('contact.info.hoursWeekday')}</p>
+                        <p className="text-sm text-muted-foreground font-body">
+                          {t('contact.info.hoursSaturday')}
+                        </p>
+                        <p className="text-sm text-muted-foreground font-body">{t('contact.info.hoursSunday')}</p>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -302,28 +327,28 @@ export default function Contact() {
                 />
               </div>
 
-              {/* Social */}
-              <div>
-                <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-4">
-                  Follow Us
-                </h3>
-                <div className="flex items-center gap-4">
-                  {[
-                    { icon: Instagram, label: 'Instagram', href: '#' },
-                    { icon: Facebook, label: 'Facebook', href: '#' },
-                    { icon: Linkedin, label: 'LinkedIn', href: '#' },
-                  ].map(({ icon: Icon, label, href }) => (
-                    <a
-                      key={label}
-                      href={href}
-                      aria-label={label}
-                      className="w-10 h-10 rounded-sm bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-300"
-                    >
-                      <Icon size={18} />
-                    </a>
-                  ))}
+              {/* Social — only render icons whose URL is configured */}
+              {socialLinks.length > 0 && (
+                <div>
+                  <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-4">
+                    {t('contact.followUs')}
+                  </h3>
+                  <div className="flex items-center gap-4">
+                    {socialLinks.map(({ Icon, label, href }) => (
+                      <a
+                        key={label}
+                        href={href}
+                        aria-label={label}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-sm bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-300"
+                      >
+                        <Icon size={18} />
+                      </a>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </motion.div>
           </div>
         </div>

@@ -22,18 +22,111 @@
     "commercial": "Commercial",
     "land": "Land"
   },
+  "home": {
+    "eyebrow": "Premium Real Estate · Tallinn · Estonia",
+    "discover": "Discover",
+    "curatedSelection": "Curated Selection",
+    "whatWeOffer": "What We Offer",
+    "ourStory": "Our Story",
+    "ourStoryButton": "Our Story →",
+    "stats": {
+      "properties": "Properties",
+      "experience": "Experience",
+      "satisfaction": "Satisfaction",
+      "languages": "Languages"
+    }
+  },
   "properties": {
     "viewAll": "View All Properties",
     "forSale": "For Sale",
     "forRent": "For Rent",
     "rooms": "rooms",
-    "beds": "beds"
+    "beds": "beds",
+    "showingPrefix": "Showing",
+    "showingOf": "of",
+    "showingSuffix": "properties",
+    "sort": {
+      "newest": "Newest",
+      "price-asc": "Price: Low → High",
+      "price-desc": "Price: High → Low",
+      "size": "Size: Largest"
+    },
+    "filter": {
+      "filters": "Filters",
+      "min": "Min",
+      "max": "Max",
+      "reset": "Reset",
+      "resetFilters": "Reset filters",
+      "resetAll": "Reset all filters",
+      "showResults": "Show Results ({{count}})"
+    },
+    "empty": {
+      "title": "No properties found",
+      "subtitle": "Try adjusting your filters to see more results."
+    },
+    "error": {
+      "loadFailed": "Failed to load properties. Please try again."
+    }
   },
   "services": {
     "viewAll": "View All Services"
   },
   "about": {
-    "learnMore": "Learn More"
+    "title": "About Estoria",
+    "learnMore": "Learn More",
+    "ourValues": "Our Values",
+    "meetTeam": "Meet Our Team",
+    "meetTeamButton": "Meet the Full Team",
+    "values": {
+      "integrity": {
+        "name": "Integrity",
+        "description": "Transparency and honesty guide every interaction. We build lasting relationships founded on trust."
+      },
+      "excellence": {
+        "name": "Excellence",
+        "description": "We pursue perfection in every detail — from property curation to client communication."
+      },
+      "discretion": {
+        "name": "Discretion",
+        "description": "Your privacy is paramount. We handle every transaction with the utmost confidentiality."
+      }
+    },
+    "cta": {
+      "title": "Ready to Find Your Future?",
+      "subtitle": "Let our team guide you to the perfect property. We'd love to hear from you.",
+      "button": "Get in Touch"
+    }
+  },
+  "contact": {
+    "headerLead": "We'd love to hear from you. Reach out and let's start a conversation.",
+    "followUs": "Follow Us",
+    "inquiry": {
+      "about": "Inquiry about:",
+      "subject": "Inquiry: {{title}}",
+      "message": "I'm interested in the property \"{{title}}\" at {{address}}."
+    },
+    "success": {
+      "title": "Thank You",
+      "subtitle": "We'll be in touch within 24 hours."
+    },
+    "form": {
+      "namePlaceholder": "Your name *",
+      "emailPlaceholder": "Email address *",
+      "phonePlaceholder": "Phone (optional)",
+      "subjectPlaceholder": "Subject",
+      "messagePlaceholder": "Your message *",
+      "send": "Send Message",
+      "error": "Something went wrong. Please try again."
+    },
+    "info": {
+      "address": "Office Address",
+      "phone": "Phone",
+      "email": "Email",
+      "hours": "Office Hours",
+      "hoursWeekday": "Mon – Fri: 9:00 – 18:00",
+      "hoursSaturday": "Sat: 10:00 – 14:00 (by appointment)",
+      "hoursSunday": "Sun: Closed"
+    }
   },
   "newsletter": {
     "title": "Stay Updated",
@@ -53,7 +146,7 @@
     "privacy": "Privacy Policy"
   },
   "common": {
-    "loading": "Loading...",
+    "loading": "Loading…",
     "error": "Something went wrong",
     "notFound": "Page not found",
     "backHome": "Back to Home"

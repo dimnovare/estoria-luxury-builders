@@ -4,26 +4,8 @@ import { motion } from 'framer-motion';
 import { Shield, Heart, Eye } from 'lucide-react';
 import { useTeam, usePageContent } from '@/hooks/api/useContent';
 
-const values = [
-  {
-    icon: Shield,
-    name: 'Integrity',
-    description:
-      'Transparency and honesty guide every interaction. We build lasting relationships founded on trust.',
-  },
-  {
-    icon: Heart,
-    name: 'Excellence',
-    description:
-      'We pursue perfection in every detail — from property curation to client communication.',
-  },
-  {
-    icon: Eye,
-    name: 'Discretion',
-    description:
-      'Your privacy is paramount. We handle every transaction with the utmost confidentiality.',
-  },
-];
+const valueIcons = [Shield, Heart, Eye];
+const valueKeys = ['integrity', 'excellence', 'discretion'] as const;
 
 const reveal = {
   hidden: { opacity: 0, y: 30 },
@@ -63,13 +45,13 @@ export default function About() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-4">
               <Link to="/" className="hover:text-primary transition-colors">
-                Home
+                {t('nav.home')}
               </Link>
               <span>/</span>
               <span className="text-foreground">{t('nav.about')}</span>
             </nav>
             <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground">
-              About Estoria
+              {t('about.title')}
             </h1>
           </motion.div>
         </div>
@@ -193,28 +175,31 @@ export default function About() {
           >
             <div className="w-12 h-px gold-gradient mx-auto mb-6" />
             <h2 className="font-heading text-4xl md:text-5xl font-light text-foreground">
-              Our Values
+              {t('about.ourValues')}
             </h2>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {values.map((value, i) => (
-              <motion.div
-                key={value.name}
-                custom={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={reveal}
-                className="group bg-card border border-border rounded-sm p-8 transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_30px_-10px_hsl(var(--primary)/0.2)]"
-              >
-                <value.icon className="text-primary mb-5" size={28} />
-                <h3 className="font-heading text-xl text-foreground mb-3">{value.name}</h3>
-                <p className="text-sm text-muted-foreground font-body leading-relaxed">
-                  {value.description}
-                </p>
-              </motion.div>
-            ))}
+            {valueKeys.map((key, i) => {
+              const Icon = valueIcons[i];
+              return (
+                <motion.div
+                  key={key}
+                  custom={i}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  variants={reveal}
+                  className="group bg-card border border-border rounded-sm p-8 transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_30px_-10px_hsl(var(--primary)/0.2)]"
+                >
+                  <Icon className="text-primary mb-5" size={28} />
+                  <h3 className="font-heading text-xl text-foreground mb-3">{t(`about.values.${key}.name`)}</h3>
+                  <p className="text-sm text-muted-foreground font-body leading-relaxed">
+                    {t(`about.values.${key}.description`)}
+                  </p>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -230,7 +215,7 @@ export default function About() {
           >
             <div className="w-12 h-px gold-gradient mx-auto mb-6" />
             <h2 className="font-heading text-4xl md:text-5xl font-light text-foreground">
-              Meet Our Team
+              {t('about.meetTeam')}
             </h2>
           </motion.div>
 
@@ -273,7 +258,7 @@ export default function About() {
               onClick={() => navigate('/team')}
               className="font-nav text-xs uppercase tracking-[0.15em] border border-primary text-primary px-8 py-3.5 rounded-sm transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
             >
-              Meet the Full Team
+              {t('about.meetTeamButton')}
             </button>
           </motion.div>
         </div>
@@ -288,16 +273,16 @@ export default function About() {
             viewport={{ once: true }}
           >
             <h2 className="font-heading text-4xl md:text-5xl font-light text-foreground mb-6">
-              Ready to Find Your Future?
+              {t('about.cta.title')}
             </h2>
             <p className="text-muted-foreground font-body mb-10 max-w-lg mx-auto">
-              Let our team guide you to the perfect property. We'd love to hear from you.
+              {t('about.cta.subtitle')}
             </p>
             <button
               onClick={() => navigate('/contact')}
               className="gold-gradient text-primary-foreground px-10 py-4 rounded-sm font-nav text-xs uppercase tracking-[0.15em] hover:opacity-90 transition-opacity"
             >
-              Get in Touch
+              {t('about.cta.button')}
             </button>
           </motion.div>
         </div>

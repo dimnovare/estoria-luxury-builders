@@ -1,7 +1,13 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { useSiteSettings } from '@/hooks/api/useSiteSettings';
 
 export default function PrivacyPolicy() {
+  const { t } = useTranslation();
+  const { data: settings } = useSiteSettings();
+  const contactEmail = settings?.['contact.email'] || 'info@estoria.estate';
+
   return (
     <>
       <section className="pt-20 pb-12 bg-gradient-to-b from-secondary/80 to-background">
@@ -9,13 +15,13 @@ export default function PrivacyPolicy() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-6">
               <Link to="/" className="hover:text-primary transition-colors">
-                Home
+                {t('nav.home')}
               </Link>
               <span>/</span>
-              <span className="text-foreground">Privacy Policy</span>
+              <span className="text-foreground">{t('footer.privacy')}</span>
             </nav>
             <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground">
-              Privacy Policy
+              {t('footer.privacy')}
             </h1>
             <div className="w-16 h-px gold-gradient mt-4" />
           </motion.div>
@@ -108,7 +114,7 @@ export default function PrivacyPolicy() {
               </ul>
               <p className="mt-3">
                 To exercise any of these rights, email us at{' '}
-                <a href="mailto:info@estoria.estate" className="text-primary hover:underline">info@estoria.estate</a>.
+                <a href={`mailto:${contactEmail}`} className="text-primary hover:underline">{contactEmail}</a>.
                 We will respond within 30 days.
               </p>
             </div>

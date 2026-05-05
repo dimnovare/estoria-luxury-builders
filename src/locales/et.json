@@ -22,18 +22,111 @@
     "commercial": "Äripind",
     "land": "Maa"
   },
+  "home": {
+    "eyebrow": "Tipptasemel kinnisvara · Tallinn · Eesti",
+    "discover": "Avasta",
+    "curatedSelection": "Valitud pakkumised",
+    "whatWeOffer": "Mida me pakume",
+    "ourStory": "Meie lugu",
+    "ourStoryButton": "Meie lugu →",
+    "stats": {
+      "properties": "Objektid",
+      "experience": "Kogemus",
+      "satisfaction": "Rahulolu",
+      "languages": "Keeled"
+    }
+  },
   "properties": {
     "viewAll": "Vaata kõiki",
     "forSale": "Müük",
     "forRent": "Üür",
     "rooms": "tuba",
-    "beds": "magamistuba"
+    "beds": "magamistuba",
+    "showingPrefix": "Kuvatud",
+    "showingOf": "/",
+    "showingSuffix": "objektist",
+    "sort": {
+      "newest": "Uusimad",
+      "price-asc": "Hind: madalaim → kõrgeim",
+      "price-desc": "Hind: kõrgeim → madalaim",
+      "size": "Suurus: suurim"
+    },
+    "filter": {
+      "filters": "Filtrid",
+      "min": "Min",
+      "max": "Max",
+      "reset": "Lähtesta",
+      "resetFilters": "Lähtesta filtrid",
+      "resetAll": "Lähtesta kõik filtrid",
+      "showResults": "Kuva tulemused ({{count}})"
+    },
+    "empty": {
+      "title": "Objekte ei leitud",
+      "subtitle": "Proovi filtreid muuta, et näha rohkem tulemusi."
+    },
+    "error": {
+      "loadFailed": "Objektide laadimine ebaõnnestus. Palun proovi uuesti."
+    }
   },
   "services": {
     "viewAll": "Vaata teenuseid"
   },
   "about": {
-    "learnMore": "Loe rohkem"
+    "title": "Estoriast",
+    "learnMore": "Loe rohkem",
+    "ourValues": "Meie väärtused",
+    "meetTeam": "Tutvu meeskonnaga",
+    "meetTeamButton": "Vaata kogu meeskonda",
+    "values": {
+      "integrity": {
+        "name": "Ausus",
+        "description": "Läbipaistvus ja ausus juhivad iga suhtlust. Loome usaldusele põhinevaid pikaajalisi suhteid."
+      },
+      "excellence": {
+        "name": "Kvaliteet",
+        "description": "Püüame täiuslikkuse poole igas detailis — alates kinnisvara valikust kuni klientidega suhtlemiseni."
+      },
+      "discretion": {
+        "name": "Diskreetsus",
+        "description": "Sinu privaatsus on meie jaoks ülim. Käsitleme iga tehingut äärmise konfidentsiaalsusega."
+      }
+    },
+    "cta": {
+      "title": "Valmis oma tulevikku leidma?",
+      "subtitle": "Lase meie meeskonnal viia sind õige kinnisvarani. Ootame sinuga ühendust.",
+      "button": "Võta ühendust"
+    }
+  },
+  "contact": {
+    "headerLead": "Meil on hea meel sinust kuulda. Võta ühendust ja alustame vestlust.",
+    "followUs": "Jälgi meid",
+    "inquiry": {
+      "about": "Päring objekti kohta:",
+      "subject": "Päring: {{title}}",
+      "message": "Olen huvitatud objektist \"{{title}}\" aadressil {{address}}."
+    },
+    "success": {
+      "title": "Aitäh!",
+      "subtitle": "Võtame ühendust 24 tunni jooksul."
+    },
+    "form": {
+      "namePlaceholder": "Sinu nimi *",
+      "emailPlaceholder": "E-posti aadress *",
+      "phonePlaceholder": "Telefon (valikuline)",
+      "subjectPlaceholder": "Teema",
+      "messagePlaceholder": "Sinu sõnum *",
+      "send": "Saada sõnum",
+      "error": "Midagi läks valesti. Palun proovi uuesti."
+    },
+    "info": {
+      "address": "Kontori aadress",
+      "phone": "Telefon",
+      "email": "E-post",
+      "hours": "Lahtiolekuajad",
+      "hoursWeekday": "E–R: 9:00–18:00",
+      "hoursSaturday": "L: 10:00–14:00 (kokkuleppel)",
+      "hoursSunday": "P: Suletud"
+    }
   },
   "newsletter": {
     "title": "Püsi kursis",
@@ -53,7 +146,7 @@
     "privacy": "Privaatsuspoliitika"
   },
   "common": {
-    "loading": "Laadimine...",
+    "loading": "Laadimine…",
     "error": "Midagi läks valesti",
     "notFound": "Lehte ei leitud",
     "backHome": "Tagasi avalehele"

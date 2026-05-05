@@ -1,11 +1,23 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Facebook, Instagram, Linkedin } from 'lucide-react';
 import Newsletter from '@/components/Newsletter';
+import { useSiteSettings } from '@/hooks/api/useSiteSettings';
 
 const languages = ['et', 'en', 'ru'] as const;
 
 export default function Footer() {
   const { t, i18n } = useTranslation();
+  const { data: settings } = useSiteSettings();
+
+  const contactEmail   = settings?.['contact.email']   || 'info@estoria.estate';
+  const contactPhone   = settings?.['contact.phone']   || '+372 600 0000';
+  const contactAddress = settings?.['contact.address'] || t('footer.address');
+  const social = [
+    { href: settings?.['social.facebook'],  Icon: Facebook,  label: 'Facebook'  },
+    { href: settings?.['social.instagram'], Icon: Instagram, label: 'Instagram' },
+    { href: settings?.['social.linkedin'],  Icon: Linkedin,  label: 'LinkedIn'  },
+  ].filter((s) => s.href && s.href.trim().length > 0);
 
   return (
     <footer className="bg-background border-t border-border">
@@ -62,10 +74,40 @@ export default function Footer() {
               {t('footer.contactInfo')}
             </h4>
             <address className="not-italic space-y-3 text-sm text-muted-foreground font-body mb-6">
-              <p>{t('footer.address')}</p>
-              <p>info@estoria.estate</p>
-              <p>+372 600 0000</p>
+              <p>{contactAddress}</p>
+              <p>
+                <a
+                  href={`mailto:${contactEmail}`}
+                  className="hover:text-primary transition-colors"
+                >
+                  {contactEmail}
+                </a>
+              </p>
+              <p>
+                <a
+                  href={`tel:${contactPhone.replace(/\s+/g, '')}`}
+                  className="hover:text-primary transition-colors"
+                >
+                  {contactPhone}
+                </a>
+              </p>
             </address>
+            {social.length > 0 && (
+              <div className="flex items-center gap-3 mb-6">
+                {social.map(({ href, Icon, label }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    aria-label={label}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-sm bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-300"
+                  >
+                    <Icon size={16} />
+                  </a>
+                ))}
+              </div>
+            )}
             <Newsletter variant="inline" />
           </div>
         </div>

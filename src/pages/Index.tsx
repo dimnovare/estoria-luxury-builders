@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import logoImg from '@/assets/logo.png';
 import heroVideoAsset from '@/assets/hero-video.mp4.asset.json';
 import Newsletter from '@/components/Newsletter';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +9,7 @@ import PropertyCard from '@/components/PropertyCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useFeaturedProperties } from '@/hooks/api/useProperties';
 import { usePageContent, useServices } from '@/hooks/api/useContent';
+import { usePublicStats, usePublicCities, usePropertyTypeOptions } from '@/hooks/api/usePublic';
 import type { LucideIcon } from 'lucide-react';
 
 const iconMap: Record<string, LucideIcon> = { Building2, Home, Landmark, TreePine };
@@ -26,6 +26,8 @@ export default function Index() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [txType, setTxType] = useState<'buy' | 'rent'>('buy');
+  const [selectedCity, setSelectedCity] = useState<string>('');
+  const [selectedType, setSelectedType] = useState<string>('');
 
   const { data: featured, isLoading: featuredLoading } = useFeaturedProperties();
   const { data: services, isLoading: servicesLoading } = useServices();
@@ -34,11 +36,31 @@ export default function Index() {
   const { data: servicesContent } = usePageContent('homepage.services');
   const { data: aboutIntro } = usePageContent('about.intro');
 
+  const { data: stats, isLoading: statsLoading } = usePublicStats();
+  const { data: cities } = usePublicCities();
+  const { data: typeOptions } = usePropertyTypeOptions();
+
   const heroVideoSrc = hero?.videoUrl || heroVideoAsset.url;
 
   const handleSearch = () => {
-    navigate(`/properties?transaction=${txType}`);
+    const params = new URLSearchParams();
+    params.set('transaction', txType);
+    if (selectedCity) params.set('city', selectedCity);
+    if (selectedType) params.set('type', selectedType);
+    navigate(`/properties?${params.toString()}`);
   };
+
+  const cityList = cities ?? [];
+  const propertyTypes = typeOptions?.propertyTypes ?? [];
+
+  const statBlocks: Array<{ value: string; labelKey: string }> = stats
+    ? [
+        { value: `${stats.propertiesActive}+`,    labelKey: 'home.stats.properties'    },
+        { value: `${stats.yearsExperience} yrs`,  labelKey: 'home.stats.experience'    },
+        { value: `${stats.satisfactionPercent}%`, labelKey: 'home.stats.satisfaction'  },
+        { value: 'ET · EN · RU',                  labelKey: 'home.stats.languages'     },
+      ]
+    : [];
 
   return (
     <>
@@ -85,7 +107,7 @@ export default function Index() {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="font-nav text-[11px] tracking-[0.4em] text-primary uppercase mb-4"
           >
-            Premium Real Estate · Tallinn · Estonia
+            {t('home.eyebrow')}
           </motion.div>
 
           {/* Title */}
@@ -103,12 +125,12 @@ export default function Index() {
             )}
           </motion.h1>
 
-          {/* Subtitle */}
+          {/* Subtitle — readability fix: brighter color, wider container, soft text-shadow */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="mt-5 text-muted-foreground text-base md:text-[16px] font-body font-light max-w-[440px] mx-auto leading-[1.8]"
+            className="mt-5 text-foreground/90 font-body font-light max-w-[520px] mx-auto leading-[1.8] text-base md:text-[17px] [text-shadow:_0_1px_8px_rgba(0,0,0,0.4)]"
           >
             {hero?.body ||
               "Curated luxury properties across Estonia's most sought-after locations."}
@@ -141,27 +163,39 @@ export default function Index() {
             {/* City field */}
             <div className="flex-1 px-5 py-2.5 border-b md:border-b-0 md:border-r border-border">
               <div className="font-nav text-[9px] tracking-[0.2em] text-muted-foreground uppercase mb-1">
-                {t('hero.allCities').replace('All ', '') || 'City'}
+                {t('hero.city')}
               </div>
-              <select className="w-full bg-transparent text-foreground text-sm font-body border-none outline-none appearance-none cursor-pointer">
-                <option>Tallinn</option>
-                <option>Tartu</option>
-                <option>Pärnu</option>
-                <option>Narva</option>
+              <select
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+                disabled={cityList.length === 0}
+                className="w-full bg-transparent text-foreground text-sm font-body border-none outline-none appearance-none cursor-pointer disabled:cursor-not-allowed"
+              >
+                <option value="">{t('hero.allCities')}</option>
+                {cityList.map((c) => (
+                  <option key={c.name} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
               </select>
             </div>
 
             {/* Type field */}
             <div className="flex-1 px-5 py-2.5 border-b md:border-b-0 md:border-r border-border">
               <div className="font-nav text-[9px] tracking-[0.2em] text-muted-foreground uppercase mb-1">
-                {t('hero.allTypes').replace('All ', '') || 'Type'}
+                {t('hero.type')}
               </div>
-              <select className="w-full bg-transparent text-foreground text-sm font-body border-none outline-none appearance-none cursor-pointer">
-                <option>{t('hero.allTypes')}</option>
-                <option>{t('hero.apartment')}</option>
-                <option>{t('hero.house')}</option>
-                <option>{t('hero.commercial')}</option>
-                <option>{t('hero.land')}</option>
+              <select
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+                className="w-full bg-transparent text-foreground text-sm font-body border-none outline-none appearance-none cursor-pointer"
+              >
+                <option value="">{t('hero.allTypes')}</option>
+                {propertyTypes.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -182,21 +216,23 @@ export default function Index() {
             transition={{ duration: 0.8, delay: 0.8 }}
             className="hidden md:flex justify-center gap-12 mt-12"
           >
-            {[
-              ['120+', 'Properties'],
-              ['8 yrs', 'Experience'],
-              ['98%', 'Satisfaction'],
-              ['ET · EN · RU', 'Languages'],
-            ].map(([value, label]) => (
-              <div key={label} className="text-center">
-                <div className="font-heading text-[30px] font-semibold text-primary leading-none">
-                  {value}
-                </div>
-                <div className="font-nav text-[9px] tracking-[0.25em] text-muted-foreground uppercase mt-1">
-                  {label}
-                </div>
-              </div>
-            ))}
+            {statsLoading || !stats
+              ? Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="text-center">
+                    <Skeleton className="h-8 w-20 mx-auto mb-1" />
+                    <Skeleton className="h-3 w-16 mx-auto" />
+                  </div>
+                ))
+              : statBlocks.map(({ value, labelKey }) => (
+                  <div key={labelKey} className="text-center">
+                    <div className="font-heading text-[30px] font-semibold text-primary leading-none">
+                      {value}
+                    </div>
+                    <div className="font-nav text-[9px] tracking-[0.25em] text-muted-foreground uppercase mt-1">
+                      {t(labelKey)}
+                    </div>
+                  </div>
+                ))}
           </motion.div>
         </div>
 
@@ -208,7 +244,7 @@ export default function Index() {
           className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center hidden md:block"
         >
           <div className="font-nav text-[9px] tracking-[0.25em] text-muted-foreground uppercase mb-1.5">
-            Discover
+            {t('home.discover')}
           </div>
           <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
             <ChevronDown className="text-muted-foreground mx-auto" size={16} strokeWidth={1.5} />
@@ -229,7 +265,7 @@ export default function Index() {
             <div>
               <div className="w-10 h-px gold-gradient mb-5" />
               <div className="font-nav text-[10px] tracking-[0.3em] text-primary uppercase mb-3">
-                Curated Selection
+                {t('home.curatedSelection')}
               </div>
               <h2 className="font-heading text-4xl md:text-[48px] font-light text-foreground leading-[1.1]">
                 {featuredContent?.title || 'Featured Properties'}
@@ -281,7 +317,7 @@ export default function Index() {
           >
             <div className="w-10 h-px gold-gradient mx-auto mb-5" />
             <div className="font-nav text-[10px] tracking-[0.3em] text-primary uppercase mb-3">
-              What We Offer
+              {t('home.whatWeOffer')}
             </div>
             <h2 className="font-heading text-4xl md:text-[48px] font-light text-foreground">
               {servicesContent?.title || 'Our Services'}
@@ -360,7 +396,7 @@ export default function Index() {
           >
             <div className="w-10 h-px gold-gradient mb-5" />
             <div className="font-nav text-[10px] tracking-[0.3em] text-primary uppercase mb-3.5">
-              Our Story
+              {t('home.ourStory')}
             </div>
             <h2 className="font-heading text-4xl md:text-[44px] font-light text-foreground leading-[1.15] mb-5">
               {aboutIntro?.title || (
@@ -387,7 +423,7 @@ export default function Index() {
                 onClick={() => navigate('/about')}
                 className="font-nav text-[11px] font-semibold uppercase tracking-[0.18em] border border-primary text-primary px-8 py-3.5 transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
               >
-                Our Story →
+                {t('home.ourStoryButton')}
               </button>
             </div>
           </motion.div>

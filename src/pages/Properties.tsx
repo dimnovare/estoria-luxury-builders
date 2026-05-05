@@ -5,16 +5,10 @@ import { motion } from 'framer-motion';
 import { Search, X, ChevronLeft, ChevronRight, SlidersHorizontal, Loader2 } from 'lucide-react';
 import PropertyCard from '@/components/PropertyCard';
 import { useProperties } from '@/hooks/api/useProperties';
+import { usePublicCities, usePropertyTypeOptions } from '@/hooks/api/usePublic';
 
 const PAGE_SIZE = 12;
-const propertyTypes = ['apartment', 'house', 'commercial', 'land', 'office'];
-const cities = ['Tallinn', 'Tartu', 'Pärnu'];
-const sortOptions = [
-  { value: 'newest', label: 'Newest' },
-  { value: 'price-asc', label: 'Price: Low → High' },
-  { value: 'price-desc', label: 'Price: High → Low' },
-  { value: 'size', label: 'Size: Largest' },
-];
+const sortOptionKeys = ['newest', 'price-asc', 'price-desc', 'size'] as const;
 
 export default function Properties() {
   const { t } = useTranslation();
@@ -33,6 +27,16 @@ export default function Properties() {
   const { data, isLoading, error } = useProperties(
     { type: propertyType, transaction, city, minPrice, maxPrice, sort },
     page
+  );
+
+  const { data: cities } = usePublicCities();
+  const { data: typeOptions } = usePropertyTypeOptions();
+  const cityList = useMemo(() => cities ?? [], [cities]);
+  const propertyTypes = useMemo(() => typeOptions?.propertyTypes ?? [], [typeOptions]);
+
+  const sortOptions = useMemo(
+    () => sortOptionKeys.map((value) => ({ value, label: t(`properties.sort.${value}`) })),
+    [t]
   );
 
   const properties = data?.data ?? [];
@@ -62,12 +66,15 @@ export default function Properties() {
         label: transaction === 'buy' ? t('hero.buy') : t('hero.rent'),
         value: transaction,
       });
-    if (propertyType) filters.push({ key: 'type', label: propertyType, value: propertyType });
+    if (propertyType) {
+      const matched = propertyTypes.find((opt) => opt.value === propertyType);
+      filters.push({ key: 'type', label: matched?.label ?? propertyType, value: propertyType });
+    }
     if (city) filters.push({ key: 'city', label: city, value: city });
-    if (minPrice) filters.push({ key: 'minPrice', label: `Min €${minPrice}`, value: minPrice });
-    if (maxPrice) filters.push({ key: 'maxPrice', label: `Max €${maxPrice}`, value: maxPrice });
+    if (minPrice) filters.push({ key: 'minPrice', label: `${t('properties.filter.min')} €${minPrice}`, value: minPrice });
+    if (maxPrice) filters.push({ key: 'maxPrice', label: `${t('properties.filter.max')} €${maxPrice}`, value: maxPrice });
     return filters;
-  }, [transaction, propertyType, city, minPrice, maxPrice, t]);
+  }, [transaction, propertyType, city, minPrice, maxPrice, propertyTypes, t]);
 
   const pageNumbers = useMemo(() => {
     const pages: (number | '...')[] = [];
@@ -117,9 +124,9 @@ export default function Properties() {
         className="bg-secondary text-foreground text-sm font-body px-4 py-2.5 rounded-sm border border-border outline-none cursor-pointer"
       >
         <option value="">{t('hero.allTypes')}</option>
-        {propertyTypes.map((type) => (
-          <option key={type} value={type}>
-            {t(`hero.${type}`, { defaultValue: type.charAt(0).toUpperCase() + type.slice(1) })}
+        {propertyTypes.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
           </option>
         ))}
       </select>
@@ -128,12 +135,13 @@ export default function Properties() {
       <select
         value={city}
         onChange={(e) => updateFilter('city', e.target.value)}
-        className="bg-secondary text-foreground text-sm font-body px-4 py-2.5 rounded-sm border border-border outline-none cursor-pointer"
+        disabled={cityList.length === 0}
+        className="bg-secondary text-foreground text-sm font-body px-4 py-2.5 rounded-sm border border-border outline-none cursor-pointer disabled:cursor-not-allowed"
       >
         <option value="">{t('hero.allCities')}</option>
-        {cities.map((c) => (
-          <option key={c} value={c}>
-            {c}
+        {cityList.map((c) => (
+          <option key={c.name} value={c.name}>
+            {c.name}
           </option>
         ))}
       </select>
@@ -146,7 +154,7 @@ export default function Properties() {
           </span>
           <input
             type="number"
-            placeholder="Min"
+            placeholder={t('properties.filter.min')}
             value={minPrice}
             onChange={(e) => updateFilter('minPrice', e.target.value)}
             className="bg-secondary text-foreground text-sm font-body pl-7 pr-3 py-2.5 rounded-sm border border-border outline-none w-28 focus:border-primary transition-colors"
@@ -159,7 +167,7 @@ export default function Properties() {
           </span>
           <input
             type="number"
-            placeholder="Max"
+            placeholder={t('properties.filter.max')}
             value={maxPrice}
             onChange={(e) => updateFilter('maxPrice', e.target.value)}
             className="bg-secondary text-foreground text-sm font-body pl-7 pr-3 py-2.5 rounded-sm border border-border outline-none w-28 focus:border-primary transition-colors"
@@ -172,7 +180,7 @@ export default function Properties() {
           onClick={resetFilters}
           className="text-xs text-muted-foreground hover:text-primary font-nav uppercase tracking-wider transition-colors"
         >
-          Reset
+          {t('properties.filter.reset')}
         </button>
       )}
     </div>
@@ -187,7 +195,7 @@ export default function Properties() {
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-6">
               <Link to="/" className="hover:text-primary transition-colors">
-                Home
+                {t('nav.home')}
               </Link>
               <span>/</span>
               <span className="text-foreground">{t('nav.properties')}</span>
@@ -214,7 +222,7 @@ export default function Properties() {
             className="flex items-center gap-2 text-sm font-nav uppercase tracking-wider text-muted-foreground"
           >
             <SlidersHorizontal size={16} />
-            Filters
+            {t('properties.filter.filters')}
             {activeFilters.length > 0 && (
               <span className="gold-gradient text-primary-foreground text-[10px] w-5 h-5 rounded-full flex items-center justify-center">
                 {activeFilters.length}
@@ -245,7 +253,7 @@ export default function Properties() {
         >
           <div className="container mx-auto px-6 py-8">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="font-heading text-2xl text-foreground">Filters</h2>
+              <h2 className="font-heading text-2xl text-foreground">{t('properties.filter.filters')}</h2>
               <button onClick={() => setMobileFiltersOpen(false)} className="text-foreground">
                 <X size={24} />
               </button>
@@ -255,7 +263,7 @@ export default function Properties() {
               onClick={() => setMobileFiltersOpen(false)}
               className="mt-8 w-full gold-gradient text-primary-foreground py-3 rounded-sm font-nav text-xs uppercase tracking-wider"
             >
-              Show Results ({totalCount})
+              {t('properties.filter.showResults', { count: totalCount })}
             </button>
           </div>
         </motion.div>
@@ -287,12 +295,13 @@ export default function Properties() {
             <p className="text-sm text-muted-foreground font-body">
               {isLoading ? (
                 <span className="flex items-center gap-2">
-                  <Loader2 size={14} className="animate-spin" /> Loading…
+                  <Loader2 size={14} className="animate-spin" /> {t('common.loading')}
                 </span>
               ) : (
                 <>
-                  Showing <span className="text-foreground">{properties.length}</span> of{' '}
-                  <span className="text-foreground">{totalCount}</span> properties
+                  {t('properties.showingPrefix')} <span className="text-foreground">{properties.length}</span>{' '}
+                  {t('properties.showingOf')} <span className="text-foreground">{totalCount}</span>{' '}
+                  {t('properties.showingSuffix')}
                 </>
               )}
             </p>
@@ -315,13 +324,13 @@ export default function Properties() {
           {error ? (
             <div className="text-center py-24">
               <p className="text-muted-foreground font-body">
-                Failed to load properties. Please try again.
+                {t('properties.error.loadFailed')}
               </p>
               <button
                 onClick={resetFilters}
                 className="mt-4 text-xs font-nav uppercase tracking-wider text-primary hover:underline"
               >
-                Reset filters
+                {t('properties.filter.resetFilters')}
               </button>
             </div>
           ) : isLoading ? (
@@ -349,15 +358,15 @@ export default function Properties() {
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-secondary flex items-center justify-center">
                 <Search className="text-muted-foreground" size={32} />
               </div>
-              <h3 className="font-heading text-2xl text-foreground mb-2">No properties found</h3>
+              <h3 className="font-heading text-2xl text-foreground mb-2">{t('properties.empty.title')}</h3>
               <p className="text-muted-foreground font-body text-sm">
-                Try adjusting your filters to see more results.
+                {t('properties.empty.subtitle')}
               </p>
               <button
                 onClick={resetFilters}
                 className="mt-6 text-xs font-nav uppercase tracking-wider text-primary hover:underline"
               >
-                Reset all filters
+                {t('properties.filter.resetAll')}
               </button>
             </motion.div>
           )}
