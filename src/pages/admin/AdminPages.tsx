@@ -157,6 +157,9 @@ export default function AdminPages() {
                     <div className="space-y-2">
                       <Label className={labelClass}>Video URL</Label>
                       <Input value={translations[lang]?.videoUrl || ''} onChange={e => updateTrans(lang, 'videoUrl', e.target.value)} className={inputClass} />
+                      <p className="text-xs text-[hsl(0_0%_50%)] mt-1">
+                        Direct video URL ending in .mp4, .webm, or .mov. YouTube URLs are not supported. Free sources: pexels.com/videos, coverr.co, pixabay.com/videos
+                      </p>
                     </div>
                   </TabsContent>
                 ))}
