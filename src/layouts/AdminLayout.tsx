@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard, Building2, FileText, Users, Briefcase,
   Globe, GraduationCap, Mail, MessageSquare, ChevronLeft,
-  ExternalLink, Menu, LogOut,
+  ExternalLink, Menu, LogOut, ScrollText, UserCog,
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
 import { useAuth, type UserRole } from '@/hooks/useAuth';
@@ -28,6 +28,8 @@ const navItemDefs: NavItemDef[] = [
   { key: 'careers',    icon: GraduationCap,   path: '/admin/careers',    roles: ['Admin', 'Editor'] },
   { key: 'newsletter', icon: Mail,            path: '/admin/newsletter', roles: ['Admin', 'Marketing'] },
   { key: 'messages',   icon: MessageSquare,   path: '/admin/messages' },
+  { key: 'users',      icon: UserCog,         path: '/admin/users',      roles: ['Admin'] },
+  { key: 'auditLog',   icon: ScrollText,      path: '/admin/audit-log',  roles: ['Admin'] },
 ];
 
 function getBreadcrumbs(pathname: string, t: TFunction) {

@@ -304,7 +304,9 @@
       "pages": "Lehed",
       "careers": "Karjäär",
       "newsletter": "Uudiskiri",
-      "messages": "Sõnumid"
+      "messages": "Sõnumid",
+      "users": "Kasutajad",
+      "auditLog": "Tegevuslogi"
     },
     "login": {
       "portalTitle": "Administraatori portaal",
@@ -588,6 +590,63 @@
         "exported": "CSV eksporditud",
         "removed": "Tellija eemaldatud",
         "removeFailed": "Tellija eemaldamine ebaõnnestus"
+      }
+    },
+    "users": {
+      "title": "Kasutajad",
+      "addUser": "Lisa kasutaja",
+      "editTitle": "Muuda kasutajat",
+      "newTitle": "Uus kasutaja",
+      "saveUser": "Salvesta kasutaja",
+      "searchPlaceholder": "Otsi kasutajaid…",
+      "active": "Aktiivne",
+      "inactive": "Mitteaktiivne",
+      "empty": "Kasutajaid ei leitud.",
+      "lastLogin": "Viimane sisselogimine",
+      "neverLoggedIn": "Mitte kunagi",
+      "fields": {
+        "email": "E-post",
+        "fullName": "Täisnimi",
+        "phone": "Telefon",
+        "photoUrl": "Foto URL",
+        "languages": "Keeled",
+        "roles": "Rollid",
+        "teamMember": "Meeskonnaliige",
+        "active": "Aktiivne",
+        "password": "Parool"
+      },
+      "actions": {
+        "resetPassword": "Lähtesta parool",
+        "deactivate": "Deaktiveeri",
+        "reactivate": "Aktiveeri"
+      },
+      "confirmDeactivate": "Kas olete kindel, et soovite selle kasutaja deaktiveerida?",
+      "toast": {
+        "updated": "Kasutaja uuendatud",
+        "created": "Kasutaja loodud",
+        "saveFailed": "Kasutaja salvestamine ebaõnnestus",
+        "emailExists": "Selle e-postiga kasutaja on juba olemas",
+        "deactivated": "Kasutaja deaktiveeritud",
+        "deactivateFailed": "Kasutaja deaktiveerimine ebaõnnestus",
+        "reactivated": "Kasutaja aktiveeritud",
+        "reactivateFailed": "Kasutaja aktiveerimine ebaõnnestus",
+        "passwordReset": "Parool edukalt lähtestatud",
+        "passwordResetFailed": "Parooli lähtestamine ebaõnnestus"
+      }
+    },
+    "audit": {
+      "title": "Tegevuslogi",
+      "when": "Millal",
+      "who": "Kes",
+      "action": "Tegevus",
+      "entity": "Objekt",
+      "details": "Üksikasjad",
+      "empty": "Tegevuslogi kirjeid ei leitud.",
+      "filters": {
+        "user": "Kasutaja",
+        "action": "Tegevus",
+        "entityType": "Objekti tüüp",
+        "dateRange": "Ajavahemik"
       }
     }
   }
