@@ -16,6 +16,10 @@ interface NavItemDef {
   path: string;
   /** Roles allowed to see this item. Omit = any authenticated user. */
   roles?: UserRole[];
+  /** Section header rendered above this item when not collapsed */
+  section?: string;
+  /** If true, render as disabled (greyed-out, not clickable) */
+  disabled?: boolean;
 }
 
 const navItemDefs: NavItemDef[] = [
@@ -28,6 +32,11 @@ const navItemDefs: NavItemDef[] = [
   { key: 'careers',    icon: GraduationCap,   path: '/admin/careers',    roles: ['Admin', 'Editor'] },
   { key: 'newsletter', icon: Mail,            path: '/admin/newsletter', roles: ['Admin', 'Marketing'] },
   { key: 'messages',   icon: MessageSquare,   path: '/admin/messages' },
+  // CRM section
+  { key: 'contacts',   icon: Contact,         path: '/admin/contacts',   section: 'CRM' },
+  { key: 'deals',      icon: Handshake,       path: '/admin/deals',      section: 'CRM' },
+  { key: 'activities', icon: ScrollText,       path: '/admin/activities', section: 'CRM', disabled: true },
+  // Admin section
   { key: 'users',      icon: UserCog,         path: '/admin/users',      roles: ['Admin'] },
   { key: 'auditLog',   icon: ScrollText,      path: '/admin/audit-log',  roles: ['Admin'] },
 ];
