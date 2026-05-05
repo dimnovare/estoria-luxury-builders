@@ -57,13 +57,13 @@ export default function Careers() {
                 >
                   <Link
                     to={`/careers/${career.slug}`}
-                    className="group relative flex items-center justify-between bg-card border border-border rounded-sm p-6 transition-all duration-300 hover:border-primary/30 hover:pl-8"
+                    className="group relative flex flex-col sm:flex-row sm:items-center justify-between bg-card border border-border rounded-sm p-5 sm:p-6 gap-3 transition-all duration-300 hover:border-primary/30 hover:sm:pl-8"
                   >
                     {/* Left gold border on hover */}
                     <div className="absolute left-0 top-0 bottom-0 w-0 group-hover:w-1 gold-gradient transition-all duration-300 rounded-l-sm" />
 
-                    <div className="flex-1">
-                      <h3 className="font-heading text-xl text-foreground group-hover:text-primary transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-heading text-lg sm:text-xl text-foreground group-hover:text-primary transition-colors">
                         {career.title}
                       </h3>
                       <div className="flex items-center gap-4 mt-2">
@@ -76,7 +76,7 @@ export default function Careers() {
                       </div>
                     </div>
 
-                    <span className="flex items-center gap-2 text-xs text-muted-foreground group-hover:text-primary font-nav uppercase tracking-wider transition-colors">
+                    <span className="flex items-center gap-2 text-xs text-muted-foreground group-hover:text-primary font-nav uppercase tracking-wider transition-colors shrink-0">
                       {t('careers.viewDetails')} <ArrowRight size={14} />
                     </span>
                   </Link>

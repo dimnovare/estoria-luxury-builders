@@ -116,11 +116,11 @@ export default function AdminUsers() {
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12 hidden sm:table-cell"></TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.users.fields.fullName')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.users.fields.email')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.users.fields.roles')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.users.fields.roles')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden lg:table-cell">{t('admin.users.fields.languages')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden lg:table-cell">{t('admin.users.lastLogin')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.common.status')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-28">{t('admin.common.actions')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-20">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -145,9 +145,16 @@ export default function AdminUsers() {
                   <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
                     <div>{u.fullName}</div>
                     <div className="text-xs text-[hsl(0_0%_50%)] md:hidden">{u.email}</div>
+                    <div className="flex flex-wrap gap-1 mt-1 sm:hidden">
+                      {u.roles.map(role => (
+                        <Badge key={role} variant="outline" className={`text-[10px] ${roleBadgeColors[role] ?? 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                          {role}
+                        </Badge>
+                      ))}
+                    </div>
                   </TableCell>
                   <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell">{u.email}</TableCell>
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     <div className="flex flex-wrap gap-1">
                       {u.roles.map(role => (
                         <Badge key={role} variant="outline" className={`text-[10px] ${roleBadgeColors[role] ?? 'bg-gray-100 text-gray-600 border-gray-200'}`}>
