@@ -45,6 +45,8 @@ import ContactDetail from "@/pages/admin/ContactDetail";
 import AdminDeals from "@/pages/admin/AdminDeals";
 import DealForm from "@/pages/admin/DealForm";
 import DealDetail from "@/pages/admin/DealDetail";
+import AdminTasks from "@/pages/admin/AdminTasks";
+import AdminBirthdays from "@/pages/admin/AdminBirthdays";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -105,6 +107,8 @@ const App = () => (
             <Route path="deals/new" element={<DealForm />} />
             <Route path="deals/:id" element={<DealDetail />} />
             <Route path="deals/:id/edit" element={<DealForm />} />
+            <Route path="tasks" element={<AdminTasks />} />
+            <Route path="birthdays" element={<AdminBirthdays />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
