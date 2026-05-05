@@ -202,7 +202,7 @@ export default function PropertyDetail() {
   return (
     <>
       {/* Breadcrumb */}
-      <div className="pt-24 pb-4 container mx-auto px-6">
+      <div className="pt-24 pb-4 container mx-auto px-4 sm:px-6">
         <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body">
           <Link to="/" className="hover:text-primary transition-colors">
             {t('nav.home')}
@@ -217,7 +217,7 @@ export default function PropertyDetail() {
       </div>
 
       {/* Gallery */}
-      <section className="container mx-auto px-6 mb-10">
+      <section className="container mx-auto px-4 sm:px-6 mb-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -284,7 +284,7 @@ export default function PropertyDetail() {
       </section>
 
       {/* Content */}
-      <section className="container mx-auto px-6 pb-24">
+      <section className="container mx-auto px-4 sm:px-6 pb-24">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
           {/* Left column */}
           <div className="lg:col-span-3">

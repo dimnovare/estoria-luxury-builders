@@ -136,7 +136,7 @@ export default function AuditLog() {
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.audit.when')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs whitespace-nowrap">{t('admin.audit.when')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.audit.who')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.audit.action')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.audit.entity')}</TableHead>
@@ -163,11 +163,11 @@ export default function AuditLog() {
                         <TooltipContent>{new Date(entry.createdAt).toLocaleString()}</TooltipContent>
                       </Tooltip>
                     </TableCell>
-                    <TableCell className="text-sm text-[hsl(0_0%_20%)] truncate max-w-[140px]">
-                      <div>{getDisplayEmail(entry)}</div>
-                      <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden flex items-center gap-1">
+                    <TableCell className="text-sm text-[hsl(0_0%_20%)] max-w-[180px]">
+                      <div className="break-all text-xs sm:text-sm">{getDisplayEmail(entry)}</div>
+                      <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden flex items-center gap-1 mt-0.5">
                         <ActionIcon className={`h-3 w-3 ${color}`} />
-                        {entry.action}
+                        <span className="truncate">{entry.action}</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-sm hidden sm:table-cell">

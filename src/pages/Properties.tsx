@@ -215,7 +215,7 @@ export default function Properties() {
     <>
       {/* Header */}
       <section className="pt-20 pb-12 bg-gradient-to-b from-secondary/80 to-background">
-        <div className="container mx-auto px-6 pt-12">
+        <div className="container mx-auto px-4 sm:px-6 pt-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-6">
@@ -339,7 +339,7 @@ export default function Properties() {
       )}
 
       {/* Results */}
-      <section className="py-12 px-6">
+      <section className="py-12 px-4 sm:px-6">
         <div className="container mx-auto">
           {/* Top row */}
           <div className="flex items-center justify-between mb-8">
