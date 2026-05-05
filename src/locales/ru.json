@@ -306,7 +306,10 @@
       "newsletter": "Рассылка",
       "messages": "Сообщения",
       "users": "Пользователи",
-      "auditLog": "Журнал действий"
+      "auditLog": "Журнал действий",
+      "contacts": "Контакты",
+      "deals": "Сделки",
+      "activities": "Действия"
     },
     "login": {
       "portalTitle": "Панель администратора",

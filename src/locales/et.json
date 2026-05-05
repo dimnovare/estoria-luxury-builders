@@ -306,7 +306,10 @@
       "newsletter": "Uudiskiri",
       "messages": "Sõnumid",
       "users": "Kasutajad",
-      "auditLog": "Tegevuslogi"
+      "auditLog": "Tegevuslogi",
+      "contacts": "Kontaktid",
+      "deals": "Tehingud",
+      "activities": "Tegevused"
     },
     "login": {
       "portalTitle": "Administraatori portaal",
