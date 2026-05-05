@@ -216,7 +216,7 @@ export default function AdminBirthdays() {
       {/* Section C — Auto-send toggle */}
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
         <CardContent className="p-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h3 className="text-sm font-medium text-[hsl(0_0%_20%)]">{t('admin.birthday.autoSend')}</h3>
               <p className="text-xs text-[hsl(0_0%_50%)] mt-1">{t('admin.birthday.autoSendDescription')}</p>

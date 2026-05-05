@@ -101,20 +101,21 @@ export default function AdminCareers() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.careers.title')}</h1>
-        <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+        <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
           <Plus className="h-4 w-4 mr-2" />{t('admin.careers.addNew')}
         </Button>
       </div>
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.careers.table.title')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.careers.table.location')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.careers.table.location')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
@@ -127,8 +128,11 @@ export default function AdminCareers() {
               )}
               {!isLoading && (careers ?? []).map(c => (
                 <TableRow key={c.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">{c.title}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
+                    <div>{c.title}</div>
+                    <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">{c.location}</div>
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     {c.location && (
                       <Badge variant="secondary" className="text-[10px] bg-[hsl(0_0%_93%)] text-[hsl(0_0%_40%)]">{c.location}</Badge>
                     )}
@@ -160,6 +164,7 @@ export default function AdminCareers() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
 

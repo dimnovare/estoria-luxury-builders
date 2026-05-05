@@ -102,9 +102,9 @@ export default function AdminDeals() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.deals.title')}</h1>
-        <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+        <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
           <Link to="/admin/deals/new"><Plus className="h-4 w-4 mr-2" />{t('admin.deals.addNew')}</Link>
         </Button>
       </div>
@@ -113,7 +113,7 @@ export default function AdminDeals() {
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
         <CardContent className="p-4 flex flex-wrap gap-3 items-center">
           <Select value={agentFilter} onValueChange={setAgentFilter}>
-            <SelectTrigger className="w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
               <SelectValue placeholder={t('admin.contacts.filters.agent')} />
             </SelectTrigger>
             <SelectContent>
@@ -122,7 +122,7 @@ export default function AdminDeals() {
             </SelectContent>
           </Select>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-[140px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[140px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
               <SelectValue placeholder={t('admin.deals.filters.dealType')} />
             </SelectTrigger>
             <SelectContent>
@@ -132,7 +132,7 @@ export default function AdminDeals() {
             </SelectContent>
           </Select>
           <Select value={sideFilter} onValueChange={setSideFilter}>
-            <SelectTrigger className="w-[140px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[140px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
               <SelectValue placeholder={t('admin.deals.filters.side')} />
             </SelectTrigger>
             <SelectContent>

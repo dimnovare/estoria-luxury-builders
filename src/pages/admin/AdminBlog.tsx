@@ -27,22 +27,23 @@ export default function AdminBlog() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.blog.title')}</h1>
         <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
           <Link to="/admin/blog/new"><Plus className="h-4 w-4 mr-2" />{t('admin.blog.addNew')}</Link>
         </Button>
       </div>
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.blog.table.title')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.blog.table.author')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.blog.table.author')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.blog.table.status')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.blog.table.date')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.blog.table.date')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
@@ -57,7 +58,7 @@ export default function AdminBlog() {
                   <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium max-w-[300px] truncate">
                     {p.translations?.['En']?.title ?? p.slug}
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{p.authorName}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{p.authorName}</TableCell>
                   <TableCell>
                     <Badge
                       variant="outline"
@@ -66,7 +67,7 @@ export default function AdminBlog() {
                       {blogStatusLabel(p.status, t)}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_50%)]">
+                  <TableCell className="text-sm text-[hsl(0_0%_50%)] hidden sm:table-cell">
                     {p.publishedAt ? new Date(p.publishedAt).toLocaleDateString() : p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '—'}
                   </TableCell>
                   <TableCell>
@@ -93,6 +94,7 @@ export default function AdminBlog() {
               )}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

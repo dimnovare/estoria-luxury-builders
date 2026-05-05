@@ -78,7 +78,7 @@ export default function AdminActivities() {
           </div>
 
           <Select value={type} onValueChange={(v) => { setType(v as 'all' | AdminActivityType); setPage(1); }}>
-            <SelectTrigger className="w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
               <SelectValue placeholder={t('admin.activities.filters.type')} />
             </SelectTrigger>
             <SelectContent>
@@ -90,7 +90,7 @@ export default function AdminActivities() {
           </Select>
 
           <Select value={userId} onValueChange={(v) => { setUserId(v); setPage(1); }}>
-            <SelectTrigger className="w-[180px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[180px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
               <SelectValue placeholder={t('admin.activities.filters.user')} />
             </SelectTrigger>
             <SelectContent>
@@ -101,33 +101,36 @@ export default function AdminActivities() {
             </SelectContent>
           </Select>
 
-          <Input
-            type="date"
-            value={occurredAfter}
-            onChange={(e) => { setOccurredAfter(e.target.value); setPage(1); }}
-            className="w-[150px] bg-white border-[hsl(0_0%_85%)] text-sm"
-            aria-label={t('admin.activities.filters.from')}
-          />
-          <Input
-            type="date"
-            value={occurredBefore}
-            onChange={(e) => { setOccurredBefore(e.target.value); setPage(1); }}
-            className="w-[150px] bg-white border-[hsl(0_0%_85%)] text-sm"
-            aria-label={t('admin.activities.filters.to')}
-          />
+          <div className="flex gap-3 w-full sm:w-auto">
+            <Input
+              type="date"
+              value={occurredAfter}
+              onChange={(e) => { setOccurredAfter(e.target.value); setPage(1); }}
+              className="flex-1 sm:w-[150px] bg-white border-[hsl(0_0%_85%)] text-sm"
+              aria-label={t('admin.activities.filters.from')}
+            />
+            <Input
+              type="date"
+              value={occurredBefore}
+              onChange={(e) => { setOccurredBefore(e.target.value); setPage(1); }}
+              className="flex-1 sm:w-[150px] bg-white border-[hsl(0_0%_85%)] text-sm"
+              aria-label={t('admin.activities.filters.to')}
+            />
+          </div>
         </CardContent>
       </Card>
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
                 <TableHead>{t('admin.activities.table.when')}</TableHead>
                 <TableHead>{t('admin.activities.table.type')}</TableHead>
-                <TableHead>{t('admin.activities.table.title')}</TableHead>
-                <TableHead>{t('admin.activities.table.linkedTo')}</TableHead>
-                <TableHead>{t('admin.activities.table.user')}</TableHead>
+                <TableHead className="hidden sm:table-cell">{t('admin.activities.table.title')}</TableHead>
+                <TableHead className="hidden md:table-cell">{t('admin.activities.table.linkedTo')}</TableHead>
+                <TableHead className="hidden lg:table-cell">{t('admin.activities.table.user')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -156,8 +159,8 @@ export default function AdminActivities() {
                         {t(`admin.activities.types.${a.type}`)}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-sm text-[hsl(0_0%_20%)]">{a.title}</TableCell>
-                    <TableCell className="text-xs">
+                    <TableCell className="text-sm text-[hsl(0_0%_20%)] hidden sm:table-cell">{a.title}</TableCell>
+                    <TableCell className="text-xs hidden md:table-cell">
                       <div className="flex flex-wrap gap-1">
                         {a.contactId && (
                           <Link to={`/admin/contacts/${a.contactId}`}>
@@ -180,12 +183,13 @@ export default function AdminActivities() {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="text-xs text-[hsl(0_0%_50%)]">{a.userName}</TableCell>
+                    <TableCell className="text-xs text-[hsl(0_0%_50%)] hidden lg:table-cell">{a.userName}</TableCell>
                   </TableRow>
                 );
               })}
             </TableBody>
           </Table>
+          </div>
           {!isLoading && activities.length === 0 && (
             <EmptyState
               icon={ScrollText}

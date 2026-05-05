@@ -49,7 +49,7 @@ export default function AdminProperties() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.properties.title')}</h1>
         <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
           <Link to="/admin/properties/new"><Plus className="h-4 w-4 mr-2" />{t('admin.properties.addNew')}</Link>
@@ -60,7 +60,7 @@ export default function AdminProperties() {
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
         <CardContent className="p-4 flex flex-wrap gap-3">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
               <SelectValue placeholder={t('admin.properties.filters.status')} />
             </SelectTrigger>
             <SelectContent>
@@ -71,7 +71,7 @@ export default function AdminProperties() {
             </SelectContent>
           </Select>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
               <SelectValue placeholder={t('admin.properties.filters.type')} />
             </SelectTrigger>
             <SelectContent>
@@ -85,16 +85,17 @@ export default function AdminProperties() {
       </Card>
 
       {/* Table */}
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12"></TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12 hidden sm:table-cell"></TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.title')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.type')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.transaction')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.price')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.properties.table.type')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.properties.table.transaction')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.properties.table.price')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.status')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
@@ -109,7 +110,7 @@ export default function AdminProperties() {
               )}
               {!isLoading && filtered.map(p => (
                 <TableRow key={p.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="py-2">
+                  <TableCell className="py-2 hidden sm:table-cell">
                     <img
                       src={p.coverImageUrl || '/placeholder.jpg'}
                       alt=""
@@ -119,9 +120,9 @@ export default function AdminProperties() {
                   <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
                     {p.translations?.['En']?.title ?? p.slug}
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{propertyTypeLabel(p.propertyType, t)}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{transactionTypeLabel(p.transactionType, t)}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell">{propertyTypeLabel(p.propertyType, t)}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell">{transactionTypeLabel(p.transactionType, t)}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium hidden sm:table-cell">
                     €{p.price.toLocaleString()}
                   </TableCell>
                   <TableCell>
@@ -155,6 +156,7 @@ export default function AdminProperties() {
               ))}
             </TableBody>
           </Table>
+          </div>
           {!isLoading && filtered.length === 0 && (
             <p className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.properties.noMatch')}</p>
           )}

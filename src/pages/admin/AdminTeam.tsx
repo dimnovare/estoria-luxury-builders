@@ -147,23 +147,24 @@ export default function AdminTeam() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.team.title')}</h1>
         <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
           <Plus className="h-4 w-4 mr-2" />{t('admin.team.addNew')}
         </Button>
       </div>
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12"></TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12 hidden sm:table-cell"></TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.team.table.name')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.team.table.role')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.team.table.languages')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.team.table.contact')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.team.table.role')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.team.table.languages')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden lg:table-cell">{t('admin.team.table.contact')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
@@ -175,19 +176,22 @@ export default function AdminTeam() {
               )}
               {!isLoading && (team ?? []).map(m => (
                 <TableRow key={m.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     <img src={m.photoUrl || '/placeholder.jpg'} alt="" className="h-9 w-9 rounded-full object-cover" />
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">{m.name}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{m.role}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
+                    <div>{m.name}</div>
+                    <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">{m.role}</div>
+                  </TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{m.role}</TableCell>
+                  <TableCell className="hidden md:table-cell">
                     <div className="flex flex-wrap gap-1">
                       {(m.languages ?? []).map(l => (
                         <Badge key={l} variant="secondary" className="text-[10px] bg-[hsl(0_0%_93%)] text-[hsl(0_0%_40%)]">{l}</Badge>
                       ))}
                     </div>
                   </TableCell>
-                  <TableCell className="text-xs text-[hsl(0_0%_50%)]">{m.email}</TableCell>
+                  <TableCell className="text-xs text-[hsl(0_0%_50%)] hidden lg:table-cell">{m.email}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]" onClick={() => openEdit(m)}>
@@ -207,6 +211,7 @@ export default function AdminTeam() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
 
@@ -242,7 +247,7 @@ export default function AdminTeam() {
               <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className={labelClass}>{t('admin.team.fields.phone')}</Label>
                 <Input value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} />

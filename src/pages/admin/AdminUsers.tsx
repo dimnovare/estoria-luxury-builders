@@ -79,9 +79,9 @@ export default function AdminUsers() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.users.title')}</h1>
-        <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+        <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
           <Link to="/admin/users/new"><Plus className="h-4 w-4 mr-2" />{t('admin.users.addUser')}</Link>
         </Button>
       </div>
@@ -90,7 +90,7 @@ export default function AdminUsers() {
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
         <CardContent className="p-4">
           <form onSubmit={handleSearch} className="flex gap-3">
-            <div className="relative flex-1 max-w-sm">
+            <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[hsl(0_0%_50%)]" />
               <Input
                 value={searchInput}
@@ -99,7 +99,7 @@ export default function AdminUsers() {
                 className="pl-9 border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]"
               />
             </div>
-            <Button type="submit" variant="outline" className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)]">
+            <Button type="submit" variant="outline" className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)] shrink-0">
               {t('filters.filters')}
             </Button>
           </form>
@@ -107,18 +107,19 @@ export default function AdminUsers() {
       </Card>
 
       {/* Table */}
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12"></TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12 hidden sm:table-cell"></TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.users.fields.fullName')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.users.fields.email')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.users.fields.email')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.users.fields.roles')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.users.fields.languages')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.users.lastLogin')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden lg:table-cell">{t('admin.users.fields.languages')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden lg:table-cell">{t('admin.users.lastLogin')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.common.status')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs w-28">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
@@ -132,7 +133,7 @@ export default function AdminUsers() {
               )}
               {!isLoading && users.map(u => (
                 <TableRow key={u.id} className={`border-[hsl(0_0%_93%)] ${!u.isActive ? 'opacity-50' : ''}`}>
-                  <TableCell className="py-2">
+                  <TableCell className="py-2 hidden sm:table-cell">
                     {u.photoUrl ? (
                       <img src={u.photoUrl} alt="" className="h-8 w-8 rounded-full object-cover" />
                     ) : (
@@ -141,8 +142,11 @@ export default function AdminUsers() {
                       </div>
                     )}
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">{u.fullName}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{u.email}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
+                    <div>{u.fullName}</div>
+                    <div className="text-xs text-[hsl(0_0%_50%)] md:hidden">{u.email}</div>
+                  </TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell">{u.email}</TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
                       {u.roles.map(role => (
@@ -152,8 +156,8 @@ export default function AdminUsers() {
                       ))}
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{(u.languages ?? []).join(', ')}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden lg:table-cell">{(u.languages ?? []).join(', ')}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden lg:table-cell">
                     {u.lastLoginAt ? (
                       <Tooltip>
                         <TooltipTrigger>{formatDistanceToNow(new Date(u.lastLoginAt), { addSuffix: true })}</TooltipTrigger>
@@ -163,7 +167,7 @@ export default function AdminUsers() {
                       <span className="text-[hsl(0_0%_70%)] italic">{t('admin.users.neverLoggedIn')}</span>
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     <Badge variant="outline" className={`text-[10px] ${u.isActive ? 'bg-green-100 text-green-700 border-green-200' : 'bg-red-100 text-red-600 border-red-200'}`}>
                       {u.isActive ? t('admin.users.active') : t('admin.users.inactive')}
                     </Badge>
@@ -205,6 +209,7 @@ export default function AdminUsers() {
               ))}
             </TableBody>
           </Table>
+          </div>
           {!isLoading && users.length === 0 && (
             <p className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.users.empty')}</p>
           )}

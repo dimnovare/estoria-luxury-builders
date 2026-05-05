@@ -38,15 +38,16 @@ export default function AdminMessages() {
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.messages.title')}</h1>
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-[hsl(0_0%_93%)]">
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.name')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.email')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.messages.table.subject')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.date')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.common.email')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.messages.table.subject')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.common.date')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
               </TableRow>
             </TableHeader>
@@ -62,10 +63,13 @@ export default function AdminMessages() {
                   className="border-[hsl(0_0%_93%)] cursor-pointer hover:bg-[hsl(0_0%_98%)]"
                   onClick={() => setSelected(m)}
                 >
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">{m.name}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{m.email}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_30%)]">{m.subject}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_50%)]">
+                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
+                    <div>{m.name}</div>
+                    <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">{m.email}</div>
+                  </TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{m.email}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_30%)] hidden md:table-cell truncate max-w-[200px]">{m.subject}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_50%)] hidden sm:table-cell whitespace-nowrap">
                     {m.createdAt ? new Date(m.createdAt).toLocaleDateString() : '—'}
                   </TableCell>
                   <TableCell>
@@ -82,6 +86,7 @@ export default function AdminMessages() {
               )}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
 
@@ -93,9 +98,9 @@ export default function AdminMessages() {
                 <DialogTitle className="text-[hsl(0_0%_15%)]">{selected.subject || t('common.noSubject')}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                   <div><span className="text-[hsl(0_0%_50%)]">{t('admin.messages.dialog.from')}</span> <span className="text-[hsl(0_0%_20%)] font-medium">{selected.name}</span></div>
-                  <div><span className="text-[hsl(0_0%_50%)]">{t('admin.messages.dialog.email')}</span> <a href={`mailto:${selected.email}`} className="text-[hsl(43_50%_54%)] hover:underline">{selected.email}</a></div>
+                  <div><span className="text-[hsl(0_0%_50%)]">{t('admin.messages.dialog.email')}</span> <a href={`mailto:${selected.email}`} className="text-[hsl(43_50%_54%)] hover:underline break-all">{selected.email}</a></div>
                   {selected.phone && (
                     <div><span className="text-[hsl(0_0%_50%)]">{t('admin.messages.dialog.phone')}</span> <span className="text-[hsl(0_0%_20%)]">{selected.phone}</span></div>
                   )}
@@ -110,7 +115,7 @@ export default function AdminMessages() {
                 <div className="bg-[hsl(0_0%_97%)] rounded-lg p-4 text-sm text-[hsl(0_0%_25%)] leading-relaxed">
                   {selected.message}
                 </div>
-                <div className="flex gap-2 justify-end">
+                <div className="flex flex-wrap gap-2 justify-end">
                   {selected.status !== 'Read' && (
                     <Button
                       variant="outline"
