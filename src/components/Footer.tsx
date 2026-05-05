@@ -42,13 +42,13 @@ export default function Footer() {
               {t('footer.quickLinks')}
             </h4>
             <ul className="space-y-3">
-              {['properties', 'about', 'team', 'blog', 'careers'].map((key) => (
+              {['properties', 'about', 'team', 'blog', 'contact'].map((key) => (
                 <li key={key}>
                   <Link
                     to={`/${key}`}
                     className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 font-body"
                   >
-                    {t(`nav.${key === 'careers' ? 'contact' : key}`)}
+                    {t(`nav.${key}`)}
                   </Link>
                 </li>
               ))}
