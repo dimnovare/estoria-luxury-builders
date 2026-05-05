@@ -21,7 +21,7 @@ import { useAdminSubscribers, useUnsubscribe } from '@/hooks/api/useAdmin';
 import { useNewsletterCampaigns, useSendNewsletterNow, useNewsletterSubscriberCount, type CampaignDto } from '@/hooks/api/useNewsletter';
 import { useAuth } from '@/hooks/useAuth';
 import { useSiteSettings } from '@/hooks/api/useSiteSettings';
-import useDebouncedValue from '@/hooks/useDebouncedValue';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { format } from 'date-fns';
 
 // ── Compose schema ──────────────────────────────────────────────────────────
