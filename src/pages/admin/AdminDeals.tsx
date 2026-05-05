@@ -239,7 +239,7 @@ export default function AdminDeals() {
                     <span className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_40%)]">
                       {t(`admin.deals.stages.${stage}`)}
                     </span>
-                    <Badge variant="outline" className="text-[10px] h-5 min-w-[20px] justify-center">{deals.length}</Badge>
+                    <Badge variant="outline" className="text-[10px] h-5 min-w-[20px] justify-center text-[hsl(0_0%_30%)]">{deals.length}</Badge>
                   </div>
                   <div className="flex items-center gap-2">
                     {totalValue > 0 && (
