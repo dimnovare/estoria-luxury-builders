@@ -253,7 +253,7 @@ export default function Index() {
 
       {/* ===== FEATURED PROPERTIES ===== */}
       {(!featured || featured.length > 0 || featuredLoading) && (
-      <section className="py-16 sm:py-24 px-4 sm:px-6 md:px-16 bg-card">
+      <section className="py-16 sm:py-24 px-3 sm:px-6 md:px-16 bg-card">
         <div className="container mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -306,7 +306,7 @@ export default function Index() {
 
       {/* ===== SERVICES ===== */}
       {(!services || services.length > 0 || servicesLoading) && (
-      <section className="py-16 sm:py-24 px-4 sm:px-6 md:px-16">
+      <section className="py-16 sm:py-24 px-3 sm:px-6 md:px-16">
         <div className="container mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
