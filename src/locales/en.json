@@ -21,6 +21,11 @@
   },
   "home": {
     "eyebrow": "Premium Real Estate · Tallinn · Estonia",
+    "hero": {
+      "titleStart": "Where Your",
+      "titleAccent": "Future",
+      "titleEnd": "Lives"
+    },
     "discover": "Discover",
     "curatedSelection": "Curated Selection",
     "whatWeOffer": "What We Offer",
@@ -322,7 +327,8 @@
       "status": "Status",
       "title": "Title",
       "type": "Type",
-      "all": "All"
+      "all": "All",
+      "page": "Page {{page}} of {{totalPages}}"
     },
     "layout": {
       "adminBadge": "Admin",
@@ -981,6 +987,41 @@
         "templateSaveFailed": "Failed to save template",
         "autoSendUpdated": "Auto-send setting updated",
         "autoSendFailed": "Failed to update auto-send setting"
+      }
+    },
+    "activities": {
+      "title": "Activities",
+      "searchPlaceholder": "Search title or body…",
+      "empty": "No activities match your filters",
+      "emptyDescription": "Try widening the date range or clearing filters.",
+      "filters": {
+        "type": "Type",
+        "user": "User",
+        "from": "From",
+        "to": "To"
+      },
+      "table": {
+        "when": "When",
+        "type": "Type",
+        "title": "Title",
+        "linkedTo": "Linked to",
+        "user": "User"
+      },
+      "linked": {
+        "contact": "Contact",
+        "deal": "Deal",
+        "property": "Property"
+      },
+      "types": {
+        "Note": "Note",
+        "Call": "Call",
+        "Email": "Email",
+        "Meeting": "Meeting",
+        "Viewing": "Viewing",
+        "OfferMade": "Offer made",
+        "StageChange": "Stage change",
+        "ContractEvent": "Contract event",
+        "SystemEvent": "System"
       }
     },
     "savedSearches": {

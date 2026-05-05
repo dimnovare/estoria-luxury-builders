@@ -3,19 +3,24 @@ import api from '@/lib/api';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
+export type BirthdayLanguage = 'Et' | 'En' | 'Ru';
+
 export interface UpcomingBirthday {
   contactId: string;
   fullName: string;
-  dateOfBirth: string;
+  dateOfBirth: string;       // ISO date
   email?: string;
-  /** How old they are turning */
+  preferredLanguage: BirthdayLanguage;
+  consentMarketing: boolean;
+  daysUntil: number;
+  /** Server-computed age the contact will turn on their next birthday. */
   turningAge: number;
-  /** The upcoming birthday date (this year or next) */
-  birthdayDate: string;
+  /** Server-computed next birthday date (this year or next). */
+  nextBirthday: string;      // ISO date
 }
 
-export interface BirthdayTemplate {
-  language: string;
+export interface BirthdayTemplateTranslation {
+  language: BirthdayLanguage;
   subject: string;
   bodyHtml: string;
 }
@@ -26,14 +31,19 @@ export function useUpcomingBirthdays(days = 30) {
   return useQuery<UpcomingBirthday[]>({
     queryKey: ['birthday', 'upcoming', days],
     queryFn: () =>
-      api.get('/admin/birthday/upcoming', { params: { days } }).then(r => r.data),
+      api.get('/admin/birthday/upcoming', { params: { days } }).then(r => r.data ?? []),
   });
 }
 
+/**
+ * Always returns three rows (one per language). Languages without saved
+ * customizations come back with empty subject/bodyHtml — bind a tab per row
+ * without conditional logic.
+ */
 export function useBirthdayTemplates() {
-  return useQuery<BirthdayTemplate[]>({
+  return useQuery<BirthdayTemplateTranslation[]>({
     queryKey: ['birthday', 'templates'],
-    queryFn: () => api.get('/admin/birthday/template').then(r => r.data),
+    queryFn: () => api.get('/admin/birthday/template').then(r => r.data ?? []),
   });
 }
 
@@ -51,17 +61,23 @@ export function useBirthdayAutoSend() {
 
 // ── Mutations ──────────────────────────────────────────────────────────────────
 
+/**
+ * Manual fire. When contactId is supplied, only that contact is mailed;
+ * omitting the argument blasts every eligible contact (same rules as the
+ * recurring 08:00 UTC job).
+ */
 export function useSendBirthdayNow() {
   return useMutation({
-    mutationFn: (contactId: string) =>
-      api.post('/admin/birthday/send-now', { contactId }).then(r => r.data),
+    mutationFn: (contactId?: string) =>
+      api.post('/admin/birthday/send-now', contactId ? { contactId } : {}).then(r => r.data),
   });
 }
 
+/** Single-language upsert. The Language enum on the body identifies which tab. */
 export function useSaveBirthdayTemplate() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (template: BirthdayTemplate) =>
+    mutationFn: (template: BirthdayTemplateTranslation) =>
       api.put('/admin/birthday/template', template).then(r => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['birthday', 'templates'] });

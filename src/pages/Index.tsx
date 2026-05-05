@@ -4,15 +4,13 @@ import Newsletter from '@/components/Newsletter';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Search, Building2, Home, Landmark, TreePine, ChevronDown } from 'lucide-react';
+import { Search, ChevronDown } from 'lucide-react';
 import PropertyCard from '@/components/PropertyCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useFeaturedProperties } from '@/hooks/api/useProperties';
 import { usePageContent, useServices } from '@/hooks/api/useContent';
 import { usePublicStats, usePublicCities, usePropertyTypeOptions } from '@/hooks/api/usePublic';
-import type { LucideIcon } from 'lucide-react';
-
-const iconMap: Record<string, LucideIcon> = { Building2, Home, Landmark, TreePine };
+import { resolveServiceIcon } from '@/lib/serviceIconMap';
 
 const isDirectVideoUrl = (url?: string) => {
   if (!url) return false;
@@ -105,24 +103,25 @@ export default function Index() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="font-nav text-[11px] tracking-[0.4em] text-primary uppercase mb-4"
+            className="font-nav text-[11px] tracking-[0.4em] text-primary uppercase mb-4 [text-shadow:_0_2px_8px_rgba(0,0,0,0.7)] font-medium"
           >
             {t('home.eyebrow')}
           </motion.div>
 
-          {/* Title */}
+          {/* Title — INTENTIONAL: hero.title from CMS is ignored on the home
+              page so we can keep the gold-styled "Future" markup. The CMS
+              field stays in the entity for legacy reasons; if a future
+              contributor wants to surface it, swap to a single-language
+              copy and drop the i18n keys. */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="font-heading text-5xl md:text-7xl lg:text-[88px] font-light text-foreground leading-[1.05]"
           >
-            {hero?.title || (
-              <>
-                Where Your{' '}
-                <span className="gold-gradient-text font-medium italic">Future</span> Lives
-              </>
-            )}
+            {t('home.hero.titleStart')}{' '}
+            <span className="gold-gradient-text font-medium italic">{t('home.hero.titleAccent')}</span>{' '}
+            {t('home.hero.titleEnd')}
           </motion.h1>
 
           {/* Subtitle — readability fix: brighter color, wider container, soft text-shadow */}
@@ -338,7 +337,7 @@ export default function Index() {
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-0.5">
               {(services ?? []).map((service, i) => {
-                const Icon = (service.iconName && iconMap[service.iconName]) || Building2;
+                const Icon = resolveServiceIcon(service.iconName);
                 return (
                   <motion.div
                     key={service.id}

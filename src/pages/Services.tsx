@@ -1,16 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import {
-  Building2, Home, TrendingUp, FileCheck, Scale, Paintbrush,
-} from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { LucideIcon } from 'lucide-react';
 import { useServices } from '@/hooks/api/useContent';
-
-const iconMap: Record<string, LucideIcon> = {
-  Building2, Home, TrendingUp, FileCheck, Scale, Paintbrush,
-};
+import { resolveServiceIcon } from '@/lib/serviceIconMap';
 
 export default function Services() {
   const { t } = useTranslation();
@@ -68,7 +61,7 @@ export default function Services() {
       ) : (
         <section className="py-16">
           {(services ?? []).map((service, i) => {
-            const Icon = (service.iconName && iconMap[service.iconName]) || Building2;
+            const Icon = resolveServiceIcon(service.iconName);
             const isEven = i % 2 === 1;
 
             return (

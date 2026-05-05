@@ -152,7 +152,7 @@ export default function AdminUsers() {
                       ))}
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{u.languages.join(', ')}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)]">{(u.languages ?? []).join(', ')}</TableCell>
                   <TableCell className="text-sm text-[hsl(0_0%_40%)]">
                     {u.lastLoginAt ? (
                       <Tooltip>

@@ -21,6 +21,11 @@
   },
   "home": {
     "eyebrow": "Tipptasemel kinnisvara · Tallinn · Eesti",
+    "hero": {
+      "titleStart": "Kus elab teie",
+      "titleAccent": "tulevik",
+      "titleEnd": ""
+    },
     "discover": "Avasta",
     "curatedSelection": "Valitud pakkumised",
     "whatWeOffer": "Mida me pakume",
@@ -322,7 +327,8 @@
       "status": "Staatus",
       "title": "Pealkiri",
       "type": "Tüüp",
-      "all": "Kõik"
+      "all": "Kõik",
+      "page": "Lehekülg {{page}} / {{totalPages}}"
     },
     "layout": {
       "adminBadge": "Admin",
@@ -807,6 +813,41 @@
       "autoSendDescription": "Kui lubatud, saadetakse sünnipäevatervitused automaatselt keskööl kontaktidele, kellel on e-posti aadress.",
       "fields": { "subject": "Teema", "bodyHtml": "Sisu (HTML)" },
       "toast": { "sent": "Sünnipäevatervitus saadetud", "sendFailed": "Sünnipäevatervituse saatmine ebaõnnestus", "templateSaved": "Mall salvestatud", "templateSaveFailed": "Malli salvestamine ebaõnnestus", "autoSendUpdated": "Automaatse saatmise seadistus uuendatud", "autoSendFailed": "Automaatse saatmise seadistuse muutmine ebaõnnestus" }
+    },
+    "activities": {
+      "title": "Tegevused",
+      "searchPlaceholder": "Otsi pealkirja või sisu…",
+      "empty": "Filtritele vastavaid tegevusi ei leitud",
+      "emptyDescription": "Proovi laiendada ajavahemikku või tühjenda filtrid.",
+      "filters": {
+        "type": "Tüüp",
+        "user": "Kasutaja",
+        "from": "Alates",
+        "to": "Kuni"
+      },
+      "table": {
+        "when": "Millal",
+        "type": "Tüüp",
+        "title": "Pealkiri",
+        "linkedTo": "Seotud",
+        "user": "Kasutaja"
+      },
+      "linked": {
+        "contact": "Kontakt",
+        "deal": "Tehing",
+        "property": "Objekt"
+      },
+      "types": {
+        "Note": "Märkus",
+        "Call": "Kõne",
+        "Email": "E-kiri",
+        "Meeting": "Kohtumine",
+        "Viewing": "Vaatamine",
+        "OfferMade": "Pakkumine tehtud",
+        "StageChange": "Etapi muutus",
+        "ContractEvent": "Lepingu sündmus",
+        "SystemEvent": "Süsteem"
+      }
     },
     "savedSearches": {
       "title": "Salvestatud otsingud",

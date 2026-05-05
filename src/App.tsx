@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 import ErrorBoundary from "@/components/ErrorBoundary";
 import CookieBanner from "@/components/CookieBanner";
+import ScrollToHash from "@/components/ScrollToHash";
 import MainLayout from "@/layouts/MainLayout";
 import AdminLayout from "@/layouts/AdminLayout";
 
@@ -48,6 +49,7 @@ import DealDetail from "@/pages/admin/DealDetail";
 import AdminTasks from "@/pages/admin/AdminTasks";
 import AdminBirthdays from "@/pages/admin/AdminBirthdays";
 import AdminSavedSearches from "@/pages/admin/AdminSavedSearches";
+import AdminActivities from "@/pages/admin/AdminActivities";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -63,6 +65,7 @@ const App = () => (
     <TooltipProvider>
       <Sonner />
       <BrowserRouter>
+        <ScrollToHash />
         <ErrorBoundary>
         <CookieBanner />
         <Routes>
@@ -111,6 +114,7 @@ const App = () => (
             <Route path="tasks" element={<AdminTasks />} />
             <Route path="birthdays" element={<AdminBirthdays />} />
             <Route path="saved-searches" element={<AdminSavedSearches />} />
+            <Route path="activities" element={<AdminActivities />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

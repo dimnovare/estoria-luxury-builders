@@ -14,12 +14,14 @@ import { EmptyState } from '@/components/admin/EmptyState';
 import {
   useUpcomingBirthdays, useBirthdayTemplates, useBirthdayAutoSend,
   useSendBirthdayNow, useSaveBirthdayTemplate, useSetBirthdayAutoSend,
-  type BirthdayTemplate,
+  type BirthdayTemplateTranslation, type BirthdayLanguage,
 } from '@/hooks/api/useBirthday';
 import { toast } from 'sonner';
-import { format, parseISO, differenceInCalendarDays, startOfWeek, endOfWeek, addWeeks, isWithinInterval } from 'date-fns';
+import { format, parseISO, startOfWeek, endOfWeek, addWeeks, isWithinInterval } from 'date-fns';
 
-const TEMPLATE_LANGS = ['et', 'en', 'ru'];
+// PascalCase to match the server's Language enum string. Don't lowercase
+// these — the API rejects unknown values.
+const TEMPLATE_LANGS: BirthdayLanguage[] = ['Et', 'En', 'Ru'];
 
 export default function AdminBirthdays() {
   const { t } = useTranslation();
@@ -33,22 +35,24 @@ export default function AdminBirthdays() {
   const setAutoSend = useSetBirthdayAutoSend();
 
   // Template editing state
-  const [templateLang, setTemplateLang] = useState('et');
-  const [editedTemplates, setEditedTemplates] = useState<Record<string, BirthdayTemplate>>({});
+  const [templateLang, setTemplateLang] = useState<BirthdayLanguage>('Et');
+  const [editedTemplates, setEditedTemplates] = useState<Record<BirthdayLanguage, BirthdayTemplateTranslation>>(
+    {} as Record<BirthdayLanguage, BirthdayTemplateTranslation>
+  );
 
   // Populate template editing from server data
-  const getTemplate = (lang: string): BirthdayTemplate => {
+  const getTemplate = (lang: BirthdayLanguage): BirthdayTemplateTranslation => {
     if (editedTemplates[lang]) return editedTemplates[lang];
     const server = templates?.find(t => t.language === lang);
     return server ?? { language: lang, subject: '', bodyHtml: '' };
   };
 
-  const updateTemplate = (lang: string, field: 'subject' | 'bodyHtml', value: string) => {
+  const updateTemplate = (lang: BirthdayLanguage, field: 'subject' | 'bodyHtml', value: string) => {
     const current = getTemplate(lang);
     setEditedTemplates(prev => ({ ...prev, [lang]: { ...current, [field]: value } }));
   };
 
-  const handleSaveTemplate = async (lang: string) => {
+  const handleSaveTemplate = async (lang: BirthdayLanguage) => {
     const tpl = getTemplate(lang);
     try {
       await saveTemplate.mutateAsync(tpl);
@@ -76,7 +80,7 @@ export default function AdminBirthdays() {
       const weekStart = startOfWeek(addWeeks(now, w), { weekStartsOn: 1 });
       const weekEnd = endOfWeek(addWeeks(now, w), { weekStartsOn: 1 });
       const items = birthdays.filter(b => {
-        const bd = parseISO(b.birthdayDate);
+        const bd = parseISO(b.nextBirthday);
         return isWithinInterval(bd, { start: weekStart, end: weekEnd });
       });
       if (items.length > 0) {
@@ -117,7 +121,7 @@ export default function AdminBirthdays() {
                   <h3 className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_50%)] mb-2">{week.label}</h3>
                   <div className="space-y-2">
                     {week.items.map(b => {
-                      const daysUntil = differenceInCalendarDays(parseISO(b.birthdayDate), new Date());
+                      const daysUntil = b.daysUntil;
                       return (
                         <div key={b.contactId} className="flex items-center justify-between py-2 px-3 rounded-md bg-[hsl(0_0%_98%)] border border-[hsl(0_0%_93%)]">
                           <div className="flex items-center gap-3">
@@ -129,7 +133,7 @@ export default function AdminBirthdays() {
                                 {b.fullName}
                               </Link>
                               <p className="text-xs text-[hsl(0_0%_50%)]">
-                                {t('admin.birthday.turningAge', { age: b.turningAge })} · {format(parseISO(b.birthdayDate), 'dd.MM')}
+                                {t('admin.birthday.turningAge', { age: b.turningAge })} · {format(parseISO(b.nextBirthday), 'dd.MM')}
                               </p>
                             </div>
                           </div>
@@ -170,7 +174,7 @@ export default function AdminBirthdays() {
           {loadingTemplates ? (
             <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-[hsl(43_50%_54%)]" /></div>
           ) : (
-            <Tabs value={templateLang} onValueChange={setTemplateLang}>
+            <Tabs value={templateLang} onValueChange={(v) => setTemplateLang(v as BirthdayLanguage)}>
               <TabsList className="bg-[hsl(0_0%_95%)]">
                 {TEMPLATE_LANGS.map(l => (
                   <TabsTrigger key={l} value={l}>{l.toUpperCase()}</TabsTrigger>

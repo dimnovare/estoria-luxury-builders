@@ -282,12 +282,19 @@ export default function ContactForm() {
                       control={control}
                       name="source"
                       render={({ field }) => (
-                        <Select value={field.value} onValueChange={field.onChange}>
+                        // Radix Select rejects empty-string values, so we
+                        // round-trip through the "any" sentinel — the form's
+                        // submit handler converts back to undefined via
+                        // `data.source || undefined`.
+                        <Select
+                          value={field.value || 'any'}
+                          onValueChange={(v) => field.onChange(v === 'any' ? '' : v)}
+                        >
                           <SelectTrigger className="mt-1 bg-secondary border-border">
                             <SelectValue placeholder={t('admin.contacts.fields.selectSource')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">{t('admin.common.all')}</SelectItem>
+                            <SelectItem value="any">{t('admin.common.all')}</SelectItem>
                             {SOURCES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                           </SelectContent>
                         </Select>
@@ -336,12 +343,18 @@ export default function ContactForm() {
                   control={control}
                   name="assignedAgentId"
                   render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
+                    // 'unassigned' sentinel maps back to "" in form state so
+                    // the existing `data.assignedAgentId || undefined`
+                    // serializer keeps working unchanged.
+                    <Select
+                      value={field.value || 'unassigned'}
+                      onValueChange={(v) => field.onChange(v === 'unassigned' ? '' : v)}
+                    >
                       <SelectTrigger className="mt-1 bg-secondary border-border w-full sm:w-[300px]">
                         <SelectValue placeholder={t('admin.contacts.fields.selectAgent')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">{t('admin.common.all')}</SelectItem>
+                        <SelectItem value="unassigned">{t('admin.common.all')}</SelectItem>
                         {agents.map(a => <SelectItem key={a.id} value={a.id}>{a.fullName}</SelectItem>)}
                       </SelectContent>
                     </Select>

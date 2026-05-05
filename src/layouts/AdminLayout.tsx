@@ -40,7 +40,7 @@ const navItemDefs: NavItemDef[] = [
   { key: 'tasks',         icon: ListTodo,   path: '/admin/tasks',          section: 'CRM' },
   { key: 'birthdays',     icon: Cake,       path: '/admin/birthdays',      section: 'CRM' },
   { key: 'savedSearches', icon: Bell,       path: '/admin/saved-searches', section: 'CRM' },
-  { key: 'activities',    icon: ScrollText, path: '/admin/activities',     section: 'CRM', disabled: true },
+  { key: 'activities',    icon: ScrollText, path: '/admin/activities',     section: 'CRM' },
   // Admin section
   { key: 'users',      icon: UserCog,         path: '/admin/users',      roles: ['Admin'] },
   { key: 'auditLog',   icon: ScrollText,      path: '/admin/audit-log',  roles: ['Admin'] },

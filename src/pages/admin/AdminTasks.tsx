@@ -49,7 +49,8 @@ export default function AdminTasks() {
 
   const filter = useMemo(() => {
     const f: Record<string, unknown> = {
-      assignedToId: assignedTo === 'me' ? user?.id : assignedTo || undefined,
+      // 'all' = no filter (Radix Select rejects empty strings); 'me' = caller.
+      assignedToId: assignedTo === 'me' ? user?.id : (assignedTo === 'all' ? undefined : assignedTo) || undefined,
       status: 'Pending',
       pageSize: 200,
     };
@@ -132,7 +133,7 @@ export default function AdminTasks() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="me">{t('admin.tasks.filters.me')}</SelectItem>
-                <SelectItem value="">{t('admin.tasks.filters.everyone')}</SelectItem>
+                <SelectItem value="all">{t('admin.tasks.filters.everyone')}</SelectItem>
               </SelectContent>
             </Select>
 

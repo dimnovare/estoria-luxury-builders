@@ -154,10 +154,15 @@ export default function AdminDeals() {
         </CardContent>
       </Card>
 
-      {/* Kanban Board */}
+      {/* Kanban Board — outer w-full max-w-full overflow-hidden traps the
+          horizontal overflow inside the page so the header stays anchored at
+          viewport width. The inner overflow-x-auto then scrolls within that
+          frame; w-max instead of min-w-max prevents the parent from getting
+          stretched. */}
+      <div className="w-full max-w-full overflow-hidden">
       {isLoading ? (
-        <div className="overflow-x-auto pb-4">
-          <div className="flex gap-4 min-w-max">
+        <div className="overflow-x-auto pb-4 w-full">
+          <div className="flex gap-4 w-max">
             {DEAL_STAGES.map(stage => (
               <div key={stage} className="w-[280px] shrink-0">
                 <div className="bg-[hsl(0_0%_96%)] rounded-t-lg px-3 py-2.5 border border-b-0 border-[hsl(0_0%_90%)]">
@@ -187,8 +192,8 @@ export default function AdminDeals() {
           </div>
         </div>
       ) : (
-        <div className="overflow-x-auto pb-4">
-          <div className="flex gap-4 min-w-max">
+        <div className="overflow-x-auto pb-4 w-full">
+          <div className="flex gap-4 w-max">
             {DEAL_STAGES.map(stage => {
               const deals = kanban?.[stage] ?? [];
               const totalValue = deals.reduce((sum, d) => sum + (d.expectedValue ?? 0), 0);
@@ -263,6 +268,7 @@ export default function AdminDeals() {
           </div>
         </div>
       )}
+      </div>
 
       {/* Stage Change Modal */}
       <Dialog open={!!changingDeal} onOpenChange={() => setChangingDeal(null)}>
