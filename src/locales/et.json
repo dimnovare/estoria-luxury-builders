@@ -659,7 +659,8 @@
       "newTitle": "Uus kontakt",
       "saveContact": "Salvesta kontakt",
       "searchPlaceholder": "Otsi nime, e-posti või telefoni järgi…",
-      "empty": "Kontakte pole veel. Lisage oma esimene kontakt.",
+      "empty": "Kontakte pole veel",
+      "emptyDescription": "Lisage oma esimene kontakt, et alustada.",
       "confirmDelete": "Kustuta kontakt",
       "confirmDeleteDesc": "Kas olete kindel, et soovite selle kontakti kustutada? Seda toimingut ei saa tagasi võtta.",
       "filters": { "agent": "Maakler", "source": "Allikas", "all": "Kõik", "buyer": "Ostjad", "seller": "Müüjad" },
@@ -673,11 +674,19 @@
       "activityBodyPlaceholder": "Üksikasjad…",
       "activityOutcome": "Tulemus",
       "activityDuration": "Kestus (min)",
-      "noActivities": "Tegevusi pole veel.",
-      "noDeals": "Selle kontaktiga seotud tehinguid ei ole.",
-      "noNotes": "Märkmeid pole veel.",
+      "noActivities": "Tegevusi pole veel",
+      "noActivitiesDescription": "Kasutage ülal olevat välja, et logida kõnet, kohtumist või märkust.",
+      "noDeals": "Tehinguid pole veel",
+      "noDealsDescription": "Loo selle kontakti jaoks esimene tehing.",
+      "noNotes": "Märkmeid pole veel",
+      "noNotesDescription": "Lisage ülal sisemine märkus.",
       "propertiesPlaceholder": "Huvipakkuvad objektid on saadaval tulevases uuenduses.",
       "noteBodyPlaceholder": "Kirjuta märkus…",
+      "errors": {
+        "fullNameMin": "Täisnimi peab olema vähemalt 2 tähemärki",
+        "emailInvalid": "E-post ei ole kehtiv",
+        "dobPast": "Sünnipäev peab olema minevikus"
+      },
       "toast": { "deleted": "Kontakt kustutatud", "deleteFailed": "Kontakti kustutamine ebaõnnestus", "updated": "Kontakt uuendatud", "created": "Kontakt loodud", "saveFailed": "Kontakti salvestamine ebaõnnestus", "activityAdded": "Tegevus lisatud", "noteAdded": "Märkus lisatud" }
     },
     "deals": {
@@ -694,7 +703,9 @@
       "stageHint": "Etappi saab muuta ainult kanban-tahvli või etapi muutmise nupu kaudu.",
       "agentLocked": "Maakler on lukustatud teie kontole. Ümberassigneerimiseks pöörduge administraatori poole.",
       "addParticipant": "Lisa osaleja",
-      "noParticipants": "Osalejaid pole veel.",
+      "noParticipants": "Osalejaid pole veel",
+      "noParticipantsDescription": "Kaasostjaid, kaasmüüjaid või soovitajaid saab siia lisada.",
+      "kanbanEmpty": "Tehinguid pole",
       "documentsPlaceholder": "Dokumendihaldus on saadaval tulevases uuenduses.",
       "tasksPlaceholder": "Ülesannete haldus on saadaval tulevases uuenduses.",
       "filters": { "dealType": "Tehingu tüüp", "side": "Pool", "mineOnly": "Ainult minu" },
@@ -703,7 +714,14 @@
       "sides": { "BuySide": "Ostja pool", "SellSide": "Müüja pool" },
       "fields": { "title": "Pealkiri", "primaryContact": "Põhikontakt", "searchContact": "Otsi kontakte…", "contactRequired": "Põhikontakt on kohustuslik", "assignedAgent": "Määratud maakler", "dealType": "Tehingu tüüp", "side": "Pool", "expectedValue": "Eeldatav väärtus", "actualValue": "Tegelik väärtus", "currency": "Valuuta", "commissionPercent": "Vahendustasu %", "expectedCloseDate": "Eeldatav sulgemiskuupäev", "lossReason": "Kaotuse põhjus", "participantRole": "Roll" },
       "tabs": { "participants": "Osalejad", "documents": "Dokumendid", "tasks": "Ülesanded" },
-      "toast": { "updated": "Tehing uuendatud", "created": "Tehing loodud", "saveFailed": "Tehingu salvestamine ebaõnnestus", "stageChanged": "Etapp uuendatud", "stageChangeFailed": "Etapi muutmine ebaõnnestus", "actualValueRequired": "Tegelik väärtus on nõutud võidu märkimisel", "lossReasonRequired": "Kaotuse põhjus on nõutud", "participantAdded": "Osaleja lisatud", "participantRemoved": "Osaleja eemaldatud" }
+      "errors": {
+        "titleMin": "Pealkiri peab olema vähemalt 3 tähemärki",
+        "contactRequired": "Põhikontakt on kohustuslik",
+        "agentRequired": "Määratud maakler on kohustuslik",
+        "expectedValuePositive": "Eeldatav väärtus peab olema suurem kui null",
+        "closeDateFuture": "Eeldatav sulgemiskuupäev peab olema tulevikus"
+      },
+      "toast": { "updated": "Tehing uuendatud", "created": "Tehing loodud", "saveFailed": "Tehingu salvestamine ebaõnnestus", "stageChanged": "Etapp uuendatud", "stageChangeFailed": "Etapi muutmine ebaõnnestus", "actualValueRequired": "Võidu märkimiseks on nõutud nullist suurem tegelik väärtus", "lossReasonRequired": "Kaotuse märkimiseks on nõutud vähemalt 5-tähemärgiline põhjus", "participantAdded": "Osaleja lisatud", "participantRemoved": "Osaleja eemaldatud" }
     },
     "activities": {
       "types": { "Note": "Märkus", "Call": "Kõne", "Email": "E-kiri", "Meeting": "Kohtumine", "Viewing": "Vaatamine", "OfferMade": "Pakkumine tehtud", "StageChange": "Etapi muutus", "ContractEvent": "Lepingusündmus", "SystemEvent": "Süsteemisündmus" }

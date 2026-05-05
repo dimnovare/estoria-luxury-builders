@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, User, Calendar, DollarSign, Clock } from 'lucide-react';
+import { Plus, User, Calendar, DollarSign, Clock, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { EmptyState } from '@/components/admin/EmptyState';
 import {
   useDeals, useChangeStage, useAgents, handleCrmError,
   DEAL_STAGES, type DealStage, type DealListDto, type DealFilter,
+  type DealType, type DealSide,
 } from '@/hooks/api/useCrm';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -50,8 +53,8 @@ export default function AdminDeals() {
 
   const filter: DealFilter = {
     agentId: agentFilter !== 'all' ? agentFilter : undefined,
-    dealType: typeFilter !== 'all' ? typeFilter as any : undefined,
-    side: sideFilter !== 'all' ? sideFilter as any : undefined,
+    dealType: typeFilter !== 'all' ? (typeFilter as DealType) : undefined,
+    side: sideFilter !== 'all' ? (sideFilter as DealSide) : undefined,
     mineOnly: mineOnly || undefined,
   };
 
@@ -67,11 +70,14 @@ export default function AdminDeals() {
 
   const handleStageChange = async () => {
     if (!changingDeal || !targetStage) return;
-    if (targetStage === 'Won' && !actualValue) {
-      toast.error(t('admin.deals.toast.actualValueRequired'));
-      return;
+    if (targetStage === 'Won') {
+      const v = parseFloat(actualValue);
+      if (!Number.isFinite(v) || v <= 0) {
+        toast.error(t('admin.deals.toast.actualValueRequired'));
+        return;
+      }
     }
-    if (targetStage === 'Lost' && !lossReason.trim()) {
+    if (targetStage === 'Lost' && lossReason.trim().length < 5) {
       toast.error(t('admin.deals.toast.lossReasonRequired'));
       return;
     }
@@ -150,7 +156,36 @@ export default function AdminDeals() {
 
       {/* Kanban Board */}
       {isLoading ? (
-        <p className="text-center py-12 text-[hsl(0_0%_50%)]">{t('admin.common.loading')}</p>
+        <div className="overflow-x-auto pb-4">
+          <div className="flex gap-4 min-w-max">
+            {DEAL_STAGES.map(stage => (
+              <div key={stage} className="w-[280px] shrink-0">
+                <div className="bg-[hsl(0_0%_96%)] rounded-t-lg px-3 py-2.5 border border-b-0 border-[hsl(0_0%_90%)]">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_40%)]">
+                      {t(`admin.deals.stages.${stage}`)}
+                    </span>
+                    <Skeleton className="h-4 w-6" />
+                  </div>
+                </div>
+                <div className="bg-[hsl(0_0%_97%)] border border-t-0 border-[hsl(0_0%_90%)] rounded-b-lg p-2 space-y-2 min-h-[120px]">
+                  {Array.from({ length: 2 }).map((_, i) => (
+                    <Card key={i} className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+                      <CardContent className="p-3 space-y-2">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-3 w-1/2" />
+                        <div className="flex items-center justify-between">
+                          <Skeleton className="h-3 w-16" />
+                          <Skeleton className="h-3 w-12" />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       ) : (
         <div className="overflow-x-auto pb-4">
           <div className="flex gap-4 min-w-max">
@@ -171,6 +206,13 @@ export default function AdminDeals() {
                     )}
                   </div>
                   <div className="bg-[hsl(0_0%_97%)] border border-t-0 border-[hsl(0_0%_90%)] rounded-b-lg p-2 space-y-2 min-h-[120px]">
+                    {deals.length === 0 && (
+                      <EmptyState
+                        compact
+                        icon={Briefcase}
+                        title={t('admin.deals.kanbanEmpty')}
+                      />
+                    )}
                     {deals.map(deal => {
                       const daysInStage = getDaysInStage(deal);
                       return (

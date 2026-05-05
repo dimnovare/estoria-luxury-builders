@@ -659,7 +659,8 @@
       "newTitle": "New Contact",
       "saveContact": "Save Contact",
       "searchPlaceholder": "Search by name, email, or phone…",
-      "empty": "No contacts yet. Add your first contact to get started.",
+      "empty": "No contacts yet",
+      "emptyDescription": "Add your first contact to get started.",
       "confirmDelete": "Delete Contact",
       "confirmDeleteDesc": "Are you sure you want to delete this contact? This action cannot be undone.",
       "filters": {
@@ -723,11 +724,19 @@
       "activityBodyPlaceholder": "Details…",
       "activityOutcome": "Outcome",
       "activityDuration": "Duration (min)",
-      "noActivities": "No activities yet.",
-      "noDeals": "No deals associated with this contact.",
-      "noNotes": "No notes yet.",
+      "noActivities": "No activities yet",
+      "noActivitiesDescription": "Use the field above to log a call, meeting, or note.",
+      "noDeals": "No deals yet",
+      "noDealsDescription": "Create the first deal for this contact.",
+      "noNotes": "No notes yet",
+      "noNotesDescription": "Add an internal note above.",
       "propertiesPlaceholder": "Properties of interest will be available in a future update.",
       "noteBodyPlaceholder": "Write a note…",
+      "errors": {
+        "fullNameMin": "Full name must be at least 2 characters",
+        "emailInvalid": "Email is not valid",
+        "dobPast": "Date of birth must be in the past"
+      },
       "toast": {
         "deleted": "Contact deleted",
         "deleteFailed": "Failed to delete contact",
@@ -752,7 +761,9 @@
       "stageHint": "Stage can only be changed via the kanban board or stage change button to ensure activity tracking.",
       "agentLocked": "Agent is locked to your account. Contact an admin to reassign.",
       "addParticipant": "Add Participant",
-      "noParticipants": "No participants yet.",
+      "noParticipants": "No participants yet",
+      "noParticipantsDescription": "Co-buyers, co-sellers, or referrers can be added here.",
+      "kanbanEmpty": "No deals here",
       "documentsPlaceholder": "Document management will be available in a future update.",
       "tasksPlaceholder": "Task management will be available in a future update.",
       "filters": {
@@ -800,14 +811,21 @@
         "documents": "Documents",
         "tasks": "Tasks"
       },
+      "errors": {
+        "titleMin": "Title must be at least 3 characters",
+        "contactRequired": "A primary contact is required",
+        "agentRequired": "An assigned agent is required",
+        "expectedValuePositive": "Expected value must be greater than zero",
+        "closeDateFuture": "Expected close date must be in the future"
+      },
       "toast": {
         "updated": "Deal updated",
         "created": "Deal created",
         "saveFailed": "Failed to save deal",
         "stageChanged": "Stage updated",
         "stageChangeFailed": "Failed to change stage",
-        "actualValueRequired": "Actual value is required when marking as Won",
-        "lossReasonRequired": "Loss reason is required when marking as Lost",
+        "actualValueRequired": "Actual value greater than zero is required when marking as Won",
+        "lossReasonRequired": "Loss reason of at least 5 characters is required when marking as Lost",
         "participantAdded": "Participant added",
         "participantRemoved": "Participant removed"
       }

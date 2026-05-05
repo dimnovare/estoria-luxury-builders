@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ArrowLeft, Pencil, Trash2, Phone as PhoneIcon, Mail, Eye, Home, User,
   StickyNote, Clock, Users, FileSignature, ArrowRightLeft, Settings, Plus,
+  Briefcase, Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { EmptyState } from '@/components/admin/EmptyState';
 import {
   useContact, useDeleteContact, useActivities, useCreateActivity,
   useContactNotes, useCreateNote, useToggleNotePin, useDeleteNote, handleCrmError,
@@ -54,7 +56,11 @@ export default function ContactDetail() {
   const [noteBody, setNoteBody] = useState('');
 
   if (isLoading || !contact) {
-    return <p className="text-center py-12 text-[hsl(0_0%_50%)]">{t('admin.common.loading')}</p>;
+    return (
+      <div className="flex items-center justify-center py-24">
+        <Loader2 className="h-6 w-6 animate-spin text-[hsl(43_50%_54%)]" />
+      </div>
+    );
   }
 
   const handleDelete = async () => {
@@ -261,7 +267,11 @@ export default function ContactDetail() {
                   );
                 })}
                 {activities.length === 0 && (
-                  <p className="text-center py-8 text-[hsl(0_0%_50%)] text-sm">{t('admin.contacts.noActivities')}</p>
+                  <EmptyState
+                    icon={Clock}
+                    title={t('admin.contacts.noActivities')}
+                    description={t('admin.contacts.noActivitiesDescription')}
+                  />
                 )}
               </div>
             </TabsContent>
@@ -274,7 +284,16 @@ export default function ContactDetail() {
                 </Button>
               </div>
               {/* TODO: fetch deals by contactId and render cards */}
-              <p className="text-center py-8 text-[hsl(0_0%_50%)] text-sm">{t('admin.contacts.noDeals')}</p>
+              <EmptyState
+                icon={Briefcase}
+                title={t('admin.contacts.noDeals')}
+                description={t('admin.contacts.noDealsDescription')}
+                action={
+                  <Button asChild variant="outline" className="border-[hsl(43_50%_54%)] text-[hsl(43_50%_54%)]">
+                    <Link to={`/admin/deals/new?contactId=${id}`}><Plus className="h-4 w-4 mr-1" />{t('admin.deals.addNew')}</Link>
+                  </Button>
+                }
+              />
             </TabsContent>
 
             {/* Notes */}
@@ -312,14 +331,21 @@ export default function ContactDetail() {
                 </Card>
               ))}
               {sortedNotes.length === 0 && (
-                <p className="text-center py-8 text-[hsl(0_0%_50%)] text-sm">{t('admin.contacts.noNotes')}</p>
+                <EmptyState
+                  icon={StickyNote}
+                  title={t('admin.contacts.noNotes')}
+                  description={t('admin.contacts.noNotesDescription')}
+                />
               )}
             </TabsContent>
 
             {/* Properties of interest */}
             <TabsContent value="properties" className="mt-4">
               {/* TODO: P3 — properties of interest linked to this contact */}
-              <p className="text-center py-8 text-[hsl(0_0%_50%)] text-sm">{t('admin.contacts.propertiesPlaceholder')}</p>
+              <EmptyState
+                icon={Home}
+                title={t('admin.contacts.propertiesPlaceholder')}
+              />
             </TabsContent>
           </Tabs>
         </div>

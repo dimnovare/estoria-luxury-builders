@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ArrowLeft, X, Plus } from 'lucide-react';
+import { ArrowLeft, X, Plus, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -22,12 +22,16 @@ import { useState } from 'react';
 const SOURCES = ['Website', 'Referral', 'SocialMedia', 'ColdCall', 'Event', 'Other'];
 
 const contactSchema = z.object({
-  fullName: z.string().min(1).max(200),
-  email: z.string().email().optional().or(z.literal('')),
+  fullName: z.string().trim().min(2, { message: 'admin.contacts.errors.fullNameMin' }).max(200),
+  email: z.string().trim().email({ message: 'admin.contacts.errors.emailInvalid' }).optional().or(z.literal('')),
   phone: z.string().max(50).optional().or(z.literal('')),
   secondaryPhone: z.string().max(50).optional().or(z.literal('')),
   preferredLanguage: z.string().optional(),
-  dateOfBirth: z.string().optional().or(z.literal('')),
+  // YYYY-MM-DD from <input type="date">. Allow empty; require past date if set.
+  dateOfBirth: z.string()
+    .optional()
+    .or(z.literal(''))
+    .refine(v => !v || new Date(v) < new Date(), { message: 'admin.contacts.errors.dobPast' }),
   address: z.string().max(500).optional().or(z.literal('')),
   company: z.string().max(200).optional().or(z.literal('')),
   position: z.string().max(200).optional().or(z.literal('')),
@@ -155,7 +159,11 @@ export default function ContactForm() {
   };
 
   if (isEdit && isLoading) {
-    return <p className="text-center py-12 text-[hsl(0_0%_50%)]">{t('admin.common.loading')}</p>;
+    return (
+      <div className="flex items-center justify-center py-24">
+        <Loader2 className="h-6 w-6 animate-spin text-[hsl(43_50%_54%)]" />
+      </div>
+    );
   }
 
   return (
@@ -181,11 +189,12 @@ export default function ContactForm() {
                 <div className="sm:col-span-2">
                   <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.fullName')} *</Label>
                   <Input {...register('fullName')} className="mt-1 bg-secondary border-border" />
-                  {errors.fullName && <p className="text-xs text-red-500 mt-1">{errors.fullName.message}</p>}
+                  {errors.fullName && <p className="text-xs text-red-500 mt-1">{t(errors.fullName.message ?? '')}</p>}
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.common.email')}</Label>
                   <Input {...register('email')} type="email" className="mt-1 bg-secondary border-border" />
+                  {errors.email && <p className="text-xs text-red-500 mt-1">{t(errors.email.message ?? '')}</p>}
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.common.phone')}</Label>
@@ -215,6 +224,7 @@ export default function ContactForm() {
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.dateOfBirth')}</Label>
                   <Input {...register('dateOfBirth')} type="date" className="mt-1 bg-secondary border-border" />
+                  {errors.dateOfBirth && <p className="text-xs text-red-500 mt-1">{t(errors.dateOfBirth.message ?? '')}</p>}
                 </div>
               </div>
             </AccordionContent>

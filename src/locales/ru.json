@@ -659,7 +659,8 @@
       "newTitle": "Новый контакт",
       "saveContact": "Сохранить контакт",
       "searchPlaceholder": "Поиск по имени, email или телефону…",
-      "empty": "Контактов пока нет. Добавьте первый контакт.",
+      "empty": "Контактов пока нет",
+      "emptyDescription": "Добавьте первый контакт, чтобы начать работу.",
       "confirmDelete": "Удалить контакт",
       "confirmDeleteDesc": "Вы уверены, что хотите удалить этот контакт? Это действие нельзя отменить.",
       "filters": { "agent": "Агент", "source": "Источник", "all": "Все", "buyer": "Покупатели", "seller": "Продавцы" },
@@ -673,11 +674,19 @@
       "activityBodyPlaceholder": "Подробности…",
       "activityOutcome": "Результат",
       "activityDuration": "Длительность (мин)",
-      "noActivities": "Действий пока нет.",
-      "noDeals": "Сделок, связанных с этим контактом, нет.",
-      "noNotes": "Заметок пока нет.",
+      "noActivities": "Действий пока нет",
+      "noActivitiesDescription": "Используйте поле выше, чтобы записать звонок, встречу или заметку.",
+      "noDeals": "Сделок пока нет",
+      "noDealsDescription": "Создайте первую сделку для этого контакта.",
+      "noNotes": "Заметок пока нет",
+      "noNotesDescription": "Добавьте внутреннюю заметку выше.",
       "propertiesPlaceholder": "Интересующие объекты будут доступны в будущем обновлении.",
       "noteBodyPlaceholder": "Напишите заметку…",
+      "errors": {
+        "fullNameMin": "Полное имя должно содержать не менее 2 символов",
+        "emailInvalid": "Email недействителен",
+        "dobPast": "Дата рождения должна быть в прошлом"
+      },
       "toast": { "deleted": "Контакт удалён", "deleteFailed": "Не удалось удалить контакт", "updated": "Контакт обновлён", "created": "Контакт создан", "saveFailed": "Не удалось сохранить контакт", "activityAdded": "Действие записано", "noteAdded": "Заметка добавлена" }
     },
     "deals": {
@@ -694,7 +703,9 @@
       "stageHint": "Этап можно изменить только через доску канбан или кнопку смены этапа для обеспечения записи действий.",
       "agentLocked": "Агент привязан к вашей учётной записи. Обратитесь к администратору для переназначения.",
       "addParticipant": "Добавить участника",
-      "noParticipants": "Участников пока нет.",
+      "noParticipants": "Участников пока нет",
+      "noParticipantsDescription": "Здесь можно добавить созаёмщиков, сопродавцов или рекомендателей.",
+      "kanbanEmpty": "Сделок нет",
       "documentsPlaceholder": "Управление документами будет доступно в будущем обновлении.",
       "tasksPlaceholder": "Управление задачами будет доступно в будущем обновлении.",
       "filters": { "dealType": "Тип сделки", "side": "Сторона", "mineOnly": "Только мои" },
@@ -703,7 +714,14 @@
       "sides": { "BuySide": "Сторона покупателя", "SellSide": "Сторона продавца" },
       "fields": { "title": "Название", "primaryContact": "Основной контакт", "searchContact": "Поиск контактов…", "contactRequired": "Основной контакт обязателен", "assignedAgent": "Назначенный агент", "dealType": "Тип сделки", "side": "Сторона", "expectedValue": "Ожидаемая стоимость", "actualValue": "Фактическая стоимость", "currency": "Валюта", "commissionPercent": "Комиссия %", "expectedCloseDate": "Ожидаемая дата закрытия", "lossReason": "Причина проигрыша", "participantRole": "Роль" },
       "tabs": { "participants": "Участники", "documents": "Документы", "tasks": "Задачи" },
-      "toast": { "updated": "Сделка обновлена", "created": "Сделка создана", "saveFailed": "Не удалось сохранить сделку", "stageChanged": "Этап обновлён", "stageChangeFailed": "Не удалось изменить этап", "actualValueRequired": "Фактическая стоимость обязательна при отметке как выигранная", "lossReasonRequired": "Причина проигрыша обязательна", "participantAdded": "Участник добавлен", "participantRemoved": "Участник удалён" }
+      "errors": {
+        "titleMin": "Название должно содержать не менее 3 символов",
+        "contactRequired": "Основной контакт обязателен",
+        "agentRequired": "Назначенный агент обязателен",
+        "expectedValuePositive": "Ожидаемая стоимость должна быть больше нуля",
+        "closeDateFuture": "Ожидаемая дата закрытия должна быть в будущем"
+      },
+      "toast": { "updated": "Сделка обновлена", "created": "Сделка создана", "saveFailed": "Не удалось сохранить сделку", "stageChanged": "Этап обновлён", "stageChangeFailed": "Не удалось изменить этап", "actualValueRequired": "Для отметки как выигранная требуется фактическая стоимость больше нуля", "lossReasonRequired": "Для отметки как проигранная требуется причина не менее 5 символов", "participantAdded": "Участник добавлен", "participantRemoved": "Участник удалён" }
     },
     "activities": {
       "types": { "Note": "Заметка", "Call": "Звонок", "Email": "Письмо", "Meeting": "Встреча", "Viewing": "Просмотр", "OfferMade": "Предложение сделано", "StageChange": "Смена этапа", "ContractEvent": "Событие договора", "SystemEvent": "Системное событие" }

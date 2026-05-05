@@ -7,9 +7,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { EmptyState } from '@/components/admin/EmptyState';
 import { useContacts, useDeleteContact, useAgents, handleCrmError } from '@/hooks/api/useCrm';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -18,6 +21,8 @@ const SOURCES = ['Website', 'Referral', 'SocialMedia', 'ColdCall', 'Event', 'Oth
 export default function AdminContacts() {
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
+  // 250ms debounce so each keystroke doesn't fire a /admin/contacts request.
+  const debouncedSearch = useDebouncedValue(search, 250);
   const [agentFilter, setAgentFilter] = useState('all');
   const [sourceFilter, setSourceFilter] = useState('all');
   const [roleFilter, setRoleFilter] = useState<'all' | 'buyer' | 'seller'>('all');
@@ -28,7 +33,7 @@ export default function AdminContacts() {
   const agents = agentsData ?? [];
 
   const filter = {
-    search: search || undefined,
+    search: debouncedSearch || undefined,
     agentId: agentFilter !== 'all' ? agentFilter : undefined,
     source: sourceFilter !== 'all' ? sourceFilter : undefined,
     isBuyer: roleFilter === 'buyer' ? true : undefined,
@@ -147,13 +152,19 @@ export default function AdminContacts() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && (
-                <TableRow>
-                  <TableCell colSpan={9} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">
-                    {t('admin.common.loading')}
-                  </TableCell>
+              {isLoading && Array.from({ length: 6 }).map((_, i) => (
+                <TableRow key={`skeleton-${i}`} className="border-[hsl(0_0%_93%)]">
+                  <TableCell className="py-2"><Skeleton className="h-9 w-9 rounded-full" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-40" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-12" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
                 </TableRow>
-              )}
+              ))}
               {!isLoading && contacts.map(c => (
                 <TableRow key={c.id} className="border-[hsl(0_0%_93%)]">
                   <TableCell className="py-2">
@@ -202,13 +213,16 @@ export default function AdminContacts() {
             </TableBody>
           </Table>
           {!isLoading && contacts.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <User className="h-12 w-12 text-[hsl(0_0%_80%)] mb-4" />
-              <p className="text-[hsl(0_0%_50%)] text-sm mb-4">{t('admin.contacts.empty')}</p>
-              <Button asChild variant="outline" className="border-[hsl(43_50%_54%)] text-[hsl(43_50%_54%)]">
-                <Link to="/admin/contacts/new">{t('admin.contacts.addNew')}</Link>
-              </Button>
-            </div>
+            <EmptyState
+              icon={User}
+              title={t('admin.contacts.empty')}
+              description={t('admin.contacts.emptyDescription')}
+              action={
+                <Button asChild variant="outline" className="border-[hsl(43_50%_54%)] text-[hsl(43_50%_54%)]">
+                  <Link to="/admin/contacts/new"><Plus className="h-4 w-4 mr-1" />{t('admin.contacts.addNew')}</Link>
+                </Button>
+              }
+            />
           )}
         </CardContent>
       </Card>

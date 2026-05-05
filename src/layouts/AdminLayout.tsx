@@ -9,6 +9,7 @@ import {
 import type { TFunction } from 'i18next';
 import { useAuth, type UserRole } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 interface NavItemDef {
   key: string;
@@ -221,7 +222,11 @@ export default function AdminLayout() {
 
         {/* Content */}
         <main className="p-4 lg:p-6">
-          <Outlet />
+          {/* ErrorBoundary keyed on route so navigating away from a crashed page
+              resets the boundary and lets the user keep working. */}
+          <ErrorBoundary key={pathname}>
+            <Outlet />
+          </ErrorBoundary>
         </main>
       </div>
     </div>

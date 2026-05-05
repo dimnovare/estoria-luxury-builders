@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ArrowLeft, Pencil, Calendar, DollarSign,
   StickyNote, Phone, Mail, Users, Eye, FileSignature, ArrowRightLeft, Settings,
-  Plus, Trash2, UserPlus,
+  Plus, Trash2, UserPlus, Clock, FileText, ListTodo, Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,10 +15,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { EmptyState } from '@/components/admin/EmptyState';
 import {
   useDeal, useActivities, useCreateActivity, useChangeStage,
   useAddParticipant, useRemoveParticipant, useContactSearch,
-  handleCrmError, DEAL_STAGES, type DealStage, type ActivityType,
+  handleCrmError, DEAL_STAGES, PARTICIPANTS_WRITE_ENABLED,
+  type DealStage, type ActivityType,
 } from '@/hooks/api/useCrm';
 import { toast } from 'sonner';
 import { formatDistanceToNow, format } from 'date-fns';
@@ -68,13 +70,20 @@ export default function DealDetail() {
   const { data: participantResults } = useContactSearch(participantSearch);
 
   if (isLoading || !deal) {
-    return <p className="text-center py-12 text-[hsl(0_0%_50%)]">{t('admin.common.loading')}</p>;
+    return (
+      <div className="flex items-center justify-center py-24">
+        <Loader2 className="h-6 w-6 animate-spin text-[hsl(43_50%_54%)]" />
+      </div>
+    );
   }
 
   const handleStageChange = async () => {
     if (!targetStage) return;
-    if (targetStage === 'Won' && !actualValue) { toast.error(t('admin.deals.toast.actualValueRequired')); return; }
-    if (targetStage === 'Lost' && !lossReason.trim()) { toast.error(t('admin.deals.toast.lossReasonRequired')); return; }
+    if (targetStage === 'Won') {
+      const v = parseFloat(actualValue);
+      if (!Number.isFinite(v) || v <= 0) { toast.error(t('admin.deals.toast.actualValueRequired')); return; }
+    }
+    if (targetStage === 'Lost' && lossReason.trim().length < 5) { toast.error(t('admin.deals.toast.lossReasonRequired')); return; }
     try {
       await changeStage.mutateAsync({
         id: id!, stage: targetStage,
@@ -229,14 +238,22 @@ export default function DealDetail() {
                   </Card>
                 );
               })}
-              {activities.length === 0 && <p className="text-center py-8 text-[hsl(0_0%_50%)] text-sm">{t('admin.contacts.noActivities')}</p>}
+              {activities.length === 0 && (
+                <EmptyState
+                  icon={Clock}
+                  title={t('admin.contacts.noActivities')}
+                  description={t('admin.contacts.noActivitiesDescription')}
+                />
+              )}
             </TabsContent>
 
             {/* Participants */}
             <TabsContent value="participants" className="mt-4 space-y-4">
-              <Button variant="outline" onClick={() => setShowAddParticipant(true)}>
-                <UserPlus className="h-4 w-4 mr-1" />{t('admin.deals.addParticipant')}
-              </Button>
+              {PARTICIPANTS_WRITE_ENABLED && (
+                <Button variant="outline" onClick={() => setShowAddParticipant(true)}>
+                  <UserPlus className="h-4 w-4 mr-1" />{t('admin.deals.addParticipant')}
+                </Button>
+              )}
               {(deal.participants ?? []).map(p => (
                 <Card key={p.id} className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
                   <CardContent className="p-4 flex items-center justify-between">
@@ -244,32 +261,46 @@ export default function DealDetail() {
                       <Link to={`/admin/contacts/${p.contactId}`} className="text-sm font-medium text-[hsl(0_0%_20%)] hover:text-[hsl(43_50%_54%)]">{p.contactName}</Link>
                       <p className="text-xs text-[hsl(0_0%_50%)]">{p.role}</p>
                     </div>
-                    <Button variant="ghost" size="icon" className="h-7 w-7 text-[hsl(0_0%_60%)] hover:text-red-500"
-                      onClick={async () => {
-                        try {
-                          await removeParticipant.mutateAsync({ dealId: id!, participantId: p.id });
-                          toast.success(t('admin.deals.toast.participantRemoved'));
-                        } catch (err) { handleCrmError(err, t('admin.crm.toast.saveFailed')); }
-                      }}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
+                    {PARTICIPANTS_WRITE_ENABLED && (
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-[hsl(0_0%_60%)] hover:text-red-500"
+                        onClick={async () => {
+                          try {
+                            await removeParticipant.mutateAsync({ dealId: id!, participantId: p.id });
+                            toast.success(t('admin.deals.toast.participantRemoved'));
+                          } catch (err) { handleCrmError(err, t('admin.crm.toast.saveFailed')); }
+                        }}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    )}
                   </CardContent>
                 </Card>
               ))}
-              {(deal.participants ?? []).length === 0 && <p className="text-center py-8 text-[hsl(0_0%_50%)] text-sm">{t('admin.deals.noParticipants')}</p>}
+              {(deal.participants ?? []).length === 0 && (
+                <EmptyState
+                  icon={Users}
+                  title={t('admin.deals.noParticipants')}
+                  description={PARTICIPANTS_WRITE_ENABLED ? t('admin.deals.noParticipantsDescription') : undefined}
+                />
+              )}
             </TabsContent>
 
             {/* Documents — placeholder */}
             <TabsContent value="documents" className="mt-4">
               {/* TODO: P3 — document management */}
-              <p className="text-center py-8 text-[hsl(0_0%_50%)] text-sm">{t('admin.deals.documentsPlaceholder')}</p>
+              <EmptyState
+                icon={FileText}
+                title={t('admin.deals.documentsPlaceholder')}
+              />
             </TabsContent>
 
             {/* Tasks — placeholder */}
             <TabsContent value="tasks" className="mt-4">
               {/* TODO: P2.5 — task management */}
-              <p className="text-center py-8 text-[hsl(0_0%_50%)] text-sm">{t('admin.deals.tasksPlaceholder')}</p>
+              <EmptyState
+                icon={ListTodo}
+                title={t('admin.deals.tasksPlaceholder')}
+              />
             </TabsContent>
           </Tabs>
         </div>

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -18,23 +18,35 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
-const dealSchema = z.object({
-  title: z.string().min(1).max(300),
-  primaryContactId: z.string().min(1),
+// Shared base; cross-field rules (close-date future-only on create) are layered on top.
+const baseDealSchema = z.object({
+  title: z.string().trim().min(3, { message: 'admin.deals.errors.titleMin' }).max(300),
+  primaryContactId: z.string().min(1, { message: 'admin.deals.errors.contactRequired' }),
   propertyId: z.string().optional().or(z.literal('')),
-  assignedAgentId: z.string().min(1),
+  assignedAgentId: z.string().min(1, { message: 'admin.deals.errors.agentRequired' }),
   dealType: z.enum(['Sale', 'Rent']),
   side: z.enum(['BuySide', 'SellSide']),
   expectedCloseDate: z.string().optional().or(z.literal('')),
-  expectedValue: z.string().optional().or(z.literal('')),
+  expectedValue: z.string()
+    .optional()
+    .or(z.literal(''))
+    .refine(v => !v || (Number.isFinite(parseFloat(v)) && parseFloat(v) > 0), {
+      message: 'admin.deals.errors.expectedValuePositive',
+    }),
   currency: z.string().default('EUR'),
   commissionPercent: z.string().optional().or(z.literal('')),
-  stage: z.string().optional(),
-  actualValue: z.string().optional().or(z.literal('')),
-  lossReason: z.string().optional().or(z.literal('')),
 });
 
-type DealFormData = z.infer<typeof dealSchema>;
+const createDealSchema = baseDealSchema.refine(
+  d => !d.expectedCloseDate || new Date(d.expectedCloseDate) > new Date(),
+  { path: ['expectedCloseDate'], message: 'admin.deals.errors.closeDateFuture' },
+);
+
+// On edit we don't re-check future-only, since the deal may already have a past close
+// date (or the user is just adjusting unrelated fields).
+const editDealSchema = baseDealSchema;
+
+type DealFormData = z.infer<typeof baseDealSchema>;
 
 export default function DealForm() {
   const { t } = useTranslation();
@@ -57,8 +69,8 @@ export default function DealForm() {
 
   const [propertySearch, setPropertySearch] = useState('');
 
-  const { register, handleSubmit, control, reset, watch, setValue, formState: { errors } } = useForm<DealFormData>({
-    resolver: zodResolver(dealSchema),
+  const { register, handleSubmit, control, reset, setValue, formState: { errors } } = useForm<DealFormData>({
+    resolver: zodResolver(isEdit ? editDealSchema : createDealSchema),
     defaultValues: {
       title: '',
       primaryContactId: searchParams.get('contactId') || '',
@@ -70,13 +82,8 @@ export default function DealForm() {
       expectedValue: '',
       currency: 'EUR',
       commissionPercent: '',
-      stage: undefined,
-      actualValue: '',
-      lossReason: '',
     },
   });
-
-  const watchStage = watch('stage');
 
   useEffect(() => {
     if (existing) {
@@ -91,9 +98,6 @@ export default function DealForm() {
         expectedValue: existing.expectedValue?.toString() || '',
         currency: existing.currency,
         commissionPercent: existing.commissionPercent?.toString() || '',
-        stage: existing.stage,
-        actualValue: existing.actualValue?.toString() || '',
-        lossReason: existing.lossReason || '',
       });
       setSelectedContactName(existing.primaryContactName);
     }
@@ -128,7 +132,11 @@ export default function DealForm() {
   };
 
   if (isEdit && isLoading) {
-    return <p className="text-center py-12 text-[hsl(0_0%_50%)]">{t('admin.common.loading')}</p>;
+    return (
+      <div className="flex items-center justify-center py-24">
+        <Loader2 className="h-6 w-6 animate-spin text-[hsl(43_50%_54%)]" />
+      </div>
+    );
   }
 
   return (
@@ -148,7 +156,7 @@ export default function DealForm() {
             <div>
               <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.title')} *</Label>
               <Input {...register('title')} className="mt-1 bg-secondary border-border" />
-              {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title.message}</p>}
+              {errors.title && <p className="text-xs text-red-500 mt-1">{t(errors.title.message ?? '')}</p>}
             </div>
 
             {/* Contact autocomplete */}
@@ -180,7 +188,7 @@ export default function DealForm() {
                   </div>
                 )}
               </div>
-              {errors.primaryContactId && <p className="text-xs text-red-500 mt-1">{t('admin.deals.fields.contactRequired')}</p>}
+              {errors.primaryContactId && <p className="text-xs text-red-500 mt-1">{t(errors.primaryContactId.message ?? 'admin.deals.fields.contactRequired')}</p>}
             </div>
 
             {/* Agent — disabled for non-Admin */}
@@ -242,6 +250,7 @@ export default function DealForm() {
               <div>
                 <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.expectedValue')}</Label>
                 <Input {...register('expectedValue')} type="number" className="mt-1 bg-secondary border-border" />
+                {errors.expectedValue && <p className="text-xs text-red-500 mt-1">{t(errors.expectedValue.message ?? '')}</p>}
               </div>
               <div>
                 <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.currency')}</Label>
@@ -256,6 +265,7 @@ export default function DealForm() {
             <div>
               <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.expectedCloseDate')}</Label>
               <Input {...register('expectedCloseDate')} type="date" className="mt-1 bg-secondary border-border w-auto" />
+              {errors.expectedCloseDate && <p className="text-xs text-red-500 mt-1">{t(errors.expectedCloseDate.message ?? '')}</p>}
             </div>
 
             {/* Edit-only: stage info (read-only, use /stage endpoint to change) */}
