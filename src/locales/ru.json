@@ -651,6 +651,65 @@
         "entityType": "Тип объекта",
         "dateRange": "Период"
       }
+    },
+    "contacts": {
+      "title": "Контакты",
+      "addNew": "Добавить контакт",
+      "editTitle": "Редактировать контакт",
+      "newTitle": "Новый контакт",
+      "saveContact": "Сохранить контакт",
+      "searchPlaceholder": "Поиск по имени, email или телефону…",
+      "empty": "Контактов пока нет. Добавьте первый контакт.",
+      "confirmDelete": "Удалить контакт",
+      "confirmDeleteDesc": "Вы уверены, что хотите удалить этот контакт? Это действие нельзя отменить.",
+      "filters": { "agent": "Агент", "source": "Источник", "all": "Все", "buyer": "Покупатели", "seller": "Продавцы" },
+      "table": { "tags": "Теги", "roles": "Роли", "agent": "Агент", "lastActivity": "Последняя активность" },
+      "roles": { "buyer": "Покупатель", "seller": "Продавец", "tenant": "Арендатор", "landlord": "Арендодатель" },
+      "sections": { "identity": "Личные данные", "address": "Адрес и компания", "classification": "Классификация", "assignment": "Назначение", "privacy": "Конфиденциальность", "notes": "Заметки" },
+      "fields": { "fullName": "Полное имя", "secondaryPhone": "Дополнительный телефон", "preferredLang": "Предпочитаемый язык", "dateOfBirth": "Дата рождения", "address": "Адрес", "company": "Компания", "position": "Должность", "isBuyer": "Покупатель", "isSeller": "Продавец", "isTenant": "Арендатор", "isLandlord": "Арендодатель", "isPartner": "Партнёр", "source": "Источник", "selectSource": "Выберите источник", "sourceDetail": "Детали источника", "tags": "Теги", "addTag": "Добавить тег…", "assignedAgent": "Назначенный агент", "selectAgent": "Выберите агента", "consentToMarketing": "Согласие на рассылку", "notesPlaceholder": "Внутренние заметки о контакте…" },
+      "tabs": { "timeline": "Хронология", "deals": "Сделки", "notes": "Заметки", "properties": "Интересующие объекты" },
+      "quickNotePlaceholder": "Быстрая заметка…",
+      "logActivity": "Записать действие",
+      "activityBodyPlaceholder": "Подробности…",
+      "activityOutcome": "Результат",
+      "activityDuration": "Длительность (мин)",
+      "noActivities": "Действий пока нет.",
+      "noDeals": "Сделок, связанных с этим контактом, нет.",
+      "noNotes": "Заметок пока нет.",
+      "propertiesPlaceholder": "Интересующие объекты будут доступны в будущем обновлении.",
+      "noteBodyPlaceholder": "Напишите заметку…",
+      "toast": { "deleted": "Контакт удалён", "deleteFailed": "Не удалось удалить контакт", "updated": "Контакт обновлён", "created": "Контакт создан", "saveFailed": "Не удалось сохранить контакт", "activityAdded": "Действие записано", "noteAdded": "Заметка добавлена" }
+    },
+    "deals": {
+      "title": "Сделки",
+      "addNew": "Новая сделка",
+      "editTitle": "Редактировать сделку",
+      "newTitle": "Новая сделка",
+      "saveDeal": "Сохранить сделку",
+      "changeStage": "Изменить этап",
+      "currentStage": "Текущий этап",
+      "newStage": "Новый этап",
+      "selectStage": "Выберите этап",
+      "confirmStageChange": "Подтвердить",
+      "stageHint": "Этап можно изменить только через доску канбан или кнопку смены этапа для обеспечения записи действий.",
+      "agentLocked": "Агент привязан к вашей учётной записи. Обратитесь к администратору для переназначения.",
+      "addParticipant": "Добавить участника",
+      "noParticipants": "Участников пока нет.",
+      "documentsPlaceholder": "Управление документами будет доступно в будущем обновлении.",
+      "tasksPlaceholder": "Управление задачами будет доступно в будущем обновлении.",
+      "filters": { "dealType": "Тип сделки", "side": "Сторона", "mineOnly": "Только мои" },
+      "stages": { "Lead": "Лид", "Qualified": "Квалифицирован", "Viewing": "Просмотр", "Offer": "Предложение", "Negotiation": "Переговоры", "ContractSigned": "Договор подписан", "ClosingPending": "Закрытие ожидается", "Won": "Выиграна", "Lost": "Проиграна" },
+      "dealTypes": { "Sale": "Продажа", "Rent": "Аренда" },
+      "sides": { "BuySide": "Сторона покупателя", "SellSide": "Сторона продавца" },
+      "fields": { "title": "Название", "primaryContact": "Основной контакт", "searchContact": "Поиск контактов…", "contactRequired": "Основной контакт обязателен", "assignedAgent": "Назначенный агент", "dealType": "Тип сделки", "side": "Сторона", "expectedValue": "Ожидаемая стоимость", "actualValue": "Фактическая стоимость", "currency": "Валюта", "commissionPercent": "Комиссия %", "expectedCloseDate": "Ожидаемая дата закрытия", "lossReason": "Причина проигрыша", "participantRole": "Роль" },
+      "tabs": { "participants": "Участники", "documents": "Документы", "tasks": "Задачи" },
+      "toast": { "updated": "Сделка обновлена", "created": "Сделка создана", "saveFailed": "Не удалось сохранить сделку", "stageChanged": "Этап обновлён", "stageChangeFailed": "Не удалось изменить этап", "actualValueRequired": "Фактическая стоимость обязательна при отметке как выигранная", "lossReasonRequired": "Причина проигрыша обязательна", "participantAdded": "Участник добавлен", "participantRemoved": "Участник удалён" }
+    },
+    "activities": {
+      "types": { "Note": "Заметка", "Call": "Звонок", "Email": "Письмо", "Meeting": "Встреча", "Viewing": "Просмотр", "OfferMade": "Предложение сделано", "StageChange": "Смена этапа", "ContractEvent": "Событие договора", "SystemEvent": "Системное событие" }
+    },
+    "crm": {
+      "toast": { "forbidden": "У вас нет прав для выполнения этого действия", "saveFailed": "Не удалось сохранить" }
     }
   }
 }
