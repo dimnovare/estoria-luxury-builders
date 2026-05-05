@@ -267,10 +267,10 @@ export default function Contact() {
                       Email
                     </h3>
                     <a
-                      href="mailto:info@estoria.ee"
+                      href="mailto:info@estoria.estate"
                       className="text-sm text-muted-foreground hover:text-primary font-body transition-colors"
                     >
-                      info@estoria.ee
+                      info@estoria.estate
                     </a>
                   </div>
                 </div>

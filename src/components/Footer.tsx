@@ -63,7 +63,7 @@ export default function Footer() {
             </h4>
             <address className="not-italic space-y-3 text-sm text-muted-foreground font-body mb-6">
               <p>{t('footer.address')}</p>
-              <p>info@estoria.ee</p>
+              <p>info@estoria.estate</p>
               <p>+372 600 0000</p>
             </address>
             <Newsletter variant="inline" />

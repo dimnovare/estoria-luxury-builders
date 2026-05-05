@@ -44,7 +44,7 @@ export default function PrivacyPolicy() {
                 (estoria.ee).
               </p>
               <p className="mt-2">
-                Contact: <a href="mailto:info@estoria.ee" className="text-primary hover:underline">info@estoria.ee</a>
+                Contact: <a href="mailto:info@estoria.estate" className="text-primary hover:underline">info@estoria.estate</a>
               </p>
             </div>
 
@@ -108,7 +108,7 @@ export default function PrivacyPolicy() {
               </ul>
               <p className="mt-3">
                 To exercise any of these rights, email us at{' '}
-                <a href="mailto:info@estoria.ee" className="text-primary hover:underline">info@estoria.ee</a>.
+                <a href="mailto:info@estoria.estate" className="text-primary hover:underline">info@estoria.estate</a>.
                 We will respond within 30 days.
               </p>
             </div>
