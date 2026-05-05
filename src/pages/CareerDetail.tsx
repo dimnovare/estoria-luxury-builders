@@ -85,8 +85,9 @@ export default function CareerDetail() {
           )}
 
           {/* Apply CTA */}
+          {/* TODO P0.2: read from useSiteSettings hook once it lands */}
           <a
-            href={`mailto:careers@estoria.ee?subject=Application: ${encodeURIComponent(career.title)}`}
+            href={`mailto:careers@estoria.estate?subject=Application: ${encodeURIComponent(career.title)}`}
             className="inline-block gold-gradient text-primary-foreground px-10 py-4 rounded-sm font-nav text-xs uppercase tracking-[0.15em] hover:opacity-90 transition-opacity"
           >
             Apply Now

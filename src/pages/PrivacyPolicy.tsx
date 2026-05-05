@@ -41,7 +41,7 @@ export default function PrivacyPolicy() {
                 ESTORIA OÜ (registry code: <strong className="text-foreground">[REG_NO]</strong>),
                 registered address <strong className="text-foreground">[ADDRESS], Tallinn, Estonia</strong>,
                 is the data controller responsible for the personal data collected through this website
-                (estoria.ee).
+                (estoria.estate).
               </p>
               <p className="mt-2">
                 Contact: <a href="mailto:info@estoria.estate" className="text-primary hover:underline">info@estoria.estate</a>

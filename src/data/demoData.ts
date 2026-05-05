@@ -24,7 +24,7 @@ export const DEMO_PROPERTIES: Property[] = [
     description: 'A stunning penthouse in the heart of Kadriorg with panoramic views.',
     features: ['Balcony', 'Parking', 'Sauna', 'Smart Home'],
     isFeatured: true,
-    agent: { name: 'Maria Tamm', role: 'Senior Agent', phone: '+372 5551 2345', email: 'maria@estoria.ee', languages: ['et', 'en', 'ru'] },
+    agent: { name: 'Maria Tamm', role: 'Senior Agent', phone: '+372 5551 2345', email: 'maria@estoria.estate', languages: ['et', 'en', 'ru'] },
   },
   {
     id: '2',
@@ -48,7 +48,7 @@ export const DEMO_PROPERTIES: Property[] = [
     description: 'Industrial-chic loft in the trendy Kalamaja district.',
     features: ['Open Plan', 'High Ceilings', 'Exposed Brick'],
     isFeatured: true,
-    agent: { name: 'Andrei Ivanov', role: 'Agent', phone: '+372 5551 3456', email: 'andrei@estoria.ee', languages: ['et', 'en', 'ru'] },
+    agent: { name: 'Andrei Ivanov', role: 'Agent', phone: '+372 5551 3456', email: 'andrei@estoria.estate', languages: ['et', 'en', 'ru'] },
   },
   {
     id: '3',
@@ -71,7 +71,7 @@ export const DEMO_PROPERTIES: Property[] = [
     description: 'A modern seaside villa with direct beach access.',
     features: ['Garden', 'Pool', 'Garage', 'Sea View'],
     isFeatured: true,
-    agent: { name: 'Maria Tamm', role: 'Senior Agent', phone: '+372 5551 2345', email: 'maria@estoria.ee', languages: ['et', 'en', 'ru'] },
+    agent: { name: 'Maria Tamm', role: 'Senior Agent', phone: '+372 5551 2345', email: 'maria@estoria.estate', languages: ['et', 'en', 'ru'] },
   },
   {
     id: '4',
@@ -95,7 +95,7 @@ export const DEMO_PROPERTIES: Property[] = [
     description: 'Compact yet elegant studio in Rotermanni Quarter.',
     features: ['City View', 'Smart Home', 'Concierge'],
     isFeatured: false,
-    agent: { name: 'Andrei Ivanov', role: 'Agent', phone: '+372 5551 3456', email: 'andrei@estoria.ee', languages: ['et', 'en', 'ru'] },
+    agent: { name: 'Andrei Ivanov', role: 'Agent', phone: '+372 5551 3456', email: 'andrei@estoria.estate', languages: ['et', 'en', 'ru'] },
   },
   {
     id: '5',
@@ -119,7 +119,7 @@ export const DEMO_PROPERTIES: Property[] = [
     description: 'Luxurious waterfront apartment in the Noblessner district.',
     features: ['Sea View', 'Terrace', 'Underground Parking'],
     isFeatured: false,
-    agent: { name: 'Maria Tamm', role: 'Senior Agent', phone: '+372 5551 2345', email: 'maria@estoria.ee', languages: ['et', 'en', 'ru'] },
+    agent: { name: 'Maria Tamm', role: 'Senior Agent', phone: '+372 5551 2345', email: 'maria@estoria.estate', languages: ['et', 'en', 'ru'] },
   },
   {
     id: '6',
@@ -142,7 +142,7 @@ export const DEMO_PROPERTIES: Property[] = [
     description: 'Charming townhouse near Tartu University.',
     features: ['Garden', 'Renovated', 'Historic'],
     isFeatured: false,
-    agent: { name: 'Andrei Ivanov', role: 'Agent', phone: '+372 5551 3456', email: 'andrei@estoria.ee', languages: ['et', 'en', 'ru'] },
+    agent: { name: 'Andrei Ivanov', role: 'Agent', phone: '+372 5551 3456', email: 'andrei@estoria.estate', languages: ['et', 'en', 'ru'] },
   },
 ];
 
@@ -154,9 +154,9 @@ export const DEMO_SERVICES = [
 ];
 
 export const DEMO_TEAM = [
-  { id: '1', slug: 'maria-tamm', name: 'Maria Tamm', role: 'Senior Agent', photoUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80', phone: '+372 5551 2345', email: 'maria@estoria.ee', languages: ['et', 'en', 'ru'], bio: 'Over 10 years of experience in Estonian luxury real estate.' },
-  { id: '2', slug: 'andrei-ivanov', name: 'Andrei Ivanov', role: 'Agent', photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80', phone: '+372 5551 3456', email: 'andrei@estoria.ee', languages: ['et', 'en', 'ru'], bio: 'Specialist in Kalamaja and Noblessner properties.' },
-  { id: '3', slug: 'elena-kask', name: 'Elena Kask', role: 'Managing Director', photoUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80', phone: '+372 5551 4567', email: 'elena@estoria.ee', languages: ['et', 'en'], bio: 'Leading Estoria with vision and passion for over 8 years.' },
+  { id: '1', slug: 'maria-tamm', name: 'Maria Tamm', role: 'Senior Agent', photoUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80', phone: '+372 5551 2345', email: 'maria@estoria.estate', languages: ['et', 'en', 'ru'], bio: 'Over 10 years of experience in Estonian luxury real estate.' },
+  { id: '2', slug: 'andrei-ivanov', name: 'Andrei Ivanov', role: 'Agent', photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80', phone: '+372 5551 3456', email: 'andrei@estoria.estate', languages: ['et', 'en', 'ru'], bio: 'Specialist in Kalamaja and Noblessner properties.' },
+  { id: '3', slug: 'elena-kask', name: 'Elena Kask', role: 'Managing Director', photoUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80', phone: '+372 5551 4567', email: 'elena@estoria.estate', languages: ['et', 'en'], bio: 'Leading Estoria with vision and passion for over 8 years.' },
 ];
 
 export const DEMO_BLOG = [
