@@ -594,7 +594,6 @@
         "removed": "Subscriber removed",
         "removeFailed": "Failed to remove subscriber"
       }
-      }
     },
     "users": {
       "title": "Users",
