@@ -111,7 +111,7 @@ export default function AdminTasks() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.tasks.title')}</h1>
       </div>
 

@@ -236,7 +236,7 @@ export default function AdminSettings() {
           <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
             <CollapsibleTrigger className="w-full">
               <CardHeader className="cursor-pointer">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <CardTitle className="text-lg font-heading text-[hsl(0_0%_15%)]">{t(section.titleKey)}</CardTitle>
                     {section.descriptionKey && (
@@ -263,7 +263,7 @@ export default function AdminSettings() {
           <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
             <CollapsibleTrigger className="w-full">
               <CardHeader className="cursor-pointer">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <CardTitle className="text-lg font-heading text-[hsl(0_0%_15%)]">{t('admin.settings.sections.other')}</CardTitle>
                   <ChevronDown className="h-4 w-4 text-[hsl(0_0%_50%)] transition-transform [[data-state=open]>&]:rotate-180" />
                 </div>

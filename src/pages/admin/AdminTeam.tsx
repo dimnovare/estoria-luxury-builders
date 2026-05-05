@@ -147,7 +147,7 @@ export default function AdminTeam() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.team.title')}</h1>
         <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
           <Plus className="h-4 w-4 mr-2" />{t('admin.team.addNew')}

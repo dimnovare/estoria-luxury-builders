@@ -78,7 +78,7 @@ export default function AdminActivities() {
           </div>
 
           <Select value={type} onValueChange={(v) => { setType(v as 'all' | AdminActivityType); setPage(1); }}>
-            <SelectTrigger className="w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
               <SelectValue placeholder={t('admin.activities.filters.type')} />
             </SelectTrigger>
             <SelectContent>
@@ -90,7 +90,7 @@ export default function AdminActivities() {
           </Select>
 
           <Select value={userId} onValueChange={(v) => { setUserId(v); setPage(1); }}>
-            <SelectTrigger className="w-[180px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[180px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
               <SelectValue placeholder={t('admin.activities.filters.user')} />
             </SelectTrigger>
             <SelectContent>

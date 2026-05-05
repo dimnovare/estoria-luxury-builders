@@ -130,7 +130,7 @@ export default function DealDetail() {
         <div className="lg:sticky lg:top-20 lg:self-start space-y-4">
           <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
             <CardContent className="p-6 space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <Badge className={stageColors[deal.stage]}>{t(`admin.deals.stages.${deal.stage}`)}</Badge>
                 <Button variant="outline" size="sm" onClick={() => setShowStageModal(true)}>
                   {t('admin.deals.changeStage')}
