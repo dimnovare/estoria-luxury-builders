@@ -431,7 +431,12 @@
         "uploadCreate": "Salvesta objekt esmalt, seejärel lisa pildid",
         "uploadHint": "JPG, PNG, WebP — kuni 10 MB pilt",
         "uploading": "Laadimine…",
-        "cover": "Kaanepilt"
+        "cover": "Kaanepilt",
+        "processingStuck": "Töötlemine kestab tavalisest kauem",
+        "processingFailed": "Töötlemine ebaõnnestus",
+        "retry": "Proovi uuesti",
+        "reprocessQueued": "Töötlemine järjekorras",
+        "reprocessFailed": "Töötlemise järjekorda panemine ebaõnnestus"
       },
       "features": {
         "addPlaceholder": "Lisa eripära…",

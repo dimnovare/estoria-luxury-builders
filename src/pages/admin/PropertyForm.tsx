@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Plus, X, GripVertical, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { ArrowLeft, Plus, X, GripVertical, Image as ImageIcon, Loader2, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -17,6 +17,7 @@ import {
   useUpdateProperty,
   useUploadPropertyImages,
   useDeletePropertyImage,
+  useReprocessPropertyImage,
   useAdminTeam,
   toBeLang,
 } from '@/hooks/api/useAdmin';
@@ -43,6 +44,22 @@ export default function PropertyForm() {
   const updateProperty = useUpdateProperty();
   const uploadImages = useUploadPropertyImages();
   const deleteImage = useDeletePropertyImage();
+  const reprocessImage = useReprocessPropertyImage();
+
+  // Per-image timestamp tracking polling start. After 60s of Pending/Processing
+  // we stop trusting the spinner and show "stuck" with a retry button —
+  // protects against a wedged Hangfire worker.
+  const pollStartRef = useRef<Record<string, number>>({});
+
+  const handleReprocess = async (imageId: string) => {
+    try {
+      await reprocessImage.mutateAsync(imageId);
+      delete pollStartRef.current[imageId];
+      toast.success(t('admin.properties.images.reprocessQueued'));
+    } catch {
+      toast.error(t('admin.properties.images.reprocessFailed'));
+    }
+  };
 
   // PascalCase enum values throughout — match server canon and selectable values.
   const [propertyType, setPropertyType] = useState('');
@@ -390,23 +407,97 @@ export default function PropertyForm() {
               {/* Image grid */}
               {(existing?.images ?? []).length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {(existing?.images ?? []).map(img => (
-                    <div key={img.id} className="relative group rounded-lg overflow-hidden border border-[hsl(0_0%_90%)]">
-                      <img src={img.url} alt="" className="w-full h-24 object-cover" />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                        <GripVertical className="h-4 w-4 text-white cursor-grab" />
-                        <button
-                          className="text-white hover:text-red-400"
-                          onClick={() => handleDeleteImage(img.id)}
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
+                  {(existing?.images ?? []).map(img => {
+                    const status = img.processingStatus ?? 'Done';
+                    const isWorking = status === 'Pending' || status === 'Processing';
+                    const isFailed = status === 'Failed';
+
+                    // Track when polling started for this image so we can flip
+                    // to "stuck" after 60s. Reset on Done/Failed so a future
+                    // reprocess starts a fresh window.
+                    if (isWorking && !pollStartRef.current[img.id]) {
+                      pollStartRef.current[img.id] = Date.now();
+                    }
+                    if (!isWorking && pollStartRef.current[img.id]) {
+                      delete pollStartRef.current[img.id];
+                    }
+
+                    const stuck = isWorking
+                      && pollStartRef.current[img.id]
+                      && Date.now() - pollStartRef.current[img.id] > 60_000;
+
+                    const previewUrl = img.thumbUrl ?? img.url;
+
+                    return (
+                      <div key={img.id} className="relative group rounded-lg overflow-hidden border border-[hsl(0_0%_90%)]">
+                        {previewUrl ? (
+                          <img src={previewUrl} alt="" className="w-full h-24 object-cover" />
+                        ) : (
+                          <div className="w-full h-24 bg-[hsl(0_0%_94%)] flex items-center justify-center">
+                            <ImageIcon className="h-6 w-6 text-[hsl(0_0%_70%)]" />
+                          </div>
+                        )}
+
+                        {/* Pending/Processing overlay — spinner + label so the
+                            admin sees the row exists but isn't ready yet. */}
+                        {isWorking && !stuck && (
+                          <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
+                            <Loader2 className="h-5 w-5 text-white animate-spin" />
+                          </div>
+                        )}
+
+                        {/* Stuck after 60s — invite a retry rather than spin
+                            forever, in case the Hangfire worker wedged. */}
+                        {stuck && (
+                          <div className="absolute inset-0 bg-black/65 flex flex-col items-center justify-center gap-1 px-2 text-center">
+                            <AlertTriangle className="h-5 w-5 text-amber-400" />
+                            <span className="text-[10px] text-white font-medium">
+                              {t('admin.properties.images.processingStuck')}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleReprocess(img.id)}
+                              className="mt-1 text-[10px] text-amber-300 hover:text-amber-200 underline flex items-center gap-1"
+                            >
+                              <RefreshCw className="h-3 w-3" />
+                              {t('admin.properties.images.retry')}
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Failed — same retry affordance, different copy. */}
+                        {isFailed && (
+                          <div className="absolute inset-0 bg-red-500/55 flex flex-col items-center justify-center gap-1 px-2 text-center">
+                            <AlertTriangle className="h-5 w-5 text-white" />
+                            <span className="text-[10px] text-white font-medium">
+                              {t('admin.properties.images.processingFailed')}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleReprocess(img.id)}
+                              className="mt-1 text-[10px] text-white hover:text-amber-200 underline flex items-center gap-1"
+                            >
+                              <RefreshCw className="h-3 w-3" />
+                              {t('admin.properties.images.retry')}
+                            </button>
+                          </div>
+                        )}
+
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                          <GripVertical className="h-4 w-4 text-white cursor-grab" />
+                          <button
+                            className="text-white hover:text-red-400"
+                            onClick={() => handleDeleteImage(img.id)}
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                        {img.isCover && (
+                          <span className="absolute top-1 left-1 text-[8px] bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] px-1.5 py-0.5 rounded font-medium">{t('admin.properties.images.cover')}</span>
+                        )}
                       </div>
-                      {img.isCover && (
-                        <span className="absolute top-1 left-1 text-[8px] bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] px-1.5 py-0.5 rounded font-medium">{t('admin.properties.images.cover')}</span>
-                      )}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>

@@ -8,9 +8,17 @@ const asArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? (value as T
 const asObject = <T extends object>(value: unknown, fallback: T): T =>
   value && typeof value === 'object' && !Array.isArray(value) ? (value as T) : fallback;
 
+export type ImageProcessingStatus = 'Pending' | 'Processing' | 'Done' | 'Failed';
+
 export interface PropertyImage {
   id: string;
+  /** Legacy "best available" URL — populated from mediumUrl after processing. */
   url: string;
+  thumbUrl?: string;
+  mediumUrl?: string;
+  largeUrl?: string;
+  processingStatus?: ImageProcessingStatus;
+  processingError?: string;
   altText?: string;
   sortOrder: number;
   isCover: boolean;
@@ -42,6 +50,9 @@ export interface Property {
   lat?: number;
   lng?: number;
   isFeatured?: boolean;
+  coverThumbUrl?: string;
+  coverMediumUrl?: string;
+  coverLargeUrl?: string;
   agent?: {
     id?: string;
     slug?: string;

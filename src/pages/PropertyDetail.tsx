@@ -36,10 +36,29 @@ export default function PropertyDetail() {
     return similarData.data.filter(p => p.id !== property.id).slice(0, 3);
   }, [property, similarData]);
 
+  /**
+   * Each entry exposes all available variant URLs so the hero can srcset
+   * across thumb/medium/large while the lightbox + grid keep their existing
+   * string-based access via .display.
+   */
   const images = useMemo(() => {
-    if (!property) return [];
-    if (property.images && property.images.length > 0) return property.images.map(i => i.url);
-    if (property.coverImageUrl) return [property.coverImageUrl];
+    if (!property) return [] as Array<{
+      thumb?: string; medium?: string; large?: string; display: string;
+    }>;
+    if (property.images && property.images.length > 0) {
+      return property.images.map(i => {
+        const display = i.largeUrl ?? i.mediumUrl ?? i.url ?? i.thumbUrl ?? '';
+        return {
+          thumb:   i.thumbUrl  ?? i.url,
+          medium:  i.mediumUrl ?? i.url,
+          large:   i.largeUrl  ?? i.mediumUrl ?? i.url,
+          display,
+        };
+      });
+    }
+    if (property.coverImageUrl) {
+      return [{ thumb: property.coverImageUrl, medium: property.coverImageUrl, large: property.coverImageUrl, display: property.coverImageUrl }];
+    }
     return [];
   }, [property]);
 
@@ -210,7 +229,19 @@ export default function PropertyDetail() {
             onClick={() => openLightbox(0)}
           >
             {images[0] && (
-              <img src={images[0]} alt={property.title} className="w-full h-full object-cover" />
+              <picture>
+                {images[0].large && (
+                  <source srcSet={images[0].large} media="(min-width: 1280px)" type="image/webp" />
+                )}
+                {images[0].medium && (
+                  <source srcSet={images[0].medium} media="(min-width: 640px)" type="image/webp" />
+                )}
+                <img
+                  src={images[0].medium ?? images[0].thumb ?? images[0].display}
+                  alt={property.title}
+                  className="w-full h-full object-cover"
+                />
+              </picture>
             )}
             <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors" />
           </div>
@@ -222,7 +253,12 @@ export default function PropertyDetail() {
               className="hidden md:block aspect-[4/3] relative cursor-pointer group bg-muted"
               onClick={() => openLightbox(i + 1)}
             >
-              <img src={img} alt="" className="w-full h-full object-cover" />
+              <img
+                src={img.thumb ?? img.medium ?? img.display}
+                alt=""
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
               <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors" />
               {i === 1 && images.length > 3 && (
                 <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
@@ -580,7 +616,7 @@ export default function PropertyDetail() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              src={images[lightboxIndex]}
+              src={images[lightboxIndex]?.large ?? images[lightboxIndex]?.medium ?? images[lightboxIndex]?.display}
               alt=""
               className="max-w-[90vw] max-h-[85vh] object-contain rounded-sm"
               onClick={(e) => e.stopPropagation()}

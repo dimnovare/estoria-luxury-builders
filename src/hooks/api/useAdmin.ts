@@ -16,9 +16,16 @@ export interface AdminPropertyTranslation {
   district?: string;
 }
 
+export type AdminImageProcessingStatus = 'Pending' | 'Processing' | 'Done' | 'Failed';
+
 export interface AdminPropertyImage {
   id: string;
   url: string;
+  thumbUrl?: string;
+  mediumUrl?: string;
+  largeUrl?: string;
+  processingStatus?: AdminImageProcessingStatus;
+  processingError?: string;
   sortOrder: number;
   isCover: boolean;
 }
@@ -143,6 +150,30 @@ export function useAdminProperty(id?: string) {
     queryKey: ['admin', 'property', id],
     queryFn: () => api.get(`/admin/properties/${id}`).then(r => r.data),
     enabled: !!id,
+    // Auto-poll while any image is still being processed. Caller-side
+    // 60-second cap is enforced by useImageProcessingPoll which clears
+    // its timer; this is the steady-state cadence while polling is on.
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      if (!data?.images?.length) return false;
+      return data.images.some(i =>
+        i.processingStatus === 'Pending' || i.processingStatus === 'Processing'
+      ) ? 5_000 : false;
+    },
+  });
+}
+
+/**
+ * Re-enqueue the processing job for an image. Returns Accepted with
+ * { id, processingStatus: 'Pending' } so the caller can flip the UI back
+ * into spinner-mode.
+ */
+export function useReprocessPropertyImage() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (imageId: string) =>
+      api.post(`/admin/property-images/${imageId}/reprocess`).then(r => r.data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'property'] }),
   });
 }
 
