@@ -848,6 +848,94 @@
         "forbidden": "You don't have permission to perform this action",
         "saveFailed": "Failed to save"
       }
+    },
+    "tasks": {
+      "title": "My Tasks",
+      "addNew": "New Task",
+      "editTitle": "Edit Task",
+      "newTitle": "New Task",
+      "empty": "No tasks. Take a deep breath.",
+      "emptyDescription": "You're all caught up — nothing to do right now.",
+      "confirmDelete": "Delete Task",
+      "confirmDeleteDesc": "Are you sure you want to delete this task?",
+      "reschedule": "Reschedule",
+      "late": "late",
+      "tabs": {
+        "today": "Today",
+        "week": "This Week",
+        "overdue": "Overdue",
+        "all": "All"
+      },
+      "filters": {
+        "assignedTo": "Assigned to",
+        "me": "Me",
+        "everyone": "Everyone",
+        "allPriorities": "All Priorities",
+        "anyReminder": "Any Reminder",
+        "hasReminder": "Has Reminder"
+      },
+      "priority": {
+        "Low": "Low",
+        "Normal": "Normal",
+        "High": "High"
+      },
+      "recurrence": {
+        "None": "None",
+        "Daily": "Daily",
+        "Weekly": "Weekly",
+        "Monthly": "Monthly"
+      },
+      "fields": {
+        "description": "Description",
+        "dueAt": "Due At",
+        "priority": "Priority",
+        "assignedTo": "Assigned To",
+        "linkedTo": "Linked To",
+        "reminderAt": "Reminder At",
+        "recurrence": "Recurrence"
+      },
+      "link": {
+        "contact": "Contact",
+        "deal": "Deal",
+        "property": "Property",
+        "dealIdPlaceholder": "Deal ID…",
+        "propertyIdPlaceholder": "Property ID…"
+      },
+      "toast": {
+        "created": "Task created",
+        "updated": "Task updated",
+        "deleted": "Task deleted",
+        "deleteFailed": "Failed to delete task",
+        "saveFailed": "Failed to save task",
+        "toggleFailed": "Failed to update task status",
+        "requiredFields": "Title and due date are required",
+        "reminderBeforeDue": "Reminder must be before the due date"
+      }
+    },
+    "birthday": {
+      "title": "Birthdays",
+      "upcoming": "Upcoming Birthdays",
+      "thisWeek": "This Week",
+      "noBirthdays": "No upcoming birthdays in the next 30 days.",
+      "turningAge": "Turning {{age}}",
+      "today": "Today!",
+      "sendNow": "Send Now",
+      "templateEditor": "Birthday Email Template",
+      "variablesHint": "Available variables",
+      "autoSend": "Auto-send birthday emails",
+      "autoSendDescription": "When enabled, birthday greetings are sent automatically at midnight for contacts with email addresses.",
+      "fields": {
+        "subject": "Subject",
+        "bodyHtml": "Body (HTML)"
+      },
+      "toast": {
+        "sent": "Birthday greeting sent",
+        "sendFailed": "Failed to send birthday greeting",
+        "templateSaved": "Template saved",
+        "templateSaveFailed": "Failed to save template",
+        "autoSendUpdated": "Auto-send setting updated",
+        "autoSendFailed": "Failed to update auto-send setting"
+      }
     }
   }
 }
