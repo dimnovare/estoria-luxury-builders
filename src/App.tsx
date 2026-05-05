@@ -36,6 +36,9 @@ import AdminPages from "@/pages/admin/AdminPages";
 import AdminCareers from "@/pages/admin/AdminCareers";
 import AdminNewsletter from "@/pages/admin/AdminNewsletter";
 import AdminMessages from "@/pages/admin/AdminMessages";
+import AdminUsers from "@/pages/admin/AdminUsers";
+import UserForm from "@/pages/admin/UserForm";
+import AuditLog from "@/pages/admin/AuditLog";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -84,6 +87,10 @@ const App = () => (
             <Route path="careers" element={<AdminCareers />} />
             <Route path="newsletter" element={<AdminNewsletter />} />
             <Route path="messages" element={<AdminMessages />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="users/new" element={<UserForm />} />
+            <Route path="users/:id/edit" element={<UserForm />} />
+            <Route path="audit-log" element={<AuditLog />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
