@@ -355,7 +355,8 @@
       "tasks": "Tasks",
       "birthdays": "Birthdays",
       "savedSearches": "Saved Searches",
-      "activities": "Activities"
+      "activities": "Activities",
+      "settings": "Settings"
     },
     "login": {
       "portalTitle": "Admin Portal",
@@ -631,7 +632,7 @@
       }
     },
     "newsletter": {
-      "title": "Newsletter Subscribers",
+      "title": "Newsletter",
       "exportCsv": "Export CSV",
       "table": {
         "language": "Language",
@@ -644,6 +645,44 @@
         "exported": "CSV exported",
         "removed": "Subscriber removed",
         "removeFailed": "Failed to remove subscriber"
+      },
+      "tabs": {
+        "compose": "Compose",
+        "campaigns": "Campaigns",
+        "subscribers": "Subscribers"
+      },
+      "compose": {
+        "subject": "Subject",
+        "languageFilter": "Language filter",
+        "langAll": "All",
+        "langEt": "Estonian",
+        "langEn": "English",
+        "langRu": "Russian",
+        "body": "Body (HTML)",
+        "bodyHelp": "HTML allowed. Personalisation tokens supported: {{firstName}}. A minimum unsubscribe footer is appended automatically — don’t add your own.",
+        "willReach": "Will reach {{count}} subscribers",
+        "sendNow": "Send now",
+        "sendTest": "Send test to me only",
+        "from": "From",
+        "to": "To",
+        "subscribers": "subscribers",
+        "previewPlaceholder": "Preview will appear here",
+        "confirmTitle": "Confirm send",
+        "confirmDesc": "You’re about to send to {{count}} subscribers. This cannot be undone. Continue?",
+        "confirmSend": "Yes, send",
+        "toast": {
+          "sent": "Campaign sent — {{delivered}} delivered, {{failed}} failed.",
+          "testSent": "Test email sent to your address.",
+          "sendFailed": "Failed to send campaign"
+        }
+      },
+      "campaigns": {
+        "subject": "Subject",
+        "sentAt": "Sent at",
+        "recipients": "Recipients",
+        "success": "Success",
+        "failed": "Failed",
+        "empty": "No campaigns yet."
       }
     },
     "users": {
@@ -883,16 +922,38 @@
       }
     },
     "activities": {
+      "title": "Activities",
+      "searchPlaceholder": "Search title or body…",
+      "empty": "No activities match your filters",
+      "emptyDescription": "Try widening the date range or clearing filters.",
+      "filters": {
+        "type": "Type",
+        "user": "User",
+        "from": "From",
+        "to": "To"
+      },
+      "table": {
+        "when": "When",
+        "type": "Type",
+        "title": "Title",
+        "linkedTo": "Linked to",
+        "user": "User"
+      },
+      "linked": {
+        "contact": "Contact",
+        "deal": "Deal",
+        "property": "Property"
+      },
       "types": {
         "Note": "Note",
         "Call": "Call",
         "Email": "Email",
         "Meeting": "Meeting",
         "Viewing": "Viewing",
-        "OfferMade": "Offer Made",
-        "StageChange": "Stage Change",
-        "ContractEvent": "Contract Event",
-        "SystemEvent": "System Event"
+        "OfferMade": "Offer made",
+        "StageChange": "Stage change",
+        "ContractEvent": "Contract event",
+        "SystemEvent": "System"
       }
     },
     "crm": {
@@ -989,41 +1050,6 @@
         "autoSendFailed": "Failed to update auto-send setting"
       }
     },
-    "activities": {
-      "title": "Activities",
-      "searchPlaceholder": "Search title or body…",
-      "empty": "No activities match your filters",
-      "emptyDescription": "Try widening the date range or clearing filters.",
-      "filters": {
-        "type": "Type",
-        "user": "User",
-        "from": "From",
-        "to": "To"
-      },
-      "table": {
-        "when": "When",
-        "type": "Type",
-        "title": "Title",
-        "linkedTo": "Linked to",
-        "user": "User"
-      },
-      "linked": {
-        "contact": "Contact",
-        "deal": "Deal",
-        "property": "Property"
-      },
-      "types": {
-        "Note": "Note",
-        "Call": "Call",
-        "Email": "Email",
-        "Meeting": "Meeting",
-        "Viewing": "Viewing",
-        "OfferMade": "Offer made",
-        "StageChange": "Stage change",
-        "ContractEvent": "Contract event",
-        "SystemEvent": "System"
-      }
-    },
     "savedSearches": {
       "title": "Saved Searches",
       "empty": "No saved searches yet",
@@ -1057,6 +1083,44 @@
         "sendFailed": "Failed to force-send",
         "deleted": "Saved search deleted",
         "deleteFailed": "Failed to delete"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "These values are read by the public site and the system in real time. Most changes apply within seconds; the public site caches stats and contact info for up to 5 minutes.",
+      "save": "Save",
+      "sections": {
+        "identity": "Site Identity",
+        "social": "Social Links",
+        "socialHelp": "Leave blank to hide the icon on the public site.",
+        "stats": "Stats & Branding",
+        "features": "Feature Toggles",
+        "featuresHelp": "Most of these are off by default for safety. Turn them on once you’ve verified the corresponding feature works in your environment.",
+        "other": "Other settings"
+      },
+      "fields": {
+        "contactEmail": "Contact email",
+        "phone": "Phone",
+        "address": "Office address",
+        "hours": "Office hours",
+        "facebook": "Facebook URL",
+        "instagram": "Instagram URL",
+        "linkedin": "LinkedIn URL",
+        "yearsExperience": "Years of experience",
+        "satisfactionPercent": "Client satisfaction (%)",
+        "watermarkText": "Watermark text",
+        "watermarkEnabled": "Apply watermark to property images",
+        "aiDescriptions": "AI-generated property descriptions",
+        "aiReplies": "AI-suggested email replies",
+        "birthdayAutoSend": "Send birthday greetings automatically",
+        "savedSearchAutoSend": "Send saved-search digests automatically"
+      },
+      "validation": {
+        "positiveInteger": "Must be a positive integer",
+        "urlWarning": "This doesn’t look like a full URL (expected https://…). You can still save."
+      },
+      "toast": {
+        "saveFailed": "Failed to save setting"
       }
     }
   }
