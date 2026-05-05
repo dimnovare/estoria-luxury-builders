@@ -156,6 +156,7 @@ export default function AdminProperties() {
               ))}
             </TableBody>
           </Table>
+          </div>
           {!isLoading && filtered.length === 0 && (
             <p className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.properties.noMatch')}</p>
           )}
