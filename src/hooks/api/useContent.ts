@@ -157,7 +157,10 @@ export function useBlogPosts(page = 1) {
         const items = asArray<BlogPost>(r.data?.items).map(normaliseBlogPost);
         if (items.length > 0) return { data: items, total: r.data?.totalCount ?? 0 };
       } catch { /* fall through */ }
-      return { data: DEMO_BLOG.map(normaliseBlogPost), total: DEMO_BLOG.length };
+      if (import.meta.env.DEV) {
+        return { data: DEMO_BLOG.map(normaliseBlogPost), total: DEMO_BLOG.length };
+      }
+      return { data: [], total: 0 };
     },
     retry: false,
   });
@@ -172,7 +175,10 @@ export function useBlogPost(slug?: string) {
         const r = await api.get(`/blog/${slug}`);
         return normaliseBlogPost(r.data);
       } catch { /* fall through */ }
-      return DEMO_BLOG.map(normaliseBlogPost).find(p => p.slug === slug);
+      if (import.meta.env.DEV) {
+        return DEMO_BLOG.map(normaliseBlogPost).find(p => p.slug === slug);
+      }
+      return undefined;
     },
     enabled: !!slug,
     retry: false,
@@ -189,7 +195,10 @@ export function useTeam() {
         const items = asArray<TeamMember>(r.data).map(normaliseTeamMember);
         if (items.length > 0) return items;
       } catch { /* fall through */ }
-      return DEMO_TEAM.map(normaliseTeamMember);
+      if (import.meta.env.DEV) {
+        return DEMO_TEAM.map(normaliseTeamMember);
+      }
+      return [];
     },
     retry: false,
   });
@@ -204,7 +213,10 @@ export function useTeamMember(slug?: string) {
         const r = await api.get(`/team/${slug}`);
         return normaliseTeamMemberDetail(r.data);
       } catch { /* fall through */ }
-      return DEMO_TEAM.map(normaliseTeamMemberDetail).find(m => m.slug === slug);
+      if (import.meta.env.DEV) {
+        return DEMO_TEAM.map(normaliseTeamMemberDetail).find(m => m.slug === slug);
+      }
+      return undefined;
     },
     enabled: !!slug,
     retry: false,
@@ -221,7 +233,10 @@ export function useServices() {
         const items = asArray<Service>(r.data).map(normaliseService);
         if (items.length > 0) return items;
       } catch { /* fall through */ }
-      return DEMO_SERVICES.map(normaliseService);
+      if (import.meta.env.DEV) {
+        return DEMO_SERVICES.map(normaliseService);
+      }
+      return [];
     },
     retry: false,
   });

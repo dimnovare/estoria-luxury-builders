@@ -47,13 +47,13 @@ export default function Navbar() {
             <span className="font-heading text-2xl tracking-[0.3em] text-primary font-semibold">ESTORIA</span>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          {/* Desktop Nav — shown only at xl (>=1280px) */}
+          <nav className="hidden xl:flex items-center gap-7">
             {navLinks.map(({ key, path }) => (
               <Link
                 key={key}
                 to={path}
-                className={`font-nav text-xs uppercase tracking-[0.15em] relative pb-1 transition-colors duration-300 ${
+                className={`font-nav text-[11px] uppercase tracking-[0.15em] relative pb-1 transition-colors duration-300 ${
                   location.pathname === path ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
                 } after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-primary after:transition-all after:duration-300 ${
                   location.pathname === path ? 'after:w-full' : 'after:w-0 hover:after:w-full'
@@ -64,9 +64,8 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Right side */}
-          <div className="hidden md:flex items-center gap-4">
-            {/* Language Switcher */}
+          {/* Desktop right side — shown only at xl */}
+          <div className="hidden xl:flex items-center gap-4">
             <div className="flex items-center gap-1 font-nav text-xs uppercase tracking-wider">
               {languages.map((lang, i) => (
                 <span key={lang} className="flex items-center">
@@ -85,15 +84,15 @@ export default function Navbar() {
 
             <Link
               to="/contact"
-              className="font-nav text-xs uppercase tracking-[0.15em] border border-primary text-primary px-5 py-2.5  transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
+              className="font-nav text-xs uppercase tracking-[0.15em] border border-primary text-primary px-5 py-2.5 transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
             >
               {t('nav.contactUs')}
             </Link>
           </div>
 
-          {/* Mobile hamburger */}
+          {/* Hamburger — shown below xl (i.e. mobile + tablet) */}
           <button
-            className="md:hidden text-foreground p-2"
+            className="xl:hidden text-foreground p-2"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
           >

@@ -14,6 +14,14 @@ import type { LucideIcon } from 'lucide-react';
 
 const iconMap: Record<string, LucideIcon> = { Building2, Home, Landmark, TreePine };
 
+const isDirectVideoUrl = (url?: string) => {
+  if (!url) return false;
+  const lower = url.toLowerCase();
+  if (lower.includes('youtube.com') || lower.includes('youtu.be')) return false;
+  if (lower.includes('vimeo.com')) return false;
+  return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(lower) || lower.startsWith('blob:') || lower.includes('/video');
+};
+
 export default function Index() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -26,6 +34,8 @@ export default function Index() {
   const { data: servicesContent } = usePageContent('homepage.services');
   const { data: aboutIntro } = usePageContent('about.intro');
 
+  const heroVideoSrc = hero?.videoUrl || heroVideoAsset.url;
+
   const handleSearch = () => {
     navigate(`/properties?transaction=${txType}`);
   };
@@ -34,16 +44,26 @@ export default function Index() {
     <>
       {/* ===== HERO ===== */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* BG Video */}
+        {/* BG Video / Image / Gradient fallback */}
         <div className="absolute inset-0">
-          <video
-            src={hero?.videoUrl || heroVideoAsset.url}
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-          />
+          {isDirectVideoUrl(heroVideoSrc) ? (
+            <video
+              src={heroVideoSrc}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover"
+            />
+          ) : hero?.imageUrl ? (
+            <img
+              src={hero.imageUrl}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a]" />
+          )}
           <div className="absolute inset-0" style={{
             background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.9) 100%)'
           }} />
@@ -197,6 +217,7 @@ export default function Index() {
       </section>
 
       {/* ===== FEATURED PROPERTIES ===== */}
+      {(!featured || featured.length > 0 || featuredLoading) && (
       <section className="py-24 px-6 md:px-16 bg-card">
         <div className="container mx-auto">
           <motion.div
@@ -246,8 +267,10 @@ export default function Index() {
           )}
         </div>
       </section>
+      )}
 
       {/* ===== SERVICES ===== */}
+      {(!services || services.length > 0 || servicesLoading) && (
       <section className="py-24 px-6 md:px-16">
         <div className="container mx-auto">
           <motion.div
@@ -306,6 +329,7 @@ export default function Index() {
           )}
         </div>
       </section>
+      )}
 
       {/* ===== ABOUT TEASER ===== */}
       <section className="bg-card">

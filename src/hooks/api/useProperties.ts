@@ -113,13 +113,15 @@ export function useProperties(filter?: PropertyFilter, page = 1) {
         const items = asArray<Property>(r.data?.items).map(normalise);
         if (items.length > 0) return { data: items, total: r.data?.totalCount ?? 0, page: r.data?.page ?? page };
       } catch { /* fall through to demo */ }
-      // Demo fallback
-      let items = DEMO_PROPERTIES;
-      if (filter?.transaction === 'buy') items = items.filter(p => p.transactionType === 'sale');
-      else if (filter?.transaction === 'rent') items = items.filter(p => p.transactionType === 'rent');
-      if (filter?.type) items = items.filter(p => p.propertyType === filter.type);
-      if (filter?.city) items = items.filter(p => p.city === filter.city);
-      return { data: items, total: items.length, page: 1 };
+      if (import.meta.env.DEV) {
+        let items = DEMO_PROPERTIES;
+        if (filter?.transaction === 'buy') items = items.filter(p => p.transactionType === 'sale');
+        else if (filter?.transaction === 'rent') items = items.filter(p => p.transactionType === 'rent');
+        if (filter?.type) items = items.filter(p => p.propertyType === filter.type);
+        if (filter?.city) items = items.filter(p => p.city === filter.city);
+        return { data: items, total: items.length, page: 1 };
+      }
+      return { data: [], total: 0, page: 1 };
     },
     retry: false,
   });
@@ -134,7 +136,10 @@ export function useProperty(slug?: string) {
         const r = await api.get(`/properties/${slug}`);
         return normalise(asObject<Property>(r.data, {} as Property));
       } catch { /* fall through to demo */ }
-      return DEMO_PROPERTIES.find(p => p.slug === slug);
+      if (import.meta.env.DEV) {
+        return DEMO_PROPERTIES.find(p => p.slug === slug);
+      }
+      return undefined;
     },
     enabled: !!slug,
     retry: false,
@@ -151,7 +156,10 @@ export function useFeaturedProperties() {
         const items = asArray<Property>(r.data).map(normalise);
         if (items.length > 0) return items;
       } catch { /* fall through to demo */ }
-      return DEMO_PROPERTIES.filter(p => p.isFeatured);
+      if (import.meta.env.DEV) {
+        return DEMO_PROPERTIES.filter(p => p.isFeatured);
+      }
+      return [];
     },
     retry: false,
   });
