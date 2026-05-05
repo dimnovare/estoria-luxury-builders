@@ -49,6 +49,18 @@
     "detail": {
       "viewAllPhotos": "Vaata kõiki {{count}} fotot",
       "featuresTitle": "Eripärad ja mugavused",
+      "historyTitle": "Hinna ajalugu",
+      "historyEmpty": "Selle kinnisvara kohta pole veel ajalugu salvestatud.",
+      "history": {
+        "priceReduced": "Hinda alandati: {{from}} → {{to}}",
+        "priceIncreased": "Hinda tõsteti: {{from}} → {{to}}",
+        "priceChangedGeneric": "Hind muutus",
+        "featured": "Lisatud esiletõstetud pakkumiste hulka",
+        "unfeatured": "Eemaldatud esiletõstetud pakkumistest",
+        "statusChanged": "Staatus uuendatud",
+        "publishedFirst": "Avaldatud",
+        "created": "Pakkumine loodud"
+      },
       "locationTitle": "Asukoht",
       "mapPlaceholder": "Kaardi integratsioon saadaval",
       "similarTitle": "Sarnased objektid",
@@ -225,7 +237,32 @@
     "notFound": "Lehte ei leitud",
     "backHome": "Tagasi avalehele",
     "comingSoon": "Tulekul",
-    "noSubject": "(teema puudub)"
+    "noSubject": "(teema puudub)",
+    "cancel": "Tühista",
+    "close": "Sulge",
+    "saving": "Salvestamine…"
+  },
+  "savedSearch": {
+    "cta": "Salvesta otsing",
+    "title": "Salvesta see otsing",
+    "description": "Saadame teile e-postiga uusi pakkumisi, mis vastavad teie filtrile. Tellimuse saab igal ajal tühistada.",
+    "fields": {
+      "email": "E-post",
+      "name": "Otsingu nimi (valikuline)",
+      "namePlaceholder": "nt Tallinn 2-toaline üür",
+      "frequency": "Sagedus"
+    },
+    "frequency": {
+      "Instant": "Niipea kui sobiv pakkumine ilmub",
+      "Daily": "Päevaülevaade",
+      "Weekly": "Nädalaülevaade"
+    },
+    "privacyNote": "Tellimusega nõustute saama Estoria pakkumisi e-postile. Saate igal ajal loobuda.",
+    "submit": "Salvesta otsing",
+    "toast": {
+      "created": "Otsing salvestatud — kinnituskiri on teel",
+      "failed": "Otsingu salvestamine ebaõnnestus."
+    }
   },
   "errors": {
     "generic": "Midagi läks valesti. Palun proovige uuesti.",
@@ -311,6 +348,7 @@
       "deals": "Tehingud",
       "tasks": "Ülesanded",
       "birthdays": "Sünnipäevad",
+      "savedSearches": "Salvestatud otsingud",
       "activities": "Tegevused"
     },
     "login": {
@@ -764,6 +802,32 @@
       "autoSendDescription": "Kui lubatud, saadetakse sünnipäevatervitused automaatselt keskööl kontaktidele, kellel on e-posti aadress.",
       "fields": { "subject": "Teema", "bodyHtml": "Sisu (HTML)" },
       "toast": { "sent": "Sünnipäevatervitus saadetud", "sendFailed": "Sünnipäevatervituse saatmine ebaõnnestus", "templateSaved": "Mall salvestatud", "templateSaveFailed": "Malli salvestamine ebaõnnestus", "autoSendUpdated": "Automaatse saatmise seadistus uuendatud", "autoSendFailed": "Automaatse saatmise seadistuse muutmine ebaõnnestus" }
+    },
+    "savedSearches": {
+      "title": "Salvestatud otsingud",
+      "empty": "Salvestatud otsinguid pole",
+      "emptyDescription": "Avalikus saidil otsingu salvestanud kasutajad ilmuvad siia.",
+      "active": "Aktiivne",
+      "inactive": "Mitteaktiivne",
+      "confirmDelete": "Kustuta salvestatud otsing",
+      "confirmDeleteDesc": "See tühistab tellimuse jäädavalt. Kasutaja saab uuesti tellida avalikust saidist.",
+      "filters": { "frequency": "Sagedus", "active": "Olek" },
+      "frequency": { "Instant": "Kohe", "Daily": "Iga päev", "Weekly": "Iga nädal" },
+      "fields": {
+        "email": "E-post",
+        "name": "Nimi",
+        "frequency": "Sagedus",
+        "status": "Olek",
+        "lastSent": "Viimati saadetud",
+        "results": "Viimane vastete arv"
+      },
+      "actions": { "forceSend": "Saada kohe" },
+      "toast": {
+        "sent": "Saatmine lõpetatud — {{count}} vastet",
+        "sendFailed": "Saatmine ebaõnnestus",
+        "deleted": "Salvestatud otsing kustutatud",
+        "deleteFailed": "Kustutamine ebaõnnestus"
+      }
     }
   }
 }

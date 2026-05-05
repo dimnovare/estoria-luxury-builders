@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import PropertyCard from '@/components/PropertyCard';
+import PropertyHistory from '@/components/PropertyHistory';
 import { useProperty, useProperties } from '@/hooks/api/useProperties';
 import { propertyTypeLabel } from '@/lib/enumLabels';
 import api from '@/lib/api';
@@ -312,6 +313,9 @@ export default function PropertyDetail() {
                   </div>
                 </div>
               )}
+
+              {/* Price / status history */}
+              <PropertyHistory slug={property.slug} />
 
               {/* Map placeholder */}
               {property.lat && property.lng && (

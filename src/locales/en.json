@@ -49,6 +49,18 @@
     "detail": {
       "viewAllPhotos": "View all {{count}} photos",
       "featuresTitle": "Features & Amenities",
+      "historyTitle": "Price history",
+      "historyEmpty": "No history recorded yet for this property.",
+      "history": {
+        "priceReduced": "Price reduced from {{from}} to {{to}}",
+        "priceIncreased": "Price increased from {{from}} to {{to}}",
+        "priceChangedGeneric": "Price changed",
+        "featured": "Marked as featured",
+        "unfeatured": "Removed from featured",
+        "statusChanged": "Status updated",
+        "publishedFirst": "Published",
+        "created": "Listing created"
+      },
       "locationTitle": "Location",
       "mapPlaceholder": "Map integration available",
       "similarTitle": "Similar Properties",
@@ -225,7 +237,32 @@
     "notFound": "Page not found",
     "backHome": "Back to Home",
     "comingSoon": "Coming soon",
-    "noSubject": "(no subject)"
+    "noSubject": "(no subject)",
+    "cancel": "Cancel",
+    "close": "Close",
+    "saving": "Saving…"
+  },
+  "savedSearch": {
+    "cta": "Save this search",
+    "title": "Save this search",
+    "description": "We'll email you new properties matching your filter. Cancel any time from the email.",
+    "fields": {
+      "email": "Email",
+      "name": "Search name (optional)",
+      "namePlaceholder": "e.g. Tallinn 2-room rentals",
+      "frequency": "How often"
+    },
+    "frequency": {
+      "Instant": "As soon as a match is published",
+      "Daily": "Daily digest",
+      "Weekly": "Weekly digest"
+    },
+    "privacyNote": "By subscribing you agree to receive property updates from Estoria. You can unsubscribe at any time.",
+    "submit": "Save search",
+    "toast": {
+      "created": "Search saved — confirmation email on its way",
+      "failed": "Couldn't save the search. Please try again."
+    }
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
@@ -311,6 +348,7 @@
       "deals": "Deals",
       "tasks": "Tasks",
       "birthdays": "Birthdays",
+      "savedSearches": "Saved Searches",
       "activities": "Activities"
     },
     "login": {
@@ -938,6 +976,41 @@
         "templateSaveFailed": "Failed to save template",
         "autoSendUpdated": "Auto-send setting updated",
         "autoSendFailed": "Failed to update auto-send setting"
+      }
+    },
+    "savedSearches": {
+      "title": "Saved Searches",
+      "empty": "No saved searches yet",
+      "emptyDescription": "Visitors who save a search from the public site will appear here.",
+      "active": "Active",
+      "inactive": "Inactive",
+      "confirmDelete": "Delete saved search",
+      "confirmDeleteDesc": "This unsubscribes the recipient permanently. They can sign up again from the public site.",
+      "filters": {
+        "frequency": "Frequency",
+        "active": "Status"
+      },
+      "frequency": {
+        "Instant": "Instant",
+        "Daily": "Daily",
+        "Weekly": "Weekly"
+      },
+      "fields": {
+        "email": "Email",
+        "name": "Name",
+        "frequency": "Frequency",
+        "status": "Status",
+        "lastSent": "Last sent",
+        "results": "Last count"
+      },
+      "actions": {
+        "forceSend": "Send now"
+      },
+      "toast": {
+        "sent": "Force-send completed — {{count}} matches",
+        "sendFailed": "Failed to force-send",
+        "deleted": "Saved search deleted",
+        "deleteFailed": "Failed to delete"
       }
     }
   }

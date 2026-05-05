@@ -2,10 +2,12 @@ import { useState, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Search, X, ChevronLeft, ChevronRight, SlidersHorizontal, Loader2 } from 'lucide-react';
+import { Search, X, ChevronLeft, ChevronRight, SlidersHorizontal, Loader2, Bell } from 'lucide-react';
 import PropertyCard from '@/components/PropertyCard';
+import SaveSearchModal from '@/components/SaveSearchModal';
 import { useProperties } from '@/hooks/api/useProperties';
 import { usePublicCities, usePropertyTypeOptions } from '@/hooks/api/usePublic';
+import type { SavedSearchFilter } from '@/hooks/api/useSavedSearches';
 
 const PAGE_SIZE = 12;
 // URL param value → translation key under filters.sort.*
@@ -20,6 +22,7 @@ export default function Properties() {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [saveSearchOpen, setSaveSearchOpen] = useState(false);
 
   // Read filters from URL
   const transaction = searchParams.get('transaction') || '';
@@ -63,6 +66,22 @@ export default function Properties() {
   const resetFilters = () => {
     setSearchParams({});
   };
+
+  // Snapshot the current filter for SaveSearchModal. Strings → numbers where
+  // the API expects numeric ranges; transaction is normalized to the API's
+  // PascalCase enum so the saved row matches what the digest worker filters on.
+  const savedSearchFilter: SavedSearchFilter = useMemo(() => ({
+    type: propertyType
+      ? propertyType.charAt(0).toUpperCase() + propertyType.slice(1)
+      : undefined,
+    transaction:
+      transaction === 'buy' ? 'Sale'
+      : transaction === 'rent' ? 'Rent'
+      : undefined,
+    city: city || undefined,
+    minPrice: minPrice ? Number(minPrice) : undefined,
+    maxPrice: maxPrice ? Number(maxPrice) : undefined,
+  }), [propertyType, transaction, city, minPrice, maxPrice]);
 
   const activeFilters = useMemo(() => {
     const filters: { key: string; label: string; value: string }[] = [];
@@ -215,8 +234,18 @@ export default function Properties() {
 
       {/* Filter bar — desktop */}
       <div className="sticky top-20 z-30 bg-card/95 backdrop-blur-md border-b border-border hidden md:block">
-        <div className="container mx-auto px-6 py-4">
-          <FilterControls />
+        <div className="container mx-auto px-6 py-4 flex items-center gap-4">
+          <div className="flex-1">
+            <FilterControls />
+          </div>
+          <button
+            type="button"
+            onClick={() => setSaveSearchOpen(true)}
+            className="shrink-0 flex items-center gap-2 border border-primary/40 text-primary px-3 py-2 rounded-sm font-nav text-xs uppercase tracking-wider hover:bg-primary/10 transition-colors"
+          >
+            <Bell size={14} />
+            {t('savedSearch.cta')}
+          </button>
         </div>
       </div>
 
@@ -235,19 +264,35 @@ export default function Properties() {
               </span>
             )}
           </button>
-          <select
-            value={sort}
-            onChange={(e) => updateFilter('sort', e.target.value)}
-            className="bg-secondary text-foreground text-xs font-body px-3 py-2 rounded-sm border border-border outline-none"
-          >
-            {sortOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setSaveSearchOpen(true)}
+              className="flex items-center gap-1.5 border border-primary/40 text-primary px-2.5 py-1.5 rounded-sm font-nav text-[11px] uppercase tracking-wider"
+              aria-label={t('savedSearch.cta')}
+            >
+              <Bell size={12} />
+            </button>
+            <select
+              value={sort}
+              onChange={(e) => updateFilter('sort', e.target.value)}
+              className="bg-secondary text-foreground text-xs font-body px-3 py-2 rounded-sm border border-border outline-none"
+            >
+              {sortOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
+
+      <SaveSearchModal
+        open={saveSearchOpen}
+        onClose={() => setSaveSearchOpen(false)}
+        filter={savedSearchFilter}
+      />
 
       {/* Mobile filter drawer */}
       {mobileFiltersOpen && (

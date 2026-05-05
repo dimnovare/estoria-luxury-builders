@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Building2, FileText, Users, Briefcase,
   Globe, GraduationCap, Mail, MessageSquare, ChevronLeft,
   ExternalLink, Menu, LogOut, ScrollText, UserCog, Contact, Handshake,
-  ListTodo, Cake,
+  ListTodo, Cake, Bell,
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
 import { useAuth, type UserRole } from '@/hooks/useAuth';
@@ -35,11 +35,12 @@ const navItemDefs: NavItemDef[] = [
   { key: 'newsletter', icon: Mail,            path: '/admin/newsletter', roles: ['Admin', 'Marketing'] },
   { key: 'messages',   icon: MessageSquare,   path: '/admin/messages' },
   // CRM section
-  { key: 'contacts',   icon: Contact,         path: '/admin/contacts',   section: 'CRM' },
-  { key: 'deals',      icon: Handshake,       path: '/admin/deals',      section: 'CRM' },
-  { key: 'tasks',      icon: ListTodo,        path: '/admin/tasks',      section: 'CRM' },
-  { key: 'birthdays',  icon: Cake,            path: '/admin/birthdays',  section: 'CRM' },
-  { key: 'activities', icon: ScrollText,       path: '/admin/activities', section: 'CRM', disabled: true },
+  { key: 'contacts',      icon: Contact,    path: '/admin/contacts',       section: 'CRM' },
+  { key: 'deals',         icon: Handshake,  path: '/admin/deals',          section: 'CRM' },
+  { key: 'tasks',         icon: ListTodo,   path: '/admin/tasks',          section: 'CRM' },
+  { key: 'birthdays',     icon: Cake,       path: '/admin/birthdays',      section: 'CRM' },
+  { key: 'savedSearches', icon: Bell,       path: '/admin/saved-searches', section: 'CRM' },
+  { key: 'activities',    icon: ScrollText, path: '/admin/activities',     section: 'CRM', disabled: true },
   // Admin section
   { key: 'users',      icon: UserCog,         path: '/admin/users',      roles: ['Admin'] },
   { key: 'auditLog',   icon: ScrollText,      path: '/admin/audit-log',  roles: ['Admin'] },
