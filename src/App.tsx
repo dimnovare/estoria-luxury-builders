@@ -23,6 +23,8 @@ import Contact from "@/pages/Contact";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import NotFound from "@/pages/NotFound";
 
+import Login from "@/pages/admin/Login";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import AdminDashboard from "@/pages/admin/Dashboard";
 import AdminProperties from "@/pages/admin/AdminProperties";
 import PropertyForm from "@/pages/admin/PropertyForm";
@@ -67,7 +69,8 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
           </Route>
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route path="/admin/login" element={<Login />} />
+          <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
             <Route index element={<AdminDashboard />} />
             <Route path="properties" element={<AdminProperties />} />
             <Route path="properties/new" element={<PropertyForm />} />

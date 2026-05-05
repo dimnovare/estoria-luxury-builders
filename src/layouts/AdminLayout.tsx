@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Building2, FileText, Users, Briefcase,
   Globe, GraduationCap, Mail, MessageSquare, ChevronLeft,
-  ExternalLink, Menu,
+  ExternalLink, Menu, LogOut,
 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -39,7 +40,14 @@ export default function AdminLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { logout, email } = useAuth();
   const crumbs = getBreadcrumbs(pathname);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/admin/login');
+  };
 
   const isActive = (path: string) => {
     if (path === '/admin') return pathname === '/admin';
@@ -83,7 +91,7 @@ export default function AdminLayout() {
       </nav>
 
       {/* Bottom */}
-      <div className="border-t border-border/50 p-4 shrink-0">
+      <div className="border-t border-border/50 p-4 shrink-0 space-y-3">
         <a
           href="/"
           target="_blank"
@@ -93,6 +101,16 @@ export default function AdminLayout() {
           <ExternalLink className="h-4 w-4" />
           {!collapsed && <span>View Site</span>}
         </a>
+        {!collapsed && email && (
+          <p className="text-xs text-muted-foreground truncate">{email}</p>
+        )}
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-red-400 transition-colors"
+        >
+          <LogOut className="h-4 w-4" />
+          {!collapsed && <span>Sign out</span>}
+        </button>
       </div>
     </div>
   );
