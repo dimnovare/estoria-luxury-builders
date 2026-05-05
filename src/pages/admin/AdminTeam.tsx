@@ -247,7 +247,7 @@ export default function AdminTeam() {
               <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className={labelClass}>{t('admin.team.fields.phone')}</Label>
                 <Input value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} />
