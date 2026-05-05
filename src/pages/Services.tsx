@@ -72,7 +72,7 @@ export default function Services() {
             const isEven = i % 2 === 1;
 
             return (
-              <div key={service.id}>
+              <div key={service.id} id={service.slug || service.id}>
                 <div className="container mx-auto px-6 py-16">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     {/* Content side */}
