@@ -304,7 +304,9 @@
       "pages": "Pages",
       "careers": "Careers",
       "newsletter": "Newsletter",
-      "messages": "Messages"
+      "messages": "Messages",
+      "users": "Users",
+      "auditLog": "Audit Log"
     },
     "login": {
       "portalTitle": "Admin Portal",
