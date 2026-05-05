@@ -389,13 +389,16 @@ export function useUpdatePage() {
   });
 }
 
-// ── Contacts ───────────────────────────────────────────────────────────────────
+// ── Contact Messages ───────────────────────────────────────────────────────────
+// (Inbound public contact-form submissions. The /admin/contacts route now
+// belongs to CRM Contacts — these messages moved to /admin/contact-messages
+// in the P2.3 CRM rollout.)
 
 export function useAdminContacts(page = 1) {
   return useQuery<{ items: ContactMessage[]; totalCount: number }>({
-    queryKey: ['admin', 'contacts', page],
+    queryKey: ['admin', 'contact-messages', page],
     queryFn: () =>
-      api.get('/admin/contacts', { params: { page, pageSize: 20 } }).then(r => r.data),
+      api.get('/admin/contact-messages', { params: { page, pageSize: 20 } }).then(r => r.data),
   });
 }
 
@@ -403,10 +406,10 @@ export function useUpdateContactStatus() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) =>
-      api.put(`/admin/contacts/${id}/status`, JSON.stringify(status), {
+      api.put(`/admin/contact-messages/${id}/status`, JSON.stringify(status), {
         headers: { 'Content-Type': 'application/json' },
       }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'contacts'] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'contact-messages'] }),
   });
 }
 
