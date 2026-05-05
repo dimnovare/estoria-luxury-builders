@@ -719,6 +719,7 @@
         "timeline": "Timeline",
         "deals": "Deals",
         "notes": "Notes",
+        "tasks": "Tasks",
         "properties": "Properties of Interest"
       },
       "quickNotePlaceholder": "Quick note…",
