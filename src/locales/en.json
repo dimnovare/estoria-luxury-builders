@@ -309,6 +309,8 @@
       "auditLog": "Audit Log",
       "contacts": "Contacts",
       "deals": "Deals",
+      "tasks": "Tasks",
+      "birthdays": "Birthdays",
       "activities": "Activities"
     },
     "login": {
