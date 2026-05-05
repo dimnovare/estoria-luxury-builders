@@ -36,11 +36,11 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         {statCards.map(s => (
           <Link key={s.labelKey} to={s.href}>
             <Card className="bg-white border-[hsl(0_0%_90%)] hover:border-[hsl(0_0%_80%)] transition-colors shadow-sm">
-              <CardContent className="p-4">
+              <CardContent className="p-3 sm:p-4">
                 <div className="flex items-center justify-between mb-2">
                   <s.icon className={`h-5 w-5 ${s.highlight && s.value > 0 ? 'text-[hsl(43_50%_54%)]' : 'text-[hsl(0_0%_60%)]'}`} />
                   {s.highlight && s.value > 0 && <div className="h-2 w-2 rounded-full bg-[hsl(43_50%_54%)]" />}
@@ -56,7 +56,7 @@ export default function AdminDashboard() {
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Recent Messages */}
         <div className="lg:col-span-2">
-          <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+          <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-medium text-[hsl(0_0%_15%)]">{t('admin.dashboard.recentMessages')}</CardTitle>
@@ -64,21 +64,25 @@ export default function AdminDashboard() {
               </div>
             </CardHeader>
             <CardContent className="p-0">
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="border-[hsl(0_0%_93%)]">
                     <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.name')}</TableHead>
-                    <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.dashboard.subjectColumn')}</TableHead>
-                    <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.date')}</TableHead>
+                    <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.dashboard.subjectColumn')}</TableHead>
+                    <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.common.date')}</TableHead>
                     <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {recentMessages.map(m => (
                     <TableRow key={m.id} className="border-[hsl(0_0%_93%)]">
-                      <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium py-3">{m.name}</TableCell>
-                      <TableCell className="text-sm text-[hsl(0_0%_40%)] py-3">{m.subject}</TableCell>
-                      <TableCell className="text-sm text-[hsl(0_0%_50%)] py-3">
+                      <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium py-3">
+                        <div>{m.name}</div>
+                        <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">{m.subject}</div>
+                      </TableCell>
+                      <TableCell className="text-sm text-[hsl(0_0%_40%)] py-3 hidden sm:table-cell">{m.subject}</TableCell>
+                      <TableCell className="text-sm text-[hsl(0_0%_50%)] py-3 hidden sm:table-cell">
                         {m.createdAt ? new Date(m.createdAt).toLocaleDateString() : '—'}
                       </TableCell>
                       <TableCell className="py-3">
@@ -97,6 +101,7 @@ export default function AdminDashboard() {
                   )}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         </div>
