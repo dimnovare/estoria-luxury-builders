@@ -346,7 +346,7 @@ export default function Index() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
-                    onClick={() => navigate('/services')}
+                    onClick={() => navigate(`/services#${service.slug || service.id}`)}
                     className="group border border-border p-8 md:p-10 cursor-pointer transition-all duration-300 hover:border-primary hover:bg-[rgba(201,168,76,0.03)]"
                   >
                     <div className="w-11 h-11 border border-primary rounded-full flex items-center justify-center mb-6">
