@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import logoImg from '@/assets/logo-clean.png';
 
 const navLinks = [
   { key: 'home', path: '/' },
@@ -43,13 +42,12 @@ export default function Navbar() {
         <div className="container mx-auto flex items-center justify-between h-20 px-6">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5">
-            {/* Explicit width/height prevent layout shift while the logo
-                decodes (CLS win). Source PNG is 363×368 — when a properly
-                sized 88×88 WebP gets generated (see /public/logo-88.webp
-                — operator task), swap the import to that asset. */}
+            {/* 2.2 KB WebP at exactly the rendered size — explicit
+                width/height attrs prevent CLS even though Tailwind also
+                sets w-9/h-9. Replaces the 66 KB 363×368 PNG. */}
             <img
-              src={logoImg}
-              alt="ESTORIA"
+              src="/logo-88.webp"
+              alt="Estoria"
               width={36}
               height={36}
               className="w-9 h-9 object-contain"
