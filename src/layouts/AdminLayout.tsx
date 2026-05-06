@@ -34,7 +34,7 @@ const navItemDefs: NavItemDef[] = [
   { key: 'careers',    icon: GraduationCap,   path: '/admin/careers',    roles: ['Admin', 'Editor'] },
   { key: 'newsletter', icon: Mail,            path: '/admin/newsletter', roles: ['Admin', 'Marketing'] },
   { key: 'messages',   icon: MessageSquare,   path: '/admin/messages' },
-  // CRM section
+  { key: 'inbox',      icon: Mail,            path: '/admin/inbox',      roles: ['Admin', 'Agent'] },
   { key: 'contacts',      icon: Contact,    path: '/admin/contacts',       section: 'CRM' },
   { key: 'deals',         icon: Handshake,  path: '/admin/deals',          section: 'CRM' },
   { key: 'tasks',         icon: ListTodo,   path: '/admin/tasks',          section: 'CRM' },
