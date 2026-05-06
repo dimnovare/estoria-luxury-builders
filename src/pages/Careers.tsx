@@ -33,7 +33,7 @@ export default function Careers() {
       </section>
 
       {/* Listings */}
-      <section className="py-16 px-6">
+      <section className="py-16 px-6 min-h-[50vh]">
         <div className="container mx-auto max-w-4xl">
           {isLoading ? (
             <div className="flex items-center justify-center py-32">
