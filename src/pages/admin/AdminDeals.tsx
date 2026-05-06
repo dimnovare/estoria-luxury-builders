@@ -39,13 +39,18 @@ const stageColors: Record<string, string> = {
 export default function AdminDeals() {
   const { t } = useTranslation();
   const { user, hasRole } = useAuth();
-  const isMobile = useIsMobile();
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [showScrollHint, setShowScrollHint] = useState(false);
 
   const [agentFilter, setAgentFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
   const [sideFilter, setSideFilter] = useState('all');
   const [mineOnly, setMineOnly] = useState(false);
-  const [expandedStages, setExpandedStages] = useState<Set<string>>(new Set(DEAL_STAGES));
+
+  // For narrow accordion, auto-expand stages that have deals
+  const defaultExpanded = DEAL_STAGES.filter(s => (kanban?.[s]?.length ?? 0) > 0);
+  const [expandedStages, setExpandedStages] = useState<string[]>(defaultExpanded);
 
   // Stage change modal state
   const [changingDeal, setChangingDeal] = useState<DealListDto | null>(null);
