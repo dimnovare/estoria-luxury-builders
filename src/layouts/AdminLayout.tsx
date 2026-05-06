@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
 import { useAuth, type UserRole } from '@/hooks/useAuth';
+import { useInboxCounts } from '@/hooks/api/useInbox';
 import { cn } from '@/lib/utils';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
@@ -135,7 +136,12 @@ export default function AdminLayout() {
                     <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary" />
                   )}
                   <item.icon className="h-4 w-4 shrink-0" />
-                  {!collapsed && <span>{t(`admin.nav.${item.key}`)}</span>}
+                  {!collapsed && <span className="flex-1">{t(`admin.nav.${item.key}`)}</span>}
+                  {!collapsed && item.key === 'inbox' && inboxUnread > 0 && (
+                    <span className="ml-auto text-[10px] font-semibold bg-primary text-primary-foreground px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                      {inboxUnread}
+                    </span>
+                  )}
                 </Link>
               )}
             </div>
