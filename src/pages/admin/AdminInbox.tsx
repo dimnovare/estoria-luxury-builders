@@ -273,8 +273,12 @@ function MessageDetail({
         </div>
 
         <div className="text-xs text-muted-foreground">
-          <span>{t('admin.inbox.detail.to')}: {message.to.join(', ')}</span>
-          {message.cc.length > 0 && <span className="ml-2">Cc: {message.cc.join(', ')}</span>}
+          {message.to?.length ? (
+            <span>{t('admin.inbox.detail.to')}: {message.to.join(', ')}</span>
+          ) : null}
+          {message.cc?.length ? (
+            <span className="ml-2">Cc: {message.cc.join(', ')}</span>
+          ) : null}
         </div>
 
         {/* Linked entities */}
@@ -316,20 +320,20 @@ function MessageDetail({
       </div>
 
       {/* Attachments */}
-      {message.attachments.length > 0 && (
+      {message.attachments?.length ? (
         <div className="px-4 py-3 border-t border-border shrink-0">
           <p className="text-xs text-muted-foreground mb-2">{t('admin.inbox.detail.attachments')} ({message.attachments.length})</p>
           <div className="flex flex-wrap gap-2">
             {message.attachments.map((att) => (
               <Card key={att.id} className="flex items-center gap-2 px-3 py-2 text-xs">
                 <Paperclip className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                <span className="truncate max-w-[140px]">{att.filename}</span>
+                <span className="truncate max-w-[140px]">{att.name}</span>
                 <span className="text-muted-foreground shrink-0">({(att.size / 1024).toFixed(0)} KB)</span>
                 <Button
                   variant="ghost"
                   size="icon"
                   className="h-6 w-6"
-                  onClick={() => downloadMut.mutate({ messageId: message.id, attachmentId: att.id, filename: att.filename })}
+                  onClick={() => downloadMut.mutate({ messageId: message.id, attachmentId: att.id, filename: att.name })}
                 >
                   <Download className="h-3 w-3" />
                 </Button>
@@ -337,7 +341,7 @@ function MessageDetail({
             ))}
           </div>
         </div>
-      )}
+      ) : null}
 
       {/* Reply toolbar */}
       <div className="px-4 py-3 border-t border-border flex items-center gap-2 shrink-0">

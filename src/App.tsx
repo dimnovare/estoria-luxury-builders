@@ -71,7 +71,7 @@ const queryClient = new QueryClient({
 });
 
 const AdminLoading = () => (
-  <div className="flex items-center justify-center min-h-screen">
+  <div className="admin-theme flex items-center justify-center min-h-screen bg-[hsl(0_0%_96%)]">
     <Loader2 className="h-8 w-8 animate-spin text-primary" />
   </div>
 );

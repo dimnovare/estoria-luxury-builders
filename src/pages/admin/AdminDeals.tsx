@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { EmptyState } from '@/components/admin/EmptyState';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { cn } from '@/lib/utils';
 import {
   useDeals, useChangeStage, useAgents, handleCrmError,
   DEAL_STAGES, type DealStage, type DealListDto, type DealFilter,
@@ -251,12 +252,20 @@ export default function AdminDeals() {
                 return (
                   <AccordionItem key={group.id} value={group.id} className="border-b-0 mb-2">
                     <Card className="overflow-hidden">
-                      <AccordionTrigger className="px-4 py-3 hover:no-underline bg-secondary hover:bg-muted transition-colors">
-                        <div className="flex items-center gap-2 flex-1">
-                          <span className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_30%)]">
+                      <AccordionTrigger className={cn(
+                        "px-4 py-3 hover:no-underline transition-colors",
+                        group.color
+                      )}>
+                        <div className="flex items-center gap-3 flex-1">
+                          <span className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_25%)] font-medium">
                             {t(`admin.deals.groups.${group.id}`)}
                           </span>
-                          <Badge variant="outline" className="text-[10px] h-5 min-w-[20px] justify-center text-[hsl(0_0%_30%)]">{deals.length}</Badge>
+                          <Badge
+                            variant="outline"
+                            className="text-[10px] h-5 min-w-[24px] px-2 justify-center text-[hsl(0_0%_30%)] bg-white"
+                          >
+                            {deals.length}
+                          </Badge>
                           {totalValue > 0 && (
                             <span className="text-xs text-[hsl(0_0%_50%)] ml-auto mr-2">€{totalValue.toLocaleString()}</span>
                           )}

@@ -9,9 +9,10 @@ export type InboxFolder = 'inbox' | 'sent' | 'archive' | 'all';
 
 export interface InboxAttachment {
   id: string;
-  filename: string;
-  contentType: string;
+  name: string;
+  contentType?: string;
   size: number;
+  isInline?: boolean;
 }
 
 export interface InboxMessageSummary {
@@ -29,12 +30,15 @@ export interface InboxMessageSummary {
   linkedContactName?: string;
   linkedDealId?: string;
   linkedDealTitle?: string;
+  linkedPropertyId?: string;
 }
 
 export interface InboxMessageDetail extends InboxMessageSummary {
   cc: string[];
+  bcc: string[];
   bodyHtml: string;
   attachments: InboxAttachment[];
+  isArchived?: boolean;
 }
 
 export interface SendMessagePayload {
