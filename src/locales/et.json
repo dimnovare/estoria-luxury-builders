@@ -1123,6 +1123,60 @@
       "toast": {
         "saveFailed": "Seade salvestamine ebaõnnestus"
       }
+    },
+    "inbox": {
+      "title": "Postkast",
+      "subtitle": "Halda oma e-kirju",
+      "compose": "Koosta",
+      "loading": "Laadin kirju…",
+      "empty": "Kirju pole",
+      "selectMessage": "Vali kiri lugemiseks",
+      "showMessages": "Näita kirju",
+      "filtersTitle": "Filtrid",
+      "folders": {
+        "inbox": "Postkast",
+        "sent": "Saadetud",
+        "archive": "Arhiiv",
+        "all": "Kõik kirjad"
+      },
+      "filters": {
+        "unread": "Lugemata",
+        "hasAttachments": "Manustega",
+        "linkedToDeal": "Tehinguga seotud"
+      },
+      "detail": {
+        "to": "Kellele",
+        "attachments": "Manused",
+        "reply": "Vasta",
+        "replyAll": "Vasta kõigile",
+        "forward": "Edasta"
+      },
+      "link": {
+        "title": "Seo kiri",
+        "contactId": "Kontakti ID",
+        "dealId": "Tehingu ID",
+        "save": "Salvesta",
+        "edit": "Muuda seost"
+      },
+      "composer": {
+        "newMessage": "Uus kiri",
+        "reply": "Vastus",
+        "to": "Kellele",
+        "toPlaceholder": "Lisa saajad…",
+        "subject": "Teema",
+        "bodyPlaceholder": "Kirjuta oma sõnum…",
+        "send": "Saada",
+        "sizeWarning": "Manuste kogumaht ületab 10 MB piiri"
+      },
+      "toast": {
+        "sent": "Kiri saadetud",
+        "sendError": "Kirja saatmine ebaõnnestus",
+        "archived": "Kiri arhiveeritud",
+        "archiveError": "Arhiveerimine ebaõnnestus",
+        "linked": "Kiri seotud",
+        "linkError": "Sidumine ebaõnnestus",
+        "downloadError": "Manuse allalaadimine ebaõnnestus"
+      }
     }
   }
 }
