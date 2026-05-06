@@ -116,11 +116,11 @@ export default function AdminLayout() {
             <div key={item.path}>
               {showSection && (
                 <div className="px-4 pt-4 pb-1">
-                  <span className="text-[10px] font-nav uppercase tracking-widest text-muted-foreground/60">{item.section}</span>
+                  <span className="text-[10px] font-nav uppercase tracking-widest text-[hsl(0_0%_60%)]/60">{item.section}</span>
                 </div>
               )}
               {item.disabled ? (
-                <div className="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-muted-foreground/40 cursor-not-allowed">
+                <div className="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-[hsl(0_0%_60%)]/40 cursor-not-allowed">
                   <item.icon className="h-4 w-4 shrink-0" />
                   {!collapsed && <span>{t(`admin.nav.${item.key}`)}</span>}
                 </div>
@@ -131,17 +131,17 @@ export default function AdminLayout() {
                   className={cn(
                     'flex items-center gap-3 px-4 py-2.5 text-sm font-body transition-colors relative',
                     isActive(item.path)
-                      ? 'text-primary bg-primary/5'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
+                      ? 'text-[hsl(43_50%_54%)] bg-[hsl(43_50%_54%)]/5'
+                      : 'text-[hsl(0_0%_60%)] hover:text-[hsl(40_33%_95%)] hover:bg-[hsl(0_0%_16%)]/30'
                   )}
                 >
                   {isActive(item.path) && (
-                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary" />
+                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[hsl(43_50%_54%)]" />
                   )}
                   <item.icon className="h-4 w-4 shrink-0" />
                   {!collapsed && <span className="flex-1">{t(`admin.nav.${item.key}`)}</span>}
                   {!collapsed && item.key === 'inbox' && inboxUnread > 0 && (
-                    <span className="ml-auto text-[10px] font-semibold bg-primary text-primary-foreground px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                    <span className="ml-auto text-[10px] font-semibold bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
                       {inboxUnread}
                     </span>
                   )}
@@ -153,22 +153,22 @@ export default function AdminLayout() {
       </nav>
 
       {/* Bottom */}
-      <div className="border-t border-border/50 p-4 shrink-0 space-y-3">
+      <div className="border-t border-[hsl(0_0%_16%)]/50 p-4 shrink-0 space-y-3">
         <a
           href="/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+          className="flex items-center gap-2 text-sm text-[hsl(0_0%_60%)] hover:text-[hsl(43_50%_54%)] transition-colors"
         >
           <ExternalLink className="h-4 w-4" />
           {!collapsed && <span>{t('admin.layout.viewSite')}</span>}
         </a>
         {!collapsed && email && (
-          <p className="text-xs text-muted-foreground truncate">{email}</p>
+          <p className="text-xs text-[hsl(0_0%_60%)] truncate">{email}</p>
         )}
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-red-400 transition-colors"
+          className="flex items-center gap-2 text-sm text-[hsl(0_0%_60%)] hover:text-red-400 transition-colors"
         >
           <LogOut className="h-4 w-4" />
           {!collapsed && <span>{t('admin.layout.signOut')}</span>}
