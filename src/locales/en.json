@@ -923,6 +923,13 @@
         "lossReasonRequired": "Loss reason of at least 5 characters is required when marking as Lost",
         "participantAdded": "Participant added",
         "participantRemoved": "Participant removed"
+      },
+      "groups": {
+        "leads": "Active Leads",
+        "progress": "In Progress",
+        "closing": "Closing",
+        "won": "Won",
+        "lost": "Lost"
       }
     },
     "activities": {

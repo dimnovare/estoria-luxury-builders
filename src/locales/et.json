@@ -923,6 +923,13 @@
         "lossReasonRequired": "Kaotuse märkimiseks on nõutud vähemalt 5-tähemärgiline põhjus",
         "participantAdded": "Osaleja lisatud",
         "participantRemoved": "Osaleja eemaldatud"
+      },
+      "groups": {
+        "leads": "Aktiivsed kliendid",
+        "progress": "Käimasolevad",
+        "closing": "Sulgemine",
+        "won": "Sõlmitud",
+        "lost": "Kaotatud"
       }
     },
     "activities": {
