@@ -47,10 +47,7 @@ export default function AdminDeals() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [sideFilter, setSideFilter] = useState('all');
   const [mineOnly, setMineOnly] = useState(false);
-
-  // For narrow accordion, auto-expand stages that have deals
-  const defaultExpanded = DEAL_STAGES.filter(s => (kanban?.[s]?.length ?? 0) > 0);
-  const [expandedStages, setExpandedStages] = useState<string[]>(defaultExpanded);
+  const [expandedStages, setExpandedStages] = useState<string[]>(DEAL_STAGES.slice());
 
   // Stage change modal state
   const [changingDeal, setChangingDeal] = useState<DealListDto | null>(null);
