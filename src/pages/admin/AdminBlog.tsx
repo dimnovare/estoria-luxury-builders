@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Globe, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useAdminBlogPosts, useDeleteBlogPost } from '@/hooks/api/useAdmin';
+import { useAdminBlogPosts, useDeleteBlogPost, useSetBlogPostStatus } from '@/hooks/api/useAdmin';
 import { blogStatusLabel } from '@/lib/enumLabels';
 import { toast } from 'sonner';
 
@@ -13,6 +13,7 @@ export default function AdminBlog() {
   const { t } = useTranslation();
   const { data, isLoading } = useAdminBlogPosts();
   const deleteBlogPost = useDeleteBlogPost();
+  const setStatus = useSetBlogPostStatus();
 
   const posts = data?.items ?? [];
 
@@ -22,6 +23,18 @@ export default function AdminBlog() {
       toast.success(t('admin.blog.toast.deleted'));
     } catch {
       toast.error(t('admin.blog.toast.deleteFailed'));
+    }
+  };
+
+  const handleToggleStatus = async (id: string, currentStatus: string) => {
+    const next = currentStatus === 'Published' ? 'Draft' : 'Published';
+    try {
+      await setStatus.mutateAsync({ id, status: next });
+      toast.success(next === 'Published'
+        ? t('admin.blog.toast.published')
+        : t('admin.blog.toast.unpublished'));
+    } catch {
+      toast.error(t('admin.blog.toast.statusFailed'));
     }
   };
 
@@ -75,6 +88,17 @@ export default function AdminBlog() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost" size="icon"
+                        className={`h-8 w-8 ${p.status === 'Published' ? 'text-green-600 hover:text-amber-600' : 'text-[hsl(0_0%_50%)] hover:text-green-600'}`}
+                        onClick={() => handleToggleStatus(p.id, p.status)}
+                        disabled={setStatus.isPending}
+                        title={p.status === 'Published' ? t('admin.blog.unpublish') : t('admin.blog.publish')}
+                      >
+                        {p.status === 'Published'
+                          ? <EyeOff className="h-3.5 w-3.5" />
+                          : <Globe className="h-3.5 w-3.5" />}
+                      </Button>
                       <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]">
                         <Link to={`/admin/blog/${p.id}/edit`}><Pencil className="h-3.5 w-3.5" /></Link>
                       </Button>

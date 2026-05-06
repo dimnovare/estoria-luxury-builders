@@ -112,7 +112,7 @@ function ComposeTab() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_45%)]">{t('admin.newsletter.compose.subject')}</FormLabel>
-                  <FormControl><Input {...field} className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)]" /></FormControl>
+                  <FormControl><Input {...field} className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -125,7 +125,7 @@ function ComposeTab() {
                   <FormLabel className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_45%)]">{t('admin.newsletter.compose.languageFilter')}</FormLabel>
                   <Select value={field.value ?? 'all'} onValueChange={field.onChange}>
                     <FormControl>
-                      <SelectTrigger className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)]">
+                      <SelectTrigger className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)]">
                         <SelectValue />
                       </SelectTrigger>
                     </FormControl>
@@ -147,7 +147,7 @@ function ComposeTab() {
                 <FormItem>
                   <FormLabel className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_45%)]">{t('admin.newsletter.compose.body')}</FormLabel>
                   <FormControl>
-                    <Textarea {...field} rows={14} className="font-mono text-sm bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)]" />
+                    <Textarea {...field} rows={14} className="font-mono text-sm bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" />
                   </FormControl>
                   <p className="text-xs text-[hsl(0_0%_50%)]">{t('admin.newsletter.compose.bodyHelp')}</p>
                   <FormMessage />

@@ -188,21 +188,21 @@ export default function ContactForm() {
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.fullName')} *</Label>
-                  <Input {...register('fullName')} className="mt-1 bg-secondary border-border" />
+                  <Input {...register('fullName')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
                   {errors.fullName && <p className="text-xs text-red-500 mt-1">{t(errors.fullName.message ?? '')}</p>}
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.common.email')}</Label>
-                  <Input {...register('email')} type="email" className="mt-1 bg-secondary border-border" />
+                  <Input {...register('email')} type="email" className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
                   {errors.email && <p className="text-xs text-red-500 mt-1">{t(errors.email.message ?? '')}</p>}
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.common.phone')}</Label>
-                  <Input {...register('phone')} className="mt-1 bg-secondary border-border" />
+                  <Input {...register('phone')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.secondaryPhone')}</Label>
-                  <Input {...register('secondaryPhone')} className="mt-1 bg-secondary border-border" />
+                  <Input {...register('secondaryPhone')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.preferredLang')}</Label>
@@ -223,7 +223,7 @@ export default function ContactForm() {
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.dateOfBirth')}</Label>
-                  <Input {...register('dateOfBirth')} type="date" className="mt-1 bg-secondary border-border" />
+                  <Input {...register('dateOfBirth')} type="date" className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
                   {errors.dateOfBirth && <p className="text-xs text-red-500 mt-1">{t(errors.dateOfBirth.message ?? '')}</p>}
                 </div>
               </div>
@@ -239,15 +239,15 @@ export default function ContactForm() {
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.address')}</Label>
-                  <Input {...register('address')} className="mt-1 bg-secondary border-border" />
+                  <Input {...register('address')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.company')}</Label>
-                  <Input {...register('company')} className="mt-1 bg-secondary border-border" />
+                  <Input {...register('company')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.position')}</Label>
-                  <Input {...register('position')} className="mt-1 bg-secondary border-border" />
+                  <Input {...register('position')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
                 </div>
               </div>
             </AccordionContent>
@@ -290,7 +290,7 @@ export default function ContactForm() {
                           value={field.value || 'any'}
                           onValueChange={(v) => field.onChange(v === 'any' ? '' : v)}
                         >
-                          <SelectTrigger className="mt-1 bg-secondary border-border">
+                          <SelectTrigger className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]">
                             <SelectValue placeholder={t('admin.contacts.fields.selectSource')} />
                           </SelectTrigger>
                           <SelectContent>
@@ -303,7 +303,7 @@ export default function ContactForm() {
                   </div>
                   <div>
                     <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.sourceDetail')}</Label>
-                    <Input {...register('sourceDetail')} className="mt-1 bg-secondary border-border" />
+                    <Input {...register('sourceDetail')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
                   </div>
                 </div>
                 <div>
@@ -322,7 +322,7 @@ export default function ContactForm() {
                       onChange={(e) => setNewTag(e.target.value)}
                       onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } }}
                       placeholder={t('admin.contacts.fields.addTag')}
-                      className="bg-secondary border-border flex-1"
+                      className="bg-secondary border-border text-[hsl(0_0%_15%)] flex-1"
                     />
                     <Button type="button" variant="outline" size="icon" onClick={addTag}><Plus className="h-4 w-4" /></Button>
                   </div>
@@ -350,7 +350,7 @@ export default function ContactForm() {
                       value={field.value || 'unassigned'}
                       onValueChange={(v) => field.onChange(v === 'unassigned' ? '' : v)}
                     >
-                      <SelectTrigger className="mt-1 bg-secondary border-border w-full sm:w-[300px]">
+                      <SelectTrigger className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] w-full sm:w-[300px]">
                         <SelectValue placeholder={t('admin.contacts.fields.selectAgent')} />
                       </SelectTrigger>
                       <SelectContent>
@@ -394,7 +394,7 @@ export default function ContactForm() {
               {t('admin.contacts.sections.notes')}
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
-              <Textarea {...register('notes')} rows={4} className="bg-secondary border-border" placeholder={t('admin.contacts.fields.notesPlaceholder')} />
+              <Textarea {...register('notes')} rows={4} className="bg-secondary border-border text-[hsl(0_0%_15%)]" placeholder={t('admin.contacts.fields.notesPlaceholder')} />
             </AccordionContent>
           </AccordionItem>
         </Accordion>

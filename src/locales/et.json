@@ -465,6 +465,9 @@
         "imageRemoveFailed": "Pildi eemaldamine ebaõnnestus",
         "geocoded": "Koordinaadid täidetud aadressi põhjal",
         "geocodeFailed": "Selle aadressi geokodeerimine ebaõnnestus"
+      },
+      "validation": {
+        "titleRequired": "Ingliskeelne pealkiri on kohustuslik"
       }
     },
     "blog": {
@@ -497,8 +500,13 @@
         "deleteFailed": "Postituse kustutamine ebaõnnestus",
         "updated": "Postitus uuendatud",
         "created": "Postitus loodud",
-        "saveFailed": "Postituse salvestamine ebaõnnestus"
-      }
+        "saveFailed": "Postituse salvestamine ebaõnnestus",
+        "published": "Postitus avaldatud",
+        "unpublished": "Postitus muudetud mustandiks",
+        "statusFailed": "Staatuse muutmine ebaõnnestus"
+      },
+      "publish": "Avalda",
+      "unpublish": "Muuda mustandiks"
     },
     "team": {
       "title": "Meeskonnaliikmed",

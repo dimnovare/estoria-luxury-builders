@@ -314,6 +314,34 @@ export function useDeleteBlogPost() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.delete(`/admin/blog/${id}`),
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ['admin', 'blog'] });
+      const key = ['admin', 'blog', 1];
+      const prev = qc.getQueryData<{ items: AdminBlogPost[]; totalCount: number }>(key);
+      if (prev) {
+        qc.setQueryData(key, {
+          ...prev,
+          items: prev.items.filter(p => p.id !== id),
+          totalCount: prev.totalCount - 1,
+        });
+      }
+      return { prev, key };
+    },
+    onError: (_err, _id, ctx) => {
+      if (ctx?.prev) qc.setQueryData(ctx.key, ctx.prev);
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'blog'] });
+      qc.invalidateQueries({ queryKey: ['blog'] });
+    },
+  });
+}
+
+export function useSetBlogPostStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: 'Published' | 'Draft' }) =>
+      api.patch(`/admin/blog/${id}/status`, { status }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin', 'blog'] });
       qc.invalidateQueries({ queryKey: ['blog'] });
@@ -381,7 +409,17 @@ export function useDeleteTeamMember() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.delete(`/admin/team/${id}`),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ['admin', 'team'] });
+      const prev = qc.getQueryData<AdminTeamMember[]>(['admin', 'team']);
+      qc.setQueryData<AdminTeamMember[]>(['admin', 'team'],
+        (old) => old?.filter(m => m.id !== id) ?? []);
+      return { prev };
+    },
+    onError: (_err, _id, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['admin', 'team'], ctx.prev);
+    },
+    onSettled: () => {
       qc.invalidateQueries({ queryKey: ['admin', 'team'] });
       qc.invalidateQueries({ queryKey: ['team'] });
     },
@@ -453,7 +491,17 @@ export function useDeleteService() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.delete(`/admin/services/${id}`),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ['admin', 'services'] });
+      const prev = qc.getQueryData<AdminService[]>(['admin', 'services']);
+      qc.setQueryData<AdminService[]>(['admin', 'services'],
+        (old) => old?.filter(s => s.id !== id) ?? []);
+      return { prev };
+    },
+    onError: (_err, _id, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['admin', 'services'], ctx.prev);
+    },
+    onSettled: () => {
       qc.invalidateQueries({ queryKey: ['admin', 'services'] });
       qc.invalidateQueries({ queryKey: ['services'] });
     },
@@ -500,7 +548,17 @@ export function useDeleteCareer() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.delete(`/admin/careers/${id}`),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ['admin', 'careers'] });
+      const prev = qc.getQueryData<AdminCareer[]>(['admin', 'careers']);
+      qc.setQueryData<AdminCareer[]>(['admin', 'careers'],
+        (old) => old?.filter(c => c.id !== id) ?? []);
+      return { prev };
+    },
+    onError: (_err, _id, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['admin', 'careers'], ctx.prev);
+    },
+    onSettled: () => {
       qc.invalidateQueries({ queryKey: ['admin', 'careers'] });
       qc.invalidateQueries({ queryKey: ['careers'] });
       qc.invalidateQueries({ queryKey: ['career'] });

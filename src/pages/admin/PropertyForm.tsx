@@ -136,6 +136,11 @@ export default function PropertyForm() {
   };
 
   const handleSave = async (asDraft: boolean) => {
+    if (!translations.en.title.trim()) {
+      toast.error(t('admin.properties.validation.titleRequired'));
+      return;
+    }
+
     const dto = {
       transactionType,
       propertyType,
@@ -406,8 +411,8 @@ export default function PropertyForm() {
             <CardContent className="p-6 space-y-4">
               {/* Upload zone */}
               <div
-                className="border-2 border-dashed border-[hsl(0_0%_85%)] rounded-lg p-8 text-center hover:border-[hsl(43_50%_54%)] transition-colors cursor-pointer"
-                onClick={() => fileInputRef.current?.click()}
+                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${isEdit ? 'border-[hsl(0_0%_85%)] hover:border-[hsl(43_50%_54%)] cursor-pointer' : 'border-[hsl(0_0%_90%)] opacity-60 cursor-not-allowed'}`}
+                onClick={() => isEdit && fileInputRef.current?.click()}
               >
                 <ImageIcon className="h-8 w-8 mx-auto text-[hsl(0_0%_70%)] mb-2" />
                 {isEdit ? (

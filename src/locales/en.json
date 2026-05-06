@@ -465,6 +465,9 @@
         "imageUploadFailed": "Failed to upload images",
         "imageRemoved": "Image removed",
         "imageRemoveFailed": "Failed to remove image"
+      },
+      "validation": {
+        "titleRequired": "English title is required"
       }
     },
     "blog": {
@@ -497,8 +500,13 @@
         "deleteFailed": "Failed to delete post",
         "updated": "Post updated",
         "created": "Post created",
-        "saveFailed": "Failed to save post"
-      }
+        "saveFailed": "Failed to save post",
+        "published": "Post published",
+        "unpublished": "Post unpublished",
+        "statusFailed": "Failed to change post status"
+      },
+      "publish": "Publish",
+      "unpublish": "Unpublish"
     },
     "team": {
       "title": "Team Members",
