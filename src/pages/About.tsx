@@ -7,15 +7,6 @@ import { useTeam, usePageContent } from '@/hooks/api/useContent';
 const valueIcons = [Shield, Heart, Eye];
 const valueKeys = ['integrity', 'excellence', 'discretion'] as const;
 
-/// Treats common placeholder-image hosts as "no image set" so the
-/// hero falls through to the curated Unsplash backup. Production rows
-/// from older seeds still reference placehold.co — once an editor sets
-/// a real imageUrl via /admin/pages → about.intro the override applies.
-function isPlaceholderUrl(url: string | null | undefined): boolean {
-  if (!url) return true;
-  return /placehold\.co|placeholder\.com|via\.placeholder/i.test(url);
-}
-
 const reveal = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
@@ -40,14 +31,15 @@ export default function About() {
       {/* Hero Banner */}
       <section className="relative h-[40vh] min-h-[320px] flex items-end overflow-hidden">
         <div className="absolute inset-0">
+          {/**
+           * CMS-first: PageContent.about.intro.imageUrl renders if set; falls back
+           * to a Tallinn old-town Unsplash photo otherwise. Editors can paste any
+           * HTTPS image URL via /admin/pages → about.intro → imageUrl.
+           */}
           <img
             src={
-              // Curated Unsplash fallback. Editor can override via
-              // /admin/pages → about.intro → imageUrl. Placeholder URLs
-              // (placehold.co etc.) are ignored intentionally.
-              !isPlaceholderUrl(intro?.imageUrl)
-                ? intro!.imageUrl!
-                : 'https://images.unsplash.com/photo-1590497008439-79bc09b46a83?w=1600&q=80'
+              intro?.imageUrl ||
+              'https://images.unsplash.com/photo-1590497008439-79bc09b46a83?w=1600&q=80'
             }
             alt="About Estoria"
             className="w-full h-full object-cover"
