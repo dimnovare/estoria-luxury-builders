@@ -21,21 +21,8 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { EmptyState } from '@/components/admin/EmptyState';
-import {
-  useDeals, useChangeStage, useAgents, handleCrmError,
-  DEAL_STAGES, type DealStage, type DealListDto, type DealFilter,
-  type DealType, type DealSide,
-} from '@/hooks/api/useCrm';
-import { useAuth } from '@/hooks/useAuth';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { toast } from 'sonner';
-import { formatDistanceToNow } from 'date-fns';
+
+
 
 const stageColors: Record<string, string> = {
   Lead: 'bg-gray-100 text-gray-700 border-gray-200',
