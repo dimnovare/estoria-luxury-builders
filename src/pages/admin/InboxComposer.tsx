@@ -143,8 +143,8 @@ export default function InboxComposer({ prefill, onClose }: Props) {
           {/* Fields */}
           <div className="px-4 py-2 space-y-2 border-b border-border shrink-0">
             {/* To */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-muted-foreground w-8 shrink-0">{t('admin.inbox.composer.to')}</span>
+            <div className="flex items-center gap-2 flex-wrap border-b border-[hsl(0_0%_92%)] pb-1.5">
+              <span className="text-xs text-[hsl(0_0%_25%)] font-medium w-8 shrink-0">{t('admin.inbox.composer.to')}</span>
               {to.map((e) => (
                 <Badge key={e} variant="secondary" className="text-xs gap-1">
                   {e}
@@ -168,8 +168,8 @@ export default function InboxComposer({ prefill, onClose }: Props) {
               </button>
             )}
             {showCc && (
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs text-muted-foreground w-8 shrink-0">Cc</span>
+              <div className="flex items-center gap-2 flex-wrap border-b border-[hsl(0_0%_92%)] pb-1.5">
+                <span className="text-xs text-[hsl(0_0%_25%)] font-medium w-8 shrink-0">Cc</span>
                 {cc.map((e) => (
                   <Badge key={e} variant="secondary" className="text-xs gap-1">
                     {e}
@@ -187,12 +187,14 @@ export default function InboxComposer({ prefill, onClose }: Props) {
             )}
 
             {/* Subject */}
-            <Input
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              placeholder={t('admin.inbox.composer.subject')}
-              className="h-8 text-sm"
-            />
+            <div className="border-b border-[hsl(0_0%_92%)] pb-1.5">
+              <Input
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                placeholder={t('admin.inbox.composer.subject')}
+                className="h-7 text-sm border-0 shadow-none focus-visible:ring-0 px-1"
+              />
+            </div>
           </div>
 
           {/* Body */}
@@ -201,7 +203,7 @@ export default function InboxComposer({ prefill, onClose }: Props) {
               value={bodyHtml}
               onChange={(e) => setBodyHtml(e.target.value)}
               placeholder={t('admin.inbox.composer.bodyPlaceholder')}
-              className="min-h-full h-full resize-none border-0 shadow-none focus-visible:ring-0 p-0 text-sm"
+              className="min-h-full h-full resize-none border-0 shadow-none focus-visible:ring-0 p-0 text-sm leading-relaxed text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]"
             />
           </div>
 
