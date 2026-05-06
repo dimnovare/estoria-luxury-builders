@@ -356,7 +356,8 @@
       "birthdays": "Sünnipäevad",
       "savedSearches": "Salvestatud otsingud",
       "activities": "Tegevused",
-      "settings": "Seaded"
+      "settings": "Seaded",
+      "inbox": "Postkast"
     },
     "login": {
       "portalTitle": "Administraatori portaal",
