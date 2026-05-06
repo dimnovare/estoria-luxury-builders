@@ -155,7 +155,7 @@ export default function DealForm() {
           <CardContent className="p-6 space-y-6">
             <div>
               <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.title')} *</Label>
-              <Input {...register('title')} className="mt-1 bg-secondary border-border" />
+              <Input {...register('title')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" />
               {errors.title && <p className="text-xs text-red-500 mt-1">{t(errors.title.message ?? '')}</p>}
             </div>
 
@@ -167,7 +167,7 @@ export default function DealForm() {
                   value={selectedContactName || contactSearch}
                   onChange={(e) => { setContactSearch(e.target.value); setSelectedContactName(''); setValue('primaryContactId', ''); }}
                   placeholder={t('admin.deals.fields.searchContact')}
-                  className="bg-secondary border-border"
+                  className="bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]"
                 />
                 {contactSearch.length >= 2 && !selectedContactName && contactResults && contactResults.length > 0 && (
                   <div className="absolute z-10 mt-1 w-full bg-white border border-[hsl(0_0%_85%)] rounded-md shadow-lg max-h-48 overflow-auto">
@@ -199,7 +199,7 @@ export default function DealForm() {
                 name="assignedAgentId"
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange} disabled={!isAdmin}>
-                    <SelectTrigger className="mt-1 bg-secondary border-border">
+                    <SelectTrigger className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]">
                       <SelectValue placeholder={t('admin.contacts.fields.selectAgent')} />
                     </SelectTrigger>
                     <SelectContent>
@@ -219,7 +219,7 @@ export default function DealForm() {
                   name="dealType"
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="mt-1 bg-secondary border-border"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Sale">{t('admin.deals.dealTypes.Sale')}</SelectItem>
                         <SelectItem value="Rent">{t('admin.deals.dealTypes.Rent')}</SelectItem>
@@ -235,7 +235,7 @@ export default function DealForm() {
                   name="side"
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="mt-1 bg-secondary border-border"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="BuySide">{t('admin.deals.sides.BuySide')}</SelectItem>
                         <SelectItem value="SellSide">{t('admin.deals.sides.SellSide')}</SelectItem>
@@ -249,22 +249,22 @@ export default function DealForm() {
             <div className="grid gap-6 sm:grid-cols-3">
               <div>
                 <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.expectedValue')}</Label>
-                <Input {...register('expectedValue')} type="number" className="mt-1 bg-secondary border-border" />
+                <Input {...register('expectedValue')} type="number" className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" />
                 {errors.expectedValue && <p className="text-xs text-red-500 mt-1">{t(errors.expectedValue.message ?? '')}</p>}
               </div>
               <div>
                 <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.currency')}</Label>
-                <Input {...register('currency')} className="mt-1 bg-secondary border-border" />
+                <Input {...register('currency')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" />
               </div>
               <div>
                 <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.commissionPercent')}</Label>
-                <Input {...register('commissionPercent')} type="number" step="0.1" className="mt-1 bg-secondary border-border" />
+                <Input {...register('commissionPercent')} type="number" step="0.1" className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" />
               </div>
             </div>
 
             <div>
               <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.expectedCloseDate')}</Label>
-              <Input {...register('expectedCloseDate')} type="date" className="mt-1 bg-secondary border-border w-auto" />
+              <Input {...register('expectedCloseDate')} type="date" className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)] w-auto" />
               {errors.expectedCloseDate && <p className="text-xs text-red-500 mt-1">{t(errors.expectedCloseDate.message ?? '')}</p>}
             </div>
 

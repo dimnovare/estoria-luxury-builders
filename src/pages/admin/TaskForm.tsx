@@ -126,19 +126,19 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
             {/* Title */}
             <div>
               <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.common.title')} *</Label>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1 bg-secondary border-border" />
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" />
             </div>
 
             {/* Description */}
             <div>
               <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.description')}</Label>
-              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} className="mt-1 bg-secondary border-border" rows={3} />
+              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" rows={3} />
             </div>
 
             {/* Due At */}
             <div>
               <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.dueAt')} *</Label>
-              <Input type="datetime-local" value={dueAt} onChange={(e) => setDueAt(e.target.value)} className="mt-1 bg-secondary border-border" />
+              <Input type="datetime-local" value={dueAt} onChange={(e) => setDueAt(e.target.value)} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" />
             </div>
 
             {/* Priority segmented */}
@@ -164,7 +164,7 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
             <div>
               <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.assignedTo')}</Label>
               <Select value={assignedToId} onValueChange={setAssignedToId}>
-                <SelectTrigger className="mt-1 bg-secondary border-border"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {(agents ?? []).map(a => (
                     <SelectItem key={a.id} value={a.id}>{a.fullName}</SelectItem>
@@ -188,7 +188,7 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
                       value={contactSearch}
                       onChange={(e) => { setContactSearch(e.target.value); setContactId(''); }}
                       placeholder={t('admin.deals.fields.searchContact')}
-                      className="bg-secondary border-border"
+                      className="bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]"
                     />
                     {contactResults && contactResults.length > 0 && !contactId && (
                       <div className="absolute z-10 top-full mt-1 w-full bg-white border border-[hsl(0_0%_90%)] rounded-md shadow-lg max-h-40 overflow-y-auto">
@@ -211,7 +211,7 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
                     value={dealId}
                     onChange={(e) => setDealId(e.target.value)}
                     placeholder={t('admin.tasks.link.dealIdPlaceholder')}
-                    className="bg-secondary border-border"
+                    className="bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]"
                   />
                 </TabsContent>
                 <TabsContent value="property" className="mt-2">
@@ -219,7 +219,7 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
                     value={propertyId}
                     onChange={(e) => setPropertyId(e.target.value)}
                     placeholder={t('admin.tasks.link.propertyIdPlaceholder')}
-                    className="bg-secondary border-border"
+                    className="bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]"
                   />
                 </TabsContent>
               </Tabs>
@@ -228,7 +228,7 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
             {/* Reminder */}
             <div>
               <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.reminderAt')}</Label>
-              <Input type="datetime-local" value={reminderAt} onChange={(e) => setReminderAt(e.target.value)} className="mt-1 bg-secondary border-border" />
+              <Input type="datetime-local" value={reminderAt} onChange={(e) => setReminderAt(e.target.value)} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" />
             </div>
 
             {/* Recurrence */}
@@ -236,7 +236,7 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
               {/* TODO: P2.6 recurrence engine — currently UI-only, backend ignores */}
               <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.recurrence')}</Label>
               <Select value={recurrence} onValueChange={(v) => setRecurrence(v as TaskRecurrence)}>
-                <SelectTrigger className="mt-1 bg-secondary border-border"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {RECURRENCES.map(r => (
                     <SelectItem key={r} value={r}>{t(`admin.tasks.recurrence.${r}`)}</SelectItem>
