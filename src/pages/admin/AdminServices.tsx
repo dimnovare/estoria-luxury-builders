@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Pencil, GripVertical, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   useAdminServices,
+  useAdminService,
   useCreateService,
   useUpdateService,
   useDeleteService,
@@ -33,6 +34,7 @@ export default function AdminServices() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingService, setEditingService] = useState<AdminService | null>(null);
+  const { data: editingDetail } = useAdminService(editingService?.id);
   const [iconName, setIconName] = useState('');
   const [sortOrder, setSortOrder] = useState('0');
   const [translations, setTranslations] = useState<Record<string, TransFields>>({
@@ -50,16 +52,38 @@ export default function AdminServices() {
   };
 
   const openEdit = (s: AdminService) => {
+    // Open instantly with the list-row values; the detail fetch hydrates
+    // the per-language Translations dict via the useEffect below.
     setEditingService(s);
     setIconName(s.iconName ?? '');
     setSortOrder('0');
-    setTranslations({
-      et: { ...emptyTrans },
-      en: { name: s.name, description: s.description, priceInfo: s.priceInfo ?? '' },
-      ru: { ...emptyTrans },
-    });
+    setTranslations({ et: { ...emptyTrans }, en: { ...emptyTrans }, ru: { ...emptyTrans } });
     setDialogOpen(true);
   };
+
+  useEffect(() => {
+    if (!editingService || !editingDetail) return;
+
+    setIconName(editingDetail.iconName ?? '');
+    setSortOrder(String(editingDetail.sortOrder ?? 0));
+
+    const next: Record<string, TransFields> = {
+      et: { ...emptyTrans },
+      en: { ...emptyTrans },
+      ru: { ...emptyTrans },
+    };
+    for (const [k, v] of Object.entries(editingDetail.translations ?? {})) {
+      const fe = k.toLowerCase();
+      if (fe === 'et' || fe === 'en' || fe === 'ru') {
+        next[fe] = {
+          name:        v.name        ?? '',
+          description: v.description ?? '',
+          priceInfo:   v.priceInfo   ?? '',
+        };
+      }
+    }
+    setTranslations(next);
+  }, [editingService, editingDetail]);
 
   const updateTrans = (lang: string, field: keyof TransFields, value: string) => {
     setTranslations(prev => ({ ...prev, [lang]: { ...prev[lang], [field]: value } }));

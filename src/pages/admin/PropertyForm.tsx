@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Plus, X, GripVertical, Image as ImageIcon, Loader2, AlertTriangle, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Plus, X, GripVertical, Image as ImageIcon, Loader2, AlertTriangle, RefreshCw, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -21,6 +21,7 @@ import {
   useAdminTeam,
   toBeLang,
 } from '@/hooks/api/useAdmin';
+import { useGeocodeProperty } from '@/hooks/api/usePropertyGeocode';
 import { propertyTypeLabel, transactionTypeLabel } from '@/lib/enumLabels';
 import { toast } from 'sonner';
 
@@ -45,6 +46,7 @@ export default function PropertyForm() {
   const uploadImages = useUploadPropertyImages();
   const deleteImage = useDeletePropertyImage();
   const reprocessImage = useReprocessPropertyImage();
+  const geocode = useGeocodeProperty();
 
   // Per-image timestamp tracking polling start. After 60s of Pending/Processing
   // we stop trusting the spinner and show "stuck" with a retry button —
@@ -323,6 +325,32 @@ export default function PropertyForm() {
                   <Label className={labelClass}>{t('admin.properties.fields.longitude')}</Label>
                   <Input type="text" value={lng} onChange={e => setLng(e.target.value)} placeholder="24.7536" className={inputClass} />
                 </div>
+              </div>
+
+              {/* Geocode button — disabled in create mode (no id yet to call against). */}
+              <div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={!id || geocode.isPending}
+                  onClick={() => {
+                    if (!id) return;
+                    geocode.mutate(id, {
+                      onSuccess: (data) => {
+                        setLat(data.latitude.toString());
+                        setLng(data.longitude.toString());
+                        toast.success(t('admin.properties.toast.geocoded'));
+                      },
+                      onError: () => toast.error(t('admin.properties.toast.geocodeFailed')),
+                    });
+                  }}
+                >
+                  {geocode.isPending
+                    ? <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                    : <MapPin className="h-3 w-3 mr-1" />}
+                  {t('admin.properties.geocodeButton')}
+                </Button>
               </div>
 
               <div className="flex items-center gap-3">

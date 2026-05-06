@@ -452,6 +452,7 @@
       },
       "saveDraft": "Salvesta mustandina",
       "savePublish": "Salvesta ja avalda",
+      "geocodeButton": "Hangi aadressilt",
       "toast": {
         "deleted": "Objekt kustutatud",
         "deleteFailed": "Objekti kustutamine ebaõnnestus",
@@ -461,7 +462,9 @@
         "imagesUploaded": "Pildid üles laaditud",
         "imageUploadFailed": "Piltide üleslaadimine ebaõnnestus",
         "imageRemoved": "Pilt eemaldatud",
-        "imageRemoveFailed": "Pildi eemaldamine ebaõnnestus"
+        "imageRemoveFailed": "Pildi eemaldamine ebaõnnestus",
+        "geocoded": "Koordinaadid täidetud aadressi põhjal",
+        "geocodeFailed": "Selle aadressi geokodeerimine ebaõnnestus"
       }
     },
     "blog": {

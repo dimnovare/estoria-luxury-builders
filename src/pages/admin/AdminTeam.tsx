@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   useAdminTeam,
+  useAdminTeamMember,
   useCreateTeamMember,
   useUpdateTeamMember,
   useDeleteTeamMember,
@@ -46,6 +47,8 @@ export default function AdminTeam() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<AdminTeamMember | null>(null);
+  // Detail fetch only fires when an id is set — null/undefined skips the call.
+  const { data: editingDetail } = useAdminTeamMember(editingMember?.id);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [photoPreview, setPhotoPreview] = useState('');
 
@@ -71,19 +74,48 @@ export default function AdminTeam() {
   };
 
   const openEdit = (m: AdminTeamMember) => {
+    // Seed common fields from the list row so the dialog opens instantly;
+    // the detail fetch then fills in per-language Translations via the
+    // useEffect below. Keeps the form responsive on slow connections.
     setEditingMember(m);
     setPhone(m.phone);
     setEmail(m.email);
     setSortOrder('0');
     setSelectedLangs(m.languages ?? []);
     setPhotoPreview(m.photoUrl ?? '');
-    setTranslations({
-      et: { ...emptyTrans },
-      en: { name: m.name, role: m.role, bio: '' },
-      ru: { ...emptyTrans },
-    });
+    setTranslations({ et: { ...emptyTrans }, en: { ...emptyTrans }, ru: { ...emptyTrans } });
     setDialogOpen(true);
   };
+
+  // When the detail fetch resolves, hydrate the form from the full
+  // translations dict. PascalCase keys ('Et'/'En'/'Ru') come straight from
+  // the backend — map them back to lower-case for the form's local state.
+  useEffect(() => {
+    if (!editingMember || !editingDetail) return;
+
+    setPhone(editingDetail.phone ?? '');
+    setEmail(editingDetail.email ?? '');
+    setSortOrder(String(editingDetail.sortOrder ?? 0));
+    setSelectedLangs(editingDetail.languages ?? []);
+    setPhotoPreview(editingDetail.photoUrl ?? '');
+
+    const next: Record<string, TransFields> = {
+      et: { ...emptyTrans },
+      en: { ...emptyTrans },
+      ru: { ...emptyTrans },
+    };
+    for (const [k, v] of Object.entries(editingDetail.translations ?? {})) {
+      const fe = k.toLowerCase();
+      if (fe === 'et' || fe === 'en' || fe === 'ru') {
+        next[fe] = {
+          name: v.name ?? '',
+          role: v.role ?? '',
+          bio:  v.bio  ?? '',
+        };
+      }
+    }
+    setTranslations(next);
+  }, [editingMember, editingDetail]);
 
   const toggleLang = (lang: string) => {
     setSelectedLangs(prev => prev.includes(lang) ? prev.filter(l => l !== lang) : [...prev, lang]);

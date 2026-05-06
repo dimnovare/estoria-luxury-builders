@@ -86,6 +86,24 @@ export interface AdminTeamMember {
   languages: string[];
 }
 
+/// Full admin-edit shape returned by GET /admin/team/{id}. Translations are
+/// keyed PascalCase ('Et' | 'En' | 'Ru') to mirror the backend DTO directly.
+export interface AdminTeamMemberDetail {
+  id: string;
+  slug: string;
+  photoUrl?: string;
+  phone: string;
+  email: string;
+  languages: string[];
+  sortOrder: number;
+  isActive: boolean;
+  translations: Record<string, {
+    name: string;
+    role: string;
+    bio?: string;
+  }>;
+}
+
 export interface AdminService {
   id: string;
   slug: string;
@@ -93,6 +111,20 @@ export interface AdminService {
   name: string;
   description: string;
   priceInfo?: string;
+}
+
+/// Full admin-edit shape returned by GET /admin/services/{id}.
+export interface AdminServiceDetail {
+  id: string;
+  slug: string;
+  iconName?: string;
+  sortOrder: number;
+  isActive: boolean;
+  translations: Record<string, {
+    name: string;
+    description: string;
+    priceInfo?: string;
+  }>;
 }
 
 export interface AdminCareer {
@@ -193,6 +225,11 @@ export function useUpdateProperty() {
     onSuccess: (_d, vars) => {
       qc.invalidateQueries({ queryKey: ['admin', 'properties'] });
       qc.invalidateQueries({ queryKey: ['admin', 'property', vars.id] });
+      // Public listings + per-slug detail caches — public reads use
+      // ['properties', ...] and ['property', slug, lang], so prefix-invalidate
+      // both so a published edit reflects without a hard refresh.
+      qc.invalidateQueries({ queryKey: ['properties'] });
+      qc.invalidateQueries({ queryKey: ['property'] });
     },
   });
 }
@@ -201,7 +238,11 @@ export function useDeleteProperty() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.delete(`/admin/properties/${id}`),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'properties'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'properties'] });
+      qc.invalidateQueries({ queryKey: ['properties'] });
+      qc.invalidateQueries({ queryKey: ['property'] });
+    },
   });
 }
 
@@ -262,6 +303,9 @@ export function useUpdateBlogPost() {
     onSuccess: (_d, vars) => {
       qc.invalidateQueries({ queryKey: ['admin', 'blog'] });
       qc.invalidateQueries({ queryKey: ['admin', 'blog-post', vars.id] });
+      // Public reads use ['blog', page|slug, lang]; prefix invalidation
+      // catches list + detail at once.
+      qc.invalidateQueries({ queryKey: ['blog'] });
     },
   });
 }
@@ -270,7 +314,10 @@ export function useDeleteBlogPost() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.delete(`/admin/blog/${id}`),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'blog'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'blog'] });
+      qc.invalidateQueries({ queryKey: ['blog'] });
+    },
   });
 }
 
@@ -295,11 +342,25 @@ export function useAdminTeam() {
   });
 }
 
+/// Detail hook used by the edit-form modal so each language tab can
+/// populate from the full translations dict instead of the flat list shape.
+export function useAdminTeamMember(id?: string) {
+  return useQuery<AdminTeamMemberDetail>({
+    queryKey: ['admin', 'team-member', id],
+    queryFn: () => api.get(`/admin/team/${id}`).then(r => r.data),
+    enabled: !!id,
+  });
+}
+
 export function useCreateTeamMember() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (dto: object) => api.post('/admin/team', dto).then(r => r.data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'team'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'team'] });
+      // Public reads use ['team', lang] and ['team', slug, lang].
+      qc.invalidateQueries({ queryKey: ['team'] });
+    },
   });
 }
 
@@ -308,7 +369,11 @@ export function useUpdateTeamMember() {
   return useMutation({
     mutationFn: ({ id, dto }: { id: string; dto: object }) =>
       api.put(`/admin/team/${id}`, dto),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'team'] }),
+    onSuccess: (_d, vars) => {
+      qc.invalidateQueries({ queryKey: ['admin', 'team'] });
+      qc.invalidateQueries({ queryKey: ['admin', 'team-member', vars.id] });
+      qc.invalidateQueries({ queryKey: ['team'] });
+    },
   });
 }
 
@@ -316,7 +381,10 @@ export function useDeleteTeamMember() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.delete(`/admin/team/${id}`),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'team'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'team'] });
+      qc.invalidateQueries({ queryKey: ['team'] });
+    },
   });
 }
 
@@ -330,7 +398,10 @@ export function useUploadTeamPhoto() {
         .post(`/admin/team/${id}/photo`, form)
         .then(r => r.data as { url: string });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'team'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'team'] });
+      qc.invalidateQueries({ queryKey: ['team'] });
+    },
   });
 }
 
@@ -343,11 +414,25 @@ export function useAdminServices() {
   });
 }
 
+/// Detail hook for the service edit-form — returns the full translations
+/// dict so each language tab can pre-populate.
+export function useAdminService(id?: string) {
+  return useQuery<AdminServiceDetail>({
+    queryKey: ['admin', 'service', id],
+    queryFn: () => api.get(`/admin/services/${id}`).then(r => r.data),
+    enabled: !!id,
+  });
+}
+
 export function useCreateService() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (dto: object) => api.post('/admin/services', dto).then(r => r.data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'services'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'services'] });
+      // Public reads use ['services', lang].
+      qc.invalidateQueries({ queryKey: ['services'] });
+    },
   });
 }
 
@@ -356,7 +441,11 @@ export function useUpdateService() {
   return useMutation({
     mutationFn: ({ id, dto }: { id: string; dto: object }) =>
       api.put(`/admin/services/${id}`, dto),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'services'] }),
+    onSuccess: (_d, vars) => {
+      qc.invalidateQueries({ queryKey: ['admin', 'services'] });
+      qc.invalidateQueries({ queryKey: ['admin', 'service', vars.id] });
+      qc.invalidateQueries({ queryKey: ['services'] });
+    },
   });
 }
 
@@ -364,7 +453,10 @@ export function useDeleteService() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.delete(`/admin/services/${id}`),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'services'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'services'] });
+      qc.invalidateQueries({ queryKey: ['services'] });
+    },
   });
 }
 
@@ -381,7 +473,13 @@ export function useCreateCareer() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (dto: object) => api.post('/admin/careers', dto).then(r => r.data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'careers'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'careers'] });
+      // Public reads use ['careers', lang] for the list and
+      // ['career', slug, lang] for detail — invalidate both prefixes.
+      qc.invalidateQueries({ queryKey: ['careers'] });
+      qc.invalidateQueries({ queryKey: ['career'] });
+    },
   });
 }
 
@@ -390,7 +488,11 @@ export function useUpdateCareer() {
   return useMutation({
     mutationFn: ({ id, dto }: { id: string; dto: object }) =>
       api.put(`/admin/careers/${id}`, dto),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'careers'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'careers'] });
+      qc.invalidateQueries({ queryKey: ['careers'] });
+      qc.invalidateQueries({ queryKey: ['career'] });
+    },
   });
 }
 
@@ -398,7 +500,11 @@ export function useDeleteCareer() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.delete(`/admin/careers/${id}`),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'careers'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'careers'] });
+      qc.invalidateQueries({ queryKey: ['careers'] });
+      qc.invalidateQueries({ queryKey: ['career'] });
+    },
   });
 }
 
@@ -416,7 +522,12 @@ export function useUpdatePage() {
   return useMutation({
     mutationFn: ({ id, dto }: { id: string; dto: object }) =>
       api.put(`/admin/pages/${id}`, dto),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'pages'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'pages'] });
+      // Public reads use ['pageContent', key, lang] — without this the
+      // homepage keeps serving the stale copy until a hard refresh.
+      qc.invalidateQueries({ queryKey: ['pageContent'] });
+    },
   });
 }
 

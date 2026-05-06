@@ -452,6 +452,7 @@
       },
       "saveDraft": "Save as Draft",
       "savePublish": "Save & Publish",
+      "geocodeButton": "Get from address",
       "toast": {
         "deleted": "Property deleted",
         "deleteFailed": "Failed to delete property",
@@ -459,6 +460,8 @@
         "createdEdit": "Property created — upload images in the Images tab",
         "saveFailed": "Failed to save property",
         "imagesUploaded": "Images uploaded",
+        "geocoded": "Coordinates filled from address",
+        "geocodeFailed": "Could not geocode this address",
         "imageUploadFailed": "Failed to upload images",
         "imageRemoved": "Image removed",
         "imageRemoveFailed": "Failed to remove image"
