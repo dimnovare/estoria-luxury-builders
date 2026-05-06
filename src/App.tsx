@@ -51,6 +51,7 @@ import AdminBirthdays from "@/pages/admin/AdminBirthdays";
 import AdminSavedSearches from "@/pages/admin/AdminSavedSearches";
 import AdminActivities from "@/pages/admin/AdminActivities";
 import AdminSettings from "@/pages/admin/AdminSettings";
+import AdminInbox from "@/pages/admin/AdminInbox";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -117,6 +118,7 @@ const App = () => (
             <Route path="saved-searches" element={<AdminSavedSearches />} />
             <Route path="activities" element={<AdminActivities />} />
             <Route path="settings" element={<AdminSettings />} />
+            <Route path="inbox" element={<AdminInbox />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
