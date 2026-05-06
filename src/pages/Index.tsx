@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import heroVideoAsset from '@/assets/hero-video.mp4.asset.json';
+import { useEffect, useRef, useState } from 'react';
 import Newsletter from '@/components/Newsletter';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -11,14 +10,6 @@ import { useFeaturedProperties } from '@/hooks/api/useProperties';
 import { usePageContent, useServices } from '@/hooks/api/useContent';
 import { usePublicStats, usePublicCities, usePropertyTypeOptions } from '@/hooks/api/usePublic';
 import { resolveServiceIcon } from '@/lib/serviceIconMap';
-
-const isDirectVideoUrl = (url?: string) => {
-  if (!url) return false;
-  const lower = url.toLowerCase();
-  if (lower.includes('youtube.com') || lower.includes('youtu.be')) return false;
-  if (lower.includes('vimeo.com')) return false;
-  return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(lower) || lower.startsWith('blob:') || lower.includes('/video');
-};
 
 export default function Index() {
   const { t } = useTranslation();
@@ -38,7 +29,20 @@ export default function Index() {
   const { data: cities } = usePublicCities();
   const { data: typeOptions } = usePropertyTypeOptions();
 
-  const heroVideoSrc = hero?.videoUrl || heroVideoAsset.url;
+  // Defer the hero MP4 load until after first paint so the poster JPG
+  // anchors the LCP and the video bytes don't compete with critical CSS /
+  // hero-text fonts. Autoplay can still be blocked (Safari low-power,
+  // "save data") — poster stays visible in that case.
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      heroVideoRef.current?.load();
+      heroVideoRef.current?.play().catch(() => {
+        /* autoplay blocked — poster stays visible, that's the point */
+      });
+    }, 500);
+    return () => window.clearTimeout(t);
+  }, []);
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -64,26 +68,33 @@ export default function Index() {
     <>
       {/* ===== HERO ===== */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* BG Video / Image / Gradient fallback */}
+        {/* BG: gradient base behind the video so the layer never goes
+            transparent if the video itself fails to load. The <video>
+            handles its own poster fallback while it's still loading. */}
         <div className="absolute inset-0">
-          {isDirectVideoUrl(heroVideoSrc) ? (
-            <video
-              src={heroVideoSrc}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-full object-cover"
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a]" />
+          <video
+            ref={heroVideoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster="https://cdn.estoria.estate/hero/hero-poster.jpg"
+            preload="none"
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            {/* Mobile-first source — Safari/Chrome respect the media query
+                so 720p (smaller) gets picked on phones, 1080p on desktop. */}
+            <source
+              src="https://cdn.estoria.estate/hero/hero-720p.mp4"
+              type="video/mp4"
+              media="(max-width: 1024px)"
             />
-          ) : hero?.imageUrl ? (
-            <img
-              src={hero.imageUrl}
-              alt=""
-              className="w-full h-full object-cover"
+            <source
+              src="https://cdn.estoria.estate/hero/hero-1080p.mp4"
+              type="video/mp4"
             />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a]" />
-          )}
+          </video>
           <div className="absolute inset-0" style={{
             background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.9) 100%)'
           }} />
