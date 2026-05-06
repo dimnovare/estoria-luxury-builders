@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import api from '@/lib/api';
 
 interface SiteSettingDto {
@@ -10,13 +11,15 @@ interface SiteSettingDto {
 const asArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : []);
 
 /**
- * Fetches GET /api/site-settings once and exposes a Record keyed by setting key.
- * Settings are language-independent (operational config, not translated copy)
- * so the queryKey deliberately omits i18n.language — same response for all locales.
+ * Fetches GET /api/site-settings and exposes a Record keyed by setting key.
+ * Most keys are operational config (toggles, URLs) and identical across
+ * languages, but a small whitelist (contact.hours, contact.address) is
+ * translatable, so we key on i18n.language to refetch on language switch.
  */
 export function useSiteSettings() {
+  const { i18n } = useTranslation();
   return useQuery<Record<string, string>>({
-    queryKey: ['site-settings'],
+    queryKey: ['site-settings', i18n.language],
     queryFn: async () => {
       try {
         const r = await api.get('/site-settings');

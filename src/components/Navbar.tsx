@@ -43,7 +43,17 @@ export default function Navbar() {
         <div className="container mx-auto flex items-center justify-between h-20 px-6">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5">
-            <img src={logoImg} alt="ESTORIA" className="w-9 h-9 object-contain" />
+            {/* Explicit width/height prevent layout shift while the logo
+                decodes (CLS win). Source PNG is 363×368 — when a properly
+                sized 88×88 WebP gets generated (see /public/logo-88.webp
+                — operator task), swap the import to that asset. */}
+            <img
+              src={logoImg}
+              alt="ESTORIA"
+              width={36}
+              height={36}
+              className="w-9 h-9 object-contain"
+            />
             <span className="font-heading text-2xl tracking-[0.3em] text-primary font-semibold">ESTORIA</span>
           </Link>
 

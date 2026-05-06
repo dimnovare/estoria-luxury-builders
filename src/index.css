@@ -70,7 +70,10 @@ select option {
     --secondary: 0 0% 96%;
     --secondary-foreground: 0 0% 15%;
     --muted: 0 0% 95%;
-    --muted-foreground: 0 0% 45%;
+    /* 35% (was 45%) — bumped contrast so Select placeholders and other
+       muted-foreground text remain legible on the light admin chrome.
+       Anything dimmer fails WCAG AA on white backgrounds. */
+    --muted-foreground: 0 0% 35%;
     --accent: 0 0% 96%;
     --accent-foreground: 0 0% 15%;
     --destructive: 0 84% 60%;

@@ -1,6 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAdminSiteSettings, useUpdateSiteSetting, type SiteSettingDto } from '@/hooks/api/useSiteSettingsAdmin';
+import {
+  useAdminSiteSettings,
+  useAdminSiteSettingDetail,
+  useUpdateSiteSetting,
+  type SiteSettingDto,
+} from '@/hooks/api/useSiteSettingsAdmin';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,8 +13,17 @@ import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ChevronDown, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+/// Mirror of the backend SiteSettingService.TranslatableKeys whitelist —
+/// keys whose value is user-facing copy and should differ across EE/EN/RU.
+/// Keep in sync with src/Estoria.Application/Services/SiteSettingService.cs.
+const TRANSLATABLE_KEYS = new Set(['contact.hours', 'contact.address']);
+
+const SUPPORTED_LANGUAGES = ['Et', 'En', 'Ru'] as const;
+type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
 
 // ── Section definitions ─────────────────────────────────────────────────────
 
@@ -105,8 +119,9 @@ function SettingRow({ setting, field }: { setting: SiteSettingDto | undefined; f
       await update.mutateAsync({ key: field.key, value: v });
       setSaved(true);
       setTimeout(() => setSaved(false), 1500);
-    } catch (e: any) {
-      setError(e?.response?.data?.detail ?? e?.message ?? t('admin.settings.toast.saveFailed'));
+    } catch (e) {
+      const err = e as { response?: { data?: { detail?: string } }; message?: string };
+      setError(err?.response?.data?.detail ?? err?.message ?? t('admin.settings.toast.saveFailed'));
     }
   }, [value, field, update, t]);
 
@@ -188,6 +203,130 @@ function SettingRow({ setting, field }: { setting: SiteSettingDto | undefined; f
   );
 }
 
+// ── Translatable setting (per-language tabs) ───────────────────────────────
+
+/// One language tab's editor. Owns its own dirty/saved state so the three
+/// tabs save independently — switching tabs while a save is in flight
+/// doesn't drop work.
+function TranslatableSettingEditor({
+  settingKey,
+  language,
+  initialValue,
+  type,
+  placeholder,
+  rows,
+}: {
+  settingKey: string;
+  language: SupportedLanguage;
+  initialValue: string;
+  type?: FieldDef['type'];
+  placeholder?: string;
+  rows?: number;
+}) {
+  const { t } = useTranslation();
+  const update = useUpdateSiteSetting();
+  const [value, setValue] = useState(initialValue);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+
+  const dirty = value !== initialValue;
+
+  const handleSave = useCallback(async () => {
+    setError('');
+    try {
+      await update.mutateAsync({ key: settingKey, value, lang: language });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 1500);
+    } catch (e) {
+      const err = e as { response?: { data?: { detail?: string; error?: string } }; message?: string };
+      setError(
+        err?.response?.data?.detail
+          ?? err?.response?.data?.error
+          ?? err?.message
+          ?? t('admin.settings.toast.saveFailed'),
+      );
+    }
+  }, [settingKey, language, value, update, t]);
+
+  const inputEl = type === 'textarea' ? (
+    <Textarea
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      rows={rows ?? 3}
+      placeholder={placeholder}
+      className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-sm"
+    />
+  ) : (
+    <Input
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      placeholder={placeholder}
+      className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-sm"
+    />
+  );
+
+  return (
+    <div className="space-y-1.5">
+      <div className="flex gap-2 items-start">
+        <div className="flex-1">{inputEl}</div>
+        <Button
+          size="sm"
+          variant={dirty ? 'default' : 'outline'}
+          className={cn('shrink-0', dirty ? '' : 'border-[hsl(0_0%_85%)] text-[hsl(0_0%_50%)]')}
+          disabled={!dirty || update.isPending}
+          onClick={handleSave}
+        >
+          {saved ? <Check className="h-3.5 w-3.5" /> : t('admin.settings.save')}
+        </Button>
+      </div>
+      {error && <p className="text-xs text-red-500">{error}</p>}
+    </div>
+  );
+}
+
+/// Wraps the row label + 3 language tabs. Pulls the per-language values
+/// from the admin-detail endpoint (one fetch per translatable key, not per
+/// tab) so the form populates without flicker.
+function TranslatableSettingRow({ field }: { field: FieldDef }) {
+  const { t } = useTranslation();
+  const { data: detail } = useAdminSiteSettingDetail(field.key);
+
+  const lookup = (lang: SupportedLanguage) =>
+    detail?.translations?.find(t => t.language === lang)?.value ?? '';
+
+  return (
+    <div className="py-3 border-b border-[hsl(0_0%_93%)] last:border-0 space-y-1.5">
+      <div className="flex items-center gap-2">
+        <label className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_45%)]">{t(field.labelKey)}</label>
+        <Badge variant="outline" className="text-[9px]">EE / EN / RU</Badge>
+      </div>
+      <Tabs defaultValue="Et">
+        <TabsList className="grid grid-cols-3 mb-3">
+          <TabsTrigger value="Et">EE</TabsTrigger>
+          <TabsTrigger value="En">EN</TabsTrigger>
+          <TabsTrigger value="Ru">RU</TabsTrigger>
+        </TabsList>
+        {SUPPORTED_LANGUAGES.map(lang => (
+          <TabsContent key={lang} value={lang}>
+            <TranslatableSettingEditor
+              settingKey={field.key}
+              language={lang}
+              initialValue={lookup(lang)}
+              type={field.type}
+              placeholder={field.placeholder}
+              rows={field.rows}
+            />
+          </TabsContent>
+        ))}
+      </Tabs>
+    </div>
+  );
+}
+
 // ── "Other" section for unknown keys ─────────────────────────────────────────
 
 function OtherSettingRow({ setting }: { setting: SiteSettingDto }) {
@@ -250,7 +389,9 @@ export default function AdminSettings() {
             <CollapsibleContent>
               <CardContent className="pt-0 px-6 pb-4">
                 {section.fields.map((field) => (
-                  <SettingRow key={field.key} setting={settingsMap.get(field.key)} field={field} />
+                  TRANSLATABLE_KEYS.has(field.key)
+                    ? <TranslatableSettingRow key={field.key} field={field} />
+                    : <SettingRow key={field.key} setting={settingsMap.get(field.key)} field={field} />
                 ))}
               </CardContent>
             </CollapsibleContent>

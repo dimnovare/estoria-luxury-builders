@@ -1,32 +1,90 @@
 <!doctype html>
-<html lang="et">
-<head>
+<html lang="en">
+  <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Estoria — Where Your Future Lives</title>
-    <meta name="description" content="Premium real estate in Estonia. Discover apartments, houses, and commercial properties in Tallinn and beyond." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a0a0a" />
+
+    <title>Estoria — Premium Real Estate in Tallinn, Estonia</title>
+    <meta name="description" content="Premium real estate in Tallinn and Estonia. Discover apartments, houses, and commercial properties with Estoria — your trusted brokerage for sales, rentals, and investment advisory." />
     <meta name="author" content="ESTORIA" />
 
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://estoria.estate" />
-    <meta property="og:title" content="Estoria — Where Your Future Lives" />
-    <meta property="og:description" content="Premium real estate in Estonia." />
-    <meta property="og:image" content="/android-chrome-512x512.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@estoria" />
-    <meta name="twitter:title" content="Estoria — Where Your Future Lives" />
-    <meta name="twitter:description" content="Premium real estate in Estonia." />
-    <meta name="twitter:image" content="/android-chrome-512x512.png" />
+    <!-- Canonical -->
+    <link rel="canonical" href="https://estoria.estate/" />
 
-    <link rel="canonical" href="https://estoria.estate" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Favicons (assets in /public — generated per docs/estoria-favicon-guide.md) -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-</head>
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="msapplication-TileImage" content="/mstile-150x150.png" />
+    <meta name="msapplication-TileColor" content="#0a0a0a" />
+
+    <!-- OpenGraph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://estoria.estate/" />
+    <meta property="og:title" content="Estoria — Premium Real Estate in Tallinn" />
+    <meta property="og:description" content="Premium real estate in Tallinn and Estonia. Apartments, houses, and commercial properties." />
+    <meta property="og:image" content="https://estoria.estate/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="et_EE" />
+    <meta property="og:locale:alternate" content="ru_RU" />
+    <meta property="og:site_name" content="Estoria" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Estoria — Premium Real Estate in Tallinn" />
+    <meta name="twitter:description" content="Premium real estate in Tallinn and Estonia." />
+    <meta name="twitter:image" content="https://estoria.estate/og-image.jpg" />
+
+    <!-- Preconnects for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://api.estoria.estate" />
+    <link rel="preconnect" href="https://cdn.estoria.estate" />
+
+    <!-- Hero poster preload (LCP optimization).
+         NOTE: depends on operator uploading hero/* to the R2 public bucket.
+         A 404 here is silent (browser ignores), but the perf win is gone
+         until the file exists. -->
+    <link rel="preload" as="image" href="https://cdn.estoria.estate/hero/hero-poster.jpg" fetchpriority="high" />
+
+    <!-- Fonts (non-render-blocking via the print-then-onload pattern).
+         Weights audited from the codebase: 300/400/500/600/700.
+         Cormorant Garamond keeps italic 400/500 for in-prose emphasis;
+         DM Sans + Outfit are body/nav and italic isn't used. -->
+    <link rel="preload" as="style"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+      media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" />
+    </noscript>
+
+    <!-- JSON-LD: Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "RealEstateAgent",
+      "name": "Estoria",
+      "url": "https://estoria.estate",
+      "logo": "https://estoria.estate/logo.png",
+      "description": "Premium real estate in Tallinn and Estonia.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Tallinn",
+        "addressCountry": "EE"
+      },
+      "areaServed": "Estonia",
+      "knowsLanguage": ["et", "en", "ru"]
+    }
+    </script>
+  </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>

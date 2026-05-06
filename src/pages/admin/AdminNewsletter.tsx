@@ -76,8 +76,9 @@ function ComposeTab() {
       });
       toast.success(t('admin.newsletter.compose.toast.sent', { delivered: r.successCount, failed: r.failureCount }));
       form.reset();
-    } catch (e: any) {
-      toast.error(e?.response?.data?.detail ?? e?.message ?? t('admin.newsletter.compose.toast.sendFailed'));
+    } catch (e) {
+      const err = e as { response?: { data?: { detail?: string } }; message?: string };
+      toast.error(err?.response?.data?.detail ?? err?.message ?? t('admin.newsletter.compose.toast.sendFailed'));
     }
   };
 
@@ -93,8 +94,9 @@ function ComposeTab() {
         testRecipientEmail: email ?? undefined,
       });
       toast.success(t('admin.newsletter.compose.toast.testSent'));
-    } catch (e: any) {
-      toast.error(e?.response?.data?.detail ?? e?.message ?? t('admin.newsletter.compose.toast.sendFailed'));
+    } catch (e) {
+      const err = e as { response?: { data?: { detail?: string } }; message?: string };
+      toast.error(err?.response?.data?.detail ?? err?.message ?? t('admin.newsletter.compose.toast.sendFailed'));
     }
   };
 

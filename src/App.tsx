@@ -1,5 +1,7 @@
+import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -9,6 +11,8 @@ import ScrollToHash from "@/components/ScrollToHash";
 import MainLayout from "@/layouts/MainLayout";
 import AdminLayout from "@/layouts/AdminLayout";
 
+// Public marketing site stays eager — it's the hot path and small enough
+// that splitting routes adds round-trips without meaningful savings.
 import Index from "@/pages/Index";
 import Properties from "@/pages/Properties";
 import PropertyDetail from "@/pages/PropertyDetail";
@@ -24,34 +28,38 @@ import Contact from "@/pages/Contact";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import NotFound from "@/pages/NotFound";
 
+// Admin lives behind auth and is large; lazy-load every admin page so the
+// public bundle doesn't pay for the admin surface area. Login stays eager
+// so the redirect from a 401 isn't another network round trip.
 import Login from "@/pages/admin/Login";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import AdminDashboard from "@/pages/admin/Dashboard";
-import AdminProperties from "@/pages/admin/AdminProperties";
-import PropertyForm from "@/pages/admin/PropertyForm";
-import AdminBlog from "@/pages/admin/AdminBlog";
-import BlogForm from "@/pages/admin/BlogForm";
-import AdminTeam from "@/pages/admin/AdminTeam";
-import AdminServices from "@/pages/admin/AdminServices";
-import AdminPages from "@/pages/admin/AdminPages";
-import AdminCareers from "@/pages/admin/AdminCareers";
-import AdminNewsletter from "@/pages/admin/AdminNewsletter";
-import AdminMessages from "@/pages/admin/AdminMessages";
-import AdminUsers from "@/pages/admin/AdminUsers";
-import UserForm from "@/pages/admin/UserForm";
-import AuditLog from "@/pages/admin/AuditLog";
-import AdminContacts from "@/pages/admin/AdminContacts";
-import ContactForm from "@/pages/admin/ContactForm";
-import ContactDetail from "@/pages/admin/ContactDetail";
-import AdminDeals from "@/pages/admin/AdminDeals";
-import DealForm from "@/pages/admin/DealForm";
-import DealDetail from "@/pages/admin/DealDetail";
-import AdminTasks from "@/pages/admin/AdminTasks";
-import AdminBirthdays from "@/pages/admin/AdminBirthdays";
-import AdminSavedSearches from "@/pages/admin/AdminSavedSearches";
-import AdminActivities from "@/pages/admin/AdminActivities";
-import AdminSettings from "@/pages/admin/AdminSettings";
-import AdminInbox from "@/pages/admin/AdminInbox";
+
+const AdminDashboard      = lazy(() => import("@/pages/admin/Dashboard"));
+const AdminProperties     = lazy(() => import("@/pages/admin/AdminProperties"));
+const PropertyForm        = lazy(() => import("@/pages/admin/PropertyForm"));
+const AdminBlog           = lazy(() => import("@/pages/admin/AdminBlog"));
+const BlogForm            = lazy(() => import("@/pages/admin/BlogForm"));
+const AdminTeam           = lazy(() => import("@/pages/admin/AdminTeam"));
+const AdminServices       = lazy(() => import("@/pages/admin/AdminServices"));
+const AdminPages          = lazy(() => import("@/pages/admin/AdminPages"));
+const AdminCareers        = lazy(() => import("@/pages/admin/AdminCareers"));
+const AdminNewsletter     = lazy(() => import("@/pages/admin/AdminNewsletter"));
+const AdminMessages       = lazy(() => import("@/pages/admin/AdminMessages"));
+const AdminUsers          = lazy(() => import("@/pages/admin/AdminUsers"));
+const UserForm            = lazy(() => import("@/pages/admin/UserForm"));
+const AuditLog            = lazy(() => import("@/pages/admin/AuditLog"));
+const AdminContacts       = lazy(() => import("@/pages/admin/AdminContacts"));
+const ContactForm         = lazy(() => import("@/pages/admin/ContactForm"));
+const ContactDetail       = lazy(() => import("@/pages/admin/ContactDetail"));
+const AdminDeals          = lazy(() => import("@/pages/admin/AdminDeals"));
+const DealForm            = lazy(() => import("@/pages/admin/DealForm"));
+const DealDetail          = lazy(() => import("@/pages/admin/DealDetail"));
+const AdminTasks          = lazy(() => import("@/pages/admin/AdminTasks"));
+const AdminBirthdays      = lazy(() => import("@/pages/admin/AdminBirthdays"));
+const AdminSavedSearches  = lazy(() => import("@/pages/admin/AdminSavedSearches"));
+const AdminActivities     = lazy(() => import("@/pages/admin/AdminActivities"));
+const AdminSettings       = lazy(() => import("@/pages/admin/AdminSettings"));
+const AdminInbox          = lazy(() => import("@/pages/admin/AdminInbox"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -61,6 +69,12 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+const AdminLoading = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+  </div>
+);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -87,7 +101,16 @@ const App = () => (
             <Route path="/privacy" element={<PrivacyPolicy />} />
           </Route>
           <Route path="/admin/login" element={<Login />} />
-          <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <Suspense fallback={<AdminLoading />}>
+                  <AdminLayout />
+                </Suspense>
+              </ProtectedRoute>
+            }
+          >
             <Route index element={<AdminDashboard />} />
             <Route path="properties" element={<AdminProperties />} />
             <Route path="properties/new" element={<PropertyForm />} />

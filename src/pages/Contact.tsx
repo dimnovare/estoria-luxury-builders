@@ -317,15 +317,28 @@ export default function Contact() {
                 </div>
               </div>
 
-              {/* Map */}
-              <div className="rounded-sm overflow-hidden border border-border">
-                <iframe
-                  title="ESTORIA Office Location"
-                  src="https://www.openstreetmap.org/export/embed.html?bbox=24.735%2C59.430%2C24.765%2C59.445&layer=mapnik&marker=59.437%2C24.750"
-                  className="w-full h-[280px] border-0 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
-                  loading="lazy"
-                />
-              </div>
+              {/* Map — coordinates come from contact.latitude/longitude
+                  SiteSettings, auto-populated when admin edits the address.
+                  Tallinn city-centre fallback so the map renders even if the
+                  geocoder hasn't run or failed. */}
+              {(() => {
+                const lat = parseFloat(settings?.['contact.latitude'] ?? '') || 59.4370;
+                const lng = parseFloat(settings?.['contact.longitude'] ?? '') || 24.7536;
+                // 0.015° box ≈ ~1.6 km on the lat axis at this latitude —
+                // enough zoom to identify the office without being lost.
+                const bbox = `${(lng - 0.015).toFixed(4)}%2C${(lat - 0.0075).toFixed(4)}%2C${(lng + 0.015).toFixed(4)}%2C${(lat + 0.0075).toFixed(4)}`;
+                const marker = `${lat.toFixed(4)}%2C${lng.toFixed(4)}`;
+                return (
+                  <div className="rounded-sm overflow-hidden border border-border">
+                    <iframe
+                      title="ESTORIA Office Location"
+                      src={`https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${marker}`}
+                      className="w-full h-[280px] border-0 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                      loading="lazy"
+                    />
+                  </div>
+                );
+              })()}
 
               {/* Social — only render icons whose URL is configured */}
               {socialLinks.length > 0 && (

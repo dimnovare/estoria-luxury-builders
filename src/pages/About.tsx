@@ -33,8 +33,11 @@ export default function About() {
         <div className="absolute inset-0">
           <img
             src={
+              // CMS-first (about.intro PageContent ImageUrl); fallback is a
+              // Tallinn old-town Unsplash shot — meaningful default until
+              // an editor uploads a brand image.
               intro?.imageUrl ||
-              'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80'
+              'https://images.unsplash.com/photo-1590497008439-79bc09b46a83?w=1600&q=80'
             }
             alt="About Estoria"
             className="w-full h-full object-cover"

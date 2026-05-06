@@ -53,9 +53,16 @@ export interface LinkMessagePayload {
 
 export interface InboxFolderCounts {
   inbox: number;
+  unread: number;
   sent: number;
   archive: number;
-  all: number;
+}
+
+/// Cursor-paged Graph response shape — matches backend MailboxPage<T>.
+/// Treat nextSkipToken as opaque; pass it back verbatim for "Load more".
+export interface MailboxPage<T> {
+  items: T[];
+  nextSkipToken?: string | null;
 }
 
 // ── Hooks ──────────────────────────────────────────────────────────────────────
@@ -84,9 +91,10 @@ export function useInboxMessages(
   return useQuery({
     queryKey: KEYS.messages(folder, filters as Record<string, unknown>),
     queryFn: async () => {
-      const { data } = await api.get<InboxMessageSummary[]>('/admin/inbox/messages', {
-        params: { folder, ...filters },
-      });
+      const { data } = await api.get<MailboxPage<InboxMessageSummary>>(
+        '/admin/inbox/messages',
+        { params: { folder, ...filters } },
+      );
       return data;
     },
   });
@@ -127,10 +135,14 @@ export function useMarkRead() {
       await api.post(`/admin/inbox/messages/${id}/read`);
     },
     onMutate: async (id) => {
-      // Optimistic: mark as read in all cached message lists
-      qc.setQueriesData<InboxMessageSummary[]>(
+      // Optimistic: mark as read in all cached message lists. Each entry is
+      // a MailboxPage<InboxMessageSummary>; mutate the items array, leave
+      // the cursor alone.
+      qc.setQueriesData<MailboxPage<InboxMessageSummary>>(
         { queryKey: ['inbox', 'messages'] },
-        (old) => old?.map((m) => (m.id === id ? { ...m, isRead: true } : m)),
+        (old) => old
+          ? { ...old, items: old.items.map((m) => (m.id === id ? { ...m, isRead: true } : m)) }
+          : old,
       );
     },
     onSettled: () => {

@@ -70,7 +70,10 @@ function FolderList({
 }: {
   activeFolder: InboxFolder;
   onSelect: (f: InboxFolder) => void;
-  counts?: Record<InboxFolder, number>;
+  // Backend returns counts for inbox/sent/archive (+ unread). 'all' isn't
+  // a server-side folder, so the badge stays absent for it — Partial keeps
+  // the type honest without forcing an unused server field.
+  counts?: Partial<Record<InboxFolder, number>>;
 }) {
   const { t } = useTranslation();
   return (
@@ -88,9 +91,9 @@ function FolderList({
         >
           <Icon className="h-4 w-4 shrink-0" />
           <span className="flex-1 text-left">{t(`admin.inbox.folders.${key}`)}</span>
-          {counts && counts[key] > 0 && (
+          {(counts?.[key] ?? 0) > 0 && (
             <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 min-w-[20px] justify-center">
-              {counts[key]}
+              {counts?.[key]}
             </Badge>
           )}
         </button>
@@ -372,7 +375,10 @@ export default function AdminInbox() {
   );
 
   const { data: counts } = useInboxCounts();
-  const { data: messages = [], isLoading } = useInboxMessages(folder, filterParams);
+  // Backend returns MailboxPage<InboxMessageSummary>; flatten to the items
+  // array for rendering, keep nextSkipToken accessible for "Load more".
+  const { data: messagesPage, isLoading } = useInboxMessages(folder, filterParams);
+  const messages = messagesPage?.items ?? [];
   const { data: selectedMessage } = useInboxMessage(selectedId);
   const markRead = useMarkRead();
 
@@ -482,8 +488,8 @@ export default function AdminInbox() {
                 >
                   <ChevronDown className="h-4 w-4" />
                   {t(`admin.inbox.folders.${folder}`)}
-                  {counts && counts[folder] > 0 && (
-                    <Badge variant="secondary" className="text-[10px] h-4 px-1">{counts[folder]}</Badge>
+                  {(counts?.[folder] ?? 0) > 0 && (
+                    <Badge variant="secondary" className="text-[10px] h-4 px-1">{counts?.[folder]}</Badge>
                   )}
                 </button>
               )}
