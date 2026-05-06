@@ -102,7 +102,7 @@ export default function Navbar() {
 
           {/* Hamburger — shown below xl (i.e. mobile + tablet) */}
           <button
-            className="xl:hidden text-foreground p-2"
+            className="xl:hidden text-foreground p-2 mr-2"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
           >
