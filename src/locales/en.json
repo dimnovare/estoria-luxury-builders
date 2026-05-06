@@ -1123,6 +1123,60 @@
       "toast": {
         "saveFailed": "Failed to save setting"
       }
+    },
+    "inbox": {
+      "title": "Inbox",
+      "subtitle": "Manage your email messages",
+      "compose": "Compose",
+      "loading": "Loading messages…",
+      "empty": "No messages",
+      "selectMessage": "Select a message to read",
+      "showMessages": "Show messages",
+      "filtersTitle": "Filters",
+      "folders": {
+        "inbox": "Inbox",
+        "sent": "Sent",
+        "archive": "Archive",
+        "all": "All Mail"
+      },
+      "filters": {
+        "unread": "Unread",
+        "hasAttachments": "Has attachments",
+        "linkedToDeal": "Linked to deal"
+      },
+      "detail": {
+        "to": "To",
+        "attachments": "Attachments",
+        "reply": "Reply",
+        "replyAll": "Reply All",
+        "forward": "Forward"
+      },
+      "link": {
+        "title": "Link message",
+        "contactId": "Contact ID",
+        "dealId": "Deal ID",
+        "save": "Save",
+        "edit": "Edit link"
+      },
+      "composer": {
+        "newMessage": "New Message",
+        "reply": "Reply",
+        "to": "To",
+        "toPlaceholder": "Add recipients…",
+        "subject": "Subject",
+        "bodyPlaceholder": "Write your message…",
+        "send": "Send",
+        "sizeWarning": "Total attachments exceed 10 MB limit"
+      },
+      "toast": {
+        "sent": "Message sent",
+        "sendError": "Failed to send message",
+        "archived": "Message archived",
+        "archiveError": "Failed to archive message",
+        "linked": "Message linked",
+        "linkError": "Failed to link message",
+        "downloadError": "Failed to download attachment"
+      }
     }
   }
 }
