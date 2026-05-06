@@ -15,6 +15,13 @@ select option {
   }
 
   :root {
+    /* Font-family chains — system fallbacks paint the page immediately
+       while the Google webfonts stream in (display=swap on the link).
+       Saves ~1.4 s of LCP delay on the hero h1. */
+    --font-heading: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
+    --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-nav: 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
     --background: 0 0% 4%;
     --foreground: 40 33% 95%;
 

@@ -15,9 +15,11 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ['"Cormorant Garamond"', 'serif'],
-        body: ['"DM Sans"', 'sans-serif'],
-        nav: ['"Outfit"', 'sans-serif'],
+        // System fallbacks let the page paint before the webfonts stream
+        // in. Mirrors the --font-* CSS variables in index.css.
+        heading: ['"Cormorant Garamond"', 'Georgia', '"Times New Roman"', 'serif'],
+        body:    ['"DM Sans"', 'system-ui', '-apple-system', '"Segoe UI"', 'Roboto', 'sans-serif'],
+        nav:     ['"Outfit"', 'system-ui', '-apple-system', '"Segoe UI"', 'Roboto', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

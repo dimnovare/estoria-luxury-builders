@@ -44,13 +44,18 @@ type FilterChip = 'unread' | 'hasAttachments' | 'linkedToDeal';
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
-function initials(name: string) {
+function initials(name: string | null | undefined) {
+  // Belt-and-braces guard: backend already coerces fromName to a non-null
+  // "(unknown sender)" fallback, but a string of pure whitespace would
+  // still empty out after split/filter — the trailing `|| '?'` handles it.
+  if (!name) return '?';
   return name
     .split(' ')
     .map((w) => w[0])
+    .filter(Boolean)
     .join('')
     .slice(0, 2)
-    .toUpperCase();
+    .toUpperCase() || '?';
 }
 
 function relativeTime(dateStr: string) {
