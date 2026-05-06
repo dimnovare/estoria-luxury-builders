@@ -97,14 +97,14 @@ export default function AdminLayout() {
   const sidebar = (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="h-16 flex items-center px-4 border-b border-border/50 shrink-0">
+      <div className="h-16 flex items-center px-4 border-b border-[hsl(0_0%_16%)]/50 shrink-0">
         {!collapsed && (
           <div className="flex items-center gap-2">
-            <span className="font-heading text-xl tracking-[0.2em] text-foreground">ESTORIA</span>
-            <span className="text-[10px] font-body uppercase tracking-wider bg-primary/20 text-primary px-1.5 py-0.5 rounded">{t('admin.layout.adminBadge')}</span>
+            <span className="font-heading text-xl tracking-[0.2em] text-[hsl(40_33%_95%)]">ESTORIA</span>
+            <span className="text-[10px] font-body uppercase tracking-wider bg-[hsl(43_50%_54%)]/20 text-[hsl(43_50%_54%)] px-1.5 py-0.5 rounded">{t('admin.layout.adminBadge')}</span>
           </div>
         )}
-        {collapsed && <span className="font-heading text-xl text-primary mx-auto">E</span>}
+        {collapsed && <span className="font-heading text-xl text-[hsl(43_50%_54%)] mx-auto">E</span>}
       </div>
 
       {/* Nav */}
