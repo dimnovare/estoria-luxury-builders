@@ -9,6 +9,11 @@ select option {
 }
 
 @layer base {
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
   :root {
     --background: 0 0% 4%;
     --foreground: 40 33% 95%;
