@@ -356,7 +356,8 @@
       "birthdays": "Birthdays",
       "savedSearches": "Saved Searches",
       "activities": "Activities",
-      "settings": "Settings"
+      "settings": "Settings",
+      "inbox": "Inbox"
     },
     "login": {
       "portalTitle": "Admin Portal",
