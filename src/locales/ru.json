@@ -923,6 +923,13 @@
         "lossReasonRequired": "Для отметки как проигранная требуется причина не менее 5 символов",
         "participantAdded": "Участник добавлен",
         "participantRemoved": "Участник удалён"
+      },
+      "groups": {
+        "leads": "Активные лиды",
+        "progress": "В работе",
+        "closing": "Закрытие",
+        "won": "Завершено",
+        "lost": "Потеряно"
       }
     },
     "activities": {

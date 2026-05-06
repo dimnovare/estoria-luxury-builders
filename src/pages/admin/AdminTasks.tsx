@@ -128,7 +128,7 @@ export default function AdminTasks() {
           {/* Filters */}
           <div className="flex gap-2 flex-wrap">
             <Select value={assignedTo} onValueChange={setAssignedTo}>
-              <SelectTrigger className="w-[140px] bg-white border-[hsl(0_0%_85%)] text-sm">
+              <SelectTrigger className="w-[140px] bg-white border-[hsl(0_0%_85%)] text-sm text-[hsl(0_0%_20%)]">
                 <SelectValue placeholder={t('admin.tasks.filters.assignedTo')} />
               </SelectTrigger>
               <SelectContent>
@@ -138,7 +138,7 @@ export default function AdminTasks() {
             </Select>
 
             <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-              <SelectTrigger className="w-[120px] bg-white border-[hsl(0_0%_85%)] text-sm">
+              <SelectTrigger className="w-[120px] bg-white border-[hsl(0_0%_85%)] text-sm text-[hsl(0_0%_20%)]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -150,7 +150,7 @@ export default function AdminTasks() {
             </Select>
 
             <Select value={hasReminder} onValueChange={setHasReminder}>
-              <SelectTrigger className="w-[140px] bg-white border-[hsl(0_0%_85%)] text-sm">
+              <SelectTrigger className="w-[140px] bg-white border-[hsl(0_0%_85%)] text-sm text-[hsl(0_0%_20%)]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

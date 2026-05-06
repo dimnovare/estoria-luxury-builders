@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Plus, Calendar, Clock, Briefcase } from 'lucide-react';
@@ -20,9 +20,22 @@ import {
 } from '@/hooks/api/useCrm';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import { formatDistanceToNow } from 'date-fns';
 
+/* ── 5 visual groups that collapse 9 stages ─────────────────────────────── */
 
+interface StageGroup {
+  id: string;
+  stages: DealStage[];
+  color: string; // header accent
+}
+
+const STAGE_GROUPS: StageGroup[] = [
+  { id: 'leads',    stages: ['Lead', 'Qualified'],                   color: 'bg-blue-50 border-blue-200' },
+  { id: 'progress', stages: ['Viewing', 'Offer', 'Negotiation'],    color: 'bg-amber-50 border-amber-200' },
+  { id: 'closing',  stages: ['ContractSigned', 'ClosingPending'],    color: 'bg-purple-50 border-purple-200' },
+  { id: 'won',      stages: ['Won'],                                 color: 'bg-green-50 border-green-200' },
+  { id: 'lost',     stages: ['Lost'],                                color: 'bg-red-50 border-red-200' },
+];
 
 const stageColors: Record<string, string> = {
   Lead: 'bg-gray-100 text-gray-700 border-gray-200',
@@ -40,14 +53,11 @@ export default function AdminDeals() {
   const { t } = useTranslation();
   const { user, hasRole } = useAuth();
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [showScrollHint, setShowScrollHint] = useState(false);
-
   const [agentFilter, setAgentFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
   const [sideFilter, setSideFilter] = useState('all');
   const [mineOnly, setMineOnly] = useState(false);
-  const [expandedStages, setExpandedStages] = useState<string[]>(DEAL_STAGES.slice());
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(STAGE_GROUPS.map(g => g.id));
 
   // Stage change modal state
   const [changingDeal, setChangingDeal] = useState<DealListDto | null>(null);
@@ -103,26 +113,28 @@ export default function AdminDeals() {
   };
 
   const getDaysInStage = (deal: DealListDto) => {
-    const days = Math.floor((Date.now() - new Date(deal.stageChangedAt).getTime()) / 86400000);
-    return days;
+    return Math.floor((Date.now() - new Date(deal.stageChangedAt).getTime()) / 86400000);
   };
 
-  // Check scroll overflow for hint
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const check = () => setShowScrollHint(el.scrollWidth > el.clientWidth && el.scrollLeft + el.clientWidth < el.scrollWidth - 10);
-    check();
-    el.addEventListener('scroll', check);
-    window.addEventListener('resize', check);
-    return () => { el.removeEventListener('scroll', check); window.removeEventListener('resize', check); };
-  }, [kanban]);
+  /** Gather deals for a group from the kanban map */
+  const getGroupDeals = (group: StageGroup) =>
+    group.stages.flatMap(s => kanban?.[s] ?? []);
 
-  const DealCard = ({ deal }: { deal: DealListDto }) => {
+  const getGroupTotal = (deals: DealListDto[]) =>
+    deals.reduce((sum, d) => sum + (d.expectedValue ?? 0), 0);
+
+  /* ── Deal card ─────────────────────────────────────────────────────────── */
+
+  const DealCard = ({ deal, showStageBadge = false }: { deal: DealListDto; showStageBadge?: boolean }) => {
     const daysInStage = getDaysInStage(deal);
     return (
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => openStageChange(deal)}>
         <CardContent className="p-3 space-y-2">
+          {showStageBadge && (
+            <Badge variant="outline" className={`text-[10px] ${stageColors[deal.stage] ?? ''}`}>
+              {t(`admin.deals.stages.${deal.stage}`)}
+            </Badge>
+          )}
           <div className="flex items-start justify-between gap-2">
             <Link to={`/admin/deals/${deal.id}`} className="text-sm font-medium text-[hsl(0_0%_20%)] hover:text-[hsl(43_50%_54%)] line-clamp-2" onClick={(e) => e.stopPropagation()}>
               {deal.title}
@@ -219,8 +231,8 @@ export default function AdminDeals() {
       {/* Kanban / Accordion */}
       {isLoading ? (
         <div className="space-y-3">
-          {DEAL_STAGES.slice(0, 3).map(stage => (
-            <Card key={stage}>
+          {STAGE_GROUPS.slice(0, 3).map(g => (
+            <Card key={g.id}>
               <CardContent className="p-4 space-y-2">
                 <Skeleton className="h-4 w-24" />
                 <Skeleton className="h-16 w-full" />
@@ -230,23 +242,23 @@ export default function AdminDeals() {
         </div>
       ) : (
         <>
-          {/* Narrow (<1024px): Vertical accordion */}
+          {/* Mobile / Tablet (<1024px): Accordion with 5 groups */}
           <div className="lg:hidden">
-            <Accordion type="multiple" value={expandedStages} onValueChange={setExpandedStages}>
-              {DEAL_STAGES.map(stage => {
-                const deals = kanban?.[stage] ?? [];
-                const totalValue = deals.reduce((sum, d) => sum + (d.expectedValue ?? 0), 0);
+            <Accordion type="multiple" value={expandedGroups} onValueChange={setExpandedGroups}>
+              {STAGE_GROUPS.map(group => {
+                const deals = getGroupDeals(group);
+                const totalValue = getGroupTotal(deals);
                 return (
-                  <AccordionItem key={stage} value={stage} className="border-b-0 mb-2">
+                  <AccordionItem key={group.id} value={group.id} className="border-b-0 mb-2">
                     <Card className="overflow-hidden">
                       <AccordionTrigger className="px-4 py-3 hover:no-underline bg-secondary hover:bg-muted transition-colors">
                         <div className="flex items-center gap-2 flex-1">
-                          <span className="text-xs font-nav uppercase tracking-wider text-muted-foreground">
-                            {t(`admin.deals.stages.${stage}`)}
+                          <span className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_30%)]">
+                            {t(`admin.deals.groups.${group.id}`)}
                           </span>
-                          <Badge variant="outline" className="text-[10px] h-5 min-w-[20px] justify-center">{deals.length}</Badge>
+                          <Badge variant="outline" className="text-[10px] h-5 min-w-[20px] justify-center text-[hsl(0_0%_30%)]">{deals.length}</Badge>
                           {totalValue > 0 && (
-                            <span className="text-xs text-muted-foreground ml-auto mr-2">€{totalValue.toLocaleString()}</span>
+                            <span className="text-xs text-[hsl(0_0%_50%)] ml-auto mr-2">€{totalValue.toLocaleString()}</span>
                           )}
                         </div>
                       </AccordionTrigger>
@@ -254,7 +266,7 @@ export default function AdminDeals() {
                         {deals.length === 0 ? (
                           <EmptyState compact icon={Briefcase} title={t('admin.deals.kanbanEmpty')} />
                         ) : (
-                          deals.map(deal => <DealCard key={deal.id} deal={deal} />)
+                          deals.map(deal => <DealCard key={deal.id} deal={deal} showStageBadge={group.stages.length > 1} />)
                         )}
                       </AccordionContent>
                     </Card>
@@ -264,44 +276,37 @@ export default function AdminDeals() {
             </Accordion>
           </div>
 
-          {/* Wide / Medium (≥1024px): Horizontal kanban */}
-          <div className="hidden lg:block relative">
-            <div ref={scrollRef} className="overflow-x-auto pb-4">
-              <div className="flex gap-3 min-w-max">
-                {DEAL_STAGES.map(stage => {
-                  const deals = kanban?.[stage] ?? [];
-                  const totalValue = deals.reduce((sum, d) => sum + (d.expectedValue ?? 0), 0);
-                  return (
-                    <div key={stage} className="w-[220px] min-w-[180px] shrink-0">
-                      <div className="bg-secondary rounded-t-lg px-3 py-2.5 border border-b-0 border-border">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-nav uppercase tracking-wider text-muted-foreground">
-                            {t(`admin.deals.stages.${stage}`)}
-                          </span>
-                          <Badge variant="outline" className="text-[10px]">{deals.length}</Badge>
-                        </div>
-                        {totalValue > 0 && (
-                          <p className="text-xs text-muted-foreground mt-0.5">€{totalValue.toLocaleString()}</p>
-                        )}
-                      </div>
-                      <div className="bg-card border border-t-0 border-border rounded-b-lg p-2 space-y-2 min-h-[120px]">
-                        {deals.length === 0 && (
-                          <EmptyState compact icon={Briefcase} title={t('admin.deals.kanbanEmpty')} />
-                        )}
-                        {deals.map(deal => <DealCard key={deal.id} deal={deal} />)}
-                      </div>
+          {/* Desktop (≥1024px): 5 grouped columns that fit without scroll */}
+          <div className="hidden lg:grid lg:grid-cols-5 gap-3">
+            {STAGE_GROUPS.map(group => {
+              const deals = getGroupDeals(group);
+              const totalValue = getGroupTotal(deals);
+              return (
+                <div key={group.id} className="min-w-0">
+                  <div className={`rounded-t-lg px-3 py-2.5 border border-b-0 ${group.color}`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_30%)]">
+                        {t(`admin.deals.groups.${group.id}`)}
+                      </span>
+                      <Badge variant="outline" className="text-[10px] text-[hsl(0_0%_30%)]">{deals.length}</Badge>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-            {/* Scroll hint gradient */}
-            {showScrollHint && (
-              <div className="absolute right-0 top-0 bottom-4 w-8 bg-gradient-to-l from-[hsl(0_0%_96%)] to-transparent pointer-events-none" />
-            )}
+                    {totalValue > 0 && (
+                      <p className="text-xs text-[hsl(0_0%_45%)] mt-0.5">€{totalValue.toLocaleString()}</p>
+                    )}
+                  </div>
+                  <div className="bg-card border border-t-0 border-border rounded-b-lg p-2 space-y-2 min-h-[120px] max-h-[70vh] overflow-y-auto">
+                    {deals.length === 0 && (
+                      <EmptyState compact icon={Briefcase} title={t('admin.deals.kanbanEmpty')} />
+                    )}
+                    {deals.map(deal => <DealCard key={deal.id} deal={deal} showStageBadge={group.stages.length > 1} />)}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </>
       )}
+
       {/* Stage Change Modal */}
       <Dialog open={!!changingDeal} onOpenChange={() => setChangingDeal(null)}>
         <DialogContent>
