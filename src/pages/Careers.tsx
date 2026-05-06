@@ -33,7 +33,7 @@ export default function Careers() {
       </section>
 
       {/* Listings */}
-      <section className="py-16 px-6">
+      <section className="py-16 px-6 min-h-[50vh]">
         <div className="container mx-auto max-w-4xl">
           {isLoading ? (
             <div className="flex items-center justify-center py-32">
@@ -45,9 +45,9 @@ export default function Careers() {
                 {t('careers.loadFailed')}
               </p>
             </div>
-          ) : careers && careers.length > 0 ? (
+          ) : (careers ?? []).length > 0 ? (
             <div className="space-y-4">
-              {careers.map((career, i) => (
+              {(careers ?? []).map((career, i) => (
                 <motion.div
                   key={career.id}
                   initial={{ opacity: 0, y: 20 }}
