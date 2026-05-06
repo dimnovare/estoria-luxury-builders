@@ -178,7 +178,7 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="min-h-screen bg-[hsl(0_0%_96%)] flex">
+    <div className="min-h-screen bg-[hsl(0_0%_96%)] flex admin-theme">
       {/* Mobile overlay */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={() => setMobileOpen(false)} />
@@ -187,7 +187,7 @@ export default function AdminLayout() {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed top-0 left-0 bottom-0 z-50 bg-background border-r border-border transition-all duration-300',
+          'fixed top-0 left-0 bottom-0 z-50 bg-[hsl(0_0%_4%)] border-r border-[hsl(0_0%_15%)] transition-all duration-300',
           collapsed ? 'w-16' : 'w-60',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
@@ -196,7 +196,7 @@ export default function AdminLayout() {
         {/* Collapse button - desktop */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="hidden lg:flex absolute -right-3 top-20 h-6 w-6 items-center justify-center rounded-full bg-background border border-border text-muted-foreground hover:text-foreground"
+          className="hidden lg:flex absolute -right-3 top-20 h-6 w-6 items-center justify-center rounded-full bg-[hsl(0_0%_4%)] border border-[hsl(0_0%_15%)] text-[hsl(0_0%_60%)] hover:text-[hsl(40_33%_95%)]"
         >
           <ChevronLeft className={cn('h-3 w-3 transition-transform', collapsed && 'rotate-180')} />
         </button>
