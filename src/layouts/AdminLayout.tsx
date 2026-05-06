@@ -84,6 +84,7 @@ export default function AdminLayout() {
   const { data: inboxCounts } = useInboxCounts();
   const inboxUnread = inboxCounts?.inbox ?? 0;
 
+  const handleLogout = () => {
     logout();
     navigate('/admin/login');
   };
