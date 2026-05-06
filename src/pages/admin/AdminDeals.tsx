@@ -110,14 +110,16 @@ export default function AdminDeals() {
     return days;
   };
 
-  const toggleStage = (stage: string) => {
-    setExpandedStages(prev => {
-      const next = new Set(prev);
-      if (next.has(stage)) next.delete(stage);
-      else next.add(stage);
-      return next;
-    });
-  };
+  // Check scroll overflow for hint
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const check = () => setShowScrollHint(el.scrollWidth > el.clientWidth && el.scrollLeft + el.clientWidth < el.scrollWidth - 10);
+    check();
+    el.addEventListener('scroll', check);
+    window.addEventListener('resize', check);
+    return () => { el.removeEventListener('scroll', check); window.removeEventListener('resize', check); };
+  }, [kanban]);
 
   const DealCard = ({ deal }: { deal: DealListDto }) => {
     const daysInStage = getDaysInStage(deal);
