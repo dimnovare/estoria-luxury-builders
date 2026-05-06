@@ -1,0 +1,194 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import api from '@/lib/api';
+import { toast } from 'sonner';
+import i18n from '@/i18n';
+
+// ── Types ──────────────────────────────────────────────────────────────────────
+
+export type InboxFolder = 'inbox' | 'sent' | 'archive' | 'all';
+
+export interface InboxAttachment {
+  id: string;
+  filename: string;
+  contentType: string;
+  size: number;
+}
+
+export interface InboxMessageSummary {
+  id: string;
+  folder: InboxFolder;
+  from: string;
+  fromName: string;
+  to: string[];
+  subject: string;
+  preview: string;
+  receivedAt: string;
+  isRead: boolean;
+  hasAttachments: boolean;
+  linkedContactId?: string;
+  linkedContactName?: string;
+  linkedDealId?: string;
+  linkedDealTitle?: string;
+}
+
+export interface InboxMessageDetail extends InboxMessageSummary {
+  cc: string[];
+  bodyHtml: string;
+  attachments: InboxAttachment[];
+}
+
+export interface SendMessagePayload {
+  to: string[];
+  cc?: string[];
+  subject: string;
+  bodyHtml: string;
+  attachments?: { filename: string; contentType: string; base64: string }[];
+  replyToMessageId?: string;
+}
+
+export interface LinkMessagePayload {
+  contactId?: string | null;
+  dealId?: string | null;
+}
+
+export interface InboxFolderCounts {
+  inbox: number;
+  sent: number;
+  archive: number;
+  all: number;
+}
+
+// ── Hooks ──────────────────────────────────────────────────────────────────────
+
+const KEYS = {
+  messages: (folder: InboxFolder, filters?: Record<string, unknown>) =>
+    ['inbox', 'messages', folder, filters] as const,
+  message: (id: string) => ['inbox', 'message', id] as const,
+  counts: ['inbox', 'counts'] as const,
+};
+
+export function useInboxCounts() {
+  return useQuery({
+    queryKey: KEYS.counts,
+    queryFn: async () => {
+      const { data } = await api.get<InboxFolderCounts>('/admin/inbox/counts');
+      return data;
+    },
+  });
+}
+
+export function useInboxMessages(
+  folder: InboxFolder,
+  filters?: { unread?: boolean; hasAttachments?: boolean; linkedToDeal?: boolean },
+) {
+  return useQuery({
+    queryKey: KEYS.messages(folder, filters as Record<string, unknown>),
+    queryFn: async () => {
+      const { data } = await api.get<InboxMessageSummary[]>('/admin/inbox/messages', {
+        params: { folder, ...filters },
+      });
+      return data;
+    },
+  });
+}
+
+export function useInboxMessage(id: string | null) {
+  return useQuery({
+    queryKey: KEYS.message(id!),
+    queryFn: async () => {
+      const { data } = await api.get<InboxMessageDetail>(`/admin/inbox/messages/${id}`);
+      return data;
+    },
+    enabled: !!id,
+  });
+}
+
+export function useSendInboxMessage() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: SendMessagePayload) => {
+      const { data } = await api.post('/admin/inbox/send', payload);
+      return data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['inbox'] });
+      toast.success(i18n.t('admin.inbox.toast.sent'));
+    },
+    onError: () => {
+      toast.error(i18n.t('admin.inbox.toast.sendError'));
+    },
+  });
+}
+
+export function useMarkRead() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await api.post(`/admin/inbox/messages/${id}/read`);
+    },
+    onMutate: async (id) => {
+      // Optimistic: mark as read in all cached message lists
+      qc.setQueriesData<InboxMessageSummary[]>(
+        { queryKey: ['inbox', 'messages'] },
+        (old) => old?.map((m) => (m.id === id ? { ...m, isRead: true } : m)),
+      );
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: KEYS.counts });
+    },
+  });
+}
+
+export function useArchiveMessage() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await api.post(`/admin/inbox/messages/${id}/archive`);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['inbox'] });
+      toast.success(i18n.t('admin.inbox.toast.archived'));
+    },
+    onError: () => {
+      toast.error(i18n.t('admin.inbox.toast.archiveError'));
+    },
+  });
+}
+
+export function useLinkMessage() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, payload }: { id: string; payload: LinkMessagePayload }) => {
+      await api.post(`/admin/inbox/messages/${id}/link`, payload);
+    },
+    onSuccess: (_, { id }) => {
+      qc.invalidateQueries({ queryKey: KEYS.message(id) });
+      qc.invalidateQueries({ queryKey: ['inbox', 'messages'] });
+      toast.success(i18n.t('admin.inbox.toast.linked'));
+    },
+    onError: () => {
+      toast.error(i18n.t('admin.inbox.toast.linkError'));
+    },
+  });
+}
+
+export function useDownloadAttachment() {
+  return useMutation({
+    mutationFn: async ({ messageId, attachmentId, filename }: { messageId: string; attachmentId: string; filename: string }) => {
+      const { data } = await api.get(`/admin/inbox/messages/${messageId}/attachments/${attachmentId}`, {
+        responseType: 'blob',
+      });
+      const url = URL.createObjectURL(data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    },
+    onError: () => {
+      toast.error(i18n.t('admin.inbox.toast.downloadError'));
+    },
+  });
+}
