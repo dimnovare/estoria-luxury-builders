@@ -56,9 +56,16 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('estoria-admin-token');
-      if (window.location.pathname.startsWith('/admin')) {
-        window.location.href = '/admin/login';
+      // Skip redirect for the login endpoint itself — the Login page's
+      // catch handler shows the inline error. Only redirect when an
+      // ALREADY-authenticated session expires mid-use.
+      const url = error.config?.url ?? '';
+      const isLoginAttempt = url.endsWith('/auth/login') || url.includes('/auth/login?');
+      if (!isLoginAttempt) {
+        localStorage.removeItem('estoria-admin-token');
+        if (window.location.pathname.startsWith('/admin')) {
+          window.location.href = '/admin/login';
+        }
       }
     }
     return Promise.reject(error);

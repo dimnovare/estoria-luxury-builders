@@ -34,6 +34,6 @@ export function useSiteSettings() {
       }
     },
     retry: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes — these change rarely
+    staleTime: 60_000, // 1 minute — short enough for admin edits to surface quickly
   });
 }
