@@ -269,6 +269,16 @@ export function useDeletePropertyImage() {
   });
 }
 
+export function useSetPropertyStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) =>
+      api.patch(`/admin/properties/${id}/status`, { status }),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: ['admin', 'properties'] }),
+  });
+}
+
 // ── Blog ───────────────────────────────────────────────────────────────────────
 
 export function useAdminBlogPosts(page = 1) {

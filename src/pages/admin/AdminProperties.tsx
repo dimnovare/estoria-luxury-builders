@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useAdminProperties, useDeleteProperty } from '@/hooks/api/useAdmin';
+import { useAdminProperties, useDeleteProperty, useSetPropertyStatus } from '@/hooks/api/useAdmin';
 import { propertyTypeLabel, transactionTypeLabel, propertyStatusLabel } from '@/lib/enumLabels';
 import { toast } from 'sonner';
 
@@ -29,6 +29,7 @@ export default function AdminProperties() {
 
   const { data, isLoading } = useAdminProperties();
   const deleteProperty = useDeleteProperty();
+  const setStatus = useSetPropertyStatus();
 
   const properties = data?.items ?? [];
 
@@ -44,6 +45,16 @@ export default function AdminProperties() {
       toast.success(t('admin.properties.toast.deleted'));
     } catch {
       toast.error(t('admin.properties.toast.deleteFailed'));
+    }
+  };
+
+  const handleToggleStatus = async (id: string, currentStatus: string) => {
+    const next = currentStatus === 'Active' ? 'Draft' : 'Active';
+    try {
+      await setStatus.mutateAsync({ id, status: next });
+      toast.success(next === 'Active' ? t('admin.properties.toast.published') : t('admin.properties.toast.unpublished'));
+    } catch {
+      toast.error(t('admin.properties.toast.statusFailed'));
     }
   };
 
@@ -135,6 +146,15 @@ export default function AdminProperties() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost" size="icon"
+                        className={`h-8 w-8 ${p.status === 'Active' ? 'text-green-600 hover:text-amber-600' : 'text-[hsl(0_0%_50%)] hover:text-green-600'}`}
+                        onClick={() => handleToggleStatus(p.id, p.status)}
+                        disabled={setStatus.isPending}
+                        title={p.status === 'Active' ? t('admin.properties.unpublish') : t('admin.properties.publish')}
+                      >
+                        {p.status === 'Active' ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                      </Button>
                       <Button
                         variant="ghost" size="icon"
                         asChild
