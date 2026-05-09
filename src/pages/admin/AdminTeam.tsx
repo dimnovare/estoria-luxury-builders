@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -329,7 +329,12 @@ export default function AdminTeam() {
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.team.fields.bio')}</Label>
-                    <Textarea rows={4} value={translations[lang]?.bio || ''} onChange={e => updateTrans(lang, 'bio', e.target.value)} className={inputClass} />
+                    <RichTextEditor
+                      value={translations[lang]?.bio ?? ''}
+                      onChange={(html) => updateTrans(lang, 'bio', html)}
+                      placeholder="Team member biography..."
+                      minHeight="150px"
+                    />
                   </div>
                 </TabsContent>
               ))}

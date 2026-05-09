@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -397,7 +397,12 @@ export default function PropertyForm() {
                     </div>
                     <div className="space-y-2">
                       <Label className={labelClass}>{t('admin.properties.fields.description')}</Label>
-                      <Textarea rows={8} value={translations[lang]?.description || ''} onChange={e => updateTranslation(lang, 'description', e.target.value)} className={inputClass} />
+                      <RichTextEditor
+                        value={translations[lang]?.description ?? ''}
+                        onChange={(html) => updateTranslation(lang, 'description', html)}
+                        placeholder="Property description..."
+                        minHeight="200px"
+                      />
                     </div>
                   </TabsContent>
                 ))}
