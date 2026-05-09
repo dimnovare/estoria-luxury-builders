@@ -438,7 +438,7 @@ export default function AdminInbox() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-heading font-semibold text-[hsl(0_0%_20%)]">{t('admin.inbox.title')}</h1>
-          <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.inbox.subtitle')}</p>
+          <p className="text-sm text-[hsl(0_0%_50%)]">Shared mailbox for info@estoria.estate. Emails appear here when Microsoft Graph is configured. For contact form submissions, see Messages.</p>
         </div>
         <Button size="sm" onClick={() => setComposer({})}>
           <Mail className="h-4 w-4 mr-1" />

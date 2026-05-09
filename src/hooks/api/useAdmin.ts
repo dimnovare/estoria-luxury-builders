@@ -623,6 +623,22 @@ export function useUpdateContactStatus() {
   });
 }
 
+export function useContactMessageUnreadCount() {
+  return useQuery<number>({
+    queryKey: ['admin', 'contact-messages', 'unread-count'],
+    queryFn: async () => {
+      const { data } = await api.get<{ items: { status: string }[]; totalCount: number }>(
+        '/admin/contact-messages',
+        { params: { page: 1, pageSize: 100 } }
+      );
+      const items: { status: string }[] = data.items ?? [];
+      return items.filter(m => m.status === 'New').length;
+    },
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+  });
+}
+
 // ── Stats ──────────────────────────────────────────────────────────────────────
 
 export interface AdminStats {

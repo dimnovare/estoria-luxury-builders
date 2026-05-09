@@ -365,7 +365,7 @@ export default function AdminSettings() {
     <div className="space-y-6 max-w-3xl">
       <div>
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.settings.title')}</h1>
-        <p className="text-sm text-[hsl(0_0%_50%)] mt-1">{t('admin.settings.subtitle')}</p>
+        <p className="text-sm text-[hsl(0_0%_45%)] mt-1">Global site settings — contact details, social links, and stats shown throughout the public site. Changes take effect within 30 seconds.</p>
       </div>
 
       {isLoading && <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.common.loading')}</p>}

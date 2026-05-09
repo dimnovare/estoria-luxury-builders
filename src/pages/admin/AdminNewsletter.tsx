@@ -402,6 +402,7 @@ export default function AdminNewsletter() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.newsletter.title')}</h1>
+      <p className="text-sm text-[hsl(0_0%_45%)] mt-1 mb-4">Send email newsletters to subscribers. Use the Compose tab to write a campaign, then send a test to yourself before broadcasting.</p>
 
       <Tabs defaultValue="compose">
         <TabsList>

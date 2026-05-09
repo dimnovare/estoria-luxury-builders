@@ -40,9 +40,12 @@ export default function AdminBlog() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.blog.title')}</h1>
-        <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.blog.title')}</h1>
+          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">Write and publish blog articles. Save as Draft to preview before publishing. Each post supports Estonian, English, and Russian content.</p>
+        </div>
+        <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
           <Link to="/admin/blog/new"><Plus className="h-4 w-4 mr-2" />{t('admin.blog.addNew')}</Link>
         </Button>
       </div>

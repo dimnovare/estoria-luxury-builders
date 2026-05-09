@@ -143,6 +143,7 @@ export function usePageContent(pageKey: string) {
   return useQuery<PageContent>({
     queryKey: ['pageContent', pageKey, i18n.language],
     queryFn: () => api.get(`/pages/${pageKey}`).then(r => asObject<PageContent>(r.data, {})).catch(() => ({})),
+    staleTime: 30_000,
     retry: false,
   });
 }

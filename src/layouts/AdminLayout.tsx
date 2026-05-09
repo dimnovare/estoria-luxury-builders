@@ -10,6 +10,7 @@ import {
 import type { TFunction } from 'i18next';
 import { useAuth, type UserRole } from '@/hooks/useAuth';
 import { useInboxCounts } from '@/hooks/api/useInbox';
+import { useContactMessageUnreadCount } from '@/hooks/api/useAdmin';
 import { cn } from '@/lib/utils';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
@@ -83,6 +84,7 @@ export default function AdminLayout() {
 
   const { data: inboxCounts } = useInboxCounts();
   const inboxUnread = inboxCounts?.inbox ?? 0;
+  const { data: unreadContacts = 0 } = useContactMessageUnreadCount();
 
   const handleLogout = () => {
     logout();
@@ -143,6 +145,11 @@ export default function AdminLayout() {
                   {!collapsed && item.key === 'inbox' && inboxUnread > 0 && (
                     <span className="ml-auto text-[10px] font-semibold bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
                       {inboxUnread}
+                    </span>
+                  )}
+                  {!collapsed && item.key === 'messages' && unreadContacts > 0 && (
+                    <span className="ml-auto text-[10px] font-semibold bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                      {unreadContacts}
                     </span>
                   )}
                 </Link>

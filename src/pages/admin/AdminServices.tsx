@@ -128,8 +128,11 @@ export default function AdminServices() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.services.title')}</h1>
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.services.title')}</h1>
+          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">Edit the services shown on the homepage and /services page. Use Lucide icon names (e.g. home, key, building2, scale) for the icon field.</p>
+        </div>
         <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
           <Plus className="h-4 w-4 mr-2" />{t('admin.services.addNew')}
         </Button>

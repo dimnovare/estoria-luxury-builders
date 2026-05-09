@@ -78,6 +78,7 @@ export default function AuditLog() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.audit.title')}</h1>
+      <p className="text-sm text-[hsl(0_0%_45%)] mt-1 mb-4">System log of all admin actions. Use for troubleshooting or compliance review.</p>
 
       {/* Filters */}
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
