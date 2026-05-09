@@ -36,7 +36,12 @@ function ToolbarBtn({ onClick, active, disabled, title, children }: ToolbarBtnPr
   return (
     <button
       type="button"
-      onClick={onClick}
+      onMouseDown={(e) => {
+        // Prevent the editor from losing focus and stop dialog/form interference
+        e.preventDefault();
+        e.stopPropagation();
+        onClick();
+      }}
       disabled={disabled}
       title={title}
       aria-label={title}
