@@ -29,6 +29,7 @@ import {
   type LinkMessagePayload,
 } from '@/hooks/api/useInbox';
 import InboxComposer, { type ComposerPrefill } from './InboxComposer';
+import SenderActionsPanel from '@/components/admin/SenderActionsPanel';
 import { cn } from '@/lib/utils';
 
 // ── Folder config ──────────────────────────────────────────────────────────────
@@ -523,15 +524,20 @@ export default function AdminInbox() {
 
           {/* RIGHT pane — message detail */}
           {showDetailPane && !(isMobile && showFolders) && (
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
               {selectedMessage ? (
-                <MessageDetail
-                  message={selectedMessage}
-                  onBack={() => setSelectedId(null)}
-                  onReply={() => setComposer(buildReplyPrefill('reply')!)}
-                  onReplyAll={() => setComposer(buildReplyPrefill('replyAll')!)}
-                  onForward={() => setComposer(buildReplyPrefill('forward')!)}
-                />
+                <>
+                  <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+                    <MessageDetail
+                      message={selectedMessage}
+                      onBack={() => setSelectedId(null)}
+                      onReply={() => setComposer(buildReplyPrefill('reply')!)}
+                      onReplyAll={() => setComposer(buildReplyPrefill('replyAll')!)}
+                      onForward={() => setComposer(buildReplyPrefill('forward')!)}
+                    />
+                  </div>
+                  <SenderActionsPanel message={selectedMessage} />
+                </>
               ) : (
                 <div className="flex-1 flex items-center justify-center text-sm text-muted-foreground">
                   {t('admin.inbox.selectMessage')}
