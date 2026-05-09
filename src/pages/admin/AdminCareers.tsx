@@ -199,7 +199,7 @@ export default function AdminCareers() {
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.careers.fields.description')}</Label>
-                    <Textarea rows={8} value={translations[lang]?.description || ''} onChange={e => updateTrans(lang, 'description', e.target.value)} className={inputClass} />
+                    <RichTextEditor value={translations[lang]?.description || ''} onChange={(html) => updateTrans(lang, 'description', html)} placeholder={t('admin.careers.fields.description')} minHeight="200px" />
                   </div>
                 </TabsContent>
               ))}
