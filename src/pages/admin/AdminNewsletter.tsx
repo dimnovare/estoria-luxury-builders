@@ -113,7 +113,7 @@ function ComposeTab() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_45%)]">{t('admin.newsletter.compose.subject')}</FormLabel>
-                  <FormControl><Input {...field} className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" /></FormControl>
+                  <FormControl><Input {...field} className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_55%)]" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
