@@ -153,7 +153,12 @@ export default function AdminPages() {
                     </div>
                     <div className="space-y-2">
                       <Label className={labelClass}>{t('admin.pages.fields.body')}</Label>
-                      <Textarea rows={6} value={translations[lang]?.body || ''} onChange={e => updateTrans(lang, 'body', e.target.value)} className={inputClass} />
+                      <RichTextEditor
+                        value={translations[lang]?.body || ''}
+                        onChange={(html) => updateTrans(lang, 'body', html)}
+                        placeholder={t('admin.pages.fields.body')}
+                        minHeight="240px"
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label className={labelClass}>{t('admin.pages.fields.imageUrl')}</Label>
