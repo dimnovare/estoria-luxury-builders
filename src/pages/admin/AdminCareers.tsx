@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -199,7 +199,7 @@ export default function AdminCareers() {
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.careers.fields.description')}</Label>
-                    <Textarea rows={8} value={translations[lang]?.description || ''} onChange={e => updateTrans(lang, 'description', e.target.value)} className={inputClass} />
+                    <RichTextEditor value={translations[lang]?.description || ''} onChange={(html) => updateTrans(lang, 'description', html)} placeholder={t('admin.careers.fields.description')} minHeight="200px" />
                   </div>
                 </TabsContent>
               ))}

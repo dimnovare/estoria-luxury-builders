@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAdminPages, useUpdatePage, type AdminPage, toBeLang } from '@/hooks/api/useAdmin';
 import { toast } from 'sonner';
@@ -152,7 +152,12 @@ export default function AdminPages() {
                     </div>
                     <div className="space-y-2">
                       <Label className={labelClass}>{t('admin.pages.fields.body')}</Label>
-                      <Textarea rows={6} value={translations[lang]?.body || ''} onChange={e => updateTrans(lang, 'body', e.target.value)} className={inputClass} />
+                      <RichTextEditor
+                        value={translations[lang]?.body || ''}
+                        onChange={(html) => updateTrans(lang, 'body', html)}
+                        placeholder={t('admin.pages.fields.body')}
+                        minHeight="240px"
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label className={labelClass}>{t('admin.pages.fields.imageUrl')}</Label>

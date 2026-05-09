@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -112,7 +112,7 @@ function ComposeTab() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_45%)]">{t('admin.newsletter.compose.subject')}</FormLabel>
-                  <FormControl><Input {...field} className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" /></FormControl>
+                  <FormControl><Input {...field} className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_55%)]" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -147,7 +147,12 @@ function ComposeTab() {
                 <FormItem>
                   <FormLabel className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_45%)]">{t('admin.newsletter.compose.body')}</FormLabel>
                   <FormControl>
-                    <Textarea {...field} rows={14} className="font-mono text-sm bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" />
+                    <RichTextEditor
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder={t('admin.newsletter.compose.body')}
+                      minHeight="320px"
+                    />
                   </FormControl>
                   <p className="text-xs text-[hsl(0_0%_50%)]">{t('admin.newsletter.compose.bodyHelp')}</p>
                   <FormMessage />

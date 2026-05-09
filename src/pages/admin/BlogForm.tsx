@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -194,7 +195,12 @@ export default function BlogForm() {
                 </div>
                 <div className="space-y-2">
                   <Label className={labelClass}>{t('admin.blog.fields.content')}</Label>
-                  <Textarea rows={12} value={translations[lang]?.content || ''} onChange={e => updateT(lang, 'content', e.target.value)} className={inputClass} />
+                  <RichTextEditor
+                    value={translations[lang]?.content || ''}
+                    onChange={(html) => updateT(lang, 'content', html)}
+                    placeholder={t('admin.blog.fields.content')}
+                    minHeight="400px"
+                  />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
