@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   useAdminServices,
@@ -222,7 +222,12 @@ export default function AdminServices() {
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.services.fields.description')}</Label>
-                    <Textarea rows={4} value={translations[lang]?.description || ''} onChange={e => updateTrans(lang, 'description', e.target.value)} className={inputClass} />
+                    <RichTextEditor
+                      value={translations[lang]?.description ?? ''}
+                      onChange={(html) => updateTrans(lang, 'description', html)}
+                      placeholder="Service description..."
+                      minHeight="160px"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.services.fields.priceInfo')}</Label>

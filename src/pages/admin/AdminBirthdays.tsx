@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EmptyState } from '@/components/admin/EmptyState';
@@ -192,12 +192,14 @@ export default function AdminBirthdays() {
                   </div>
                   <div>
                     <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.birthday.fields.bodyHtml')}</Label>
-                    <Textarea
-                      value={getTemplate(lang).bodyHtml}
-                      onChange={(e) => updateTemplate(lang, 'bodyHtml', e.target.value)}
-                      className="mt-1 bg-secondary border-border font-mono text-sm"
-                      rows={8}
-                    />
+                    <div className="mt-1">
+                      <RichTextEditor
+                        value={getTemplate(lang).bodyHtml}
+                        onChange={(html) => updateTemplate(lang, 'bodyHtml', html)}
+                        placeholder="Birthday email body..."
+                        minHeight="200px"
+                      />
+                    </div>
                   </div>
                   <Button
                     className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]"
