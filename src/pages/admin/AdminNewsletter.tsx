@@ -148,7 +148,12 @@ function ComposeTab() {
                 <FormItem>
                   <FormLabel className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_45%)]">{t('admin.newsletter.compose.body')}</FormLabel>
                   <FormControl>
-                    <Textarea {...field} rows={14} className="font-mono text-sm bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" />
+                    <RichTextEditor
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder={t('admin.newsletter.compose.body')}
+                      minHeight="320px"
+                    />
                   </FormControl>
                   <p className="text-xs text-[hsl(0_0%_50%)]">{t('admin.newsletter.compose.bodyHelp')}</p>
                   <FormMessage />
