@@ -58,8 +58,8 @@ export default function Index() {
   const statBlocks: Array<{ value: string; labelKey: string }> = stats
     ? [
         { value: `${stats.propertiesActive}+`,    labelKey: 'home.stats.properties'    },
-        { value: `${stats.yearsExperience} yrs`,  labelKey: 'home.stats.experience'    },
-        { value: `${stats.satisfactionPercent}%`, labelKey: 'home.stats.satisfaction'  },
+        ...(stats.yearsExperience     != null ? [{ value: `${stats.yearsExperience} yrs`,  labelKey: 'home.stats.experience'   }] : []),
+        ...(stats.satisfactionPercent != null ? [{ value: `${stats.satisfactionPercent}%`, labelKey: 'home.stats.satisfaction' }] : []),
         { value: 'ET · EN · RU',                  labelKey: 'home.stats.languages'     },
       ]
     : [];

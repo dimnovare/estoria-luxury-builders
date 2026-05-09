@@ -14,8 +14,8 @@ const asObject = <T extends object>(value: unknown, fallback: T): T =>
 export interface PublicStats {
   propertiesActive: number;
   successfulDeals: number;
-  yearsExperience: number;
-  satisfactionPercent: number;
+  yearsExperience: number | null;
+  satisfactionPercent: number | null;
   languages: string[];
 }
 
@@ -104,8 +104,9 @@ const normaliseStats = (raw: unknown): PublicStats => {
   return {
     propertiesActive:    typeof safe.propertiesActive    === 'number' ? safe.propertiesActive    : 0,
     successfulDeals:     typeof safe.successfulDeals     === 'number' ? safe.successfulDeals     : 0,
-    yearsExperience:     typeof safe.yearsExperience     === 'number' ? safe.yearsExperience     : 0,
-    satisfactionPercent: typeof safe.satisfactionPercent === 'number' ? safe.satisfactionPercent : 0,
+    // null means "admin cleared this field" → hide the block entirely on the frontpage
+    yearsExperience:     typeof safe.yearsExperience     === 'number' ? safe.yearsExperience     : null,
+    satisfactionPercent: typeof safe.satisfactionPercent === 'number' ? safe.satisfactionPercent : null,
     languages:           asArray<string>(safe.languages),
   };
 };
