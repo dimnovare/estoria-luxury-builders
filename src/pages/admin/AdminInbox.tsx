@@ -388,7 +388,7 @@ export default function AdminInbox() {
 
   const filterParams = useMemo(
     () => ({
-      unread: filters.has('unread') || undefined,
+      unreadOnly: filters.has('unread') || undefined,
       hasAttachments: filters.has('hasAttachments') || undefined,
       linkedToDeal: filters.has('linkedToDeal') || undefined,
     }),
