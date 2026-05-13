@@ -76,34 +76,45 @@ function FolderList({
 }: {
   activeFolder: InboxFolder;
   onSelect: (f: InboxFolder) => void;
-  // Backend returns counts for inbox/sent/archive (+ unread). 'all' isn't
-  // a server-side folder, so the badge stays absent for it — Partial keeps
-  // the type honest without forcing an unused server field.
-  counts?: Partial<Record<InboxFolder, number>>;
+  // Inbox shows UNREAD count (primary badge). Archive shows total (grey
+  // secondary badge). Sent and All don't get badges.
+  counts?: { inbox: number; unread: number; sent: number; archive: number };
 }) {
   const { t } = useTranslation();
+  const badgeFor = (key: InboxFolder): { value: number; variant: 'default' | 'secondary' } | null => {
+    if (!counts) return null;
+    if (key === 'inbox' && counts.unread > 0) return { value: counts.unread, variant: 'default' };
+    if (key === 'archive' && counts.archive > 0) return { value: counts.archive, variant: 'secondary' };
+    return null;
+  };
   return (
     <div className="space-y-0.5">
-      {FOLDERS.map(({ key, icon: Icon }) => (
-        <button
-          key={key}
-          onClick={() => onSelect(key)}
-          className={cn(
-            'w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors',
-            activeFolder === key
-              ? 'bg-primary/10 text-primary font-medium'
-              : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground',
-          )}
-        >
-          <Icon className="h-4 w-4 shrink-0" />
-          <span className="flex-1 text-left">{t(`admin.inbox.folders.${key}`)}</span>
-          {(counts?.[key] ?? 0) > 0 && (
-            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 min-w-[20px] justify-center">
-              {counts?.[key]}
-            </Badge>
-          )}
-        </button>
-      ))}
+      {FOLDERS.map(({ key, icon: Icon }) => {
+        const badge = badgeFor(key);
+        return (
+          <button
+            key={key}
+            onClick={() => onSelect(key)}
+            className={cn(
+              'w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors',
+              activeFolder === key
+                ? 'bg-primary/10 text-primary font-medium'
+                : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground',
+            )}
+          >
+            <Icon className="h-4 w-4 shrink-0" />
+            <span className="flex-1 text-left">{t(`admin.inbox.folders.${key}`)}</span>
+            {badge && (
+              <Badge
+                variant={badge.variant}
+                className="text-[10px] px-1.5 py-0 h-5 min-w-[20px] justify-center"
+              >
+                {badge.value}
+              </Badge>
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 }
