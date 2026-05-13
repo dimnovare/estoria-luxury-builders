@@ -86,8 +86,9 @@ export default function PropertyForm() {
     ru: { ...emptyTrans },
   });
 
-  const [features, setFeatures] = useState<string[]>([]);
-  const [newFeature, setNewFeature] = useState('');
+  type FeatureRow = { et: string; en: string; ru: string };
+  const emptyFeature: FeatureRow = { et: '', en: '', ru: '' };
+  const [features, setFeatures] = useState<FeatureRow[]>([]);
 
   // Pre-fill form when existing property loads
   useEffect(() => {
