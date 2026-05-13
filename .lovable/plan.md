@@ -1,73 +1,72 @@
+# Services Page Redesign — Editorial List Layout
 
+## Goal
+Replace the bulky alternating image-panel layout on `/services` with a compact, elegant editorial list that shows all services at a glance while keeping 100 % of the existing functionality.
 
-# ESTORIA — Premium Real Estate Website
+## What stays the same
+- Data source: `useServices()` hook + `Service` type (`id`, `slug`, `iconName`, `name`, `description`, `priceInfo`)
+- Icon resolution via `resolveServiceIcon(service.iconName)`
+- Slug-based anchor links (`id={service.slug || service.id}`)
+- Framer Motion scroll animations ( fade + horizontal slide )
+- Breadcrumb header, page title, subtitle (i18n via `useTranslation`)
+- Bottom CTA section with gold-gradient button
+- Error & loading skeleton states
+- Dark theme + gold accent (`hsl(43 50% 54%)`), Cormorant Garamond headings
 
-## Brand & Design System
-- Dark luxury aesthetic (#0a0a0a, #111111, #1a1a1a backgrounds)
-- Gold accents (#c9a84c, #d4af37) used sparingly
-- Cormorant Garamond for headings, DM Sans for body, Outfit for nav
-- Premium feel inspired by Four Seasons × Sotheby's
+## What changes
 
-## Core Infrastructure
-1. **i18n Setup** — ET (default), EN, RU with browser detection, static UI translations, API content served in correct language
-2. **API Layer** — Axios instance with auto `?lang=` param, React Query hooks for all endpoints (properties, blog, team, services, careers, page content)
-3. **Routing** — All routes including property detail, blog, team, services, careers, contact, admin placeholder, and 404
+### 1. Remove large decorative panels
+Delete the second column in the alternating grid (the `aspect-[4/3]` boxes with 80 px faded icons and decorative circles).
 
-## Navigation
-- Fixed transparent navbar → solid dark on scroll with smooth transition
-- ESTORIA gold logo (Cormorant Garamond, letter-spaced)
-- Center links in Outfit font, uppercase, gold underline hover animation
-- Language switcher (ET | EN | RU) + gold-bordered "Contact Us" button
-- Mobile: fullscreen dark overlay with stacked nav links
+### 2. New editorial list structure
+Replace the entire services loop with a single-column vertical list:
 
-## Footer
-- 4-column layout: Company info, Quick Links, Services, Contact
-- Dark background, gold accent lines, social icons, copyright bar
+```text
++-------------------------------------------------------------+
+| [icon]  Service Name                    [priceInfo]   [→]   |
+|         Description text...                                 |
++-------------------------------------------------------------+
+| ─── thin gold-accented divider ───                        |
++-------------------------------------------------------------+
+| [icon]  Service Name                    [priceInfo]   [→]   |
+|         Description text...                                 |
++-------------------------------------------------------------+
+```
 
-## Homepage Sections
+Each row:
+- **Left**: Small gold-tinted icon square (32–36 px) — no big circle background
+- **Center-left**: Service name (Cormorant Garamond, ~text-2xl) + description below
+- **Right**: `priceInfo` text (gold, uppercase, tracking-wider) + subtle arrow icon on hover
+- **Hover**: row background lightens slightly (`bg-[hsl(0_0%_12%)]`), arrow fades in and slides right
+- **Dividers**: thin 1 px lines with a small gold-gradient accent in the center
 
-### 1. Hero (100vh)
-- Video/image background from API with dark gradient overlay
-- Centered gold logo mark with floating animation
-- Staggered text reveal: title → subtitle → search bar
-- Search bar: City dropdown, Property Type, Buy/Rent toggle, gold Search button
-- Animated scroll indicator
+### 3. Mobile behavior
+Rows stack vertically. Icon sits above the text. Price info sits below the description. Full-width tap targets.
 
-### 2. Featured Properties
-- 3-column responsive grid of PropertyCard components
-- **PropertyCard** (reusable): 4:3 image with skeleton loading, hover scale + gold tint, sale/rent badge, price badge, title, address, specs (area, rooms, beds), gold border animation on hover
-- "View All Properties" gold outline button
+### 4. Animation
+Use `motion.div` with `whileInView` (fade + translateY) on each row. Stagger not needed — the rows entering viewport sequentially creates natural stagger.
 
-### 3. Services
-- Row of dark cards with Lucide icons (gold), title, description
-- Hover: lift with subtle gold glow
-- "View All Services" link
+### 5. Styling details
+- Row padding: `py-8` desktop, `py-6` mobile
+- Row hover: `transition-colors duration-300`
+- Icon container: `w-10 h-10 rounded-md` with `bg-[hsl(43_50%_54%/0.08)]` and `text-[hsl(43_50%_54%)]`
+- Title: `font-heading text-2xl md:text-3xl font-light text-foreground`
+- Description: `text-muted-foreground text-sm leading-relaxed`
+- Price: `text-[hsl(43_50%_54%)] font-nav text-xs uppercase tracking-wider`
+- Arrow: `opacity-0 group-hover:opacity-100 transition-all duration-300`
+- Divider: `h-px bg-border` with centered `gold-gradient` accent strip (`w-16 h-px`)
 
-### 4. About Teaser
-- Asymmetric layout: 60% image (with parallax), 40% text content from API
-- "Learn More" button linking to /about
+## Files to edit
+- `src/pages/Services.tsx` — full layout rewrite of the services list section
 
-### 5. Newsletter CTA
-- Dark section with gold border accents
-- Email input + gold "Subscribe" button
-- Success/error states with smooth transitions
+## Out of scope
+- Admin editor (`AdminServices.tsx`) — no changes needed
+- API / demo data — no changes needed
+- Bottom CTA section — keep as-is
 
-## Animations (Framer Motion)
-- Page transitions with AnimatePresence (fade + slide)
-- Scroll-triggered reveals (whileInView, once: true)
-- Staggered grid entrances for property cards
-- Navbar background transition on scroll
-
-## Responsive Design
-- Mobile-first: 1 → 2 → 3 column grids
-- Hero search bar stacks vertically on mobile
-- Footer collapses to single column
-- Mobile nav: fullscreen overlay
-
-## Loading & Error States
-- Dark shimmer skeleton screens
-- Elegant inline error messages
-
-## Placeholder Pages
-- Properties listing, Property detail, About, Team, Services, Blog, Careers, Contact, Admin — created as route-ready placeholders with consistent layout
-
+## Acceptance check
+1. All 4 demo services visible without scrolling on a 1080p screen
+2. No horizontal scroll on mobile
+3. Hover states work on desktop
+4. Build passes (`npm run build` 0 errors)
+5. i18n strings still resolve correctly
