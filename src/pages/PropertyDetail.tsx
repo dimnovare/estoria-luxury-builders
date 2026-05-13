@@ -13,6 +13,7 @@ import PropertyHistory from '@/components/PropertyHistory';
 import { useProperty, useProperties } from '@/hooks/api/useProperties';
 import { propertyTypeLabel } from '@/lib/enumLabels';
 import api from '@/lib/api';
+import Seo from '@/components/Seo';
 
 export default function PropertyDetail() {
   const { slug } = useParams();
@@ -62,59 +63,8 @@ export default function PropertyDetail() {
     return [];
   }, [property]);
 
-  // SEO
-  useEffect(() => {
-    if (property) {
-      document.title = `${property.title} — ESTORIA`;
-      const meta = document.querySelector('meta[name="description"]');
-      if (meta)
-        meta.setAttribute(
-          'content',
-          `${property.title} · ${property.address} · ${formatPrice(property.price, property.transactionType)}`
-        );
-    }
-    return () => {
-      document.title = 'ESTORIA — Where Your Future Lives';
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [property]);
+  // Per-route SEO + JSON-LD handled via <Seo /> below.
 
-  // RealEstateListing JSON-LD — imperative inject is the interim pattern
-  // until react-helmet-async lands (see docs/backlog.md). Removed on
-  // unmount so listing-A's ld+json doesn't bleed into listing-B's view.
-  useEffect(() => {
-    if (!property) return;
-
-    const ld = {
-      '@context':    'https://schema.org',
-      '@type':       'RealEstateListing',
-      name:          property.title,
-      description:   property.description ?? property.title,
-      image:         property.coverImageUrl,
-      url:           `https://estoria.estate/properties/${property.slug}`,
-      address: {
-        '@type':           'PostalAddress',
-        streetAddress:     property.address,
-        addressLocality:   property.city,
-        addressCountry:    'EE',
-      },
-      offers: {
-        '@type':        'Offer',
-        price:          property.price,
-        priceCurrency:  property.currency || 'EUR',
-      },
-    };
-
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.id   = 'jsonld-property';
-    script.text = JSON.stringify(ld);
-    document.head.appendChild(script);
-
-    return () => {
-      document.getElementById('jsonld-property')?.remove();
-    };
-  }, [property]);
 
   if (isLoading) {
     return (
