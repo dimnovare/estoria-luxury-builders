@@ -3,12 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { Facebook, Instagram, Linkedin } from 'lucide-react';
 import Newsletter from '@/components/Newsletter';
 import { useSiteSettings } from '@/hooks/api/useSiteSettings';
+import { usePageContent, useServices } from '@/hooks/api/useContent';
 
 const languages = ['et', 'en', 'ru'] as const;
 
 export default function Footer() {
   const { t, i18n } = useTranslation();
   const { data: settings } = useSiteSettings();
+  const { data: heroContent } = usePageContent('homepage.hero');
+  const { data: services } = useServices();
 
   const contactEmail   = settings?.['contact.email']   || 'info@estoria.estate';
   const contactPhone   = settings?.['contact.phone']   || '+372 600 0000';
@@ -34,7 +37,9 @@ export default function Footer() {
               ESTORIA
             </Link>
             <p className="mt-4 text-muted-foreground text-sm leading-relaxed font-body">
-              {t('footer.tagline')}
+              {heroContent?.title
+                ? heroContent.title.replace(/\*([^*]+)\*/g, '$1')
+                : t('footer.tagline')}
             </p>
           </div>
 
@@ -63,10 +68,28 @@ export default function Footer() {
               {t('footer.services')}
             </h4>
             <ul className="space-y-3 text-sm text-muted-foreground font-body">
-              <li>{t('footer.serviceList.sales')}</li>
-              <li>{t('footer.serviceList.rental')}</li>
-              <li>{t('footer.serviceList.valuation')}</li>
-              <li>{t('footer.serviceList.investment')}</li>
+              {(services && services.length > 0)
+                ? services
+                    .filter((s) => s.isActive !== false)
+                    .slice(0, 5)
+                    .map((service) => (
+                      <li key={service.id}>
+                        <Link
+                          to="/services"
+                          className="hover:text-primary transition-colors duration-200"
+                        >
+                          {service.name}
+                        </Link>
+                      </li>
+                    ))
+                : (
+                  <>
+                    <li>{t('footer.serviceList.sales')}</li>
+                    <li>{t('footer.serviceList.rental')}</li>
+                    <li>{t('footer.serviceList.valuation')}</li>
+                    <li>{t('footer.serviceList.investment')}</li>
+                  </>
+                )}
             </ul>
           </div>
 
