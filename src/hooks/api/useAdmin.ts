@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
+import { toast } from 'sonner';
 
 // ── Language key helpers ───────────────────────────────────────────────────────
 // Frontend form uses 'et'/'en'/'ru'; backend uses 'Et'/'En'/'Ru'
@@ -256,6 +257,16 @@ export function useUploadPropertyImages() {
     },
     onSuccess: (_d, vars) =>
       qc.invalidateQueries({ queryKey: ['admin', 'property', vars.id] }),
+    onError: (error: unknown) => {
+      const axiosErr = error as {
+        response?: { data?: { detail?: string; error?: string } };
+      };
+      const detail =
+        axiosErr?.response?.data?.detail ||
+        axiosErr?.response?.data?.error ||
+        'Image upload failed. Check the server logs.';
+      toast.error(detail);
+    },
   });
 }
 
