@@ -1,7 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useServices } from '@/hooks/api/useContent';
 import { resolveServiceIcon } from '@/lib/serviceIconMap';
@@ -58,51 +57,62 @@ export default function Services() {
           </p>
         </div>
       ) : (
-        <section className="py-16">
-          <div className="container mx-auto px-6 max-w-4xl">
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-6 max-w-5xl">
             {(services ?? []).map((service, i) => {
               const Icon = resolveServiceIcon(service.iconName);
               const isLast = i === (services ?? []).length - 1;
+              const num = String(i + 1).padStart(2, '0');
 
               return (
                 <motion.div
                   key={service.id}
                   id={service.slug || service.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-50px' }}
-                  transition={{ duration: 0.5 }}
-                  className={`group relative border-t border-border ${isLast ? 'border-b' : ''} py-8 md:py-10 px-4 md:px-6 -mx-4 md:-mx-6 flex flex-col md:flex-row md:items-center gap-6 transition-colors duration-300 hover:bg-card/40 cursor-default`}
+                  viewport={{ once: true, margin: '-60px' }}
+                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                  className={`group relative ${!isLast ? 'border-b border-border/60' : ''} py-10 md:py-12 px-4 md:px-8 -mx-4 md:-mx-8 grid grid-cols-[auto_1fr] md:grid-cols-[60px_auto_1fr_auto] items-start gap-x-5 md:gap-x-8 gap-y-3 transition-colors duration-500 hover:bg-card/30 rounded-sm`}
                 >
+                  {/* Left accent bar (animated) */}
+                  <span
+                    aria-hidden
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-px h-0 bg-primary group-hover:h-3/4 transition-all duration-500 ease-out"
+                  />
+
+                  {/* Index number (editorial) */}
+                  <span className="hidden md:block font-nav text-[11px] tracking-[0.25em] text-muted-foreground/60 pt-3">
+                    {num}
+                  </span>
+
                   {/* Icon */}
-                  <div className="w-10 h-10 rounded-md flex-shrink-0 flex items-center justify-center bg-[hsl(43_50%_54%/0.08)] text-primary border border-primary/20 group-hover:bg-[hsl(43_50%_54%/0.15)] transition-colors duration-300">
-                    <Icon size={20} />
+                  <div className="w-11 h-11 rounded-md flex-shrink-0 flex items-center justify-center bg-primary/[0.06] text-primary border border-primary/15 group-hover:border-primary/40 group-hover:bg-primary/[0.1] transition-all duration-500">
+                    <Icon size={20} strokeWidth={1.5} />
                   </div>
 
                   {/* Title + description */}
-                  <div className="flex-1 min-w-0">
-                    <h2 className="font-heading text-2xl md:text-3xl font-light text-foreground mb-2 group-hover:translate-x-1 transition-transform duration-300">
+                  <div className="col-span-2 md:col-span-1 min-w-0">
+                    <h2 className="font-heading text-2xl md:text-3xl font-light text-foreground mb-2 leading-tight">
                       {service.name}
                     </h2>
                     {service.description && (
-                      <p className="text-muted-foreground font-body text-sm md:text-base leading-relaxed max-w-2xl">
+                      <p className="text-muted-foreground font-body text-sm md:text-[15px] leading-relaxed max-w-xl">
                         {service.description}
                       </p>
                     )}
                   </div>
 
-                  {/* Price + arrow */}
-                  <div className="flex items-center gap-4 md:gap-6 md:text-right md:flex-col md:items-end md:gap-2">
-                    {service.priceInfo && (
-                      <span className="text-primary font-nav text-xs uppercase tracking-[0.15em] whitespace-nowrap">
+                  {/* Price */}
+                  {service.priceInfo && (
+                    <div className="col-span-2 md:col-span-1 md:pt-3 md:text-right">
+                      <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 mb-1">
+                        {t('services.priceLabel', { defaultValue: 'Pricing' })}
+                      </span>
+                      <span className="text-primary font-nav text-xs uppercase tracking-[0.18em] leading-relaxed">
                         {service.priceInfo}
                       </span>
-                    )}
-                    <ArrowRight
-                      size={18}
-                      className="text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 hidden md:block"
-                    />
-                  </div>
+                    </div>
+                  )}
                 </motion.div>
               );
             })}
