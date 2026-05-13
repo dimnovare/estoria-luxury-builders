@@ -20,7 +20,12 @@ export default function Seo({
   jsonLd,
 }: SeoProps) {
   const url = `${SITE_URL}${path}`;
-  const ogImage = image || `${SITE_URL}/og-image.jpg`;
+  const resolvedImage = image
+    ? image.startsWith('http')
+      ? image
+      : `https://api.estoria.estate${image.startsWith('/') ? image : `/${image}`}`
+    : `${SITE_URL}/og-image.jpg`;
+  const ogImage = resolvedImage;
   const ldArray = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
   return (
