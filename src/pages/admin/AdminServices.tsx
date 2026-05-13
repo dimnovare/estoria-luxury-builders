@@ -163,8 +163,29 @@ export default function AdminServices() {
                 </TableRow>
               )}
               {!isLoading && (services ?? []).map(s => (
-                <TableRow key={s.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="hidden sm:table-cell"><GripVertical className="h-4 w-4 text-[hsl(0_0%_70%)] cursor-grab" /></TableCell>
+                <TableRow
+                  key={s.id}
+                  draggable
+                  onDragStart={() => setDragId(s.id)}
+                  onDragOver={(e) => { e.preventDefault(); if (dragId && dragId !== s.id) setOverId(s.id); }}
+                  onDragLeave={() => { if (overId === s.id) setOverId(null); }}
+                  onDragEnd={() => { setDragId(null); setOverId(null); }}
+                  onDrop={() => {
+                    const list = services ?? [];
+                    if (!dragId || dragId === s.id) { setDragId(null); setOverId(null); return; }
+                    const items = [...list];
+                    const fromIdx = items.findIndex(x => x.id === dragId);
+                    const toIdx = items.findIndex(x => x.id === s.id);
+                    if (fromIdx < 0 || toIdx < 0) { setDragId(null); setOverId(null); return; }
+                    const [moved] = items.splice(fromIdx, 1);
+                    items.splice(toIdx, 0, moved);
+                    reorderServices.mutate(items.map((it, i) => ({ id: it.id, sortOrder: i })));
+                    setDragId(null);
+                    setOverId(null);
+                  }}
+                  className={`border-[hsl(0_0%_93%)] transition-all ${dragId === s.id ? 'opacity-50' : ''} ${overId === s.id ? 'border-t-2 border-t-[hsl(43_50%_54%)]' : ''}`}
+                >
+                  <TableCell className="hidden sm:table-cell"><GripVertical className="h-4 w-4 text-[hsl(0_0%_70%)] cursor-grab active:cursor-grabbing" /></TableCell>
                   <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{s.iconName || '—'}</TableCell>
                   <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
                     <div>{s.name}</div>
