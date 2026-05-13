@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-const SITE_URL = 'https://estoria-luxe-digital.lovable.app';
+const SITE_URL = 'https://estoria.estate';
 
 interface SeoProps {
   title: string;
@@ -20,7 +20,12 @@ export default function Seo({
   jsonLd,
 }: SeoProps) {
   const url = `${SITE_URL}${path}`;
-  const ogImage = image || `${SITE_URL}/og-image.jpg`;
+  const resolvedImage = image
+    ? image.startsWith('http')
+      ? image
+      : `https://api.estoria.estate${image.startsWith('/') ? image : `/${image}`}`
+    : `${SITE_URL}/og-image.jpg`;
+  const ogImage = resolvedImage;
   const ldArray = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
   return (
