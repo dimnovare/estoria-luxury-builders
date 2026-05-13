@@ -2,13 +2,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useServices } from '@/hooks/api/useContent';
+import { useServices, usePageContent } from '@/hooks/api/useContent';
 import { resolveServiceIcon } from '@/lib/serviceIconMap';
 
 export default function Services() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { data: services, isLoading, error } = useServices();
+  const { data: servicesHero } = usePageContent('services.hero');
 
   return (
     <>
@@ -24,10 +25,10 @@ export default function Services() {
               <span className="text-foreground">{t('nav.services')}</span>
             </nav>
             <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground mb-3">
-              {t('services.title')}
+              {servicesHero?.title || t('services.title')}
             </h1>
             <p className="text-muted-foreground font-body text-lg max-w-xl">
-              {t('services.subtitle')}
+              {servicesHero?.body || t('services.subtitle')}
             </p>
           </motion.div>
         </div>

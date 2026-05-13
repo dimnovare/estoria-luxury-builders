@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Phone, Mail } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useTeam } from '@/hooks/api/useContent';
+import { useTeam, usePageContent } from '@/hooks/api/useContent';
 
 const reveal = {
   hidden: { opacity: 0, y: 30 },
@@ -17,6 +17,7 @@ const reveal = {
 export default function Team() {
   const { t } = useTranslation();
   const { data: team, isLoading, error } = useTeam();
+  const { data: teamHero } = usePageContent('team.hero');
 
   return (
     <>
@@ -32,10 +33,10 @@ export default function Team() {
               <span className="text-foreground">{t('nav.team')}</span>
             </nav>
             <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground mb-3">
-              {t('team.title')}
+              {teamHero?.title || t('team.title')}
             </h1>
             <p className="text-muted-foreground font-body text-lg max-w-xl">
-              {t('team.subtitle')}
+              {teamHero?.body || t('team.subtitle')}
             </p>
           </motion.div>
         </div>

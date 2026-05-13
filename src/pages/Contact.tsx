@@ -7,6 +7,7 @@ import { z } from 'zod';
 import api from '@/lib/api';
 import { useProperty } from '@/hooks/api/useProperties';
 import { useSiteSettings } from '@/hooks/api/useSiteSettings';
+import { usePageContent } from '@/hooks/api/useContent';
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
@@ -23,6 +24,7 @@ export default function Contact() {
 
   const { data: linkedProperty } = useProperty(propertySlug);
   const { data: settings } = useSiteSettings();
+  const { data: contactHero } = usePageContent('contact.hero');
 
   const contactEmail   = settings?.['contact.email']   || 'info@estoria.estate';
   const contactPhone   = settings?.['contact.phone']   || '+372 600 0000';
@@ -115,7 +117,7 @@ export default function Contact() {
               {t('nav.contact')}
             </h1>
             <p className="text-muted-foreground font-body text-lg max-w-xl">
-              {t('contact.headerLead')}
+              {contactHero?.body || t('contact.headerLead')}
             </p>
           </motion.div>
         </div>

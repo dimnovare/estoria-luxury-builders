@@ -23,6 +23,16 @@ export default function About() {
   const { data: team } = useTeam();
   const { data: intro } = usePageContent('about.intro');
   const { data: story } = usePageContent('about.story');
+  const { data: valIntegrity }  = usePageContent('about.values.integrity');
+  const { data: valExcellence } = usePageContent('about.values.excellence');
+  const { data: valDiscretion } = usePageContent('about.values.discretion');
+  const { data: aboutCta }      = usePageContent('about.cta');
+
+  const valueData: Record<typeof valueKeys[number], typeof valIntegrity> = {
+    integrity:  valIntegrity,
+    excellence: valExcellence,
+    discretion: valDiscretion,
+  };
 
   const teamPreview = (team ?? []).slice(0, 3);
 
@@ -187,6 +197,7 @@ export default function About() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {valueKeys.map((key, i) => {
               const Icon = valueIcons[i];
+              const cms = valueData[key];
               return (
                 <motion.div
                   key={key}
@@ -198,9 +209,11 @@ export default function About() {
                   className="group bg-card border border-border rounded-sm p-8 transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_30px_-10px_hsl(var(--primary)/0.2)]"
                 >
                   <Icon className="text-primary mb-5" size={28} />
-                  <h3 className="font-heading text-xl text-foreground mb-3">{t(`about.values.${key}.name`)}</h3>
+                  <h3 className="font-heading text-xl text-foreground mb-3">
+                    {cms?.title || t(`about.values.${key}.name`)}
+                  </h3>
                   <p className="text-sm text-muted-foreground font-body leading-relaxed">
-                    {t(`about.values.${key}.description`)}
+                    {cms?.body || t(`about.values.${key}.description`)}
                   </p>
                 </motion.div>
               );
@@ -278,10 +291,10 @@ export default function About() {
             viewport={{ once: true }}
           >
             <h2 className="font-heading text-4xl md:text-5xl font-light text-foreground mb-6">
-              {t('about.cta.title')}
+              {aboutCta?.title || t('about.cta.title')}
             </h2>
             <p className="text-muted-foreground font-body mb-10 max-w-lg mx-auto">
-              {t('about.cta.subtitle')}
+              {aboutCta?.body || t('about.cta.subtitle')}
             </p>
             <button
               onClick={() => navigate('/contact')}

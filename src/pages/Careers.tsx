@@ -2,12 +2,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { MapPin, ArrowRight, Mail, Loader2 } from 'lucide-react';
-import { useCareers } from '@/hooks/api/useContent';
+import { useCareers, usePageContent } from '@/hooks/api/useContent';
 
 export default function Careers() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { data: careers, isLoading, error } = useCareers();
+  const { data: careersHero } = usePageContent('careers.hero');
 
   return (
     <>
@@ -23,10 +24,10 @@ export default function Careers() {
               <span className="text-foreground">{t('nav.careers')}</span>
             </nav>
             <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground mb-3">
-              {t('careers.title')}
+              {careersHero?.title || t('careers.title')}
             </h1>
             <p className="text-muted-foreground font-body text-lg max-w-xl">
-              {t('careers.subtitle')}
+              {careersHero?.body || t('careers.subtitle')}
             </p>
           </motion.div>
         </div>
