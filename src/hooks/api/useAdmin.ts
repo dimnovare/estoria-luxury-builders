@@ -529,6 +529,33 @@ export function useDeleteService() {
   });
 }
 
+export function useReorderServices() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (items: { id: string; sortOrder: number }[]) =>
+      api.patch('/admin/services/reorder', items),
+    onMutate: async (items) => {
+      await qc.cancelQueries({ queryKey: ['admin', 'services'] });
+      const prev = qc.getQueryData<AdminService[]>(['admin', 'services']);
+      if (prev) {
+        const order = new Map(items.map(i => [i.id, i.sortOrder]));
+        const next = [...prev].sort(
+          (a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0)
+        );
+        qc.setQueryData(['admin', 'services'], next);
+      }
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['admin', 'services'], ctx.prev);
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'services'] });
+      qc.invalidateQueries({ queryKey: ['services'] });
+    },
+  });
+}
+
 // ── Careers ────────────────────────────────────────────────────────────────────
 
 export function useAdminCareers() {
