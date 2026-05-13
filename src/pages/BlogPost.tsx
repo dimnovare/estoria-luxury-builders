@@ -5,7 +5,7 @@ import { ArrowLeft, Share2, Check } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import BlogCard from '@/components/BlogCard';
 import Seo from '@/components/Seo';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useBlogPost, useBlogPosts } from '@/hooks/api/useContent';
 
 export default function BlogPost() {
