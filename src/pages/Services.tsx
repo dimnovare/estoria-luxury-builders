@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useServices } from '@/hooks/api/useContent';
 import { resolveServiceIcon } from '@/lib/serviceIconMap';
@@ -33,24 +34,22 @@ export default function Services() {
         </div>
       </section>
 
-      {/* Alternating service sections */}
+      {/* Editorial service list */}
       {isLoading ? (
-        <section className="py-8">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="container mx-auto px-6 py-16">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div className={i % 2 === 1 ? 'lg:order-2' : ''}>
-                  <Skeleton className="h-9 w-9 mb-5" />
-                  <Skeleton className="h-8 w-3/4 mb-4" />
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-2/3 mb-2" />
-                  <Skeleton className="h-3 w-1/3 mt-4" />
+        <section className="py-16">
+          <div className="container mx-auto px-6 max-w-4xl">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="border-t border-border py-8 flex items-start gap-6">
+                <Skeleton className="h-10 w-10 rounded-md flex-shrink-0" />
+                <div className="flex-1 space-y-3">
+                  <Skeleton className="h-7 w-1/2" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
                 </div>
-                <Skeleton className={`aspect-[4/3] rounded-sm ${i % 2 === 1 ? 'lg:order-1' : ''}`} />
+                <Skeleton className="h-4 w-20 hidden md:block" />
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </section>
       ) : error ? (
         <div className="text-center py-32">
@@ -60,67 +59,54 @@ export default function Services() {
         </div>
       ) : (
         <section className="py-16">
-          {(services ?? []).map((service, i) => {
-            const Icon = resolveServiceIcon(service.iconName);
-            const isEven = i % 2 === 1;
+          <div className="container mx-auto px-6 max-w-4xl">
+            {(services ?? []).map((service, i) => {
+              const Icon = resolveServiceIcon(service.iconName);
+              const isLast = i === (services ?? []).length - 1;
 
-            return (
-              <div key={service.id} id={service.slug || service.id}>
-                <div className="container mx-auto px-6 py-16">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    {/* Content side */}
-                    <motion.div
-                      initial={{ opacity: 0, x: isEven ? 30 : -30 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.8 }}
-                      className={isEven ? 'lg:order-2' : ''}
-                    >
-                      <Icon className="text-primary mb-5" size={36} />
-                      <h2 className="font-heading text-3xl md:text-4xl text-foreground font-light mb-4">
-                        {service.name}
-                      </h2>
-                      <p className="text-muted-foreground font-body leading-relaxed mb-4">
+              return (
+                <motion.div
+                  key={service.id}
+                  id={service.slug || service.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ duration: 0.5 }}
+                  className={`group relative border-t border-border ${isLast ? 'border-b' : ''} py-8 md:py-10 px-4 md:px-6 -mx-4 md:-mx-6 flex flex-col md:flex-row md:items-center gap-6 transition-colors duration-300 hover:bg-card/40 cursor-default`}
+                >
+                  {/* Icon */}
+                  <div className="w-10 h-10 rounded-md flex-shrink-0 flex items-center justify-center bg-[hsl(43_50%_54%/0.08)] text-primary border border-primary/20 group-hover:bg-[hsl(43_50%_54%/0.15)] transition-colors duration-300">
+                    <Icon size={20} />
+                  </div>
+
+                  {/* Title + description */}
+                  <div className="flex-1 min-w-0">
+                    <h2 className="font-heading text-2xl md:text-3xl font-light text-foreground mb-2 group-hover:translate-x-1 transition-transform duration-300">
+                      {service.name}
+                    </h2>
+                    {service.description && (
+                      <p className="text-muted-foreground font-body text-sm md:text-base leading-relaxed max-w-2xl">
                         {service.description}
                       </p>
-                      {service.priceInfo && (
-                        <p className="text-primary font-nav text-xs uppercase tracking-wider">
-                          {service.priceInfo}
-                        </p>
-                      )}
-                    </motion.div>
-
-                    {/* Decorative side */}
-                    <motion.div
-                      initial={{ opacity: 0, x: isEven ? -30 : 30 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.8, delay: 0.15 }}
-                      className={isEven ? 'lg:order-1' : ''}
-                    >
-                      <div className="aspect-[4/3] bg-card border border-border rounded-sm flex items-center justify-center relative overflow-hidden">
-                        <div className="absolute inset-0 opacity-5">
-                          <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-primary rounded-full" />
-                          <div className="absolute bottom-1/4 right-1/4 w-48 h-48 border border-primary/50 rounded-full" />
-                          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-px gold-gradient" />
-                        </div>
-                        <Icon className="text-primary/20" size={80} />
-                      </div>
-                    </motion.div>
+                    )}
                   </div>
-                </div>
 
-                {/* Divider */}
-                {i < (services ?? []).length - 1 && (
-                  <div className="container mx-auto px-6">
-                    <div className="h-px bg-border relative overflow-hidden">
-                      <div className="absolute left-1/2 -translate-x-1/2 w-24 h-px gold-gradient" />
-                    </div>
+                  {/* Price + arrow */}
+                  <div className="flex items-center gap-4 md:gap-6 md:text-right md:flex-col md:items-end md:gap-2">
+                    {service.priceInfo && (
+                      <span className="text-primary font-nav text-xs uppercase tracking-[0.15em] whitespace-nowrap">
+                        {service.priceInfo}
+                      </span>
+                    )}
+                    <ArrowRight
+                      size={18}
+                      className="text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 hidden md:block"
+                    />
                   </div>
-                )}
-              </div>
-            );
-          })}
+                </motion.div>
+              );
+            })}
+          </div>
         </section>
       )}
 
