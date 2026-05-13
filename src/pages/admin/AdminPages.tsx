@@ -161,7 +161,7 @@ const sortedPages = useMemo(() => {
         <DialogContent className="max-w-2xl bg-white border-[hsl(0_0%_90%)]">
           <DialogHeader>
             <DialogTitle className="text-[hsl(0_0%_15%)]">
-              {editingPage ? pageLabel(editingPage.pageKey) : ''}
+              {editingPage ? (PAGE_LABELS[editingPage.pageKey]?.label ?? pageLabel(editingPage.pageKey)) : ''}
             </DialogTitle>
           </DialogHeader>
           {editingPage && (
