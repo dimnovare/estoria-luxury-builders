@@ -8,6 +8,7 @@ import api from '@/lib/api';
 import { useProperty } from '@/hooks/api/useProperties';
 import { useSiteSettings } from '@/hooks/api/useSiteSettings';
 import { usePageContent } from '@/hooks/api/useContent';
+import Seo from '@/components/Seo';
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),

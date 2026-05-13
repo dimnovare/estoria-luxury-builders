@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useServices, usePageContent } from '@/hooks/api/useContent';
 import { resolveServiceIcon } from '@/lib/serviceIconMap';
+import Seo from '@/components/Seo';
 
 export default function Services() {
   const { t } = useTranslation();
@@ -13,6 +14,11 @@ export default function Services() {
 
   return (
     <>
+      <Seo
+        title="Services — Sales, Rentals, Valuation & Investment | Estoria"
+        description="Full-service real estate in Estonia: brokerage for sales and rentals, property valuation, and investment advisory tailored to private clients."
+        path="/services"
+      />
       {/* Header */}
       <section className="pt-20 pb-12 bg-gradient-to-b from-secondary/80 to-background">
         <div className="container mx-auto px-6 pt-12">

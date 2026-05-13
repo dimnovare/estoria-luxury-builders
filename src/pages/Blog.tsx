@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import BlogCard from '@/components/BlogCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBlogPosts } from '@/hooks/api/useContent';
+import Seo from '@/components/Seo';
 
 const PAGE_SIZE = 9;
 
@@ -46,6 +47,11 @@ export default function Blog() {
 
   return (
     <>
+      <Seo
+        title="Blog — Estonia Real Estate Insights | Estoria"
+        description="Market insights, neighbourhood guides, and buying tips for Tallinn and Estonia from the Estoria editorial team."
+        path="/blog"
+      />
       {/* Header */}
       <section className="pt-20 pb-12 bg-gradient-to-b from-secondary/80 to-background">
         <div className="container mx-auto px-6 pt-12">

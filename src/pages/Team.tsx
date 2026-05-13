@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Phone, Mail } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTeam, usePageContent } from '@/hooks/api/useContent';
+import Seo from '@/components/Seo';
 
 const reveal = {
   hidden: { opacity: 0, y: 30 },
@@ -21,6 +22,11 @@ export default function Team() {
 
   return (
     <>
+      <Seo
+        title="Our Team — Estoria Brokers & Advisors in Tallinn"
+        description="Meet the Estoria brokers and advisors helping clients buy, sell, and rent premium real estate across Tallinn and Estonia."
+        path="/team"
+      />
       {/* Header */}
       <section className="pt-20 pb-12 bg-gradient-to-b from-secondary/80 to-background">
         <div className="container mx-auto px-6 pt-12">

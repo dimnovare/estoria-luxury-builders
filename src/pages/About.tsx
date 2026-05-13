@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Shield, Heart, Eye } from 'lucide-react';
 import { useTeam, usePageContent } from '@/hooks/api/useContent';
+import Seo from '@/components/Seo';
 
 const valueIcons = [Shield, Heart, Eye];
 const valueKeys = ['integrity', 'excellence', 'discretion'] as const;
@@ -38,6 +39,11 @@ export default function About() {
 
   return (
     <>
+      <Seo
+        title="About Estoria — Tallinn Real Estate Brokerage"
+        description="Meet Estoria: a Tallinn-based brokerage delivering discreet, expert service for premium apartments, houses, and commercial property in Estonia."
+        path="/about"
+      />
       {/* Hero Banner */}
       <section className="relative h-[40vh] min-h-[320px] flex items-end overflow-hidden">
         <div className="absolute inset-0">

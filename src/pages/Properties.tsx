@@ -8,6 +8,7 @@ import SaveSearchModal from '@/components/SaveSearchModal';
 import { useProperties } from '@/hooks/api/useProperties';
 import { usePublicCities, usePropertyTypeOptions } from '@/hooks/api/usePublic';
 import type { SavedSearchFilter } from '@/hooks/api/useSavedSearches';
+import Seo from '@/components/Seo';
 
 const PAGE_SIZE = 12;
 // URL param value → translation key under filters.sort.*
