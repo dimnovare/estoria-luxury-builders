@@ -17,8 +17,23 @@ const langs = ['et', 'en', 'ru'] as const;
 type TransFields = { title: string; body: string; imageUrl: string; videoUrl: string; };
 const emptyTrans: TransFields = { title: '', body: '', imageUrl: '', videoUrl: '' };
 
+const PAGE_LABELS: Record<string, { label: string; description: string }> = {
+  'homepage.hero':            { label: 'Homepage – Hero',           description: 'Main headline and subtitle on the homepage' },
+  'homepage.featured':        { label: 'Homepage – Featured',       description: 'Featured properties section heading' },
+  'homepage.services':        { label: 'Homepage – Services',       description: 'Services section on homepage' },
+  'about.intro':              { label: 'About – Introduction',      description: 'Opening section on the About page' },
+  'about.values.integrity':   { label: 'About – Value: Integrity',  description: 'First values card' },
+  'about.values.excellence':  { label: 'About – Value: Excellence', description: 'Second values card' },
+  'about.values.discretion':  { label: 'About – Value: Discretion', description: 'Third values card' },
+  'about.cta':                { label: 'About – Call to Action',    description: '"Ready to Find Your Future?" section' },
+  'team.hero':                { label: 'Team – Page Header',        description: 'Heading and subtitle on the Team page' },
+  'careers.hero':             { label: 'Careers – Page Header',     description: 'Heading and subtitle on the Careers page' },
+  'services.hero':            { label: 'Services – Page Header',    description: 'Heading and subtitle on the Services page' },
+  'contact.hero':             { label: 'Contact – Page Header',     description: 'Lead text on the Contact page' },
+};
+
 function pageLabel(key: string) {
-  return key
+  return PAGE_LABELS[key]?.label ?? key
     .split('.')
     .map(p => p.charAt(0).toUpperCase() + p.slice(1))
     .join(' – ');
