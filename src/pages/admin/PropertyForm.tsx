@@ -173,9 +173,20 @@ export default function PropertyForm() {
       longitude: lng ? parseFloat(lng) : null,
       isFeatured: asDraft ? false : isFeatured,
       agentId,
-      features,
+      // Flat features list (kept for backward compatibility) — picks the
+      // first non-empty value across languages so list pages still get a
+      // usable string. Per-language values live under translations.{lang}.features.
+      features: features
+        .map(f => f.en || f.et || f.ru)
+        .filter(v => v && v.trim()),
       translations: Object.fromEntries(
-        langs.map(l => [toBeLang(l), translations[l]])
+        langs.map(l => [
+          toBeLang(l),
+          {
+            ...translations[l],
+            features: features.map(f => f[l]).filter(v => v && v.trim()),
+          },
+        ])
       ),
     };
 
