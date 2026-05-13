@@ -570,28 +570,63 @@ export default function PropertyForm() {
 
         <TabsContent value="features" className="mt-4">
           <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
-            <CardContent className="p-6 space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  placeholder={t('admin.properties.features.addPlaceholder')}
-                  value={newFeature}
-                  onChange={e => setNewFeature(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addFeature())}
-                  className={inputClass}
-                />
-                <Button onClick={addFeature} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {features.map(f => (
-                  <Badge key={f} variant="secondary" className="bg-[hsl(0_0%_93%)] text-[hsl(0_0%_30%)] border-[hsl(0_0%_85%)] gap-1.5 py-1 px-3">
-                    {f}
-                    <button onClick={() => setFeatures(features.filter(x => x !== f))} className="hover:text-red-500"><X className="h-3 w-3" /></button>
-                  </Badge>
-                ))}
-                {features.length === 0 && <p className="text-sm text-[hsl(0_0%_60%)]">{t('admin.properties.features.empty')}</p>}
-              </div>
+            <CardContent className="p-6 space-y-3">
+              <p className="text-xs text-[hsl(0_0%_50%)]">
+                Enter each feature in all three languages. Use the copy button to mirror the EN value into ET and RU.
+              </p>
+              {features.map((f, idx) => (
+                <div key={idx} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto_auto] gap-2 items-center">
+                  <Input
+                    value={f.et}
+                    onChange={e => updateFeature(idx, 'et', e.target.value)}
+                    placeholder="ET"
+                    className={inputClass}
+                  />
+                  <Input
+                    value={f.en}
+                    onChange={e => updateFeature(idx, 'en', e.target.value)}
+                    placeholder="EN"
+                    className={inputClass}
+                  />
+                  <Input
+                    value={f.ru}
+                    onChange={e => updateFeature(idx, 'ru', e.target.value)}
+                    placeholder="RU"
+                    className={inputClass}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    title="Copy EN to all languages"
+                    onClick={() => copyFeatureToAllLanguages(idx, f.en)}
+                    className="h-9 w-9 text-[hsl(0_0%_50%)] hover:text-[hsl(43_50%_45%)]"
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeFeature(idx)}
+                    className="h-9 w-9 text-[hsl(0_0%_50%)] hover:text-red-500"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              {features.length === 0 && (
+                <p className="text-sm text-[hsl(0_0%_60%)]">{t('admin.properties.features.empty')}</p>
+              )}
+              <Button
+                type="button"
+                onClick={addFeature}
+                variant="outline"
+                className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_30%)]"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Feature
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
