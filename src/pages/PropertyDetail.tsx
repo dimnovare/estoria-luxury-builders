@@ -186,8 +186,38 @@ export default function PropertyDetail() {
     }
   };
 
+  const propertyLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Apartment',
+    name: property.title,
+    description: property.description ?? property.title,
+    image: property.coverImageUrl,
+    url: `https://estoria-luxe-digital.lovable.app/properties/${property.slug}`,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: property.address,
+      addressLocality: property.city,
+      addressCountry: 'EE',
+    },
+    offers: {
+      '@type': 'Offer',
+      price: property.price,
+      priceCurrency: property.currency || 'EUR',
+    },
+  };
+
+  const seoDescription = `${property.title} · ${property.address} · ${formatPrice(property.price, property.transactionType)}`;
+
   return (
     <>
+      <Seo
+        title={`${property.title} — Estoria`}
+        description={seoDescription}
+        path={`/properties/${property.slug}`}
+        image={property.coverImageUrl}
+        type="article"
+        jsonLd={propertyLd}
+      />
       {/* Breadcrumb */}
       <div className="pt-24 pb-4 container mx-auto px-4 sm:px-6">
         <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body">
