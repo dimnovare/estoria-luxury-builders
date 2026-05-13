@@ -190,13 +190,13 @@ export default function AdminServices() {
       </Card>
 
       <Dialog open={dialogOpen} onOpenChange={open => { if (!open) setDialogOpen(false); }}>
-        <DialogContent className="max-w-xl bg-white border-[hsl(0_0%_90%)]">
-          <DialogHeader>
+        <DialogContent className="max-w-xl bg-white border-[hsl(0_0%_90%)] max-h-[90vh] flex flex-col p-0 gap-0">
+          <DialogHeader className="px-6 pt-6 pb-2 shrink-0">
             <DialogTitle className="text-[hsl(0_0%_15%)]">
               {editingService ? t('admin.services.editTitle') : t('admin.services.newTitle')}
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-4 overflow-y-auto px-6 py-4 flex-1 min-h-0">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className={labelClass}>{t('admin.services.fields.iconName')}</Label>
@@ -237,7 +237,7 @@ export default function AdminServices() {
               ))}
             </Tabs>
           </div>
-          <div className="flex justify-end pt-2">
+          <div className="flex justify-end px-6 py-4 border-t border-[hsl(0_0%_92%)] shrink-0 bg-white">
             <Button onClick={handleSave} disabled={isSaving} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
               {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {t('admin.services.saveService')}
