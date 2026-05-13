@@ -412,7 +412,7 @@ export default function Index() {
             <img
               src={
                 aboutIntro?.imageUrl ||
-                'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80'
+                'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=75'
               }
               alt="About Estoria"
               className="w-full h-[260px] lg:h-full lg:min-h-[480px] object-cover"

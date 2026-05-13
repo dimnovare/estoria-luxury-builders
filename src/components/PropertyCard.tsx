@@ -12,6 +12,10 @@ interface Props {
 export default function PropertyCard({ property, index = 0 }: Props) {
   const { t } = useTranslation();
 
+  const rawSrc = property.coverThumbUrl ?? property.coverMediumUrl ?? property.coverImageUrl ?? '/placeholder.jpg';
+  const isPlaceholder = rawSrc.includes('placehold.co');
+  const imgSrc = isPlaceholder ? null : rawSrc;
+
   const formatPrice = (price: number, type: string) => {
     const formatted = new Intl.NumberFormat('et-EE').format(price);
     return type === 'rent' ? `€${formatted}${t('properties.perMonth')}` : `€${formatted}`;
@@ -26,26 +30,28 @@ export default function PropertyCard({ property, index = 0 }: Props) {
     >
       <Link to={`/properties/${property.slug}`} className="group block">
         <div className="relative overflow-hidden  aspect-[4/3] bg-muted">
-          {/*
-            srcset/picture: server returns separate variant URLs. ThumbUrl is
-            JPG (most-compatible fallback for <img>); medium/large are WebP.
-            All sources are optional — we fall back to the legacy coverImageUrl
-            for older rows that still only have one URL.
-          */}
-          <picture>
-            {property.coverLargeUrl && (
-              <source srcSet={property.coverLargeUrl} media="(min-width: 1280px)" type="image/webp" />
-            )}
-            {property.coverMediumUrl && (
-              <source srcSet={property.coverMediumUrl} media="(min-width: 640px)" type="image/webp" />
-            )}
-            <img
-              src={property.coverThumbUrl ?? property.coverMediumUrl ?? property.coverImageUrl ?? '/placeholder.jpg'}
-              alt={property.title}
-              loading="lazy"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-          </picture>
+          {imgSrc ? (
+            <picture>
+              {property.coverLargeUrl && (
+                <source srcSet={property.coverLargeUrl} media="(min-width: 1280px)" type="image/webp" />
+              )}
+              {property.coverMediumUrl && (
+                <source srcSet={property.coverMediumUrl} media="(min-width: 640px)" type="image/webp" />
+              )}
+              <img
+                src={imgSrc}
+                alt={property.title}
+                loading="lazy"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            </picture>
+          ) : (
+            <div className="w-full h-full bg-secondary flex items-center justify-center">
+              <span className="font-heading text-2xl tracking-[0.3em] text-primary/40 font-semibold">
+                ESTORIA
+              </span>
+            </div>
+          )}
 
           {/* Gold overlay on hover */}
           <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-500" />

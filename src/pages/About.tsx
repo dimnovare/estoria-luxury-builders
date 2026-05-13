@@ -49,7 +49,7 @@ export default function About() {
           <img
             src={
               intro?.imageUrl ||
-              'https://images.unsplash.com/photo-1590497008439-79bc09b46a83?w=1600&q=80'
+              'https://images.unsplash.com/photo-1590497008439-79bc09b46a83?w=600&q=75'
             }
             alt="About Estoria"
             className="w-full h-full object-cover"
@@ -127,7 +127,7 @@ export default function About() {
             >
               <div className="rounded-sm overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80"
+                  src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=500&q=75"
                   alt="ESTORIA office"
                   className="w-full h-[400px] object-cover"
                 />
