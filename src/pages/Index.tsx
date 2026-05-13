@@ -1,4 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
+
+function parseHeroTitle(title: string): { before: string; accent: string; after: string } {
+  const match = title.match(/^(.*?)\*(.+?)\*(.*)$/);
+  if (!match) return { before: title, accent: '', after: '' };
+  return {
+    before: match[1].trim(),
+    accent: match[2].trim(),
+    after:  match[3].trim(),
+  };
+}
 import Newsletter from '@/components/Newsletter';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -119,20 +129,29 @@ export default function Index() {
             {t('home.eyebrow')}
           </motion.div>
 
-          {/* Title — INTENTIONAL: hero.title from CMS is ignored on the home
-              page so we can keep the gold-styled "Future" markup. The CMS
-              field stays in the entity for legacy reasons; if a future
-              contributor wants to surface it, swap to a single-language
-              copy and drop the i18n keys. */}
+          {/* Title — reads from CMS (hero.title). The accent word is wrapped in
+              *asterisks* in the CMS value and rendered gold+italic here.
+              Falls back to i18n keys if no CMS title is set. */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="font-heading text-5xl md:text-7xl lg:text-[88px] font-light text-foreground leading-[1.05]"
           >
-            {t('home.hero.titleStart')}{' '}
-            <span className="gold-gradient-text font-medium italic">{t('home.hero.titleAccent')}</span>{' '}
-            {t('home.hero.titleEnd')}
+            {(() => {
+              const raw = hero?.title ||
+                `${t('home.hero.titleStart')} *${t('home.hero.titleAccent')}* ${t('home.hero.titleEnd')}`;
+              const { before, accent, after } = parseHeroTitle(raw.trim());
+              return (
+                <>
+                  {before && <>{before}{' '}</>}
+                  {accent && (
+                    <span className="gold-gradient-text font-medium italic">{accent}</span>
+                  )}
+                  {after && <>{' '}{after}</>}
+                </>
+              );
+            })()}
           </motion.h1>
 
           {/* Subtitle — readability fix: brighter color, wider container, soft text-shadow */}
@@ -142,8 +161,11 @@ export default function Index() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="mt-5 text-foreground/90 font-body font-light max-w-[520px] mx-auto leading-[1.8] text-base md:text-[17px] [text-shadow:_0_1px_8px_rgba(0,0,0,0.4)]"
           >
-            {hero?.body ||
-              "Curated luxury properties across Estonia's most sought-after locations."}
+            {hero?.body ? (
+              <span dangerouslySetInnerHTML={{ __html: hero.body }} />
+            ) : (
+              "Curated luxury properties across Estonia's most sought-after locations."
+            )}
           </motion.p>
 
           {/* Search Bar — Sovereign style */}
