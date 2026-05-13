@@ -1,11 +1,13 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Trash2, UserPlus, Briefcase, CheckCheck, RotateCcw } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { useAdminContacts, useUpdateContactStatus, type ContactMessage } from '@/hooks/api/useAdmin';
+import { useAdminContacts, useUpdateContactStatus, useDeleteContactMessage, type ContactMessage } from '@/hooks/api/useAdmin';
 import { contactStatusLabel } from '@/lib/enumLabels';
 import { toast } from 'sonner';
 
@@ -15,10 +17,14 @@ const statusColors: Record<string, string> = {
   Replied: 'bg-green-100 text-green-700 border-green-200',
 };
 
+const actionBtnClass =
+  'inline-flex items-center gap-1.5 text-sm text-[hsl(0_0%_30%)] hover:text-[hsl(43_50%_45%)] transition-colors';
+
 export default function AdminMessages() {
   const { t } = useTranslation();
   const { data, isLoading } = useAdminContacts();
   const updateStatus = useUpdateContactStatus();
+  const deleteMsg = useDeleteContactMessage();
 
   const [selected, setSelected] = useState<ContactMessage | null>(null);
 
@@ -31,6 +37,16 @@ export default function AdminMessages() {
       setSelected(prev => prev?.id === id ? { ...prev, status } : prev);
     } catch {
       toast.error(t('admin.messages.toast.updateFailed'));
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteMsg.mutateAsync(id);
+      toast.success(t('admin.messages.toast.deleted', { defaultValue: 'Message deleted' }));
+      if (selected?.id === id) setSelected(null);
+    } catch {
+      toast.error(t('admin.messages.toast.deleteFailed', { defaultValue: 'Failed to delete message' }));
     }
   };
 
@@ -50,12 +66,13 @@ export default function AdminMessages() {
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.messages.table.subject')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.common.date')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-10"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
+                  <TableCell colSpan={6} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
                 </TableRow>
               )}
               {!isLoading && messages.map(m => (
@@ -78,11 +95,22 @@ export default function AdminMessages() {
                       {contactStatusLabel(m.status, t)}
                     </Badge>
                   </TableCell>
+                  <TableCell onClick={e => e.stopPropagation()}>
+                    <Button
+                      variant="ghost" size="icon"
+                      className="h-7 w-7 text-[hsl(0_0%_55%)] hover:text-red-500"
+                      disabled={deleteMsg.isPending}
+                      onClick={() => handleDelete(m.id)}
+                      title="Delete"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
               {!isLoading && messages.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.messages.empty')}</TableCell>
+                  <TableCell colSpan={6} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.messages.empty')}</TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -116,14 +144,46 @@ export default function AdminMessages() {
                 <div className="bg-[hsl(0_0%_97%)] rounded-lg p-4 text-sm text-[hsl(0_0%_25%)] leading-relaxed">
                   {selected.message}
                 </div>
+
+                {/* CRM quick-actions */}
+                <div className="border-t border-[hsl(0_0%_92%)] pt-3 flex flex-wrap gap-4">
+                  <Link
+                    to={`/admin/contacts/new?name=${encodeURIComponent(selected.name)}&email=${encodeURIComponent(selected.email)}&phone=${encodeURIComponent(selected.phone ?? '')}`}
+                    className={actionBtnClass}
+                    onClick={() => setSelected(null)}
+                  >
+                    <UserPlus className="h-4 w-4" />
+                    {t('admin.messages.actions.createContact', { defaultValue: 'Create Contact' })}
+                  </Link>
+                  <Link
+                    to={`/admin/deals?new=1&title=${encodeURIComponent(`Enquiry from ${selected.name}`)}`}
+                    className={actionBtnClass}
+                    onClick={() => setSelected(null)}
+                  >
+                    <Briefcase className="h-4 w-4" />
+                    {t('admin.messages.actions.createDeal', { defaultValue: 'Create Deal' })}
+                  </Link>
+                </div>
+
                 <div className="flex flex-wrap gap-2 justify-end">
-                  {selected.status !== 'Read' && (
+                  {selected.status === 'Read' ? (
+                    <Button
+                      variant="outline"
+                      className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)] text-sm"
+                      disabled={updateStatus.isPending}
+                      onClick={() => handleStatusUpdate(selected.id, 'New')}
+                    >
+                      <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+                      {t('admin.messages.markUnread', { defaultValue: 'Mark Unread' })}
+                    </Button>
+                  ) : (
                     <Button
                       variant="outline"
                       className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)] text-sm"
                       disabled={updateStatus.isPending}
                       onClick={() => handleStatusUpdate(selected.id, 'Read')}
                     >
+                      <CheckCheck className="h-3.5 w-3.5 mr-1.5" />
                       {t('admin.messages.markRead')}
                     </Button>
                   )}

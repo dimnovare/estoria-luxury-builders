@@ -2,9 +2,9 @@ import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
-  Inbox, Send as SendIcon, Archive, Mail, Paperclip, Filter,
+  Inbox, Send as SendIcon, Archive, Mail, Paperclip,
   ArrowLeft, Reply, ReplyAll, Forward, Download, LinkIcon, ExternalLink,
-  CircleDot, ChevronDown,
+  CircleDot, Pencil,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -127,7 +127,7 @@ function FilterChips({
   onToggle: (chip: FilterChip) => void;
 }) {
   const { t } = useTranslation();
-  const chips: { key: FilterChip; label: string; icon: typeof Filter }[] = [
+  const chips: { key: FilterChip; label: string; icon: typeof Inbox }[] = [
     { key: 'unread', label: t('admin.inbox.filters.unread'), icon: CircleDot },
     { key: 'hasAttachments', label: t('admin.inbox.filters.hasAttachments'), icon: Paperclip },
     { key: 'linkedToDeal', label: t('admin.inbox.filters.linkedToDeal'), icon: LinkIcon },
@@ -251,12 +251,14 @@ function MessageDetail({
   onReply,
   onReplyAll,
   onForward,
+  isMobile = false,
 }: {
   message: InboxMessageDetail;
   onBack: () => void;
   onReply: () => void;
   onReplyAll: () => void;
   onForward: () => void;
+  isMobile?: boolean;
 }) {
   const { t } = useTranslation();
   const archiveMut = useArchiveMessage();
@@ -267,7 +269,7 @@ function MessageDetail({
       {/* Header */}
       <div className="px-4 py-3 border-b border-border shrink-0 space-y-2">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="lg:hidden shrink-0" onClick={onBack}>
+          <Button variant="ghost" size="icon" className="shrink-0" onClick={onBack}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <h2 className="text-base font-semibold text-foreground truncate flex-1">{message.subject}</h2>
@@ -355,19 +357,26 @@ function MessageDetail({
         </div>
       ) : null}
 
-      {/* Reply toolbar */}
-      <div className="px-4 py-3 border-t border-border flex items-center gap-2 shrink-0">
-        <Button variant="outline" size="sm" onClick={onReply}>
+      {/* Reply toolbar — sticky bottom bar on mobile, inline on desktop */}
+      <div className={cn(
+        'border-t border-border flex items-center gap-2 shrink-0',
+        isMobile
+          ? 'px-3 py-3 bg-white sticky bottom-0 z-10'
+          : 'px-4 py-3',
+      )}>
+        <Button variant="outline" size="sm" onClick={onReply} className={isMobile ? 'flex-1' : undefined}>
           <Reply className="h-4 w-4 mr-1" />
           {t('admin.inbox.detail.reply')}
         </Button>
-        <Button variant="outline" size="sm" onClick={onReplyAll}>
+        <Button variant="outline" size="sm" onClick={onReplyAll} className={isMobile ? 'flex-1' : undefined}>
           <ReplyAll className="h-4 w-4 mr-1" />
-          {t('admin.inbox.detail.replyAll')}
+          {isMobile ? '' : t('admin.inbox.detail.replyAll')}
+          {isMobile && <span className="sr-only">{t('admin.inbox.detail.replyAll')}</span>}
         </Button>
-        <Button variant="outline" size="sm" onClick={onForward}>
+        <Button variant="outline" size="sm" onClick={onForward} className={isMobile ? 'flex-1' : undefined}>
           <Forward className="h-4 w-4 mr-1" />
-          {t('admin.inbox.detail.forward')}
+          {isMobile ? '' : t('admin.inbox.detail.forward')}
+          {isMobile && <span className="sr-only">{t('admin.inbox.detail.forward')}</span>}
         </Button>
       </div>
     </div>
@@ -375,6 +384,10 @@ function MessageDetail({
 }
 
 // ── Main page ──────────────────────────────────────────────────────────────────
+
+// Mobile uses a 3-step wizard (folders → list → detail).
+// Desktop keeps the standard 3-pane layout.
+type MobileStep = 1 | 2 | 3;
 
 export default function AdminInbox() {
   const { t } = useTranslation();
@@ -384,7 +397,8 @@ export default function AdminInbox() {
   const [filters, setFilters] = useState<Set<FilterChip>>(new Set());
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [composer, setComposer] = useState<ComposerPrefill | null>(null);
-  const [showFolders, setShowFolders] = useState(!isMobile);
+  // Mobile navigation step: 1=folders, 2=list, 3=detail
+  const [mobileStep, setMobileStep] = useState<MobileStep>(1);
 
   const filterParams = useMemo(
     () => ({
@@ -396,8 +410,6 @@ export default function AdminInbox() {
   );
 
   const { data: counts } = useInboxCounts();
-  // Backend returns MailboxPage<InboxMessageSummary>; flatten to the items
-  // array for rendering, keep nextSkipToken accessible for "Load more".
   const { data: messagesPage, isLoading } = useInboxMessages(folder, filterParams);
   const messages = messagesPage?.items ?? [];
   const { data: selectedMessage } = useInboxMessage(selectedId);
@@ -412,9 +424,16 @@ export default function AdminInbox() {
     });
   };
 
+  const handleSelectFolder = (f: InboxFolder) => {
+    setFolder(f);
+    setSelectedId(null);
+    if (isMobile) setMobileStep(2);
+  };
+
   const handleSelectMessage = (msg: InboxMessageSummary) => {
     setSelectedId(msg.id);
     if (!msg.isRead) markRead.mutate(msg.id);
+    if (isMobile) setMobileStep(3);
   };
 
   const buildReplyPrefill = (mode: 'reply' | 'replyAll' | 'forward'): ComposerPrefill | null => {
@@ -439,42 +458,53 @@ export default function AdminInbox() {
     };
   };
 
-  // Mobile: show detail if selected, else show list; folder panel is toggled
-  const showDetail = !!selectedId && !!selectedMessage;
-  const showList = isMobile ? !showDetail : true;
-  const showDetailPane = isMobile ? showDetail : true;
+  // ── Pane visibility helpers ────────────────────────────────────────────────
+  // Desktop: all three panes always visible.
+  // Mobile: exactly one pane visible at a time based on mobileStep.
+  const showFolderPane  = !isMobile || mobileStep === 1;
+  const showListPane    = !isMobile || mobileStep === 2;
+  const showDetailPane  = !isMobile || mobileStep === 3;
+
+  // ── Mobile: back-from-list header label ───────────────────────────────────
+  const folderLabel = t(`admin.inbox.folders.${folder}`);
 
   return (
     <div className="space-y-4">
-      {/* Page header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-heading font-semibold text-[hsl(0_0%_20%)]">{t('admin.inbox.title')}</h1>
-          <p className="text-sm text-[hsl(0_0%_50%)]">Shared mailbox for info@estoria.estate. Emails appear here when Microsoft Graph is configured. For contact form submissions, see Messages.</p>
+      {/* Page header — hidden on mobile when deep in the wizard (steps 2/3) */}
+      {(!isMobile || mobileStep === 1) && (
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-heading font-semibold text-[hsl(0_0%_20%)]">{t('admin.inbox.title')}</h1>
+            <p className="text-sm text-[hsl(0_0%_50%)]">Shared mailbox for info@estoria.estate. Emails appear here when Microsoft Graph is configured. For contact form submissions, see Messages.</p>
+          </div>
+          {!isMobile && (
+            <Button size="sm" onClick={() => setComposer({})}>
+              <Mail className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">{t('admin.inbox.compose')}</span>
+            </Button>
+          )}
         </div>
-        <Button size="sm" onClick={() => setComposer({})}>
-          <Mail className="h-4 w-4 mr-1" />
-          <span className="hidden sm:inline">{t('admin.inbox.compose')}</span>
-        </Button>
-      </div>
+      )}
 
       {/* Three-pane layout */}
-      <Card className="overflow-hidden" style={{ height: 'calc(100vh - 180px)', minHeight: 500 }}>
+      <Card className="overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 120px)' : 'calc(100vh - 180px)', minHeight: 500 }}>
         <div className="flex h-full">
+
           {/* LEFT pane — folders + filters */}
-          {(showFolders || !isMobile) && (
+          {showFolderPane && (
             <div className={cn(
               'border-r border-border flex flex-col shrink-0 bg-muted/10',
               isMobile ? 'w-full' : 'w-[220px] lg:w-[260px]',
             )}>
               <div className="p-3 space-y-4 overflow-auto flex-1">
+                {isMobile && (
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground px-1 pb-1">
+                    {t('admin.inbox.title')}
+                  </p>
+                )}
                 <FolderList
                   activeFolder={folder}
-                  onSelect={(f) => {
-                    setFolder(f);
-                    setSelectedId(null);
-                    if (isMobile) setShowFolders(false);
-                  }}
+                  onSelect={handleSelectFolder}
                   counts={counts}
                 />
                 <Separator />
@@ -485,34 +515,26 @@ export default function AdminInbox() {
                   <FilterChips active={filters} onToggle={toggleFilter} />
                 </div>
               </div>
-              {isMobile && (
-                <div className="p-3 border-t border-border">
-                  <Button variant="ghost" size="sm" className="w-full" onClick={() => setShowFolders(false)}>
-                    {t('admin.inbox.showMessages')}
-                  </Button>
-                </div>
-              )}
             </div>
           )}
 
           {/* MIDDLE pane — message list */}
-          {showList && !(isMobile && showFolders) && (
+          {showListPane && (
             <div className={cn(
               'border-r border-border flex flex-col overflow-hidden',
               isMobile ? 'w-full' : 'w-[320px] lg:w-[380px]',
             )}>
-              {/* Mobile folder toggle */}
+              {/* Mobile: back arrow + current folder name */}
               {isMobile && (
-                <button
-                  onClick={() => setShowFolders(true)}
-                  className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground border-b border-border hover:bg-muted/20"
-                >
-                  <ChevronDown className="h-4 w-4" />
-                  {t(`admin.inbox.folders.${folder}`)}
+                <div className="flex items-center gap-2 px-3 py-2 border-b border-border bg-muted/10">
+                  <button onClick={() => setMobileStep(1)} className="text-muted-foreground hover:text-foreground">
+                    <ArrowLeft className="h-4 w-4" />
+                  </button>
+                  <span className="text-sm font-medium flex-1">{folderLabel}</span>
                   {(counts?.[folder] ?? 0) > 0 && (
                     <Badge variant="secondary" className="text-[10px] h-4 px-1">{counts?.[folder]}</Badge>
                   )}
-                </button>
+                </div>
               )}
               <div className="flex-1 overflow-auto">
                 {isLoading ? (
@@ -534,20 +556,21 @@ export default function AdminInbox() {
           )}
 
           {/* RIGHT pane — message detail */}
-          {showDetailPane && !(isMobile && showFolders) && (
+          {showDetailPane && (
             <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
               {selectedMessage ? (
                 <>
                   <div className="flex-1 flex flex-col overflow-hidden min-w-0">
                     <MessageDetail
                       message={selectedMessage}
-                      onBack={() => setSelectedId(null)}
+                      onBack={() => isMobile ? setMobileStep(2) : setSelectedId(null)}
                       onReply={() => setComposer(buildReplyPrefill('reply')!)}
                       onReplyAll={() => setComposer(buildReplyPrefill('replyAll')!)}
                       onForward={() => setComposer(buildReplyPrefill('forward')!)}
+                      isMobile={isMobile}
                     />
                   </div>
-                  <SenderActionsPanel message={selectedMessage} />
+                  {!isMobile && <SenderActionsPanel message={selectedMessage} />}
                 </>
               ) : (
                 <div className="flex-1 flex items-center justify-center text-sm text-muted-foreground">
@@ -558,6 +581,17 @@ export default function AdminInbox() {
           )}
         </div>
       </Card>
+
+      {/* Mobile FAB — compose button, only visible on steps 1 & 2 */}
+      {isMobile && mobileStep !== 3 && (
+        <button
+          onClick={() => setComposer({})}
+          className="fixed bottom-20 right-4 z-20 bg-primary text-primary-foreground rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors"
+          aria-label={t('admin.inbox.compose')}
+        >
+          <Pencil className="h-5 w-5" />
+        </button>
+      )}
 
       {/* Composer */}
       {composer && <InboxComposer prefill={composer} onClose={() => setComposer(null)} />}

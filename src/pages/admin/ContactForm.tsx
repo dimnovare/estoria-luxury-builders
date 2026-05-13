@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -52,6 +52,7 @@ type ContactFormData = z.infer<typeof contactSchema>;
 export default function ContactForm() {
   const { t } = useTranslation();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const isEdit = !!id;
 
@@ -67,9 +68,9 @@ export default function ContactForm() {
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
-      fullName: '',
-      email: '',
-      phone: '',
+      fullName: searchParams.get('name') ?? '',
+      email:    searchParams.get('email') ?? '',
+      phone:    searchParams.get('phone') ?? '',
       secondaryPhone: '',
       preferredLanguage: 'et',
       dateOfBirth: '',

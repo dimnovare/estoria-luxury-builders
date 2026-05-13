@@ -623,6 +623,34 @@ export function useUpdateContactStatus() {
   });
 }
 
+export function useDeleteContactMessage() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.delete(`/admin/contact-messages/${id}`),
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ['admin', 'contact-messages'] });
+      // Optimistically remove from every page cache entry
+      const prev = qc.getQueriesData({ queryKey: ['admin', 'contact-messages'] });
+      qc.setQueriesData({ queryKey: ['admin', 'contact-messages'] }, (old: any) => {
+        if (!old || typeof old !== 'object') return old;
+        if (Array.isArray(old)) return old.filter((m: any) => m.id !== id);
+        if (Array.isArray(old.items))
+          return { ...old, items: old.items.filter((m: any) => m.id !== id) };
+        return old;
+      });
+      return { prev };
+    },
+    onError: (_e, _id, ctx) => {
+      if (ctx?.prev) {
+        for (const [key, data] of ctx.prev) {
+          qc.setQueryData(key, data);
+        }
+      }
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ['admin', 'contact-messages'] }),
+  });
+}
+
 export function useContactMessageUnreadCount() {
   return useQuery<number>({
     queryKey: ['admin', 'contact-messages', 'unread-count'],

@@ -1,13 +1,36 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { UserPlus, Briefcase, Link as LinkIcon, User, Check, Loader2, X } from 'lucide-react';
+import { UserPlus, Briefcase, Link as LinkIcon, User, Check, X } from 'lucide-react';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
-import { useContacts, useCreateContact, useDeals } from '@/hooks/api/useCrm';
+import { useContacts, useDeals } from '@/hooks/api/useCrm';
 import { useLinkMessage, type InboxMessageDetail } from '@/hooks/api/useInbox';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+
+// ── Contact-form body parser ───────────────────────────────────────────────────
+// Notification emails from noreply@estoria.estate always contain:
+//   Name: <name>
+//   Email: <email>
+//   Phone: <phone>
+//   Message:
+//   <text>
+function parseContactFormBody(body: string): {
+  name?: string; email?: string; phone?: string; message?: string;
+} {
+  const plain = body.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ');
+  const get = (label: string) => {
+    const m = plain.match(new RegExp(`${label}:\\s*([^\\n\\r]+)`, 'i'));
+    return m?.[1]?.trim() || undefined;
+  };
+  return {
+    name:    get('Name'),
+    email:   get('Email'),
+    phone:   get('Phone'),
+    message: plain.split(/message:\s*/i)[1]?.trim(),
+  };
+}
 
 interface Props {
   message: InboxMessageDetail;
@@ -17,7 +40,6 @@ export default function SenderActionsPanel({ message }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const linkMut = useLinkMessage();
-  const createContact = useCreateContact();
 
   // Look up an existing contact by email
   const { data: existingByEmail } = useContacts({ search: message.from, pageSize: 1 });
@@ -43,18 +65,29 @@ export default function SenderActionsPanel({ message }: Props) {
     return all.filter((d) => d.title.toLowerCase().includes(q)).slice(0, 8);
   }, [dealsByStage, debouncedDeal]);
 
-  const handleCreateContact = async () => {
-    try {
-      const created = await createContact.mutateAsync({
-        fullName: message.fromName || message.from,
-        email: message.from,
-      }) as { id: string };
-      toast.success(t('admin.inbox.actions.contactCreated', { defaultValue: 'Contact created' }));
-      // Auto-link to this thread
-      await linkMut.mutateAsync({ id: message.id, payload: { contactId: created.id } });
-    } catch {
-      toast.error(t('admin.inbox.actions.contactCreateFailed', { defaultValue: 'Failed to create contact' }));
-    }
+  // Detect contact-form notification emails (noreply sender or subject hint)
+  const isContactForm =
+    message.from?.toLowerCase().includes('noreply@estoria.estate') ||
+    message.subject?.toLowerCase().includes('contact form');
+
+  // Parse the real person's details out of the notification body when applicable
+  const parsed = isContactForm && message.bodyHtml
+    ? parseContactFormBody(message.bodyHtml)
+    : null;
+
+  // Pre-fill: use parsed values when available, fall back to raw From header
+  const contactPrefill = parsed?.email
+    ? { name: parsed.name, email: parsed.email, phone: parsed.phone }
+    : { name: message.fromName || message.from, email: message.from, phone: undefined };
+
+  const handleCreateContact = () => {
+    // Navigate to the full contact form with pre-filled query params so the
+    // agent can review before saving, and the parsed message appears in notes.
+    const params = new URLSearchParams();
+    if (contactPrefill.name)  params.set('name',  contactPrefill.name);
+    if (contactPrefill.email) params.set('email', contactPrefill.email);
+    if (contactPrefill.phone) params.set('phone', contactPrefill.phone);
+    navigate(`/admin/contacts/new?${params.toString()}`);
   };
 
   const handleCreateDeal = () => {
@@ -124,10 +157,9 @@ export default function SenderActionsPanel({ message }: Props) {
         ) : (
           <button
             onClick={handleCreateContact}
-            disabled={createContact.isPending}
             className={btnClass}
           >
-            {createContact.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <UserPlus className="h-3.5 w-3.5" />}
+            <UserPlus className="h-3.5 w-3.5" />
             <span>{t('admin.inbox.actions.createContact', { defaultValue: 'Create Contact' })}</span>
           </button>
         )}
