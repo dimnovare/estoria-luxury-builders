@@ -487,8 +487,8 @@ export default function AdminInbox() {
       )}
 
       {/* Three-pane layout */}
-      <Card className="overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 120px)' : 'calc(100vh - 180px)', minHeight: 500 }}>
-        <div className="flex h-full">
+      <Card className="overflow-hidden w-full max-w-full" style={{ height: isMobile ? 'calc(100vh - 120px)' : 'calc(100vh - 180px)', minHeight: 500 }}>
+        <div className="flex h-full min-w-0 w-full">
 
           {/* LEFT pane — folders + filters */}
           {showFolderPane && (
