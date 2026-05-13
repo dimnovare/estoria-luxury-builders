@@ -12,6 +12,10 @@ interface Props {
 export default function PropertyCard({ property, index = 0 }: Props) {
   const { t } = useTranslation();
 
+  const rawSrc = property.coverThumbUrl ?? property.coverMediumUrl ?? property.coverImageUrl ?? '/placeholder.jpg';
+  const isPlaceholder = rawSrc.includes('placehold.co');
+  const imgSrc = isPlaceholder ? null : rawSrc;
+
   const formatPrice = (price: number, type: string) => {
     const formatted = new Intl.NumberFormat('et-EE').format(price);
     return type === 'rent' ? `€${formatted}${t('properties.perMonth')}` : `€${formatted}`;
