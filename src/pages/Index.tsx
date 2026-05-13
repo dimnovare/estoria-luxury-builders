@@ -10,6 +10,7 @@ function parseHeroTitle(title: string): { before: string; accent: string; after:
   };
 }
 import Newsletter from '@/components/Newsletter';
+import Seo from '@/components/Seo';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -76,6 +77,11 @@ export default function Index() {
 
   return (
     <>
+      <Seo
+        title="Estoria — Premium Real Estate in Tallinn, Estonia"
+        description="Estoria — premium real estate in Tallinn. Apartments, houses, and commercial properties for sale, rent, and investment."
+        path="/"
+      />
       {/* ===== HERO ===== */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         {/* BG: gradient base behind the video so the layer never goes

@@ -1,0 +1,18 @@
+# Estoria
+
+> Premium real estate brokerage in Tallinn, Estonia — apartments, houses, and commercial properties for sale, rent, and investment.
+
+## Pages
+
+- [Home](/): Featured listings, services overview, and search.
+- [Properties](/properties): Browse all listings with filters for city, type, and transaction.
+- [About](/about): Company story, values, and approach.
+- [Team](/team): Brokers and advisors.
+- [Services](/services): Sales, rentals, valuation, and investment advisory.
+- [Blog](/blog): Market insights and guides.
+- [Careers](/careers): Open roles.
+- [Contact](/contact): Office location and contact details.
+
+## Optional
+
+- [Privacy Policy](/privacy)

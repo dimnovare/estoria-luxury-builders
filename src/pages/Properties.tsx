@@ -8,6 +8,7 @@ import SaveSearchModal from '@/components/SaveSearchModal';
 import { useProperties } from '@/hooks/api/useProperties';
 import { usePublicCities, usePropertyTypeOptions } from '@/hooks/api/usePublic';
 import type { SavedSearchFilter } from '@/hooks/api/useSavedSearches';
+import Seo from '@/components/Seo';
 
 const PAGE_SIZE = 12;
 // URL param value → translation key under filters.sort.*
@@ -213,6 +214,11 @@ export default function Properties() {
 
   return (
     <>
+      <Seo
+        title="Properties for Sale & Rent in Tallinn | Estoria"
+        description="Browse premium apartments, houses, and commercial real estate for sale and rent in Tallinn and across Estonia with Estoria."
+        path="/properties"
+      />
       {/* Header */}
       <section className="pt-20 pb-12 bg-gradient-to-b from-secondary/80 to-background">
         <div className="container mx-auto px-4 sm:px-6 pt-12">

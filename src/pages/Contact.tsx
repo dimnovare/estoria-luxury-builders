@@ -8,6 +8,7 @@ import api from '@/lib/api';
 import { useProperty } from '@/hooks/api/useProperties';
 import { useSiteSettings } from '@/hooks/api/useSiteSettings';
 import { usePageContent } from '@/hooks/api/useContent';
+import Seo from '@/components/Seo';
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
@@ -102,6 +103,11 @@ export default function Contact() {
 
   return (
     <>
+      <Seo
+        title="Contact Estoria — Tallinn Real Estate Office"
+        description="Reach Estoria in Tallinn for sales, rentals, and investment enquiries. Visit our office or message our brokers directly."
+        path="/contact"
+      />
       {/* Header */}
       <section className="pt-20 pb-12 bg-gradient-to-b from-secondary/80 to-background">
         <div className="container mx-auto px-6 pt-12">
