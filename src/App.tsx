@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Loader2 } from "lucide-react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -70,9 +69,20 @@ const queryClient = new QueryClient({
   },
 });
 
+// Inline style bypasses Tailwind's CSS variable lookup (which can lag one
+// render frame on route transitions). The hardcoded hsl matches exactly the
+// admin layout bg so there is no colour flash when a lazy chunk loads.
 const AdminLoading = () => (
-  <div className="admin-theme flex items-center justify-center min-h-screen bg-[hsl(0_0%_96%)]">
-    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+  <div
+    className="admin-theme flex items-center justify-center min-h-screen"
+    style={{ backgroundColor: 'hsl(0, 0%, 96%)' }}
+  >
+    <div className="flex flex-col items-center gap-3">
+      <div
+        className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin"
+        style={{ borderColor: 'hsl(43, 50%, 54%) transparent transparent transparent' }}
+      />
+    </div>
   </div>
 );
 

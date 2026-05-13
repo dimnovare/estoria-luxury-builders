@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -243,11 +243,22 @@ export default function AdminLayout() {
 
         {/* Content */}
         <main className="p-4 lg:p-6">
-          {/* ErrorBoundary keyed on route so navigating away from a crashed page
-              resets the boundary and lets the user keep working. */}
-          <ErrorBoundary key={pathname}>
-            <Outlet />
-          </ErrorBoundary>
+          {/* Inner Suspense keeps the sidebar visible while a lazy admin chunk
+              loads — only the content area shows the fallback, not the whole
+              page. Inline bg colour matches the layout exactly so there is no
+              colour flash between renders. */}
+          <Suspense fallback={
+            <div
+              className="min-h-[60vh]"
+              style={{ backgroundColor: 'hsl(0, 0%, 96%)' }}
+            />
+          }>
+            {/* ErrorBoundary keyed on route so navigating away from a crashed
+                page resets the boundary and lets the user keep working. */}
+            <ErrorBoundary key={pathname}>
+              <Outlet />
+            </ErrorBoundary>
+          </Suspense>
         </main>
       </div>
     </div>

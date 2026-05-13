@@ -85,6 +85,7 @@ export function useInboxCounts() {
       const { data } = await api.get<InboxFolderCounts>('/admin/inbox/counts');
       return data;
     },
+    staleTime: 30_000,
   });
 }
 
@@ -97,7 +98,15 @@ export function useInboxMessages(
     queryFn: async () => {
       const { data } = await api.get<MailboxPage<InboxMessageSummary>>(
         '/admin/inbox/messages',
-        { params: { folder, ...filters } },
+        {
+          params: {
+            folder,
+            unreadOnly:     filters?.unreadOnly     ?? false,
+            hasAttachments: filters?.hasAttachments ?? false,
+            linkedToDeal:   filters?.linkedToDeal   ?? false,
+            top: 50,
+          },
+        },
       );
       return data;
     },
