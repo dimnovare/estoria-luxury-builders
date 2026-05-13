@@ -90,7 +90,7 @@ export function useInboxCounts() {
 
 export function useInboxMessages(
   folder: InboxFolder,
-  filters?: { unread?: boolean; hasAttachments?: boolean; linkedToDeal?: boolean },
+  filters?: { unreadOnly?: boolean; hasAttachments?: boolean; linkedToDeal?: boolean },
 ) {
   return useQuery({
     queryKey: KEYS.messages(folder, filters as Record<string, unknown>),
