@@ -521,8 +521,8 @@ export default function AdminInbox() {
           {/* MIDDLE pane — message list */}
           {showListPane && (
             <div className={cn(
-              'border-r border-border flex flex-col overflow-hidden',
-              isMobile ? 'w-full' : 'w-[320px] lg:w-[380px]',
+              'border-r border-border flex flex-col overflow-hidden min-w-0',
+              isMobile ? 'w-full flex-1' : 'w-[320px] lg:w-[380px]',
             )}>
               {/* Mobile: back arrow + current folder name */}
               {isMobile && (
