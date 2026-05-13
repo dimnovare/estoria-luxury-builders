@@ -497,7 +497,7 @@ export function useAgents() {
       const items: Array<AgentOption & { roles?: string[] }> =
         r.data?.items ?? r.data ?? [];
       return items
-        .filter(u => Array.isArray(u.roles) && u.roles.includes('Agent'))
+        .filter(u => Array.isArray(u.roles) && (u.roles.includes('Agent') || u.roles.includes('Admin')))
         .map(({ id, fullName, email }) => ({ id, fullName, email }));
     },
   });

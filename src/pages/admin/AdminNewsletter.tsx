@@ -18,7 +18,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 import { useAdminSubscribers, useUnsubscribe } from '@/hooks/api/useAdmin';
-import { useNewsletterCampaigns, useSendNewsletterNow, useNewsletterSubscriberCount, type CampaignDto } from '@/hooks/api/useNewsletter';
+import { useNewsletterCampaigns, useSendNewsletterNow, useNewsletterSubscriberCount, useDeleteCampaign, type CampaignDto } from '@/hooks/api/useNewsletter';
 import { useAuth } from '@/hooks/useAuth';
 import { useSiteSettings } from '@/hooks/api/useSiteSettings';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
@@ -231,6 +231,7 @@ function CampaignsTab() {
   const campaigns = data?.items ?? [];
   const [detailId, setDetailId] = useState<string | null>(null);
   const detailCampaign = campaigns.find(c => c.id === detailId);
+  const deleteCampaign = useDeleteCampaign();
 
   return (
     <>
@@ -247,28 +248,47 @@ function CampaignsTab() {
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.newsletter.campaigns.success')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.newsletter.campaigns.failed')}</TableHead>
                 <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
+                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && (
-                <TableRow><TableCell colSpan={7} className="text-center py-12 text-sm text-[hsl(0_0%_50%)]">{t('admin.common.loading')}</TableCell></TableRow>
+                <TableRow><TableCell colSpan={8} className="text-center py-12 text-sm text-[hsl(0_0%_50%)]">{t('admin.common.loading')}</TableCell></TableRow>
               )}
               {!isLoading && campaigns.map(c => (
-                <TableRow key={c.id} className="border-[hsl(0_0%_93%)] cursor-pointer hover:bg-[hsl(0_0%_97%)]" onClick={() => setDetailId(c.id)}>
-                  <TableCell className="text-sm font-medium text-[hsl(0_0%_20%)]">
+                <TableRow key={c.id} className="border-[hsl(0_0%_93%)] hover:bg-[hsl(0_0%_97%)]">
+                  <TableCell className="text-sm font-medium text-[hsl(0_0%_20%)] cursor-pointer" onClick={() => setDetailId(c.id)}>
                     <div>{c.subject}</div>
                     <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy') : '—'}</div>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy HH:mm') : '—'}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] uppercase hidden lg:table-cell">{c.language ?? t('admin.newsletter.compose.langAll')}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell">{c.recipientsCount}</TableCell>
-                  <TableCell className="text-sm text-green-600 hidden md:table-cell">{c.successCount}</TableCell>
-                  <TableCell className="text-sm text-red-500 hidden md:table-cell">{c.failureCount}</TableCell>
-                  <TableCell><StatusPill status={c.status} /></TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy HH:mm') : '—'}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] uppercase hidden lg:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.language ?? t('admin.newsletter.compose.langAll')}</TableCell>
+                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.recipientsCount}</TableCell>
+                  <TableCell className="text-sm text-green-600 hidden md:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.successCount}</TableCell>
+                  <TableCell className="text-sm text-red-500 hidden md:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.failureCount}</TableCell>
+                  <TableCell className="cursor-pointer" onClick={() => setDetailId(c.id)}><StatusPill status={c.status} /></TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost" size="icon"
+                      className="h-7 w-7 text-[hsl(0_0%_50%)] hover:text-red-500"
+                      disabled={deleteCampaign.isPending}
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          await deleteCampaign.mutateAsync(c.id);
+                          toast.success(t('admin.newsletter.campaigns.deleted'));
+                        } catch {
+                          toast.error(t('admin.newsletter.campaigns.deleteFailed'));
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
               {!isLoading && campaigns.length === 0 && (
-                <TableRow><TableCell colSpan={7} className="text-center py-12 text-sm text-[hsl(0_0%_50%)]">{t('admin.newsletter.campaigns.empty')}</TableCell></TableRow>
+                <TableRow><TableCell colSpan={8} className="text-center py-12 text-sm text-[hsl(0_0%_50%)]">{t('admin.newsletter.campaigns.empty')}</TableCell></TableRow>
               )}
             </TableBody>
           </Table>

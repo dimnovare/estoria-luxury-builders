@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -30,6 +30,7 @@ const priorityStyles: Record<TaskPriority, string> = {
 };
 
 type TabValue = 'today' | 'week' | 'overdue' | 'all';
+type StatusFilter = 'pending' | 'done' | 'all';
 
 export default function AdminTasks() {
   const { t } = useTranslation();
@@ -37,12 +38,17 @@ export default function AdminTasks() {
   const { user } = useAuth();
 
   const [tab, setTab] = useState<TabValue>('today');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('pending');
   const [assignedTo, setAssignedTo] = useState<string>(user?.id ?? 'me');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [hasReminder, setHasReminder] = useState<string>('all');
   const [showForm, setShowForm] = useState(false);
   const [editTaskId, setEditTaskId] = useState<string | undefined>();
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+
+  // Tasks kept visible for 800ms after being marked done so the user can undo.
+  const [recentlyDone, setRecentlyDone] = useState<Record<string, TaskDto>>({});
+  const undoTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
   const toggleStatus = useToggleTaskStatus();
   const deleteMutation = useDeleteTask();
@@ -51,7 +57,7 @@ export default function AdminTasks() {
     const f: Record<string, unknown> = {
       // 'all' = no filter (Radix Select rejects empty strings); 'me' = caller.
       assignedToId: assignedTo === 'me' ? user?.id : (assignedTo === 'all' ? undefined : assignedTo) || undefined,
-      status: 'Pending',
+      status: statusFilter === 'pending' ? 'Pending' : statusFilter === 'done' ? 'Done' : undefined,
       pageSize: 200,
     };
     if (priorityFilter !== 'all') f.priority = priorityFilter;
@@ -60,21 +66,64 @@ export default function AdminTasks() {
     if (tab === 'today') f.dueBefore = addDays(startOfDay(new Date()), 1).toISOString();
     if (tab === 'week') f.dueBefore = addDays(startOfDay(new Date()), 7).toISOString();
     return f;
-  }, [tab, assignedTo, priorityFilter, hasReminder, user?.id]);
+  }, [tab, statusFilter, assignedTo, priorityFilter, hasReminder, user?.id]);
 
   const { data, isLoading } = useTasks(filter as never);
   const tasks = data?.items ?? [];
 
-  // Client-side re-filter for "today" tab
+  // Client-side re-filter for "today" tab; also merge in recently-done tasks so
+  // they stay visible for 800ms and can be undone before disappearing.
   const filtered = useMemo(() => {
-    if (tab === 'today') return tasks.filter(t => isToday(parseISO(t.dueAt)) || isBefore(parseISO(t.dueAt), new Date()));
-    if (tab === 'week') return tasks.filter(t => isThisWeek(parseISO(t.dueAt), { weekStartsOn: 1 }) || isBefore(parseISO(t.dueAt), new Date()));
-    if (tab === 'overdue') return tasks.filter(t => isBefore(parseISO(t.dueAt), new Date()) && t.status === 'Pending');
-    return tasks;
-  }, [tasks, tab]);
+    // Tasks from query
+    let base = tasks;
+    if (tab === 'today') base = tasks.filter(t => isToday(parseISO(t.dueAt)) || isBefore(parseISO(t.dueAt), new Date()));
+    else if (tab === 'week') base = tasks.filter(t => isThisWeek(parseISO(t.dueAt), { weekStartsOn: 1 }) || isBefore(parseISO(t.dueAt), new Date()));
+    else if (tab === 'overdue') base = tasks.filter(t => isBefore(parseISO(t.dueAt), new Date()) && t.status === 'Pending');
+
+    // Merge in recently-done tasks that the query has already excluded
+    const baseIds = new Set(base.map(t => t.id));
+    const extra = Object.values(recentlyDone).filter(t => !baseIds.has(t.id));
+    return [...base, ...extra];
+  }, [tasks, tab, recentlyDone]);
 
   const handleToggle = (task: TaskDto) => {
     const newStatus = task.status === 'Pending' ? 'Done' : 'Pending';
+
+    if (newStatus === 'Done') {
+      // Keep task visible for 800ms so the user can undo before it disappears.
+      setRecentlyDone(prev => ({ ...prev, [task.id]: { ...task, status: 'Done' } }));
+
+      const timerId = setTimeout(() => {
+        setRecentlyDone(prev => {
+          const next = { ...prev };
+          delete next[task.id];
+          return next;
+        });
+        undoTimers.current.delete(task.id);
+      }, 800);
+      undoTimers.current.set(task.id, timerId);
+
+      toast(t('admin.tasks.toast.markedDone'), {
+        action: {
+          label: t('admin.common.undo'),
+          onClick: () => {
+            // Cancel the 800ms removal
+            const tid = undoTimers.current.get(task.id);
+            if (tid) { clearTimeout(tid); undoTimers.current.delete(task.id); }
+            setRecentlyDone(prev => {
+              const next = { ...prev };
+              delete next[task.id];
+              return next;
+            });
+            toggleStatus.mutate(
+              { id: task.id, status: 'Pending' },
+              { onError: () => toast.error(t('admin.tasks.toast.toggleFailed')) }
+            );
+          },
+        },
+      });
+    }
+
     toggleStatus.mutate(
       { id: task.id, status: newStatus },
       {
@@ -127,6 +176,24 @@ export default function AdminTasks() {
             <TabsTrigger value="overdue">{t('admin.tasks.tabs.overdue')}</TabsTrigger>
             <TabsTrigger value="all">{t('admin.tasks.tabs.all')}</TabsTrigger>
           </TabsList>
+
+          {/* Status filter — Pending / Completed / All */}
+          <div className="flex rounded-md border border-[hsl(0_0%_88%)] overflow-hidden text-xs">
+            {(['pending', 'done', 'all'] as StatusFilter[]).map(s => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setStatusFilter(s)}
+                className={`px-3 py-1.5 transition-colors ${
+                  statusFilter === s
+                    ? 'bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] font-medium'
+                    : 'bg-white text-[hsl(0_0%_40%)] hover:bg-[hsl(0_0%_97%)]'
+                } border-r last:border-r-0 border-[hsl(0_0%_88%)]`}
+              >
+                {s === 'pending' ? t('admin.tasks.status.pending') : s === 'done' ? t('admin.tasks.status.done') : t('admin.tasks.status.all')}
+              </button>
+            ))}
+          </div>
 
           {/* Filters */}
           <div className="flex gap-2 flex-wrap">

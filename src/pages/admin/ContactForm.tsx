@@ -16,6 +16,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useContact, useCreateContact, useUpdateContact, useAgents, handleCrmError } from '@/hooks/api/useCrm';
+import { useSubscribeContact } from '@/hooks/api/useNewsletter';
 import { toast } from 'sonner';
 import { useState } from 'react';
 
@@ -61,7 +62,9 @@ export default function ContactForm() {
   const agents = agentsData ?? [];
   const createContact = useCreateContact();
   const updateContact = useUpdateContact();
+  const subscribeContact = useSubscribeContact();
 
+  const [isNewsletterSubscriber, setIsNewsletterSubscriber] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState('');
 
@@ -135,13 +138,18 @@ export default function ContactForm() {
       email: data.email || undefined,
       phone: data.phone || undefined,
       secondaryPhone: data.secondaryPhone || undefined,
-      dateOfBirth: data.dateOfBirth || undefined,
+      // Send null to explicitly clear a previously set birthday; undefined would
+      // be omitted from JSON and the backend would leave the old value untouched.
+      dateOfBirth: data.dateOfBirth?.trim() || null,
       address: data.address || undefined,
       company: data.company || undefined,
       position: data.position || undefined,
       source: data.source || undefined,
       sourceDetail: data.sourceDetail || undefined,
       assignedAgentId: data.assignedAgentId || undefined,
+      // Explicit booleans — spread alone would include these, but listing them
+      // makes the intent clear and guards against future re-ordering of keys.
+      consentToMarketing: data.consentToMarketing ?? false,
       notes: data.notes || undefined,
       tags,
     };
@@ -371,21 +379,50 @@ export default function ContactForm() {
               {t('admin.contacts.sections.privacy')}
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
-              <Controller
-                control={control}
-                name="consentToMarketing"
-                render={({ field }) => (
-                  <div className="flex items-center gap-3">
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
-                    <span className="text-sm text-[hsl(0_0%_30%)]">{t('admin.contacts.fields.consentToMarketing')}</span>
-                    {existing?.consentToMarketingAt && (
-                      <span className="text-xs text-[hsl(0_0%_60%)]">
-                        ({new Date(existing.consentToMarketingAt).toLocaleDateString()})
-                      </span>
+              <div className="space-y-4">
+                <Controller
+                  control={control}
+                  name="consentToMarketing"
+                  render={({ field }) => (
+                    <div className="flex items-center gap-3">
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <span className="text-sm text-[hsl(0_0%_30%)]">{t('admin.contacts.fields.consentToMarketing')}</span>
+                      {existing?.consentToMarketingAt && (
+                        <span className="text-xs text-[hsl(0_0%_60%)]">
+                          ({new Date(existing.consentToMarketingAt).toLocaleDateString()})
+                        </span>
+                      )}
+                    </div>
+                  )}
+                />
+                {/* Newsletter subscriber — available in edit mode when contact has an email.
+                    Toggling on subscribes the contact; unsubscribe is done from the Newsletter admin. */}
+                {isEdit && existing?.email && (
+                  <div className="flex items-center gap-3 pt-3 border-t border-[hsl(0_0%_93%)]">
+                    <Switch
+                      checked={isNewsletterSubscriber}
+                      disabled={isNewsletterSubscriber || subscribeContact.isPending}
+                      onCheckedChange={async (checked) => {
+                        if (!checked) return;
+                        try {
+                          await subscribeContact.mutateAsync({
+                            email: existing.email!,
+                            language: existing.preferredLanguage ?? 'et',
+                          });
+                          setIsNewsletterSubscriber(true);
+                          toast.success(t('admin.contacts.toast.subscribed'));
+                        } catch {
+                          toast.error(t('admin.contacts.toast.subscribeFailed'));
+                        }
+                      }}
+                    />
+                    <span className="text-sm text-[hsl(0_0%_30%)]">{t('admin.contacts.fields.newsletterSubscriber')}</span>
+                    {isNewsletterSubscriber && (
+                      <span className="text-xs text-green-600">{t('admin.contacts.fields.subscribedNow')}</span>
                     )}
                   </div>
                 )}
-              />
+              </div>
             </AccordionContent>
           </AccordionItem>
 

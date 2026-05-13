@@ -55,6 +55,44 @@ export function useSendNewsletterNow() {
   });
 }
 
+export function useDeleteCampaign() {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (id) => api.delete(`/admin/newsletter/campaigns/${id}`).then(() => undefined),
+    // Optimistically remove the row from all paged campaign queries.
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ['admin', 'campaigns'] });
+      const snapshots = qc.getQueriesData<{ items: CampaignDto[]; totalCount: number }>({ queryKey: ['admin', 'campaigns'] });
+      snapshots.forEach(([key, data]) => {
+        if (data?.items) {
+          qc.setQueryData(key, {
+            ...data,
+            items: data.items.filter(c => c.id !== id),
+            totalCount: Math.max(0, (data.totalCount ?? 0) - 1),
+          });
+        }
+      });
+      return { snapshots };
+    },
+    onError: (_err, _id, ctx: any) => {
+      // Roll back on failure
+      ctx?.snapshots?.forEach(([key, data]: [unknown, unknown]) => {
+        qc.setQueryData(key, data);
+      });
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'campaigns'] });
+    },
+  });
+}
+
+export function useSubscribeContact() {
+  return useMutation<void, Error, { email: string; language?: string }>({
+    mutationFn: ({ email, language }) =>
+      api.post('/newsletter/subscribe', { email, language }).then(() => undefined),
+  });
+}
+
 /**
  * Client-side subscriber count by language filter.
  * Falls back to filtering the full subscriber list.

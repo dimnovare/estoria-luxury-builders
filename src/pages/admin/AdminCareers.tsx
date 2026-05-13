@@ -66,6 +66,7 @@ export default function AdminCareers() {
 
   const handleSave = async () => {
     const dto = {
+      isActive: active,
       translations: Object.fromEntries(
         langs.map(l => [toBeLang(l), { title: translations[l].title, description: translations[l].description, location: translations[l].location || null }])
       ),
