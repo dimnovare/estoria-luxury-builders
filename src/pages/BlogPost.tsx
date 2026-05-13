@@ -88,8 +88,32 @@ export default function BlogPost() {
   const authorRole = post.author?.role;
   const authorBio = post.author?.bio;
 
+  const articleLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt,
+    image: post.coverImageUrl,
+    datePublished: post.publishedAt,
+    author: authorName ? { '@type': 'Person', name: authorName } : undefined,
+    publisher: {
+      '@type': 'Organization',
+      name: 'Estoria',
+      logo: { '@type': 'ImageObject', url: 'https://estoria-luxe-digital.lovable.app/logo-88.webp' },
+    },
+    mainEntityOfPage: `https://estoria-luxe-digital.lovable.app/blog/${post.slug}`,
+  };
+
   return (
     <>
+      <Seo
+        title={`${post.title} — Estoria Blog`}
+        description={post.excerpt}
+        path={`/blog/${post.slug}`}
+        image={post.coverImageUrl}
+        type="article"
+        jsonLd={articleLd}
+      />
       {/* Hero cover */}
       <section className="relative h-[50vh] min-h-[360px] overflow-hidden">
         <img
