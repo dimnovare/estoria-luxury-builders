@@ -198,17 +198,24 @@ const sortedPages = useMemo(() => {
                         minHeight="240px"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label className={labelClass}>{t('admin.pages.fields.imageUrl')}</Label>
-                      <Input value={translations[lang]?.imageUrl || ''} onChange={e => updateTrans(lang, 'imageUrl', e.target.value)} className={inputClass} />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className={labelClass}>{t('admin.pages.fields.videoUrl')}</Label>
-                      <Input value={translations[lang]?.videoUrl || ''} onChange={e => updateTrans(lang, 'videoUrl', e.target.value)} className={inputClass} />
-                      <p className="text-xs text-[hsl(0_0%_50%)] mt-1">
-                        {t('admin.pages.fields.videoUrlHint')}
-                      </p>
-                    </div>
+                    {PAGES_WITH_IMAGE.includes(editingPage.pageKey) && (
+                      <div className="space-y-2">
+                        <Label className={labelClass}>{t('admin.pages.fields.imageUrl')}</Label>
+                        <Input value={translations[lang]?.imageUrl || ''} onChange={e => updateTrans(lang, 'imageUrl', e.target.value)} className={inputClass} />
+                        <p className="text-xs text-[hsl(0_0%_50%)] mt-1">
+                          Use an absolute URL (e.g. from R2 CDN or Unsplash).
+                        </p>
+                      </div>
+                    )}
+                    {PAGES_WITH_VIDEO.includes(editingPage.pageKey) && (
+                      <div className="space-y-2">
+                        <Label className={labelClass}>{t('admin.pages.fields.videoUrl')}</Label>
+                        <Input value={translations[lang]?.videoUrl || ''} onChange={e => updateTrans(lang, 'videoUrl', e.target.value)} className={inputClass} />
+                        <p className="text-xs text-[hsl(0_0%_50%)] mt-1">
+                          {t('admin.pages.fields.videoUrlHint')}
+                        </p>
+                      </div>
+                    )}
                   </TabsContent>
                 ))}
               </Tabs>
