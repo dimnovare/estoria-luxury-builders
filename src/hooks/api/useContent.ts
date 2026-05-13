@@ -127,6 +127,7 @@ export interface Service {
   name: string;
   description?: string;
   priceInfo?: string;
+  isActive?: boolean;
 }
 
 export interface Career {
