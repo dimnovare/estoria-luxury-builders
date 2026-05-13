@@ -99,9 +99,9 @@ export default function BlogPost() {
     publisher: {
       '@type': 'Organization',
       name: 'Estoria',
-      logo: { '@type': 'ImageObject', url: 'https://estoria-luxe-digital.lovable.app/logo-88.webp' },
+      logo: { '@type': 'ImageObject', url: 'https://estoria.estate/logo-88.webp' },
     },
-    mainEntityOfPage: `https://estoria-luxe-digital.lovable.app/blog/${post.slug}`,
+    mainEntityOfPage: `https://estoria.estate/blog/${post.slug}`,
   };
 
   return (

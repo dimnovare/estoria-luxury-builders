@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-const SITE_URL = 'https://estoria-luxe-digital.lovable.app';
+const SITE_URL = 'https://estoria.estate';
 
 interface SeoProps {
   title: string;

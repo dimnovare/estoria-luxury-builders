@@ -192,7 +192,7 @@ export default function PropertyDetail() {
     name: property.title,
     description: property.description ?? property.title,
     image: property.coverImageUrl,
-    url: `https://estoria-luxe-digital.lovable.app/properties/${property.slug}`,
+    url: `https://estoria.estate/properties/${property.slug}`,
     address: {
       '@type': 'PostalAddress',
       streetAddress: property.address,
