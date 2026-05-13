@@ -137,10 +137,13 @@ const sortedPages = useMemo(() => {
                   <TableCell colSpan={3} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
                 </TableRow>
               )}
-              {!isLoading && (pages ?? []).map(p => (
+              {!isLoading && sortedPages.map(p => (
                 <TableRow key={p.id} className="border-[hsl(0_0%_93%)]">
                   <TableCell className="text-sm text-[hsl(0_0%_40%)] font-mono hidden sm:table-cell">{p.pageKey}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">{pageLabel(p.pageKey)}</TableCell>
+                  <TableCell>
+                    <div className="text-sm text-[hsl(0_0%_15%)] font-medium">{pageLabel(p.pageKey)}</div>
+                    <div className="text-xs text-[hsl(0_0%_50%)] mt-0.5">{PAGE_LABELS[p.pageKey]?.description}</div>
+                  </TableCell>
                   <TableCell>
                     <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]" onClick={() => openEdit(p)}>
                       <Pencil className="h-3.5 w-3.5" />
