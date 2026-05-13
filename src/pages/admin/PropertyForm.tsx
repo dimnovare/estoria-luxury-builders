@@ -110,7 +110,11 @@ export default function PropertyForm() {
       setLng(existing.longitude?.toString() ?? '');
       setAgentId(existing.agent?.id ?? '');
       setIsFeatured(existing.isFeatured);
-      setFeatures(existing.features ?? []);
+      // Backend stores features as a flat string[] (currently the active
+      // language's value). Hydrate ET = EN = RU = same value so the editor
+      // can show 3-column rows; the user can refine per language and we
+      // mirror back into translations.{lang}.features on save.
+      setFeatures((existing.features ?? []).map(v => ({ et: v, en: v, ru: v })));
       setTranslations({
         et: existing.translations['Et']
           ? { ...emptyTrans, ...existing.translations['Et'], district: existing.translations['Et'].district ?? '' }
@@ -130,10 +134,20 @@ export default function PropertyForm() {
   };
 
   const addFeature = () => {
-    if (newFeature.trim() && !features.includes(newFeature.trim())) {
-      setFeatures([...features, newFeature.trim()]);
-      setNewFeature('');
-    }
+    setFeatures([...features, { ...emptyFeature }]);
+  };
+
+  const updateFeature = (idx: number, lang: keyof FeatureRow, value: string) => {
+    setFeatures(features.map((f, i) => i === idx ? { ...f, [lang]: value } : f));
+  };
+
+  const removeFeature = (idx: number) => {
+    setFeatures(features.filter((_, i) => i !== idx));
+  };
+
+  const copyFeatureToAllLanguages = (idx: number, value: string) => {
+    if (!value.trim()) return;
+    setFeatures(features.map((f, i) => i === idx ? { et: value, en: value, ru: value } : f));
   };
 
   const handleSave = async (asDraft: boolean) => {
