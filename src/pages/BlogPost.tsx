@@ -21,16 +21,8 @@ export default function BlogPost() {
     .filter((p) => p.slug !== slug)
     .slice(0, 3);
 
-  useEffect(() => {
-    if (post) {
-      document.title = `${post.title} — ESTORIA Blog`;
-      const meta = document.querySelector('meta[name="description"]');
-      if (meta) meta.setAttribute('content', post.excerpt);
-    }
-    return () => {
-      document.title = 'ESTORIA — Where Your Future Lives';
-    };
-  }, [post]);
+  // Per-route SEO is handled via <Seo /> below.
+
 
   const handleShare = async () => {
     const url = window.location.href;
