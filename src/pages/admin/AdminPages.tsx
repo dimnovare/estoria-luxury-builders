@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pencil, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,8 +17,23 @@ const langs = ['et', 'en', 'ru'] as const;
 type TransFields = { title: string; body: string; imageUrl: string; videoUrl: string; };
 const emptyTrans: TransFields = { title: '', body: '', imageUrl: '', videoUrl: '' };
 
+const PAGE_LABELS: Record<string, { label: string; description: string }> = {
+  'homepage.hero':            { label: 'Homepage – Hero',           description: 'Main headline and subtitle on the homepage' },
+  'homepage.featured':        { label: 'Homepage – Featured',       description: 'Featured properties section heading' },
+  'homepage.services':        { label: 'Homepage – Services',       description: 'Services section on homepage' },
+  'about.intro':              { label: 'About – Introduction',      description: 'Opening section on the About page' },
+  'about.values.integrity':   { label: 'About – Value: Integrity',  description: 'First values card' },
+  'about.values.excellence':  { label: 'About – Value: Excellence', description: 'Second values card' },
+  'about.values.discretion':  { label: 'About – Value: Discretion', description: 'Third values card' },
+  'about.cta':                { label: 'About – Call to Action',    description: '"Ready to Find Your Future?" section' },
+  'team.hero':                { label: 'Team – Page Header',        description: 'Heading and subtitle on the Team page' },
+  'careers.hero':             { label: 'Careers – Page Header',     description: 'Heading and subtitle on the Careers page' },
+  'services.hero':            { label: 'Services – Page Header',    description: 'Heading and subtitle on the Services page' },
+  'contact.hero':             { label: 'Contact – Page Header',     description: 'Lead text on the Contact page' },
+};
+
 function pageLabel(key: string) {
-  return key
+  return PAGE_LABELS[key]?.label ?? key
     .split('.')
     .map(p => p.charAt(0).toUpperCase() + p.slice(1))
     .join(' – ');
@@ -58,9 +73,18 @@ export default function AdminPages() {
         imageUrl: page.translations['Ru']?.imageUrl ?? '',
         videoUrl: page.translations['Ru']?.videoUrl ?? '',
       },
-    });
-    setDialogOpen(true);
-  };
+  });
+  setDialogOpen(true);
+};
+
+const sortedPages = useMemo(() => {
+  const all = pages ?? [];
+  const order = Object.keys(PAGE_LABELS);
+  const listed = all.filter(p => order.includes(p.pageKey));
+  const rest = all.filter(p => !order.includes(p.pageKey)).sort((a, b) => a.pageKey.localeCompare(b.pageKey));
+  listed.sort((a, b) => order.indexOf(a.pageKey) - order.indexOf(b.pageKey));
+  return [...listed, ...rest];
+}, [pages]);
 
   const updateTrans = (lang: string, field: keyof TransFields, value: string) => {
     setTranslations(prev => ({ ...prev, [lang]: { ...prev[lang], [field]: value } }));
@@ -113,10 +137,13 @@ export default function AdminPages() {
                   <TableCell colSpan={3} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
                 </TableRow>
               )}
-              {!isLoading && (pages ?? []).map(p => (
+              {!isLoading && sortedPages.map(p => (
                 <TableRow key={p.id} className="border-[hsl(0_0%_93%)]">
                   <TableCell className="text-sm text-[hsl(0_0%_40%)] font-mono hidden sm:table-cell">{p.pageKey}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">{pageLabel(p.pageKey)}</TableCell>
+                  <TableCell>
+                    <div className="text-sm text-[hsl(0_0%_15%)] font-medium">{pageLabel(p.pageKey)}</div>
+                    <div className="text-xs text-[hsl(0_0%_50%)] mt-0.5">{PAGE_LABELS[p.pageKey]?.description}</div>
+                  </TableCell>
                   <TableCell>
                     <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]" onClick={() => openEdit(p)}>
                       <Pencil className="h-3.5 w-3.5" />
@@ -134,7 +161,7 @@ export default function AdminPages() {
         <DialogContent className="max-w-2xl bg-white border-[hsl(0_0%_90%)]">
           <DialogHeader>
             <DialogTitle className="text-[hsl(0_0%_15%)]">
-              {editingPage ? pageLabel(editingPage.pageKey) : ''}
+              {editingPage ? (PAGE_LABELS[editingPage.pageKey]?.label ?? pageLabel(editingPage.pageKey)) : ''}
             </DialogTitle>
           </DialogHeader>
           {editingPage && (
