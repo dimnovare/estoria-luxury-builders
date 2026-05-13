@@ -166,7 +166,7 @@ function MessageRow({
     <button
       onClick={onClick}
       className={cn(
-        'w-full flex items-start gap-3 px-3 py-3 text-left transition-colors border-b border-border/50',
+        'w-full max-w-full flex items-start gap-3 px-3 py-3 text-left transition-colors border-b border-border/50 overflow-hidden',
         isSelected ? 'bg-primary/5' : 'hover:bg-muted/30',
         !msg.isRead && 'bg-muted/20',
       )}
@@ -176,22 +176,22 @@ function MessageRow({
           {initials(msg.fromName || msg.from)}
         </AvatarFallback>
       </Avatar>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className={cn('text-sm truncate', !msg.isRead && 'font-semibold text-foreground')}>
+      <div className="flex-1 min-w-0 overflow-hidden">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className={cn('text-sm truncate flex-1 min-w-0', !msg.isRead && 'font-semibold text-foreground')}>
             {msg.fromName || msg.from}
           </span>
-          <span className="ml-auto text-[10px] text-muted-foreground shrink-0">
+          <span className="text-[10px] text-muted-foreground shrink-0">
             {relativeTime(msg.receivedAt)}
           </span>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 min-w-0">
           {!msg.isRead && <div className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />}
-          <span className="text-xs text-foreground truncate">{msg.subject}</span>
+          <span className="text-xs text-foreground truncate min-w-0">{msg.subject}</span>
         </div>
         <p className="text-xs text-muted-foreground truncate mt-0.5">{msg.preview}</p>
-        <div className="flex items-center gap-2 mt-1">
-          {msg.hasAttachments && <Paperclip className="h-3 w-3 text-muted-foreground" />}
+        <div className="flex items-center gap-2 mt-1 min-w-0">
+          {msg.hasAttachments && <Paperclip className="h-3 w-3 text-muted-foreground shrink-0" />}
           {msg.linkedContactName && (
             <Link
               to={`/admin/contacts/${msg.linkedContactId}`}
