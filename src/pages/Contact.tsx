@@ -103,6 +103,11 @@ export default function Contact() {
 
   return (
     <>
+      <Seo
+        title="Contact Estoria — Tallinn Real Estate Office"
+        description="Reach Estoria in Tallinn for sales, rentals, and investment enquiries. Visit our office or message our brokers directly."
+        path="/contact"
+      />
       {/* Header */}
       <section className="pt-20 pb-12 bg-gradient-to-b from-secondary/80 to-background">
         <div className="container mx-auto px-6 pt-12">
