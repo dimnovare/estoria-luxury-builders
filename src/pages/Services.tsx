@@ -79,7 +79,7 @@ export default function Services() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: '-60px' }}
                   transition={{ duration: 0.5, ease: 'easeOut' }}
-                  className={`group relative ${!isLast ? 'border-b border-border/60' : ''} py-10 md:py-12 px-4 md:px-8 -mx-4 md:-mx-8 grid grid-cols-[auto_1fr] md:grid-cols-[60px_auto_1fr_auto] items-start gap-x-5 md:gap-x-8 gap-y-3 transition-colors duration-500 hover:bg-card/30 rounded-sm`}
+                  className={`group relative scroll-mt-24 ${!isLast ? 'border-b border-border/60' : ''} py-10 md:py-12 px-4 md:px-8 -mx-4 md:-mx-8 grid grid-cols-[auto_1fr] md:grid-cols-[60px_auto_1fr_auto] items-start gap-x-5 md:gap-x-8 gap-y-3 transition-colors duration-500 hover:bg-card/30 rounded-sm`}
                 >
                   {/* Left accent bar (animated) */}
                   <span

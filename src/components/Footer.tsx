@@ -75,7 +75,7 @@ export default function Footer() {
                     .map((service) => (
                       <li key={service.id}>
                         <Link
-                          to="/services"
+                          to={`/services#${service.slug || service.id}`}
                           className="hover:text-primary transition-colors duration-200"
                         >
                           {service.name}

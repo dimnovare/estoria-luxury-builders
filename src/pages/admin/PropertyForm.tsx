@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Plus, X, GripVertical, Image as ImageIcon, Loader2, AlertTriangle, RefreshCw, MapPin } from 'lucide-react';
+import { ArrowLeft, Plus, X, GripVertical, Image as ImageIcon, Loader2, AlertTriangle, RefreshCw, MapPin, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
+
 import {
   useAdminProperty,
   useCreateProperty,
@@ -86,8 +86,9 @@ export default function PropertyForm() {
     ru: { ...emptyTrans },
   });
 
-  const [features, setFeatures] = useState<string[]>([]);
-  const [newFeature, setNewFeature] = useState('');
+  type FeatureRow = { et: string; en: string; ru: string };
+  const emptyFeature: FeatureRow = { et: '', en: '', ru: '' };
+  const [features, setFeatures] = useState<FeatureRow[]>([]);
 
   // Pre-fill form when existing property loads
   useEffect(() => {
@@ -109,7 +110,11 @@ export default function PropertyForm() {
       setLng(existing.longitude?.toString() ?? '');
       setAgentId(existing.agent?.id ?? '');
       setIsFeatured(existing.isFeatured);
-      setFeatures(existing.features ?? []);
+      // Backend stores features as a flat string[] (currently the active
+      // language's value). Hydrate ET = EN = RU = same value so the editor
+      // can show 3-column rows; the user can refine per language and we
+      // mirror back into translations.{lang}.features on save.
+      setFeatures((existing.features ?? []).map(v => ({ et: v, en: v, ru: v })));
       setTranslations({
         et: existing.translations['Et']
           ? { ...emptyTrans, ...existing.translations['Et'], district: existing.translations['Et'].district ?? '' }
@@ -129,10 +134,20 @@ export default function PropertyForm() {
   };
 
   const addFeature = () => {
-    if (newFeature.trim() && !features.includes(newFeature.trim())) {
-      setFeatures([...features, newFeature.trim()]);
-      setNewFeature('');
-    }
+    setFeatures([...features, { ...emptyFeature }]);
+  };
+
+  const updateFeature = (idx: number, lang: keyof FeatureRow, value: string) => {
+    setFeatures(features.map((f, i) => i === idx ? { ...f, [lang]: value } : f));
+  };
+
+  const removeFeature = (idx: number) => {
+    setFeatures(features.filter((_, i) => i !== idx));
+  };
+
+  const copyFeatureToAllLanguages = (idx: number, value: string) => {
+    if (!value.trim()) return;
+    setFeatures(features.map((f, i) => i === idx ? { et: value, en: value, ru: value } : f));
   };
 
   const handleSave = async (asDraft: boolean) => {
@@ -158,9 +173,20 @@ export default function PropertyForm() {
       longitude: lng ? parseFloat(lng) : null,
       isFeatured: asDraft ? false : isFeatured,
       agentId,
-      features,
+      // Flat features list (kept for backward compatibility) — picks the
+      // first non-empty value across languages so list pages still get a
+      // usable string. Per-language values live under translations.{lang}.features.
+      features: features
+        .map(f => f.en || f.et || f.ru)
+        .filter(v => v && v.trim()),
       translations: Object.fromEntries(
-        langs.map(l => [toBeLang(l), translations[l]])
+        langs.map(l => [
+          toBeLang(l),
+          {
+            ...translations[l],
+            features: features.map(f => f[l]).filter(v => v && v.trim()),
+          },
+        ])
       ),
     };
 
@@ -544,28 +570,63 @@ export default function PropertyForm() {
 
         <TabsContent value="features" className="mt-4">
           <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
-            <CardContent className="p-6 space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  placeholder={t('admin.properties.features.addPlaceholder')}
-                  value={newFeature}
-                  onChange={e => setNewFeature(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addFeature())}
-                  className={inputClass}
-                />
-                <Button onClick={addFeature} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {features.map(f => (
-                  <Badge key={f} variant="secondary" className="bg-[hsl(0_0%_93%)] text-[hsl(0_0%_30%)] border-[hsl(0_0%_85%)] gap-1.5 py-1 px-3">
-                    {f}
-                    <button onClick={() => setFeatures(features.filter(x => x !== f))} className="hover:text-red-500"><X className="h-3 w-3" /></button>
-                  </Badge>
-                ))}
-                {features.length === 0 && <p className="text-sm text-[hsl(0_0%_60%)]">{t('admin.properties.features.empty')}</p>}
-              </div>
+            <CardContent className="p-6 space-y-3">
+              <p className="text-xs text-[hsl(0_0%_50%)]">
+                Enter each feature in all three languages. Use the copy button to mirror the EN value into ET and RU.
+              </p>
+              {features.map((f, idx) => (
+                <div key={idx} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto_auto] gap-2 items-center">
+                  <Input
+                    value={f.et}
+                    onChange={e => updateFeature(idx, 'et', e.target.value)}
+                    placeholder="ET"
+                    className={inputClass}
+                  />
+                  <Input
+                    value={f.en}
+                    onChange={e => updateFeature(idx, 'en', e.target.value)}
+                    placeholder="EN"
+                    className={inputClass}
+                  />
+                  <Input
+                    value={f.ru}
+                    onChange={e => updateFeature(idx, 'ru', e.target.value)}
+                    placeholder="RU"
+                    className={inputClass}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    title="Copy EN to all languages"
+                    onClick={() => copyFeatureToAllLanguages(idx, f.en)}
+                    className="h-9 w-9 text-[hsl(0_0%_50%)] hover:text-[hsl(43_50%_45%)]"
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeFeature(idx)}
+                    className="h-9 w-9 text-[hsl(0_0%_50%)] hover:text-red-500"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              {features.length === 0 && (
+                <p className="text-sm text-[hsl(0_0%_60%)]">{t('admin.properties.features.empty')}</p>
+              )}
+              <Button
+                type="button"
+                onClick={addFeature}
+                variant="outline"
+                className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_30%)]"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Feature
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
