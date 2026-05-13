@@ -73,9 +73,18 @@ export default function AdminPages() {
         imageUrl: page.translations['Ru']?.imageUrl ?? '',
         videoUrl: page.translations['Ru']?.videoUrl ?? '',
       },
-    });
-    setDialogOpen(true);
-  };
+  });
+  setDialogOpen(true);
+};
+
+const sortedPages = useMemo(() => {
+  const all = pages ?? [];
+  const order = Object.keys(PAGE_LABELS);
+  const listed = all.filter(p => order.includes(p.pageKey));
+  const rest = all.filter(p => !order.includes(p.pageKey)).sort((a, b) => a.pageKey.localeCompare(b.pageKey));
+  listed.sort((a, b) => order.indexOf(a.pageKey) - order.indexOf(b.pageKey));
+  return [...listed, ...rest];
+}, [pages]);
 
   const updateTrans = (lang: string, field: keyof TransFields, value: string) => {
     setTranslations(prev => ({ ...prev, [lang]: { ...prev[lang], [field]: value } }));
