@@ -32,6 +32,9 @@ const PAGE_LABELS: Record<string, { label: string; description: string }> = {
   'contact.hero':             { label: 'Contact – Page Header',     description: 'Lead text on the Contact page' },
 };
 
+const PAGES_WITH_IMAGE = ['homepage.hero', 'about.intro', 'homepage.featured'];
+const PAGES_WITH_VIDEO = ['homepage.hero'];
+
 function pageLabel(key: string) {
   return PAGE_LABELS[key]?.label ?? key
     .split('.')
