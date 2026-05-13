@@ -150,6 +150,14 @@ export default function AdminPages() {
                     <div className="space-y-2">
                       <Label className={labelClass}>{t('admin.pages.fields.title')}</Label>
                       <Input value={translations[lang]?.title || ''} onChange={e => updateTrans(lang, 'title', e.target.value)} className={inputClass} />
+                      {editingPage?.pageKey.startsWith('homepage.') && (
+                        <p className="text-xs text-[hsl(0_0%_50%)] mt-1">
+                          Wrap the accent word in asterisks to make it gold and italic.
+                          Example: <code className="bg-[hsl(0_0%_94%)] px-1 rounded text-[hsl(43_50%_45%)]">
+                            Where Your *Future* Lives
+                          </code>
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label className={labelClass}>{t('admin.pages.fields.body')}</Label>
