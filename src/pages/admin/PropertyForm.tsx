@@ -20,6 +20,7 @@ import {
   useDeletePropertyImage,
   useReprocessPropertyImage,
   useAdminTeam,
+  useSetPropertyStatus,
   toBeLang,
 } from '@/hooks/api/useAdmin';
 import { useGeocodeProperty } from '@/hooks/api/usePropertyGeocode';
@@ -47,6 +48,7 @@ export default function PropertyForm() {
   const uploadImages = useUploadPropertyImages();
   const deleteImage = useDeletePropertyImage();
   const reprocessImage = useReprocessPropertyImage();
+  const setStatus = useSetPropertyStatus();
   const geocode = useGeocodeProperty();
 
   // Per-image timestamp tracking polling start. After 60s of Pending/Processing
@@ -164,6 +166,13 @@ export default function PropertyForm() {
       return;
     }
 
+    // The agent is a required FK on the backend — guard here so the owner gets a
+    // clear message instead of a generic save failure.
+    if (!agentId) {
+      toast.error(t('admin.properties.validation.agentRequired'));
+      return;
+    }
+
     const dto = {
       transactionType,
       propertyType,
@@ -199,14 +208,28 @@ export default function PropertyForm() {
     };
 
     try {
+      let propertyId = id;
       if (isEdit && id) {
         await updateProperty.mutateAsync({ id, dto });
-        toast.success(t('admin.properties.toast.updated'));
-        navigate('/admin/properties');
       } else {
         const result = await createProperty.mutateAsync(dto) as { id: string };
+        propertyId = result.id;
+      }
+
+      // Status lives on a separate endpoint, so set it after the content saves.
+      // This is what makes "Save & Publish" actually publish (Active) and
+      // "Save as Draft" keep the listing hidden (Draft) — mirrors BlogForm.
+      if (propertyId) {
+        await setStatus.mutateAsync({ id: propertyId, status: asDraft ? 'Draft' : 'Active' });
+      }
+
+      if (isEdit) {
+        toast.success(asDraft ? t('admin.properties.toast.updated') : t('admin.properties.toast.published'));
+        navigate('/admin/properties');
+      } else {
+        // New listing: stay on the edit screen so the owner can add images next.
         toast.success(t('admin.properties.toast.createdEdit'));
-        navigate(`/admin/properties/${result.id}/edit`);
+        navigate(`/admin/properties/${propertyId}/edit`);
       }
     } catch {
       toast.error(t('admin.properties.toast.saveFailed'));
@@ -375,18 +398,30 @@ export default function PropertyForm() {
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 space-y-4">
                 <p className={helpClass}>
-                  Set the address in the <strong>Translations</strong> tab, then click <strong>Find on map</strong> to fill these
-                  automatically. Or paste coordinates manually. Leave blank to hide the map on the listing.
+                  Set the address in the <strong>Translations</strong> tab, then click <strong>Find on map</strong>.
+                  We place the pin from the address automatically — no need to type coordinates by hand.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.properties.fields.latitude')}</Label>
-                    <Input type="text" value={lat} onChange={e => setLat(e.target.value)} placeholder="59.4370" className={inputClass} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.properties.fields.longitude')}</Label>
-                    <Input type="text" value={lng} onChange={e => setLng(e.target.value)} placeholder="24.7536" className={inputClass} />
-                  </div>
+
+                {/* Resolved-location status. Coordinates are derived, never hand-entered. */}
+                <div className="rounded-md border border-[hsl(0_0%_90%)] bg-[hsl(0_0%_98%)] px-4 py-3 text-sm">
+                  {lat && lng ? (
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="flex items-center gap-2 text-[hsl(0_0%_25%)]">
+                        <MapPin className="h-4 w-4 text-green-600 shrink-0" />
+                        {t('admin.properties.location.located')}{' '}
+                        <span className="font-mono text-[hsl(0_0%_45%)]">{parseFloat(lat).toFixed(5)}, {parseFloat(lng).toFixed(5)}</span>
+                      </span>
+                      <button
+                        type="button"
+                        className="text-xs text-[hsl(0_0%_50%)] hover:text-red-500 underline shrink-0"
+                        onClick={() => { setLat(''); setLng(''); }}
+                      >
+                        {t('admin.properties.location.clear')}
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-[hsl(0_0%_50%)]">{t('admin.properties.location.notSet')}</span>
+                  )}
                 </div>
 
                 {/* Geocode button — disabled in create mode (no id yet to call against). */}
@@ -411,7 +446,7 @@ export default function PropertyForm() {
                     {geocode.isPending
                       ? <Loader2 className="h-3 w-3 animate-spin mr-1" />
                       : <MapPin className="h-3 w-3 mr-1" />}
-                    {t('admin.properties.geocodeButton')}
+                    {lat && lng ? t('admin.properties.location.refind') : t('admin.properties.geocodeButton')}
                   </Button>
                   {!id && (
                     <p className={`${helpClass} mt-2`}>Save the property first, then come back here to find it on the map.</p>

@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, Pencil, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Plus, Pencil, Trash2, Eye, EyeOff, MapPin, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useAdminProperties, useDeleteProperty, useSetPropertyStatus } from '@/hooks/api/useAdmin';
+import { useGeocodeMissing } from '@/hooks/api/usePropertyGeocode';
 import { propertyTypeLabel, transactionTypeLabel, propertyStatusLabel } from '@/lib/enumLabels';
 import { toast } from 'sonner';
 
@@ -30,8 +31,24 @@ export default function AdminProperties() {
   const { data, isLoading } = useAdminProperties();
   const deleteProperty = useDeleteProperty();
   const setStatus = useSetPropertyStatus();
+  const geocodeMissing = useGeocodeMissing();
 
   const properties = data?.items ?? [];
+
+  const handleGeocodeMissing = async () => {
+    try {
+      const res = await geocodeMissing.mutateAsync();
+      if (res.total === 0) {
+        toast.success(t('admin.properties.toast.geocodeAllDone'));
+      } else if (res.failed === 0) {
+        toast.success(t('admin.properties.toast.geocodeBulkOk', { count: res.geocoded }));
+      } else {
+        toast.warning(t('admin.properties.toast.geocodeBulkPartial', { ok: res.geocoded, failed: res.failed }));
+      }
+    } catch {
+      toast.error(t('admin.properties.toast.geocodeFailed'));
+    }
+  };
 
   const filtered = properties.filter(p => {
     if (statusFilter !== 'all' && p.status !== statusFilter) return false;
@@ -65,9 +82,22 @@ export default function AdminProperties() {
           <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.properties.title')}</h1>
           <p className="text-sm text-[hsl(0_0%_45%)] mt-1">Manage property listings. Create a listing, then add images and publish it to make it visible on the public site.</p>
         </div>
-        <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
-          <Link to="/admin/properties/new"><Plus className="h-4 w-4 mr-2" />{t('admin.properties.addNew')}</Link>
-        </Button>
+        <div className="flex items-center gap-2 shrink-0">
+          <Button
+            variant="outline"
+            onClick={handleGeocodeMissing}
+            disabled={geocodeMissing.isPending}
+            title={t('admin.properties.geocodeMissingHint')}
+          >
+            {geocodeMissing.isPending
+              ? <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              : <MapPin className="h-4 w-4 mr-2" />}
+            {t('admin.properties.geocodeMissing')}
+          </Button>
+          <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+            <Link to="/admin/properties/new"><Plus className="h-4 w-4 mr-2" />{t('admin.properties.addNew')}</Link>
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}

@@ -453,10 +453,20 @@
       "saveDraft": "Salvesta mustandina",
       "savePublish": "Salvesta ja avalda",
       "geocodeButton": "Hangi aadressilt",
+      "geocodeMissing": "Geokodeeri puuduvad",
+      "geocodeMissingHint": "Leia aadressi põhjal koordinaadid kõigile objektidele, millel need veel puuduvad, et kaart kuvataks igal kuulutusel.",
+      "location": {
+        "located": "Asukoht",
+        "notSet": "Asukoht pole veel määratud — kaarti sellel kuulutusel ei kuvata. Klõpsa allpool „Hangi aadressilt\".",
+        "clear": "Tühjenda",
+        "refind": "Leia aadressilt uuesti"
+      },
       "toast": {
         "deleted": "Objekt kustutatud",
         "deleteFailed": "Objekti kustutamine ebaõnnestus",
         "updated": "Objekt uuendatud",
+        "published": "Objekt avaldatud — nüüd nähtav saidil",
+        "unpublished": "Objekt peidetud (mustand)",
         "createdEdit": "Objekt loodud — laadi pildid üles vahekaardil „Pildid\"",
         "saveFailed": "Objekti salvestamine ebaõnnestus",
         "imagesUploaded": "Pildid üles laaditud",
@@ -464,10 +474,14 @@
         "imageRemoved": "Pilt eemaldatud",
         "imageRemoveFailed": "Pildi eemaldamine ebaõnnestus",
         "geocoded": "Koordinaadid täidetud aadressi põhjal",
-        "geocodeFailed": "Selle aadressi geokodeerimine ebaõnnestus"
+        "geocodeFailed": "Selle aadressi geokodeerimine ebaõnnestus",
+        "geocodeAllDone": "Kõigil objektidel on juba koordinaadid",
+        "geocodeBulkOk": "Geokodeeritud {{count}} objekti",
+        "geocodeBulkPartial": "Geokodeeritud {{ok}}, {{failed}} ei õnnestunud leida — lisa või paranda nende aadress"
       },
       "validation": {
-        "titleRequired": "Ingliskeelne pealkiri on kohustuslik"
+        "titleRequired": "Ingliskeelne pealkiri on kohustuslik",
+        "agentRequired": "Palun vali maakler jaotises „Nähtavus ja maakler\""
       }
     },
     "blog": {

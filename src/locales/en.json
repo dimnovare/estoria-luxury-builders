@@ -453,21 +453,35 @@
       "saveDraft": "Save as Draft",
       "savePublish": "Save & Publish",
       "geocodeButton": "Get from address",
+      "geocodeMissing": "Geocode missing",
+      "geocodeMissingHint": "Find coordinates from the address for every property that doesn't have them yet, so the map shows on each listing.",
+      "location": {
+        "located": "Located at",
+        "notSet": "No location set yet — the map won't show on this listing. Click \"Get from address\" below.",
+        "clear": "Clear",
+        "refind": "Find again from address"
+      },
       "toast": {
         "deleted": "Property deleted",
         "deleteFailed": "Failed to delete property",
         "updated": "Property updated",
+        "published": "Property published — now live on the site",
+        "unpublished": "Property unpublished",
         "createdEdit": "Property created — upload images in the Images tab",
         "saveFailed": "Failed to save property",
         "imagesUploaded": "Images uploaded",
         "geocoded": "Coordinates filled from address",
         "geocodeFailed": "Could not geocode this address",
+        "geocodeAllDone": "All properties already have coordinates",
+        "geocodeBulkOk": "Geocoded {{count}} property(ies)",
+        "geocodeBulkPartial": "Geocoded {{ok}}, {{failed}} couldn't be located — add or fix their address",
         "imageUploadFailed": "Failed to upload images",
         "imageRemoved": "Image removed",
         "imageRemoveFailed": "Failed to remove image"
       },
       "validation": {
-        "titleRequired": "English title is required"
+        "titleRequired": "English title is required",
+        "agentRequired": "Please select an agent in the Visibility & agent section"
       }
     },
     "blog": {

@@ -95,6 +95,12 @@ export default function BlogForm() {
       return;
     }
 
+    // Author is a required FK on the backend — guard for a clear message.
+    if (!authorId) {
+      toast.error(t('admin.blog.validation.authorRequired', 'Please select an author.'));
+      return;
+    }
+
     const dto = {
       authorId,
       coverImageUrl: coverImageUrl || null,
