@@ -1,24 +1,16 @@
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { SafeHtml } from '@/components/SafeHtml';
 import { Phone, Mail, ArrowLeft, Loader2 } from 'lucide-react';
 import PropertyCard from '@/components/PropertyCard';
-import { useEffect } from 'react';
+import Seo from '@/components/Seo';
 import { useTeamMember } from '@/hooks/api/useContent';
 
 export default function TeamMemberDetail() {
   const { slug } = useParams();
   const { t } = useTranslation();
   const { data: member, isLoading, error } = useTeamMember(slug);
-
-  useEffect(() => {
-    if (member) {
-      document.title = `${member.name} — ESTORIA`;
-    }
-    return () => {
-      document.title = 'ESTORIA — Where Your Future Lives';
-    };
-  }, [member]);
 
   if (isLoading) {
     return (
@@ -46,6 +38,12 @@ export default function TeamMemberDetail() {
 
   return (
     <>
+      <Seo
+        title={`${member.name} — ${member.role || 'Broker'} at Estoria`}
+        description={`${member.name}, ${member.role || 'real-estate advisor'} at Estoria in Tallinn. Get in touch for premium real-estate guidance.`}
+        path={`/team/${member.slug}`}
+        image={member.photoUrl}
+      />
       <div className="pt-24 pb-4 container mx-auto px-6">
         <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body">
           <Link to="/" className="hover:text-primary transition-colors">
@@ -96,10 +94,7 @@ export default function TeamMemberDetail() {
 
             {/* Bio */}
             {member.bio && (
-              <div
-                className="prose-estoria mb-8"
-                dangerouslySetInnerHTML={{ __html: member.bio }}
-              />
+              <SafeHtml className="prose-estoria mb-8" html={member.bio} />
             )}
 
             {/* Contact */}

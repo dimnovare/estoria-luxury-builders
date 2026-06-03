@@ -75,8 +75,6 @@ const SECTIONS: SectionDef[] = [
     descriptionKey: 'admin.settings.sections.featuresHelp',
     fields: [
       { key: 'watermark.enabled', labelKey: 'admin.settings.fields.watermarkEnabled', type: 'switch' },
-      { key: 'ai.descriptions_enabled', labelKey: 'admin.settings.fields.aiDescriptions', type: 'switch', badge: 'BETA' },
-      { key: 'ai.replies_enabled', labelKey: 'admin.settings.fields.aiReplies', type: 'switch', badge: 'BETA' },
       { key: 'birthday.auto_send', labelKey: 'admin.settings.fields.birthdayAutoSend', type: 'switch' },
       { key: 'savedsearches.auto_send', labelKey: 'admin.settings.fields.savedSearchAutoSend', type: 'switch' },
     ],
@@ -84,6 +82,11 @@ const SECTIONS: SectionDef[] = [
 ];
 
 const KNOWN_KEYS = new Set(SECTIONS.flatMap(s => s.fields.map(f => f.key)));
+
+// Keys that exist in the backend but have no working implementation yet. We
+// hide them entirely (not even in the "Other" catch-all) so the admin UI never
+// implies a capability that isn't wired up. Re-add to a section when shipped.
+const HIDDEN_KEYS = new Set(['ai.descriptions_enabled', 'ai.replies_enabled']);
 
 // ── Single setting row ──────────────────────────────────────────────────────
 
@@ -359,7 +362,7 @@ export default function AdminSettings() {
   const settingsMap = new Map<string, SiteSettingDto>();
   settings?.forEach(s => settingsMap.set(s.key, s));
 
-  const unknownSettings = settings?.filter(s => !KNOWN_KEYS.has(s.key)) ?? [];
+  const unknownSettings = settings?.filter(s => !KNOWN_KEYS.has(s.key) && !HIDDEN_KEYS.has(s.key)) ?? [];
 
   return (
     <div className="space-y-6 max-w-3xl">

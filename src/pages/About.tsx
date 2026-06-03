@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { SafeHtml } from '@/components/SafeHtml';
 import { Shield, Heart, Eye } from 'lucide-react';
 import { useTeam, usePageContent } from '@/hooks/api/useContent';
 import Seo from '@/components/Seo';
@@ -103,10 +104,7 @@ export default function About() {
                 </div>
               </div>
               {intro?.body ? (
-                <div
-                  className="prose-estoria mt-6"
-                  dangerouslySetInnerHTML={{ __html: intro.body }}
-                />
+                <SafeHtml className="prose-estoria mt-6" html={intro.body} />
               ) : (
                 <div className="prose-estoria mt-6">
                   <p>
@@ -156,10 +154,7 @@ export default function About() {
               {story?.title || 'Our Story'}
             </h2>
             {story?.body ? (
-              <div
-                className="prose-estoria text-center"
-                dangerouslySetInnerHTML={{ __html: story.body }}
-              />
+              <SafeHtml className="prose-estoria text-center" html={story.body} />
             ) : (
               <div className="prose-estoria text-center">
                 <p>

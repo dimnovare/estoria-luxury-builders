@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/sitemap.xml", "destination": "https://api.estoria.estate/feeds/sitemap.xml" },
+    { "source": "/sitemap.xml", "destination": "https://api.estoria.estate/sitemap.xml" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "headers": [

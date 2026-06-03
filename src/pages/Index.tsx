@@ -11,6 +11,7 @@ function parseHeroTitle(title: string): { before: string; accent: string; after:
 }
 import Newsletter from '@/components/Newsletter';
 import Seo from '@/components/Seo';
+import { SafeHtml } from '@/components/SafeHtml';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -168,7 +169,7 @@ export default function Index() {
             className="mt-5 text-foreground/90 font-body font-light max-w-[520px] mx-auto leading-[1.8] text-base md:text-[17px] [text-shadow:_0_1px_8px_rgba(0,0,0,0.4)]"
           >
             {hero?.body ? (
-              <span dangerouslySetInnerHTML={{ __html: hero.body }} />
+              <SafeHtml as="span" html={hero.body} />
             ) : (
               "Curated luxury properties across Estonia's most sought-after locations."
             )}
@@ -445,9 +446,9 @@ export default function Index() {
               )}
             </h2>
             {aboutIntro?.body ? (
-              <div
+              <SafeHtml
                 className="text-muted-foreground font-body text-sm leading-[1.85] max-w-[380px] mb-8"
-                dangerouslySetInnerHTML={{ __html: aboutIntro.body }}
+                html={aboutIntro.body}
               />
             ) : (
               <p className="text-muted-foreground font-body text-sm leading-[1.85] max-w-[380px] mb-8">

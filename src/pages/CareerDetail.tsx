@@ -3,21 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { MapPin, ArrowLeft, Loader2 } from 'lucide-react';
 import { useCareer } from '@/hooks/api/useContent';
-import { useEffect } from 'react';
+import { SafeHtml } from '@/components/SafeHtml';
+import Seo from '@/components/Seo';
 
 export default function CareerDetail() {
   const { slug } = useParams();
   const { t } = useTranslation();
   const { data: career, isLoading, error } = useCareer(slug);
-
-  useEffect(() => {
-    if (career) {
-      document.title = `${career.title} — Careers — ESTORIA`;
-    }
-    return () => {
-      document.title = 'ESTORIA — Where Your Future Lives';
-    };
-  }, [career]);
 
   if (isLoading) {
     return (
@@ -45,6 +37,11 @@ export default function CareerDetail() {
 
   return (
     <>
+      <Seo
+        title={`${career.title} — Careers at Estoria`}
+        description={`${career.title} — career opportunity at Estoria${career.location ? ` in ${career.location}` : ''}, Tallinn.`}
+        path={`/careers/${career.slug}`}
+      />
       <div className="pt-24 pb-4 container mx-auto px-6">
         <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body">
           <Link to="/" className="hover:text-primary transition-colors">
@@ -78,10 +75,7 @@ export default function CareerDetail() {
 
           {/* Description */}
           {career.description && (
-            <div
-              className="prose-estoria mb-12"
-              dangerouslySetInnerHTML={{ __html: career.description }}
-            />
+            <SafeHtml className="prose-estoria mb-12" html={career.description} />
           )}
 
           {/* Apply CTA */}

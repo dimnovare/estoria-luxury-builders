@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { SafeHtml } from '@/components/SafeHtml';
 import { ArrowLeft, Share2, Check } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import BlogCard from '@/components/BlogCard';
@@ -185,10 +186,7 @@ export default function BlogPost() {
 
           {/* Content */}
           {post.content && (
-            <div
-              className="prose-estoria-article"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
+            <SafeHtml className="prose-estoria-article" html={post.content} />
           )}
 
           {/* Share */}

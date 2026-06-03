@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useSiteSettings } from '@/hooks/api/useSiteSettings';
+import Seo from '@/components/Seo';
 
 export default function PrivacyPolicy() {
   const { t } = useTranslation();
@@ -13,6 +14,11 @@ export default function PrivacyPolicy() {
 
   return (
     <>
+      <Seo
+        title="Privacy Policy — Estoria"
+        description="How Estoria collects, uses, and protects your personal data, and your rights under GDPR."
+        path="/privacy"
+      />
       <section className="pt-20 pb-12 bg-gradient-to-b from-secondary/80 to-background">
         <div className="container mx-auto px-6 pt-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>

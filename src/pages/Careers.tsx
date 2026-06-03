@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { MapPin, ArrowRight, Mail, Loader2 } from 'lucide-react';
 import { useCareers, usePageContent } from '@/hooks/api/useContent';
+import Seo from '@/components/Seo';
 
 export default function Careers() {
   const { t } = useTranslation();
@@ -12,6 +13,11 @@ export default function Careers() {
 
   return (
     <>
+      <Seo
+        title="Careers — Join the Estoria Team in Tallinn"
+        description="Explore career opportunities at Estoria. Join our team of premium real-estate brokers and advisors in Tallinn, Estonia."
+        path="/careers"
+      />
       {/* Header */}
       <section className="pt-20 pb-12 bg-gradient-to-b from-secondary/80 to-background">
         <div className="container mx-auto px-6 pt-12">

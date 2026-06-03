@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Suspense, lazy } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -14,6 +14,9 @@ import { useProperty, useProperties } from '@/hooks/api/useProperties';
 import { propertyTypeLabel } from '@/lib/enumLabels';
 import api from '@/lib/api';
 import Seo from '@/components/Seo';
+import { SafeHtml } from '@/components/SafeHtml';
+
+const PropertyMap = lazy(() => import('@/components/PropertyMap'));
 
 export default function PropertyDetail() {
   const { slug } = useParams();
@@ -341,10 +344,7 @@ export default function PropertyDetail() {
 
               {/* Description */}
               {property.description && (
-                <div
-                  className="prose-estoria mb-12"
-                  dangerouslySetInnerHTML={{ __html: property.description }}
-                />
+                <SafeHtml className="prose-estoria mb-12" html={property.description} />
               )}
 
               {/* Features */}
@@ -370,16 +370,21 @@ export default function PropertyDetail() {
               {/* Price / status history */}
               <PropertyHistory slug={property.slug} />
 
-              {/* Map placeholder */}
+              {/* Location map — Leaflet + OpenStreetMap, lazy-loaded so the
+                  mapping libs stay out of the main bundle. */}
               {property.lat && property.lng && (
                 <div className="mb-12">
                   <h2 className="font-heading text-2xl text-foreground mb-6">{t('properties.detail.locationTitle')}</h2>
-                  <div className="aspect-[16/9] bg-secondary rounded-sm border border-border flex items-center justify-center">
-                    <div className="text-center text-muted-foreground">
-                      <MapPin size={32} className="mx-auto mb-2 text-primary" />
-                      <p className="font-body text-sm">{property.address}</p>
-                      <p className="font-body text-xs mt-1">{t('properties.detail.mapPlaceholder')}</p>
-                    </div>
+                  {property.address && (
+                    <p className="font-body text-sm text-muted-foreground mb-3 flex items-center gap-2">
+                      <MapPin size={16} className="text-primary" />
+                      {property.address}
+                    </p>
+                  )}
+                  <div className="aspect-[16/9] rounded-sm border border-border overflow-hidden">
+                    <Suspense fallback={<div className="w-full h-full bg-secondary animate-pulse" />}>
+                      <PropertyMap lat={property.lat} lng={property.lng} address={property.address} />
+                    </Suspense>
                   </div>
                 </div>
               )}
