@@ -14,6 +14,7 @@ import {
   useAdminBlogPost,
   useCreateBlogPost,
   useUpdateBlogPost,
+  useSetBlogPostStatus,
   useUploadFile,
   useAdminTeam,
   toBeLang,
@@ -36,6 +37,7 @@ export default function BlogForm() {
   const { data: teamData } = useAdminTeam();
   const createBlogPost = useCreateBlogPost();
   const updateBlogPost = useUpdateBlogPost();
+  const setStatus = useSetBlogPostStatus();
   const uploadFile = useUploadFile();
 
   const [authorId, setAuthorId] = useState('');
@@ -84,7 +86,15 @@ export default function BlogForm() {
     }
   };
 
-  const handleSave = async () => {
+  // publish=true → live on the site; publish=false → saved as a hidden draft.
+  // Status lives on a separate endpoint, so we save the content first, then set
+  // the status on the resulting post id.
+  const handleSave = async (publish: boolean) => {
+    if (!translations.en.title.trim()) {
+      toast.error(t('admin.blog.validation.titleRequired', 'An English title is required to save.'));
+      return;
+    }
+
     const dto = {
       authorId,
       coverImageUrl: coverImageUrl || null,
@@ -94,20 +104,29 @@ export default function BlogForm() {
     };
 
     try {
+      let postId = id;
       if (isEdit && id) {
         await updateBlogPost.mutateAsync({ id, dto });
-        toast.success(t('admin.blog.toast.updated'));
       } else {
-        await createBlogPost.mutateAsync(dto);
-        toast.success(t('admin.blog.toast.created'));
+        const result = await createBlogPost.mutateAsync(dto) as { id: string };
+        postId = result.id;
       }
+
+      if (postId) {
+        await setStatus.mutateAsync({ id: postId, status: publish ? 'Published' : 'Draft' });
+      }
+
+      toast.success(publish
+        ? t('admin.blog.toast.published')
+        : t('admin.blog.toast.savedDraft', 'Saved as draft — not visible on the site yet.'));
       navigate('/admin/blog');
     } catch {
       toast.error(t('admin.blog.toast.saveFailed'));
     }
   };
 
-  const isSaving = createBlogPost.isPending || updateBlogPost.isPending;
+  const isSaving = createBlogPost.isPending || updateBlogPost.isPending || setStatus.isPending;
+  const currentStatus = existing?.status;
 
   const inputClass = "border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)] focus:border-[hsl(43_50%_54%)] focus:ring-[hsl(43_50%_54%)]";
   const labelClass = "text-sm text-[hsl(0_0%_40%)] font-medium";
@@ -218,11 +237,31 @@ export default function BlogForm() {
         </CardContent>
       </Card>
 
-      <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={isSaving} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
-          {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-          {t('admin.blog.savePost')}
-        </Button>
+      <div className="flex items-center justify-between gap-3 pt-2">
+        <p className="text-xs text-[hsl(0_0%_55%)]">
+          {currentStatus === 'Published'
+            ? 'This post is live on the site. Saving as draft will hide it.'
+            : 'This post is a hidden draft. Publish it to make it live.'}
+        </p>
+        <div className="flex gap-3">
+          <Button
+            variant="outline"
+            onClick={() => handleSave(false)}
+            disabled={isSaving}
+            className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)]"
+          >
+            {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+            {t('admin.blog.saveDraft', 'Save as draft')}
+          </Button>
+          <Button
+            onClick={() => handleSave(true)}
+            disabled={isSaving}
+            className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]"
+          >
+            {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+            {t('admin.blog.savePublish', 'Save & publish')}
+          </Button>
+        </div>
       </div>
     </div>
   );

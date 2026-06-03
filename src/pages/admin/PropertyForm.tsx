@@ -10,6 +10,7 @@ import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 import {
   useAdminProperty,
@@ -133,6 +134,13 @@ export default function PropertyForm() {
     setTranslations(prev => ({ ...prev, [lang]: { ...prev[lang], [field]: value } }));
   };
 
+  // Copy the whole English translation into another language as a starting
+  // point, so the user can translate in place instead of retyping field labels.
+  const copyTranslationFromEn = (lang: string) => {
+    setTranslations(prev => ({ ...prev, [lang]: { ...prev.en } }));
+    toast.success(t('admin.properties.toast.copiedFromEn', 'Copied English — now translate it.'));
+  };
+
   const addFeature = () => {
     setFeatures([...features, { ...emptyFeature }]);
   };
@@ -230,6 +238,8 @@ export default function PropertyForm() {
 
   const inputClass = "border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)] focus:border-[hsl(43_50%_54%)] focus:ring-[hsl(43_50%_54%)]";
   const labelClass = "text-sm text-[hsl(0_0%_40%)] font-medium";
+  const helpClass = "text-xs text-[hsl(0_0%_55%)]";
+  const requiredMark = <span className="text-[hsl(43_50%_45%)]" title="Required">*</span>;
 
   if (isEdit && loadingProperty) {
     return (
@@ -257,84 +267,166 @@ export default function PropertyForm() {
         </TabsList>
 
         <TabsContent value="general" className="mt-4">
-          <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
-            <CardContent className="p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.properties.fields.propertyType')}</Label>
-                  <Select value={propertyType} onValueChange={setPropertyType}>
-                    <SelectTrigger className={inputClass}><SelectValue placeholder={t('admin.properties.fields.selectType')} /></SelectTrigger>
-                    <SelectContent>
-                      {PROPERTY_TYPE_VALUES.map(v => (
-                        <SelectItem key={v} value={v}>{propertyTypeLabel(v, t)}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.properties.fields.transactionType')}</Label>
-                  <Select value={transactionType} onValueChange={setTransactionType}>
-                    <SelectTrigger className={inputClass}><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {TRANSACTION_TYPE_VALUES.map(v => (
-                        <SelectItem key={v} value={v}>{transactionTypeLabel(v, t)}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+          <Accordion type="multiple" defaultValue={['basics', 'details', 'location', 'visibility']} className="space-y-4">
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.properties.fields.price')}</Label>
-                  <Input type="number" value={price} onChange={e => setPrice(e.target.value)} className={inputClass} />
+            {/* ── Basics (required) ─────────────────────────────────────────── */}
+            <AccordionItem value="basics" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
+              <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">Basics</span>
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-6 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className={labelClass}>{t('admin.properties.fields.propertyType')} {requiredMark}</Label>
+                    <Select value={propertyType} onValueChange={setPropertyType}>
+                      <SelectTrigger className={inputClass}><SelectValue placeholder={t('admin.properties.fields.selectType')} /></SelectTrigger>
+                      <SelectContent>
+                        {PROPERTY_TYPE_VALUES.map(v => (
+                          <SelectItem key={v} value={v}>{propertyTypeLabel(v, t)}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className={labelClass}>{t('admin.properties.fields.transactionType')} {requiredMark}</Label>
+                    <Select value={transactionType} onValueChange={setTransactionType}>
+                      <SelectTrigger className={inputClass}><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {TRANSACTION_TYPE_VALUES.map(v => (
+                          <SelectItem key={v} value={v}>{transactionTypeLabel(v, t)}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.properties.fields.size')}</Label>
-                  <Input type="number" value={size} onChange={e => setSize(e.target.value)} className={inputClass} />
-                </div>
-                <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.properties.fields.rooms')}</Label>
-                  <Input type="number" value={rooms} onChange={e => setRooms(e.target.value)} className={inputClass} />
-                </div>
-              </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.properties.fields.bedrooms')}</Label>
-                  <Input type="number" value={bedrooms} onChange={e => setBedrooms(e.target.value)} className={inputClass} />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label className={labelClass}>{t('admin.properties.fields.price')} {requiredMark}</Label>
+                    <Input type="number" value={price} onChange={e => setPrice(e.target.value)} className={inputClass} />
+                    <p className={helpClass}>In euros (€). For rentals, the monthly rent.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className={labelClass}>{t('admin.properties.fields.size')} {requiredMark}</Label>
+                    <Input type="number" value={size} onChange={e => setSize(e.target.value)} className={inputClass} />
+                    <p className={helpClass}>Floor area in m².</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className={labelClass}>{t('admin.properties.fields.rooms')}</Label>
+                    <Input type="number" value={rooms} onChange={e => setRooms(e.target.value)} className={inputClass} />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.properties.fields.bathrooms')}</Label>
-                  <Input type="number" value={bathrooms} onChange={e => setBathrooms(e.target.value)} className={inputClass} />
-                </div>
-                <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.properties.fields.floor')}</Label>
-                  <Input type="number" value={floor} onChange={e => setFloor(e.target.value)} className={inputClass} />
-                </div>
-                <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.properties.fields.totalFloors')}</Label>
-                  <Input type="number" value={totalFloors} onChange={e => setTotalFloors(e.target.value)} className={inputClass} />
-                </div>
-              </div>
+                <p className="text-xs text-[hsl(0_0%_55%)]">
+                  The listing title and description are set per language in the <strong>Translations</strong> tab — at least the English title is required to save.
+                </p>
+              </AccordionContent>
+            </AccordionItem>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.properties.fields.yearBuilt')}</Label>
-                  <Input type="number" value={yearBuilt} onChange={e => setYearBuilt(e.target.value)} className={inputClass} />
+            {/* ── Property details (optional) ───────────────────────────────── */}
+            <AccordionItem value="details" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
+              <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">Property details <span className="text-[hsl(0_0%_60%)] font-normal">(optional)</span></span>
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-6 space-y-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="space-y-2">
+                    <Label className={labelClass}>{t('admin.properties.fields.bedrooms')}</Label>
+                    <Input type="number" value={bedrooms} onChange={e => setBedrooms(e.target.value)} className={inputClass} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className={labelClass}>{t('admin.properties.fields.bathrooms')}</Label>
+                    <Input type="number" value={bathrooms} onChange={e => setBathrooms(e.target.value)} className={inputClass} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className={labelClass}>{t('admin.properties.fields.floor')}</Label>
+                    <Input type="number" value={floor} onChange={e => setFloor(e.target.value)} className={inputClass} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className={labelClass}>{t('admin.properties.fields.totalFloors')}</Label>
+                    <Input type="number" value={totalFloors} onChange={e => setTotalFloors(e.target.value)} className={inputClass} />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.properties.fields.energyClass')}</Label>
-                  <Select value={energyClass} onValueChange={setEnergyClass}>
-                    <SelectTrigger className={inputClass}><SelectValue placeholder={t('admin.properties.fields.selectEnergyClass')} /></SelectTrigger>
-                    <SelectContent>
-                      {['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(c => (
-                        <SelectItem key={c} value={c}>{c}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className={labelClass}>{t('admin.properties.fields.yearBuilt')}</Label>
+                    <Input type="number" value={yearBuilt} onChange={e => setYearBuilt(e.target.value)} className={inputClass} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className={labelClass}>{t('admin.properties.fields.energyClass')}</Label>
+                    <Select value={energyClass} onValueChange={setEnergyClass}>
+                      <SelectTrigger className={inputClass}><SelectValue placeholder={t('admin.properties.fields.selectEnergyClass')} /></SelectTrigger>
+                      <SelectContent>
+                        {['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(c => (
+                          <SelectItem key={c} value={c}>{c}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className={helpClass}>Estonia's A–G energy rating (A = most efficient). Leave blank if unknown.</p>
+                  </div>
                 </div>
-                <div className="space-y-2">
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* ── Location ──────────────────────────────────────────────────── */}
+            <AccordionItem value="location" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
+              <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">Location on map <span className="text-[hsl(0_0%_60%)] font-normal">(optional)</span></span>
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-6 space-y-4">
+                <p className={helpClass}>
+                  Set the address in the <strong>Translations</strong> tab, then click <strong>Find on map</strong> to fill these
+                  automatically. Or paste coordinates manually. Leave blank to hide the map on the listing.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className={labelClass}>{t('admin.properties.fields.latitude')}</Label>
+                    <Input type="text" value={lat} onChange={e => setLat(e.target.value)} placeholder="59.4370" className={inputClass} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className={labelClass}>{t('admin.properties.fields.longitude')}</Label>
+                    <Input type="text" value={lng} onChange={e => setLng(e.target.value)} placeholder="24.7536" className={inputClass} />
+                  </div>
+                </div>
+
+                {/* Geocode button — disabled in create mode (no id yet to call against). */}
+                <div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={!id || geocode.isPending}
+                    onClick={() => {
+                      if (!id) return;
+                      geocode.mutate(id, {
+                        onSuccess: (data) => {
+                          setLat(data.latitude.toString());
+                          setLng(data.longitude.toString());
+                          toast.success(t('admin.properties.toast.geocoded'));
+                        },
+                        onError: () => toast.error(t('admin.properties.toast.geocodeFailed')),
+                      });
+                    }}
+                  >
+                    {geocode.isPending
+                      ? <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                      : <MapPin className="h-3 w-3 mr-1" />}
+                    {t('admin.properties.geocodeButton')}
+                  </Button>
+                  {!id && (
+                    <p className={`${helpClass} mt-2`}>Save the property first, then come back here to find it on the map.</p>
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* ── Visibility & agent ────────────────────────────────────────── */}
+            <AccordionItem value="visibility" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
+              <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">Visibility &amp; agent</span>
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-6 space-y-6">
+                <div className="space-y-2 max-w-sm">
                   <Label className={labelClass}>{t('admin.properties.fields.agent')}</Label>
                   <Select value={agentId} onValueChange={setAgentId}>
                     <SelectTrigger className={inputClass}><SelectValue placeholder={t('admin.properties.fields.selectAgent')} /></SelectTrigger>
@@ -344,52 +436,19 @@ export default function PropertyForm() {
                       ))}
                     </SelectContent>
                   </Select>
+                  <p className={helpClass}>The contact shown on the listing and used for inquiries.</p>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.properties.fields.latitude')}</Label>
-                  <Input type="text" value={lat} onChange={e => setLat(e.target.value)} placeholder="59.4370" className={inputClass} />
+                <div className="flex items-center gap-3">
+                  <Switch checked={isFeatured} onCheckedChange={setIsFeatured} />
+                  <div>
+                    <Label className={labelClass}>{t('admin.properties.fields.featured')}</Label>
+                    <p className={helpClass}>Featured properties appear on the homepage.</p>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.properties.fields.longitude')}</Label>
-                  <Input type="text" value={lng} onChange={e => setLng(e.target.value)} placeholder="24.7536" className={inputClass} />
-                </div>
-              </div>
-
-              {/* Geocode button — disabled in create mode (no id yet to call against). */}
-              <div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={!id || geocode.isPending}
-                  onClick={() => {
-                    if (!id) return;
-                    geocode.mutate(id, {
-                      onSuccess: (data) => {
-                        setLat(data.latitude.toString());
-                        setLng(data.longitude.toString());
-                        toast.success(t('admin.properties.toast.geocoded'));
-                      },
-                      onError: () => toast.error(t('admin.properties.toast.geocodeFailed')),
-                    });
-                  }}
-                >
-                  {geocode.isPending
-                    ? <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                    : <MapPin className="h-3 w-3 mr-1" />}
-                  {t('admin.properties.geocodeButton')}
-                </Button>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Switch checked={isFeatured} onCheckedChange={setIsFeatured} />
-                <Label className={labelClass}>{t('admin.properties.fields.featured')}</Label>
-              </div>
-            </CardContent>
-          </Card>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </TabsContent>
 
         <TabsContent value="translations" className="mt-4">
@@ -403,8 +462,21 @@ export default function PropertyForm() {
                 </TabsList>
                 {langs.map(lang => (
                   <TabsContent key={lang} value={lang} className="mt-4 space-y-4">
+                    {lang !== 'en' && (
+                      <div className="flex justify-end">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyTranslationFromEn(lang)}
+                          className="text-xs text-[hsl(0_0%_50%)] hover:text-[hsl(43_50%_45%)]"
+                        >
+                          <Copy className="h-3.5 w-3.5 mr-1" /> Copy from English
+                        </Button>
+                      </div>
+                    )}
                     <div className="space-y-2">
-                      <Label className={labelClass}>{t('admin.properties.fields.title')}</Label>
+                      <Label className={labelClass}>{t('admin.properties.fields.title')} {lang === 'en' && requiredMark}</Label>
                       <Input value={translations[lang]?.title || ''} onChange={e => updateTranslation(lang, 'title', e.target.value)} className={inputClass} />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
