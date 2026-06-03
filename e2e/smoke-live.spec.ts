@@ -77,3 +77,10 @@ test('contact page exposes the inquiry form fields', async ({ page }) => {
   await expect(page.locator('input[type="email"], input[name="email"]').first()).toBeVisible();
   await expect(page.locator('textarea').first()).toBeVisible();
 });
+
+test('admin login page renders (bundle loads, no white screen)', async ({ page }) => {
+  await page.goto(`${BASE}/admin`, { waitUntil: 'networkidle' });
+  // Unauthenticated → login form. Asserting the password field renders confirms
+  // the admin chunk loaded and didn't crash on mount.
+  await expect(page.locator('input[type="password"]').first()).toBeVisible();
+});
