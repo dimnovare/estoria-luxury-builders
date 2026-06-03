@@ -19,7 +19,6 @@ import {
   DEAL_STAGES, type DealStage, type DealListDto, type DealFilter,
   type DealType, type DealSide,
 } from '@/hooks/api/useCrm';
-import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
 /* ── 5 visual groups that collapse 9 stages ─────────────────────────────── */
@@ -52,7 +51,6 @@ const stageColors: Record<string, string> = {
 
 export default function AdminDeals() {
   const { t } = useTranslation();
-  const { user, hasRole } = useAuth();
 
   const [agentFilter, setAgentFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
@@ -180,7 +178,7 @@ export default function AdminDeals() {
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.deals.title')}</h1>
-          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">Track deals through stages from lead to close. Link deals to contacts, properties, and email threads.</p>
+          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">{t('admin.deals.subtitle', 'Track deals through stages from lead to close. Link deals to contacts, properties, and email threads.')}</p>
         </div>
         <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
           <Link to="/admin/deals/new"><Plus className="h-4 w-4 mr-2" />{t('admin.deals.addNew')}</Link>

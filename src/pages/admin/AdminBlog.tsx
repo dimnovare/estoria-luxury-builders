@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Plus, Pencil, Trash2, Globe, EyeOff } from 'lucide-react';
@@ -5,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useAdminBlogPosts, useDeleteBlogPost, useSetBlogPostStatus } from '@/hooks/api/useAdmin';
 import { blogStatusLabel } from '@/lib/enumLabels';
 import { toast } from 'sonner';
@@ -16,6 +18,9 @@ export default function AdminBlog() {
   const setStatus = useSetBlogPostStatus();
 
   const posts = data?.items ?? [];
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+  const pendingPost = posts.find(p => p.id === pendingDelete);
+  const pendingTitle = pendingPost?.translations?.['En']?.title ?? pendingPost?.slug;
 
   const handleDelete = async (id: string) => {
     try {
@@ -93,23 +98,26 @@ export default function AdminBlog() {
                     <div className="flex items-center gap-1">
                       <Button
                         variant="ghost" size="icon"
-                        className={`h-8 w-8 ${p.status === 'Published' ? 'text-green-600 hover:text-amber-600' : 'text-[hsl(0_0%_50%)] hover:text-green-600'}`}
+                        className={`h-8 w-8 ${p.status === 'Published' ? 'text-green-600 hover:text-amber-600' : 'text-[hsl(0_0%_45%)] hover:text-green-600'}`}
                         onClick={() => handleToggleStatus(p.id, p.status)}
                         disabled={setStatus.isPending}
                         title={p.status === 'Published' ? t('admin.blog.unpublish') : t('admin.blog.publish')}
+                        aria-label={p.status === 'Published' ? t('admin.blog.unpublish') : t('admin.blog.publish')}
                       >
                         {p.status === 'Published'
                           ? <EyeOff className="h-3.5 w-3.5" />
                           : <Globe className="h-3.5 w-3.5" />}
                       </Button>
-                      <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]">
-                        <Link to={`/admin/blog/${p.id}/edit`}><Pencil className="h-3.5 w-3.5" /></Link>
+                      <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_20%)]">
+                        <Link to={`/admin/blog/${p.id}/edit`} title={t('admin.common.edit')} aria-label={t('admin.common.edit')}><Pencil className="h-3.5 w-3.5" /></Link>
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-red-500"
-                        onClick={() => handleDelete(p.id)}
+                        className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-red-500"
+                        onClick={() => setPendingDelete(p.id)}
                         disabled={deleteBlogPost.isPending}
+                        title={t('admin.common.delete')}
+                        aria-label={t('admin.common.delete')}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
@@ -127,6 +135,15 @@ export default function AdminBlog() {
           </div>
         </CardContent>
       </Card>
+
+      <ConfirmDialog
+        open={!!pendingDelete}
+        onOpenChange={(o) => !o && setPendingDelete(null)}
+        onConfirm={() => { if (pendingDelete) handleDelete(pendingDelete); setPendingDelete(null); }}
+        description={pendingTitle
+          ? t('admin.blog.confirmDeleteDesc', 'Delete "{{title}}"? This action can\'t be undone.', { title: pendingTitle })
+          : undefined}
+      />
     </div>
   );
 }

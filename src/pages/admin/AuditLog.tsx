@@ -62,7 +62,18 @@ export default function AuditLog() {
   const [to, setTo] = useState('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const { data, isLoading } = useAuditLog({ page, userId: userId || undefined, action: actionPrefix || undefined, entityType: entityType || undefined, from: from || undefined, to: to || undefined });
+  // "All" is the cleared state — Radix Select can't use an empty string as a
+  // value, so it sends the literal 'all'. Map that back to undefined (no filter)
+  // before querying, otherwise the API filters on a user/action named "all" and
+  // returns an empty table.
+  const { data, isLoading } = useAuditLog({
+    page,
+    userId: userId && userId !== 'all' ? userId : undefined,
+    action: actionPrefix && actionPrefix !== 'all' ? actionPrefix : undefined,
+    entityType: entityType || undefined,
+    from: from || undefined,
+    to: to || undefined,
+  });
   const { data: usersData } = useAdminUsers(1, '');
 
   const entries = data?.items ?? [];
@@ -185,7 +196,8 @@ export default function AuditLog() {
                             <button
                               onClick={() => copyToClipboard(entry.entityId!)}
                               className="text-[hsl(0_0%_60%)] hover:text-[hsl(0_0%_30%)]"
-                              title="Copy ID"
+                              title={t('admin.audit.copyId', 'Copy ID')}
+                              aria-label={t('admin.audit.copyId', 'Copy ID')}
                             >
                               <span className="text-xs font-mono">{entry.entityId.slice(0, 8)}…</span>
                               <Copy className="h-3 w-3 inline ml-0.5" />
@@ -200,6 +212,8 @@ export default function AuditLog() {
                           variant="ghost" size="icon"
                           className="h-7 w-7 text-[hsl(0_0%_50%)]"
                           onClick={() => setExpandedId(isExpanded ? null : entry.id)}
+                          aria-label={isExpanded ? t('admin.audit.hideDetails', 'Hide details') : t('admin.audit.showDetails', 'Show details')}
+                          title={isExpanded ? t('admin.audit.hideDetails', 'Hide details') : t('admin.audit.showDetails', 'Show details')}
                         >
                           {isExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
                         </Button>
@@ -235,11 +249,11 @@ export default function AuditLog() {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
-          <Button variant="outline" size="icon" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="h-8 w-8 border-[hsl(0_0%_85%)]">
+          <Button variant="outline" size="icon" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="h-8 w-8 border-[hsl(0_0%_85%)]" aria-label={t('admin.common.previous', 'Previous page')} title={t('admin.common.previous', 'Previous page')}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <span className="text-sm text-[hsl(0_0%_50%)]">{page} / {totalPages}</span>
-          <Button variant="outline" size="icon" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} className="h-8 w-8 border-[hsl(0_0%_85%)]">
+          <Button variant="outline" size="icon" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} className="h-8 w-8 border-[hsl(0_0%_85%)]" aria-label={t('admin.common.next', 'Next page')} title={t('admin.common.next', 'Next page')}>
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>

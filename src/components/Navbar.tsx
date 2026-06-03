@@ -79,6 +79,9 @@ export default function Navbar() {
                 <span key={lang} className="flex items-center">
                   <button
                     onClick={() => i18n.changeLanguage(lang)}
+                    aria-label={t('nav.switchLanguage', { lang: lang.toUpperCase(), defaultValue: `Switch language to ${lang.toUpperCase()}` })}
+                    title={lang.toUpperCase()}
+                    aria-current={i18n.language === lang ? 'true' : undefined}
                     className={`transition-colors duration-200 px-1 ${
                       i18n.language === lang ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
                     }`}
@@ -102,7 +105,10 @@ export default function Navbar() {
           <button
             className="xl:hidden text-foreground p-2 mr-2"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
+            aria-label={mobileOpen ? t('nav.closeMenu', 'Close menu') : t('nav.openMenu', 'Open menu')}
+            title={mobileOpen ? t('nav.closeMenu', 'Close menu') : t('nav.openMenu', 'Open menu')}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
           >
             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -113,6 +119,7 @@ export default function Navbar() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -148,6 +155,9 @@ export default function Navbar() {
                   <button
                     key={lang}
                     onClick={() => i18n.changeLanguage(lang)}
+                    aria-label={t('nav.switchLanguage', { lang: lang.toUpperCase(), defaultValue: `Switch language to ${lang.toUpperCase()}` })}
+                    title={lang.toUpperCase()}
+                    aria-current={i18n.language === lang ? 'true' : undefined}
                     className={`uppercase px-2 py-1 ${
                       i18n.language === lang ? 'text-primary' : 'text-muted-foreground'
                     }`}

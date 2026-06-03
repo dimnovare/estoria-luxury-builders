@@ -1,4 +1,4 @@
-import { useState, useMemo, Suspense, lazy } from 'react';
+import { useState, useMemo, useEffect, Suspense, lazy } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -67,6 +67,19 @@ export default function PropertyDetail() {
   }, [property]);
 
   // Per-route SEO + JSON-LD handled via <Seo /> below.
+
+  // Keyboard support for the lightbox: Escape closes, arrows navigate. Defined
+  // before the early returns so the hook order stays stable across renders.
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightboxOpen(false);
+      else if (e.key === 'ArrowRight') setLightboxIndex((i) => (i + 1) % images.length);
+      else if (e.key === 'ArrowLeft') setLightboxIndex((i) => (i - 1 + images.length) % images.length);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [lightboxOpen, images.length]);
 
 
   if (isLoading) {
@@ -244,9 +257,11 @@ export default function PropertyDetail() {
           className="grid grid-cols-1 md:grid-cols-4 gap-2 rounded-sm overflow-hidden"
         >
           {/* Main image */}
-          <div
-            className="md:col-span-3 aspect-[16/9] md:aspect-auto md:row-span-2 relative cursor-pointer group bg-muted"
+          <button
+            type="button"
+            className="md:col-span-3 aspect-[16/9] md:aspect-auto md:row-span-2 relative cursor-pointer group bg-muted text-left"
             onClick={() => openLightbox(0)}
+            aria-label={t('properties.detail.openGallery', 'Open photo gallery')}
           >
             {images[0] && (
               <picture>
@@ -264,14 +279,20 @@ export default function PropertyDetail() {
               </picture>
             )}
             <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors" />
-          </div>
+          </button>
 
           {/* Thumbnails */}
           {images.slice(1, 3).map((img, i) => (
-            <div
+            <button
+              type="button"
               key={i}
               className="hidden md:block aspect-[4/3] relative cursor-pointer group bg-muted"
               onClick={() => openLightbox(i + 1)}
+              aria-label={
+                i === 1 && images.length > 3
+                  ? t('properties.detail.viewAllPhotos', { count: images.length })
+                  : t('properties.detail.viewPhoto', 'View photo {{number}}', { number: i + 2 })
+              }
             >
               <img
                 src={img.thumb ?? img.medium ?? img.display}
@@ -287,7 +308,7 @@ export default function PropertyDetail() {
                   </span>
                 </div>
               )}
-            </div>
+            </button>
           ))}
         </motion.div>
 
@@ -297,6 +318,7 @@ export default function PropertyDetail() {
             <button
               key={i}
               onClick={() => openLightbox(i)}
+              aria-label={t('properties.detail.viewPhoto', 'View photo {{number}}', { number: i + 1 })}
               className="w-2 h-2 rounded-full bg-muted-foreground/40 hover:bg-primary transition-colors"
             />
           ))}
@@ -602,10 +624,14 @@ export default function PropertyDetail() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-background/95 backdrop-blur-lg flex items-center justify-center"
             onClick={() => setLightboxOpen(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t('properties.detail.galleryDialog', 'Photo gallery')}
           >
             <button
               className="absolute top-6 right-6 text-foreground hover:text-primary z-10"
               onClick={() => setLightboxOpen(false)}
+              aria-label={t('common.close', 'Close')}
             >
               <X size={28} />
             </button>
@@ -620,6 +646,7 @@ export default function PropertyDetail() {
                 e.stopPropagation();
                 prevImage();
               }}
+              aria-label={t('properties.detail.previousPhoto', 'Previous photo')}
             >
               <ChevronLeft size={32} />
             </button>
@@ -629,6 +656,7 @@ export default function PropertyDetail() {
                 e.stopPropagation();
                 nextImage();
               }}
+              aria-label={t('properties.detail.nextPhoto', 'Next photo')}
             >
               <ChevronRight size={32} />
             </button>

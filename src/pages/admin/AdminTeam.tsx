@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import {
   useAdminTeam,
   useAdminTeamMember,
@@ -46,6 +47,7 @@ export default function AdminTeam() {
   const uploadPhoto = useUploadTeamPhoto();
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [editingMember, setEditingMember] = useState<AdminTeamMember | null>(null);
   // Detail fetch only fires when an id is set — null/undefined skips the call.
   const { data: editingDetail } = useAdminTeamMember(editingMember?.id);
@@ -173,6 +175,7 @@ export default function AdminTeam() {
   };
 
   const isSaving = createMember.isPending || updateMember.isPending;
+  const pendingName = (team ?? []).find(m => m.id === pendingDelete)?.name;
 
   const inputClass = "border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)] focus:border-[hsl(43_50%_54%)] focus:ring-[hsl(43_50%_54%)]";
   const labelClass = "text-sm text-[hsl(0_0%_40%)] font-medium";
@@ -229,14 +232,16 @@ export default function AdminTeam() {
                   <TableCell className="text-xs text-[hsl(0_0%_50%)] hidden lg:table-cell">{m.email}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]" onClick={() => openEdit(m)}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_20%)]" onClick={() => openEdit(m)} title={t('admin.common.edit')} aria-label={t('admin.common.edit')}>
                         <Pencil className="h-3.5 w-3.5" />
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-red-500"
-                        onClick={() => handleDelete(m.id)}
+                        className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-red-500"
+                        onClick={() => setPendingDelete(m.id)}
                         disabled={deleteMember.isPending}
+                        title={t('admin.common.delete')}
+                        aria-label={t('admin.common.delete')}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
@@ -349,6 +354,15 @@ export default function AdminTeam() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={!!pendingDelete}
+        onOpenChange={(o) => !o && setPendingDelete(null)}
+        onConfirm={() => { if (pendingDelete) handleDelete(pendingDelete); setPendingDelete(null); }}
+        description={pendingName
+          ? t('admin.team.confirmDeleteDesc', 'Remove "{{name}}" from the team? This action can\'t be undone.', { name: pendingName })
+          : undefined}
+      />
     </div>
   );
 }

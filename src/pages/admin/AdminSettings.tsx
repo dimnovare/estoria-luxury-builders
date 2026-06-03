@@ -194,6 +194,8 @@ function SettingRow({ setting, field }: { setting: SiteSettingDto | undefined; f
           className={cn('shrink-0', dirty ? '' : 'border-[hsl(0_0%_85%)] text-[hsl(0_0%_50%)]')}
           disabled={!dirty && !update.isPending}
           onClick={() => handleSave()}
+          aria-label={saved ? t('admin.settings.saved', 'Saved') : t('admin.settings.save')}
+          title={saved ? t('admin.settings.saved', 'Saved') : t('admin.settings.save')}
         >
           {saved ? <Check className="h-3.5 w-3.5" /> : t('admin.settings.save')}
         </Button>
@@ -282,6 +284,8 @@ function TranslatableSettingEditor({
           className={cn('shrink-0', dirty ? '' : 'border-[hsl(0_0%_85%)] text-[hsl(0_0%_50%)]')}
           disabled={!dirty || update.isPending}
           onClick={handleSave}
+          aria-label={saved ? t('admin.settings.saved', 'Saved') : t('admin.settings.save')}
+          title={saved ? t('admin.settings.saved', 'Saved') : t('admin.settings.save')}
         >
           {saved ? <Check className="h-3.5 w-3.5" /> : t('admin.settings.save')}
         </Button>

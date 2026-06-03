@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useAdminUsers, useDeleteUser, useUpdateUser, useResetPassword } from '@/hooks/api/useAdminUsers';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
@@ -28,6 +29,7 @@ export default function AdminUsers() {
   const [searchInput, setSearchInput] = useState('');
   const [passwordModal, setPasswordModal] = useState<{ id: string; name: string } | null>(null);
   const [newPassword, setNewPassword] = useState('');
+  const [pendingDeactivate, setPendingDeactivate] = useState<{ id: string; isActive: boolean; email: string; fullName: string; languages: string[]; roles: string[] } | null>(null);
 
   const { data, isLoading } = useAdminUsers(page, search);
   const deleteUser = useDeleteUser();
@@ -181,31 +183,37 @@ export default function AdminUsers() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]">
-                        <Link to={`/admin/users/${u.id}/edit`}><Pencil className="h-3.5 w-3.5" /></Link>
+                      <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_15%)]">
+                        <Link to={`/admin/users/${u.id}/edit`} aria-label={t('admin.common.edit')} title={t('admin.common.edit')}><Pencil className="h-3.5 w-3.5" /></Link>
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(43_50%_54%)]"
+                        className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(43_50%_48%)]"
                         onClick={() => { setPasswordModal({ id: u.id, name: u.fullName }); setNewPassword(''); }}
+                        aria-label={t('admin.users.actions.resetPassword')}
+                        title={t('admin.users.actions.resetPassword')}
                       >
                         <KeyRound className="h-3.5 w-3.5" />
                       </Button>
                       {u.isActive ? (
                         <Button
                           variant="ghost" size="icon"
-                          className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-red-500"
-                          onClick={() => handleDeactivate(u)}
+                          className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-red-600"
+                          onClick={() => setPendingDeactivate(u)}
                           disabled={deleteUser.isPending}
+                          aria-label={t('admin.users.actions.deactivate', 'Deactivate user')}
+                          title={t('admin.users.actions.deactivate', 'Deactivate user')}
                         >
                           <UserX className="h-3.5 w-3.5" />
                         </Button>
                       ) : (
                         <Button
                           variant="ghost" size="icon"
-                          className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-green-500"
+                          className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-green-600"
                           onClick={() => handleReactivate(u)}
                           disabled={updateUser.isPending}
+                          aria-label={t('admin.users.actions.reactivate', 'Reactivate user')}
+                          title={t('admin.users.actions.reactivate', 'Reactivate user')}
                         >
                           <UserCheck className="h-3.5 w-3.5" />
                         </Button>
@@ -226,11 +234,11 @@ export default function AdminUsers() {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
-          <Button variant="outline" size="icon" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="h-8 w-8 border-[hsl(0_0%_85%)]">
+          <Button variant="outline" size="icon" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="h-8 w-8 border-[hsl(0_0%_85%)]" aria-label={t('pagination.previous', 'Previous page')} title={t('pagination.previous', 'Previous page')}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <span className="text-sm text-[hsl(0_0%_50%)]">{page} / {totalPages}</span>
-          <Button variant="outline" size="icon" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} className="h-8 w-8 border-[hsl(0_0%_85%)]">
+          <Button variant="outline" size="icon" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} className="h-8 w-8 border-[hsl(0_0%_85%)]" aria-label={t('pagination.next', 'Next page')} title={t('pagination.next', 'Next page')}>
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
@@ -265,6 +273,22 @@ export default function AdminUsers() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Deactivate confirmation */}
+      <ConfirmDialog
+        open={!!pendingDeactivate}
+        onOpenChange={(o) => { if (!o) setPendingDeactivate(null); }}
+        onConfirm={() => {
+          if (pendingDeactivate) handleDeactivate(pendingDeactivate);
+          setPendingDeactivate(null);
+        }}
+        title={t('admin.users.deactivateTitle', 'Deactivate this user?')}
+        description={t(
+          'admin.users.deactivateDesc',
+          'They will lose access immediately and can no longer sign in. You can reactivate them later.',
+        )}
+        confirmLabel={t('admin.users.actions.deactivate', 'Deactivate user')}
+      />
     </div>
   );
 }

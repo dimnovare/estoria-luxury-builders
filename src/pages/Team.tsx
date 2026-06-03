@@ -118,6 +118,8 @@ export default function Team() {
                           <a
                             href={`tel:${member.phone}`}
                             onClick={(e) => e.stopPropagation()}
+                            aria-label={t('team.callMember', { name: member.name, defaultValue: `Call ${member.name}` })}
+                            title={t('team.call', 'Call')}
                             className="text-muted-foreground hover:text-primary transition-colors"
                           >
                             <Phone size={14} />
@@ -127,6 +129,8 @@ export default function Team() {
                           <a
                             href={`mailto:${member.email}`}
                             onClick={(e) => e.stopPropagation()}
+                            aria-label={t('team.emailMember', { name: member.name, defaultValue: `Email ${member.name}` })}
+                            title={t('team.email', 'Email')}
                             className="text-muted-foreground hover:text-primary transition-colors"
                           >
                             <Mail size={14} />

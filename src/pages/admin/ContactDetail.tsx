@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { EmptyState } from '@/components/admin/EmptyState';
 import {
   useContact, useDeleteContact, useActivities, useCreateActivity,
@@ -47,6 +48,7 @@ export default function ContactDetail() {
   const deleteNote = useDeleteNote();
 
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [pendingNoteDelete, setPendingNoteDelete] = useState<string | null>(null);
   const [quickNote, setQuickNote] = useState('');
   const [showActivityForm, setShowActivityForm] = useState(false);
   const [activityType, setActivityType] = useState<ActivityType>('Note');
@@ -115,6 +117,16 @@ export default function ContactDetail() {
     }
   };
 
+  const handleDeleteNote = (noteId: string) => {
+    deleteNote.mutate(
+      { contactId: id!, noteId },
+      {
+        onSuccess: () => toast.success(t('admin.contacts.toast.noteDeleted', 'Note deleted')),
+        onError: (err) => handleCrmError(err, t('admin.crm.toast.saveFailed')),
+      },
+    );
+  };
+
   const getInitials = (name: string) => name.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2);
 
   const activities = activitiesData?.items ?? [];
@@ -180,7 +192,7 @@ export default function ContactDetail() {
                 <Button variant="outline" size="sm" asChild className="flex-1">
                   <Link to={`/admin/contacts/${id}/edit`}><Pencil className="h-3 w-3 mr-1" />{t('admin.common.edit')}</Link>
                 </Button>
-                <Button variant="outline" size="sm" className="text-red-500 hover:text-red-600" onClick={() => setDeleteConfirm(true)}>
+                <Button variant="outline" size="sm" className="text-red-500 hover:text-red-600" onClick={() => setDeleteConfirm(true)} aria-label={t('admin.common.delete')} title={t('admin.common.delete')}>
                   <Trash2 className="h-3 w-3" />
                 </Button>
               </div>
@@ -320,10 +332,24 @@ export default function ContactDetail() {
                         <p className="whitespace-pre-wrap">{n.body}</p>
                       </div>
                       <div className="flex gap-1 shrink-0 ml-2">
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => togglePin.mutate({ contactId: id!, noteId: n.id, isPinned: !n.isPinned })}>
-                          <StickyNote className={`h-3.5 w-3.5 ${n.isPinned ? 'text-[hsl(43_50%_54%)]' : 'text-[hsl(0_0%_60%)]'}`} />
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => togglePin.mutate({ contactId: id!, noteId: n.id, isPinned: !n.isPinned })}
+                          aria-label={n.isPinned ? t('admin.contacts.unpinNote', 'Unpin note') : t('admin.contacts.pinNote', 'Pin note')}
+                          title={n.isPinned ? t('admin.contacts.unpinNote', 'Unpin note') : t('admin.contacts.pinNote', 'Pin note')}
+                        >
+                          <StickyNote className={`h-3.5 w-3.5 ${n.isPinned ? 'text-[hsl(43_50%_54%)]' : 'text-[hsl(0_0%_55%)]'}`} />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-[hsl(0_0%_60%)] hover:text-red-500" onClick={() => deleteNote.mutate({ contactId: id!, noteId: n.id })}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 text-[hsl(0_0%_55%)] hover:text-red-500"
+                          onClick={() => setPendingNoteDelete(n.id)}
+                          aria-label={t('admin.common.delete')}
+                          title={t('admin.common.delete')}
+                        >
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>
@@ -369,6 +395,17 @@ export default function ContactDetail() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Note delete confirmation */}
+      <ConfirmDialog
+        open={!!pendingNoteDelete}
+        onOpenChange={(o) => !o && setPendingNoteDelete(null)}
+        onConfirm={() => {
+          if (pendingNoteDelete) handleDeleteNote(pendingNoteDelete);
+          setPendingNoteDelete(null);
+        }}
+        title={t('admin.contacts.confirmDeleteNote', 'Delete this note?')}
+      />
     </div>
   );
 }

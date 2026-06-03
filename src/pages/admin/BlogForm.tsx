@@ -148,7 +148,7 @@ export default function BlogForm() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/blog')} className="text-[hsl(0_0%_50%)]">
+        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/blog')} className="text-[hsl(0_0%_45%)]" title={t('admin.common.back')} aria-label={t('admin.common.back')}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{isEdit ? t('admin.blog.editTitle') : t('admin.blog.newTitle')}</h1>
@@ -163,26 +163,41 @@ export default function BlogForm() {
               <div className="relative rounded-lg overflow-hidden border border-[hsl(0_0%_90%)] group">
                 <img src={coverImageUrl} alt="" className="w-full h-48 object-cover" />
                 <button
+                  type="button"
                   onClick={() => setCoverImageUrl('')}
-                  className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity focus-visible:opacity-100"
+                  title={t('admin.blog.fields.removeCover', 'Remove cover image')}
+                  aria-label={t('admin.blog.fields.removeCover', 'Remove cover image')}
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => coverInputRef.current?.click()}
+                  className="absolute bottom-2 right-2 bg-white/90 border-[hsl(0_0%_85%)] text-[hsl(0_0%_30%)] hover:bg-white"
+                >
+                  <ImageIcon className="h-3.5 w-3.5 mr-1.5" />
+                  {t('admin.blog.fields.replaceCover', 'Replace image')}
+                </Button>
               </div>
             ) : (
-              <div
-                className="border-2 border-dashed border-[hsl(0_0%_85%)] rounded-lg p-8 text-center hover:border-[hsl(43_50%_54%)] transition-colors cursor-pointer"
+              <button
+                type="button"
+                className="w-full border-2 border-dashed border-[hsl(0_0%_85%)] rounded-lg p-8 text-center hover:border-[hsl(43_50%_54%)] transition-colors cursor-pointer"
                 onClick={() => coverInputRef.current?.click()}
+                aria-label={t('admin.blog.fields.uploadCover')}
               >
                 {uploadingCover ? (
                   <Loader2 className="h-6 w-6 mx-auto text-[hsl(43_50%_54%)] animate-spin" />
                 ) : (
                   <>
-                    <ImageIcon className="h-6 w-6 mx-auto text-[hsl(0_0%_70%)] mb-1" />
-                    <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.blog.fields.uploadCover')}</p>
+                    <ImageIcon className="h-6 w-6 mx-auto text-[hsl(0_0%_60%)] mb-1" />
+                    <p className="text-sm text-[hsl(0_0%_45%)]">{t('admin.blog.fields.uploadCover')}</p>
                   </>
                 )}
-              </div>
+              </button>
             )}
             <input ref={coverInputRef} type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
           </div>

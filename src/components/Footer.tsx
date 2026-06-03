@@ -160,6 +160,9 @@ export default function Footer() {
               <span key={lang} className="flex items-center">
                 <button
                   onClick={() => i18n.changeLanguage(lang)}
+                  aria-label={t('nav.switchLanguage', { lang: lang.toUpperCase(), defaultValue: `Switch language to ${lang.toUpperCase()}` })}
+                  title={lang.toUpperCase()}
+                  aria-current={i18n.language === lang ? 'true' : undefined}
                   className={`px-1 transition-colors ${
                     i18n.language === lang ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
                   }`}

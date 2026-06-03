@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { EmptyState } from '@/components/admin/EmptyState';
@@ -68,6 +69,7 @@ export default function DealDetail() {
   const [participantSearch, setParticipantSearch] = useState('');
   const [participantRole, setParticipantRole] = useState('');
   const [selectedParticipantId, setSelectedParticipantId] = useState('');
+  const [pendingParticipantRemove, setPendingParticipantRemove] = useState<string | null>(null);
   const { data: participantResults } = useContactSearch(participantSearch);
 
   if (isLoading || !deal) {
@@ -114,12 +116,19 @@ export default function DealDetail() {
     } catch (err) { handleCrmError(err, t('admin.crm.toast.saveFailed')); }
   };
 
+  const handleRemoveParticipant = async (participantId: string) => {
+    try {
+      await removeParticipant.mutateAsync({ dealId: id!, participantId });
+      toast.success(t('admin.deals.toast.participantRemoved'));
+    } catch (err) { handleCrmError(err, t('admin.crm.toast.saveFailed')); }
+  };
+
   const activities = activitiesData?.items ?? [];
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/deals')} className="text-[hsl(0_0%_50%)]">
+        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/deals')} className="text-[hsl(0_0%_50%)]" aria-label={t('admin.common.back', 'Back')} title={t('admin.common.back', 'Back')}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{deal.title}</h1>
@@ -263,13 +272,10 @@ export default function DealDetail() {
                       <p className="text-xs text-[hsl(0_0%_50%)]">{p.role}</p>
                     </div>
                     {PARTICIPANTS_WRITE_ENABLED && (
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-[hsl(0_0%_60%)] hover:text-red-500"
-                        onClick={async () => {
-                          try {
-                            await removeParticipant.mutateAsync({ dealId: id!, participantId: p.id });
-                            toast.success(t('admin.deals.toast.participantRemoved'));
-                          } catch (err) { handleCrmError(err, t('admin.crm.toast.saveFailed')); }
-                        }}
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-[hsl(0_0%_55%)] hover:text-red-500"
+                        onClick={() => setPendingParticipantRemove(p.id)}
+                        aria-label={t('admin.deals.removeParticipant', 'Remove participant')}
+                        title={t('admin.deals.removeParticipant', 'Remove participant')}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
@@ -371,6 +377,18 @@ export default function DealDetail() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Remove participant confirmation */}
+      <ConfirmDialog
+        open={!!pendingParticipantRemove}
+        onOpenChange={(o) => !o && setPendingParticipantRemove(null)}
+        onConfirm={() => {
+          if (pendingParticipantRemove) handleRemoveParticipant(pendingParticipantRemove);
+          setPendingParticipantRemove(null);
+        }}
+        title={t('admin.deals.confirmRemoveParticipant', 'Remove this participant?')}
+        confirmLabel={t('admin.deals.removeParticipant', 'Remove participant')}
+      />
     </div>
   );
 }

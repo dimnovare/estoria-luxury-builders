@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import {
   useAdminServices,
   useAdminService,
@@ -36,6 +37,7 @@ export default function AdminServices() {
 
   const [dragId, setDragId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingService, setEditingService] = useState<AdminService | null>(null);
@@ -127,6 +129,7 @@ export default function AdminServices() {
   };
 
   const isSaving = createService.isPending || updateService.isPending;
+  const pendingName = (services ?? []).find(s => s.id === pendingDelete)?.name;
 
   const inputClass = "border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)] focus:border-[hsl(43_50%_54%)] focus:ring-[hsl(43_50%_54%)]";
   const labelClass = "text-sm text-[hsl(0_0%_40%)] font-medium";
@@ -185,7 +188,8 @@ export default function AdminServices() {
                   }}
                   className={`border-[hsl(0_0%_93%)] transition-all ${dragId === s.id ? 'opacity-50' : ''} ${overId === s.id ? 'border-t-2 border-t-[hsl(43_50%_54%)]' : ''}`}
                 >
-                  <TableCell className="hidden sm:table-cell"><GripVertical className="h-4 w-4 text-[hsl(0_0%_70%)] cursor-grab active:cursor-grabbing" /></TableCell>
+                  {/* Functional drag handle: dragging a row reorders services (see onDrop → reorderServices.mutate). */}
+                  <TableCell className="hidden sm:table-cell"><GripVertical className="h-4 w-4 text-[hsl(0_0%_60%)] cursor-grab active:cursor-grabbing" aria-label={t('admin.services.dragToReorder', 'Drag to reorder')} role="img" /></TableCell>
                   <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{s.iconName || '—'}</TableCell>
                   <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
                     <div>{s.name}</div>
@@ -194,14 +198,16 @@ export default function AdminServices() {
                   <TableCell className="text-sm text-[hsl(0_0%_50%)] hidden sm:table-cell">{s.priceInfo || '—'}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]" onClick={() => openEdit(s)}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_20%)]" onClick={() => openEdit(s)} title={t('admin.common.edit')} aria-label={t('admin.common.edit')}>
                         <Pencil className="h-3.5 w-3.5" />
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-red-500"
-                        onClick={() => handleDelete(s.id)}
+                        className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-red-500"
+                        onClick={() => setPendingDelete(s.id)}
                         disabled={deleteService.isPending}
+                        title={t('admin.common.delete')}
+                        aria-label={t('admin.common.delete')}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
@@ -271,6 +277,15 @@ export default function AdminServices() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={!!pendingDelete}
+        onOpenChange={(o) => !o && setPendingDelete(null)}
+        onConfirm={() => { if (pendingDelete) handleDelete(pendingDelete); setPendingDelete(null); }}
+        description={pendingName
+          ? t('admin.services.confirmDeleteDesc', 'Delete the "{{name}}" service? This action can\'t be undone.', { name: pendingName })
+          : undefined}
+      />
     </div>
   );
 }

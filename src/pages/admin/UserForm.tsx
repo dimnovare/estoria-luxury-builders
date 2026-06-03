@@ -34,7 +34,7 @@ export default function UserForm() {
   const [photoUrl, setPhotoUrl] = useState('');
   const [languages, setLanguages] = useState<string[]>([]);
   const [roles, setRoles] = useState<string[]>([]);
-  const [teamMemberId, setTeamMemberId] = useState('');
+  const [teamMemberId, setTeamMemberId] = useState('none');
   const [isActive, setIsActive] = useState(true);
   const [password, setPassword] = useState('');
 
@@ -46,7 +46,7 @@ export default function UserForm() {
       setPhotoUrl(existing.photoUrl ?? '');
       setLanguages(existing.languages);
       setRoles(existing.roles);
-      setTeamMemberId(existing.teamMemberId ?? '');
+      setTeamMemberId(existing.teamMemberId ?? 'none');
       setIsActive(existing.isActive);
     }
   }, [existing]);
@@ -59,17 +59,22 @@ export default function UserForm() {
     if (!email || !fullName) return;
     if (!isEdit && !password) return;
 
+    // The "—" option uses the sentinel value 'none' (Radix Select can't use an
+    // empty-string value). Normalize it (and any empty value) to undefined so
+    // the API correctly links / unlinks the user to a team member.
+    const normalizedTeamMemberId = teamMemberId && teamMemberId !== 'none' ? teamMemberId : undefined;
+
     try {
       if (isEdit && id) {
         await updateUser.mutateAsync({
           id,
-          dto: { email, fullName, phone: phone || undefined, photoUrl: photoUrl || undefined, languages, roles, teamMemberId: teamMemberId || undefined, isActive },
+          dto: { email, fullName, phone: phone || undefined, photoUrl: photoUrl || undefined, languages, roles, teamMemberId: normalizedTeamMemberId, isActive },
         });
         toast.success(t('admin.users.toast.updated'));
         navigate('/admin/users');
       } else {
         await createUser.mutateAsync({
-          email, fullName, phone: phone || undefined, photoUrl: photoUrl || undefined, languages, roles, teamMemberId: teamMemberId || undefined, password,
+          email, fullName, phone: phone || undefined, photoUrl: photoUrl || undefined, languages, roles, teamMemberId: normalizedTeamMemberId, password,
         });
         toast.success(t('admin.users.toast.created'));
         navigate('/admin/users');
@@ -99,7 +104,7 @@ export default function UserForm() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/users')} className="text-[hsl(0_0%_50%)]">
+        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/users')} className="text-[hsl(0_0%_50%)]" aria-label={t('admin.common.back')} title={t('admin.common.back')}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{isEdit ? t('admin.users.editTitle') : t('admin.users.newTitle')}</h1>

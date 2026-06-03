@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 
 import {
   useAdminProperty,
@@ -55,6 +56,10 @@ export default function PropertyForm() {
   // we stop trusting the spinner and show "stuck" with a retry button —
   // protects against a wedged Hangfire worker.
   const pollStartRef = useRef<Record<string, number>>({});
+
+  // Pending image-delete id drives the confirm dialog so a single mis-click
+  // can't permanently remove an uploaded photo.
+  const [pendingImageDelete, setPendingImageDelete] = useState<string | null>(null);
 
   const handleReprocess = async (imageId: string) => {
     try {
@@ -275,7 +280,14 @@ export default function PropertyForm() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/properties')} className="text-[hsl(0_0%_50%)]">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate('/admin/properties')}
+          aria-label={t('admin.common.back')}
+          title={t('admin.common.back')}
+          className="text-[hsl(0_0%_40%)]"
+        >
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{isEdit ? t('admin.properties.editTitle') : t('admin.properties.newTitle')}</h1>
@@ -657,8 +669,11 @@ export default function PropertyForm() {
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                           <GripVertical className="h-4 w-4 text-white cursor-grab" />
                           <button
+                            type="button"
                             className="text-white hover:text-red-400"
-                            onClick={() => handleDeleteImage(img.id)}
+                            onClick={() => setPendingImageDelete(img.id)}
+                            aria-label={t('admin.common.delete')}
+                            title={t('admin.common.delete')}
                           >
                             <X className="h-4 w-4" />
                           </button>
@@ -705,9 +720,10 @@ export default function PropertyForm() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    title="Copy EN to all languages"
+                    aria-label={t('admin.properties.features.copyEnToAll', 'Copy EN to all languages')}
+                    title={t('admin.properties.features.copyEnToAll', 'Copy EN to all languages')}
                     onClick={() => copyFeatureToAllLanguages(idx, f.en)}
-                    className="h-9 w-9 text-[hsl(0_0%_50%)] hover:text-[hsl(43_50%_45%)]"
+                    className="h-9 w-9 text-[hsl(0_0%_45%)] hover:text-[hsl(43_50%_45%)]"
                   >
                     <Copy className="h-3.5 w-3.5" />
                   </Button>
@@ -716,7 +732,9 @@ export default function PropertyForm() {
                     variant="ghost"
                     size="icon"
                     onClick={() => removeFeature(idx)}
-                    className="h-9 w-9 text-[hsl(0_0%_50%)] hover:text-red-500"
+                    aria-label={t('admin.common.delete')}
+                    title={t('admin.common.delete')}
+                    className="h-9 w-9 text-[hsl(0_0%_45%)] hover:text-red-500"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -750,6 +768,15 @@ export default function PropertyForm() {
           {t('admin.properties.savePublish')}
         </Button>
       </div>
+
+      <ConfirmDialog
+        open={!!pendingImageDelete}
+        onOpenChange={(o) => !o && setPendingImageDelete(null)}
+        onConfirm={() => { if (pendingImageDelete) handleDeleteImage(pendingImageDelete); setPendingImageDelete(null); }}
+        title={t('admin.properties.images.confirmDeleteTitle', 'Delete this image?')}
+        description={t('admin.properties.images.confirmDeleteDesc', "The image will be permanently removed. This can't be undone.")}
+        confirmLabel={t('admin.common.delete')}
+      />
     </div>
   );
 }

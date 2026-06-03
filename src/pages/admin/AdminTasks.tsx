@@ -14,8 +14,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useTasks, useToggleTaskStatus, useDeleteTask, type TaskDto, type TaskPriority } from '@/hooks/api/useTasks';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -276,7 +276,7 @@ export default function AdminTasks() {
                     </span>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-[hsl(0_0%_50%)]">
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-[hsl(0_0%_50%)]" aria-label={t('admin.tasks.taskActions', 'Task actions')} title={t('admin.tasks.taskActions', 'Task actions')}>
                           <MoreVertical className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
@@ -304,6 +304,8 @@ export default function AdminTasks() {
       <button
         onClick={() => { setEditTaskId(undefined); setShowForm(true); }}
         className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shadow-lg flex items-center justify-center transition-colors z-40"
+        aria-label={t('admin.tasks.newTitle', 'New task')}
+        title={t('admin.tasks.newTitle', 'New task')}
       >
         <Plus className="h-6 w-6" />
       </button>
@@ -318,18 +320,13 @@ export default function AdminTasks() {
       )}
 
       {/* Delete confirmation */}
-      <Dialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>{t('admin.tasks.confirmDelete')}</DialogTitle></DialogHeader>
-          <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.tasks.confirmDeleteDesc')}</p>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteConfirm(null)}>{t('admin.common.cancel')}</Button>
-            <Button variant="destructive" onClick={() => deleteConfirm && handleDelete(deleteConfirm)} disabled={deleteMutation.isPending}>
-              {t('admin.common.delete')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        open={!!deleteConfirm}
+        onOpenChange={(o) => !o && setDeleteConfirm(null)}
+        onConfirm={() => { if (deleteConfirm) handleDelete(deleteConfirm); }}
+        title={t('admin.tasks.confirmDelete')}
+        description={t('admin.tasks.confirmDeleteDesc')}
+      />
     </div>
   );
 }

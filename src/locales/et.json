@@ -8,7 +8,10 @@
     "blog": "Blogi",
     "contact": "Kontakt",
     "careers": "Karjäär",
-    "contactUs": "Võta ühendust"
+    "contactUs": "Võta ühendust",
+    "openMenu": "Ava menüü",
+    "closeMenu": "Sulge menüü",
+    "switchLanguage": "Vaheta keel: {{lang}}"
   },
   "hero": {
     "search": "Otsi",
@@ -92,7 +95,12 @@
         "totalFloors": "Korruseid kokku",
         "yearBuilt": "Ehitusaasta",
         "energyClass": "Energiaklass"
-      }
+      },
+      "openGallery": "Ava fotogalerii",
+      "galleryDialog": "Fotogalerii",
+      "viewPhoto": "Vaata fotot {{number}}",
+      "nextPhoto": "Järgmine foto",
+      "previousPhoto": "Eelmine foto"
     }
   },
   "filters": {
@@ -110,7 +118,8 @@
       "priceAsc": "Hind: madalaim → kõrgeim",
       "priceDesc": "Hind: kõrgeim → madalaim",
       "sizeDesc": "Suurus: suurim"
-    }
+    },
+    "sortBy": "Sorteeri"
   },
   "services": {
     "viewAll": "Vaata teenuseid",
@@ -118,7 +127,8 @@
     "subtitle": "Terviklikud kinnisvaralahendused vastavalt Teie vajadustele.",
     "loadFailed": "Teenuste laadimine ebaõnnestus. Palun proovige uuesti.",
     "ctaTitle": "Vajate abi? Võtke ühendust tasuta konsultatsiooniks",
-    "ctaSubtitle": "Meie eksperdid on valmis arutlema Teie vajaduste üle ja pakkuma sobiva lahenduse."
+    "ctaSubtitle": "Meie eksperdid on valmis arutlema Teie vajaduste üle ja pakkuma sobiva lahenduse.",
+    "priceLabel": "Hinnastamine"
   },
   "about": {
     "title": "Estoriast",
@@ -153,7 +163,11 @@
     "backToTeam": "← Tagasi meeskonna juurde",
     "backLink": "Tagasi meeskonna juurde",
     "propertiesByAgent": "{{name}} pakkumised",
-    "noActiveListings": "Hetkel aktiivseid pakkumisi ei ole."
+    "noActiveListings": "Hetkel aktiivseid pakkumisi ei ole.",
+    "call": "Helista",
+    "email": "E-post",
+    "callMember": "Helista {{name}}",
+    "emailMember": "Saada e-kiri {{name}}"
   },
   "blog": {
     "title": "Uudised ja artiklid",
@@ -165,7 +179,10 @@
     "relatedTitle": "Seotud postitused",
     "backToBlog": "← Tagasi blogisse",
     "backLink": "Tagasi blogisse",
-    "viewProfile": "Vaata profiili →"
+    "viewProfile": "Vaata profiili →",
+    "previousPage": "Eelmine leht",
+    "nextPage": "Järgmine leht",
+    "goToPage": "Mine lehele {{page}}"
   },
   "careers": {
     "title": "Liitu meeskonnaga",
@@ -245,7 +262,10 @@
     "noSubject": "(teema puudub)",
     "cancel": "Tühista",
     "close": "Sulge",
-    "saving": "Salvestamine…"
+    "saving": "Salvestamine…",
+    "previousPage": "Eelmine leht",
+    "nextPage": "Järgmine leht",
+    "goToPage": "Mine lehele {{page}}"
   },
   "savedSearch": {
     "cta": "Salvesta otsing",
@@ -278,7 +298,8 @@
   "cookies": {
     "message": "Kasutame küpsiseid Teie kogemuse parandamiseks",
     "accept": "Nõustun",
-    "privacy": "Privaatsuspoliitika"
+    "privacy": "Privaatsuspoliitika",
+    "decline": "Keeldu"
   },
   "enums": {
     "propertyType": {
@@ -328,7 +349,13 @@
       "title": "Pealkiri",
       "type": "Tüüp",
       "all": "Kõik",
-      "page": "Lehekülg {{page}} / {{totalPages}}"
+      "undo": "Võta tagasi",
+      "confirmDeleteTitle": "Kustutada see kirje?",
+      "confirmDeleteDesc": "Seda toimingut ei saa tagasi võtta.",
+      "page": "Lehekülg {{page}} / {{totalPages}}",
+      "close": "Sulge menüü",
+      "next": "Järgmine leht",
+      "previous": "Eelmine leht"
     },
     "layout": {
       "adminBadge": "Admin",
@@ -336,7 +363,8 @@
       "signOut": "Logi välja",
       "breadcrumbAdmin": "Admin",
       "breadcrumbNew": "Uus",
-      "breadcrumbEdit": "Muuda"
+      "breadcrumbEdit": "Muuda",
+      "language": "Keel"
     },
     "nav": {
       "dashboard": "Töölaud",
@@ -357,7 +385,11 @@
       "savedSearches": "Salvestatud otsingud",
       "activities": "Tegevused",
       "settings": "Seaded",
-      "inbox": "Postkast"
+      "inbox": "Postkast",
+      "sections": {
+        "crm": "CRM",
+        "system": "Süsteem"
+      }
     },
     "login": {
       "portalTitle": "Administraatori portaal",
@@ -444,14 +476,19 @@
         "processingFailed": "Töötlemine ebaõnnestus",
         "retry": "Proovi uuesti",
         "reprocessQueued": "Töötlemine järjekorras",
-        "reprocessFailed": "Töötlemise järjekorda panemine ebaõnnestus"
+        "reprocessFailed": "Töötlemise järjekorda panemine ebaõnnestus",
+        "confirmDeleteTitle": "Kustutada see pilt?",
+        "confirmDeleteDesc": "Pilt eemaldatakse jäädavalt. Seda ei saa tagasi võtta."
       },
       "features": {
         "addPlaceholder": "Lisa eripära…",
-        "empty": "Eripärasid pole veel lisatud."
+        "empty": "Eripärasid pole veel lisatud.",
+        "copyEnToAll": "Kopeeri EN kõikidesse keeltesse"
       },
       "saveDraft": "Salvesta mustandina",
       "savePublish": "Salvesta ja avalda",
+      "publish": "Avalda",
+      "unpublish": "Peida",
       "geocodeButton": "Hangi aadressilt",
       "geocodeMissing": "Geokodeeri puuduvad",
       "geocodeMissingHint": "Leia aadressi põhjal koordinaadid kõigile objektidele, millel need veel puuduvad, et kaart kuvataks igal kuulutusel.",
@@ -477,12 +514,15 @@
         "geocodeFailed": "Selle aadressi geokodeerimine ebaõnnestus",
         "geocodeAllDone": "Kõigil objektidel on juba koordinaadid",
         "geocodeBulkOk": "Geokodeeritud {{count}} objekti",
-        "geocodeBulkPartial": "Geokodeeritud {{ok}}, {{failed}} ei õnnestunud leida — lisa või paranda nende aadress"
+        "geocodeBulkPartial": "Geokodeeritud {{ok}}, {{failed}} ei õnnestunud leida — lisa või paranda nende aadress",
+        "copiedFromEn": "Inglise keel kopeeritud — nüüd tõlgi see.",
+        "statusFailed": "Oleku uuendamine ebaõnnestus"
       },
       "validation": {
         "titleRequired": "Ingliskeelne pealkiri on kohustuslik",
         "agentRequired": "Palun vali maakler jaotises „Nähtavus ja maakler\""
-      }
+      },
+      "confirmDeleteDesc": "Kustutada \"{{title}}\"? Seda ei saa tagasi võtta."
     },
     "blog": {
       "title": "Blogipostitused",
@@ -506,7 +546,9 @@
         "excerpt": "Sissejuhatus",
         "content": "Sisu (HTML)",
         "metaTitle": "Meta pealkiri",
-        "metaDescription": "Meta kirjeldus"
+        "metaDescription": "Meta kirjeldus",
+        "removeCover": "Eemalda kaanepilt",
+        "replaceCover": "Asenda pilt"
       },
       "savePost": "Salvesta postitus",
       "toast": {
@@ -517,10 +559,18 @@
         "saveFailed": "Postituse salvestamine ebaõnnestus",
         "published": "Postitus avaldatud",
         "unpublished": "Postitus muudetud mustandiks",
-        "statusFailed": "Staatuse muutmine ebaõnnestus"
+        "statusFailed": "Staatuse muutmine ebaõnnestus",
+        "savedDraft": "Salvestatud mustandina — pole veebilehel veel nähtav."
       },
       "publish": "Avalda",
-      "unpublish": "Muuda mustandiks"
+      "unpublish": "Muuda mustandiks",
+      "confirmDeleteDesc": "Kustutada \"{{title}}\"? Seda toimingut ei saa tagasi võtta.",
+      "saveDraft": "Salvesta mustandina",
+      "savePublish": "Salvesta ja avalda",
+      "validation": {
+        "authorRequired": "Palun vali autor.",
+        "titleRequired": "Salvestamiseks on vajalik ingliskeelne pealkiri."
+      }
     },
     "team": {
       "title": "Meeskonnaliikmed",
@@ -564,7 +614,8 @@
         "saveFailed": "Liikme salvestamine ebaõnnestus",
         "removed": "Liige eemaldatud",
         "removeFailed": "Liikme eemaldamine ebaõnnestus"
-      }
+      },
+      "confirmDeleteDesc": "Eemaldada \"{{name}}\" meeskonnast? Seda toimingut ei saa tagasi võtta."
     },
     "services": {
       "title": "Teenused",
@@ -590,7 +641,9 @@
         "saveFailed": "Teenuse salvestamine ebaõnnestus",
         "deleted": "Teenus kustutatud",
         "deleteFailed": "Teenuse kustutamine ebaõnnestus"
-      }
+      },
+      "confirmDeleteDesc": "Kustutada teenus \"{{name}}\"? Seda toimingut ei saa tagasi võtta.",
+      "dragToReorder": "Lohista ümberjärjestamiseks"
     },
     "pages": {
       "title": "Lehed",
@@ -635,7 +688,9 @@
         "saveFailed": "Positsiooni salvestamine ebaõnnestus",
         "deleted": "Positsioon kustutatud",
         "deleteFailed": "Positsiooni kustutamine ebaõnnestus"
-      }
+      },
+      "deleteTitle": "Kustutada see tööpakkumine?",
+      "deleteDesc": "See eemaldab pakkumise ja kõik selle tõlked jäädavalt. Seda toimingut ei saa tagasi võtta."
     },
     "messages": {
       "title": "Sõnumid",
@@ -654,7 +709,17 @@
       "markReplied": "Märgi vastatuks",
       "toast": {
         "marked": "Märgitud kui {{status}}",
-        "updateFailed": "Staatuse uuendamine ebaõnnestus"
+        "updateFailed": "Staatuse uuendamine ebaõnnestus",
+        "deleted": "Sõnum kustutatud",
+        "deleteFailed": "Sõnumi kustutamine ebaõnnestus"
+      },
+      "subtitle": "Avaliku veebilehe kontaktivormi esildised. Märgi loetuks, kui oled vastanud.",
+      "confirmDeleteTitle": "Kustutada see sõnum?",
+      "confirmDeleteDesc": "See eemaldab päringu jäädavalt teie postkastist. Seda toimingut ei saa tagasi võtta.",
+      "markUnread": "Märgi lugemata",
+      "actions": {
+        "createContact": "Loo kontakt",
+        "createDeal": "Loo tehing"
       }
     },
     "newsletter": {
@@ -708,8 +773,16 @@
         "recipients": "Saajad",
         "success": "Õnnestunud",
         "failed": "Ebaõnnestunud",
-        "empty": "Kampaaniaid pole veel."
-      }
+        "empty": "Kampaaniaid pole veel.",
+        "confirmDeleteTitle": "Kustutada see kampaania?",
+        "confirmDeleteDesc": "See eemaldab jäädavalt kampaania kirje ja selle saatmisajaloo. Seda toimingut ei saa tagasi võtta.",
+        "deleted": "Kampaania kustutatud",
+        "deleteFailed": "Kampaania kustutamine ebaõnnestus"
+      },
+      "subtitle": "Saada tellijatele e-uudiskirju. Kasuta vahekaarti Koosta kampaania kirjutamiseks ja saada enne väljasaatmist endale testkiri.",
+      "unsubscribe": "Loobu tellimusest",
+      "confirmUnsubTitle": "Tühistada selle isiku tellimus?",
+      "confirmUnsubDesc": "Nad ei saa enam uudiskirju. Saate nad vajadusel hiljem uuesti lisada."
     },
     "users": {
       "title": "Kasutajad",
@@ -751,7 +824,9 @@
         "reactivateFailed": "Kasutaja aktiveerimine ebaõnnestus",
         "passwordReset": "Parool edukalt lähtestatud",
         "passwordResetFailed": "Parooli lähtestamine ebaõnnestus"
-      }
+      },
+      "deactivateTitle": "Deaktiveerida see kasutaja?",
+      "deactivateDesc": "Nad kaotavad kohe juurdepääsu ega saa enam sisse logida. Saate nad hiljem uuesti aktiveerida."
     },
     "audit": {
       "title": "Tegevuslogi",
@@ -766,7 +841,10 @@
         "action": "Tegevus",
         "entityType": "Objekti tüüp",
         "dateRange": "Ajavahemik"
-      }
+      },
+      "copyId": "Kopeeri ID",
+      "showDetails": "Näita üksikasju",
+      "hideDetails": "Peida üksikasjad"
     },
     "contacts": {
       "title": "Kontaktid",
@@ -827,7 +905,9 @@
         "assignedAgent": "Määratud maakler",
         "selectAgent": "Vali maakler",
         "consentToMarketing": "Turundusnõusolek",
-        "notesPlaceholder": "Sisemised märkmed kontakti kohta…"
+        "notesPlaceholder": "Sisemised märkmed kontakti kohta…",
+        "newsletterSubscriber": "Uudiskirja tellija",
+        "subscribedNow": "Liitunud"
       },
       "tabs": {
         "timeline": "Ajajoon",
@@ -861,8 +941,16 @@
         "created": "Kontakt loodud",
         "saveFailed": "Kontakti salvestamine ebaõnnestus",
         "activityAdded": "Tegevus lisatud",
-        "noteAdded": "Märkus lisatud"
-      }
+        "noteAdded": "Märkus lisatud",
+        "noteDeleted": "Märkus kustutatud",
+        "subscribed": "Uudiskirjaga liitutud",
+        "subscribeFailed": "Liitumine ebaõnnestus"
+      },
+      "subtitle": "CRM kontaktide loend. Kontakte saab siduda tehingute ja e-kirjavestlustega.",
+      "confirmDeleteNote": "Kustutada see märkus?",
+      "pinNote": "Kinnita märkus",
+      "unpinNote": "Vabasta märkus",
+      "removeTag": "Eemalda silt"
     },
     "deals": {
       "title": "Tehingud",
@@ -921,7 +1009,10 @@
         "commissionPercent": "Vahendustasu %",
         "expectedCloseDate": "Eeldatav sulgemiskuupäev",
         "lossReason": "Kaotuse põhjus",
-        "participantRole": "Roll"
+        "participantRole": "Roll",
+        "linkedProperty": "Seotud kinnisvara",
+        "propertyIdPlaceholder": "Kinnisvara ID (valikuline)",
+        "propertyIdHelp": "Valikuline. Ava kinnisvara jaotises Kinnisvara ja kopeeri ID selle veebiaadressi (URL) lõpust siia välja, et siduda see tehinguga. Jäta tühjaks, kui kinnisvara veel pole."
       },
       "tabs": {
         "participants": "Osalejad",
@@ -952,7 +1043,10 @@
         "closing": "Sulgemine",
         "won": "Sõlmitud",
         "lost": "Kaotatud"
-      }
+      },
+      "subtitle": "Jälgi tehinguid etappide kaupa müügivihjest sõlmimiseni. Seo tehingud kontaktide, kinnisvara ja e-kirjavestlustega.",
+      "confirmRemoveParticipant": "Eemaldada see osaleja?",
+      "removeParticipant": "Eemalda osaleja"
     },
     "activities": {
       "title": "Tegevused",
@@ -997,6 +1091,11 @@
     },
     "tasks": {
       "title": "Minu ülesanded",
+      "status": {
+        "pending": "Ootel",
+        "done": "Tehtud",
+        "all": "Kõik"
+      },
       "addNew": "Uus ülesanne",
       "editTitle": "Muuda ülesannet",
       "newTitle": "Uus ülesanne",
@@ -1045,7 +1144,9 @@
         "deal": "Tehing",
         "property": "Objekt",
         "dealIdPlaceholder": "Tehingu ID…",
-        "propertyIdPlaceholder": "Objekti ID…"
+        "propertyIdPlaceholder": "Objekti ID…",
+        "dealIdHelp": "Valikuline. Kleebi ID tehingu veebiaadressist (osa pärast /deals/). Jäta tühjaks, kui see ülesanne pole seotud konkreetse tehinguga.",
+        "propertyIdHelp": "Valikuline. Kleebi ID kinnisvara veebiaadressist (osa pärast /properties/). Jäta tühjaks, kui see ülesanne pole seotud konkreetse kinnisvaraga."
       },
       "toast": {
         "created": "Ülesanne loodud",
@@ -1055,8 +1156,10 @@
         "saveFailed": "Ülesande salvestamine ebaõnnestus",
         "toggleFailed": "Ülesande oleku muutmine ebaõnnestus",
         "requiredFields": "Pealkiri ja tähtaeg on kohustuslikud",
-        "reminderBeforeDue": "Meeldetuletus peab olema enne tähtaega"
-      }
+        "reminderBeforeDue": "Meeldetuletus peab olema enne tähtaega",
+        "markedDone": "Ülesanne märgitud tehtuks"
+      },
+      "taskActions": "Ülesande toimingud"
     },
     "birthday": {
       "title": "Sünnipäevad",
@@ -1081,7 +1184,9 @@
         "templateSaveFailed": "Malli salvestamine ebaõnnestus",
         "autoSendUpdated": "Automaatse saatmise seadistus uuendatud",
         "autoSendFailed": "Automaatse saatmise seadistuse muutmine ebaõnnestus"
-      }
+      },
+      "confirmSendTitle": "Saada sünnipäevameil kohe?",
+      "confirmSendDesc": "Sünnipäevameil saadetakse kohe aadressile {{name}}. Seda ei saa tagasi võtta."
     },
     "savedSearches": {
       "title": "Salvestatud otsingud",
@@ -1154,7 +1259,8 @@
       },
       "toast": {
         "saveFailed": "Seade salvestamine ebaõnnestus"
-      }
+      },
+      "saved": "Salvestatud"
     },
     "inbox": {
       "title": "Postkast",
@@ -1181,7 +1287,9 @@
         "attachments": "Manused",
         "reply": "Vasta",
         "replyAll": "Vasta kõigile",
-        "forward": "Edasta"
+        "forward": "Edasta",
+        "archive": "Arhiveeri",
+        "download": "Laadi alla {{name}}"
       },
       "link": {
         "title": "Seo kiri",
@@ -1198,7 +1306,10 @@
         "subject": "Teema",
         "bodyPlaceholder": "Kirjuta oma sõnum…",
         "send": "Saada",
-        "sizeWarning": "Manuste kogumaht ületab 10 MB piiri"
+        "sizeWarning": "Manuste kogumaht ületab 10 MB piiri",
+        "attach": "Lisa failid",
+        "removeAttachment": "Eemalda {{name}}",
+        "removeRecipient": "Eemalda {{email}}"
       },
       "toast": {
         "sent": "Kiri saadetud",
@@ -1208,7 +1319,19 @@
         "linked": "Kiri seotud",
         "linkError": "Sidumine ebaõnnestus",
         "downloadError": "Manuse allalaadimine ebaõnnestus"
+      },
+      "actions": {
+        "sender": "Saatja",
+        "unlink": "Eemalda seos",
+        "createContact": "Loo kontakt",
+        "createDeal": "Loo tehing",
+        "linkDeal": "Seo olemasoleva tehinguga",
+        "linkContact": "Seo olemasoleva kontaktiga"
       }
     }
+  },
+  "pagination": {
+    "previous": "Eelmine leht",
+    "next": "Järgmine leht"
   }
 }

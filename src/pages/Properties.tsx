@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Search, X, ChevronLeft, ChevronRight, SlidersHorizontal, Loader2, Bell } from 'lucide-react';
+import { Search, X, ChevronLeft, ChevronRight, ChevronDown, SlidersHorizontal, Loader2, Bell } from 'lucide-react';
 import PropertyCard from '@/components/PropertyCard';
 import SaveSearchModal from '@/components/SaveSearchModal';
 import { useProperties } from '@/hooks/api/useProperties';
@@ -144,33 +144,49 @@ export default function Properties() {
       </div>
 
       {/* Property type */}
-      <select
-        value={propertyType}
-        onChange={(e) => updateFilter('type', e.target.value)}
-        className="bg-secondary text-foreground text-sm font-body px-4 py-2.5 rounded-sm border border-border outline-none cursor-pointer"
-      >
-        <option value="">{t('hero.allTypes')}</option>
-        {propertyTypes.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
+      <div className="relative">
+        <select
+          value={propertyType}
+          onChange={(e) => updateFilter('type', e.target.value)}
+          aria-label={t('hero.type', 'Property type')}
+          className="appearance-none bg-secondary text-foreground text-sm font-body pl-4 pr-10 py-2.5 rounded-sm border border-border outline-none cursor-pointer focus:border-primary transition-colors"
+        >
+          <option value="">{t('hero.allTypes')}</option>
+          {propertyTypes.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        <ChevronDown
+          size={16}
+          aria-hidden="true"
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-primary"
+        />
+      </div>
 
       {/* City */}
-      <select
-        value={city}
-        onChange={(e) => updateFilter('city', e.target.value)}
-        disabled={cityList.length === 0}
-        className="bg-secondary text-foreground text-sm font-body px-4 py-2.5 rounded-sm border border-border outline-none cursor-pointer disabled:cursor-not-allowed"
-      >
-        <option value="">{t('hero.allCities')}</option>
-        {cityList.map((c) => (
-          <option key={c.name} value={c.name}>
-            {c.name}
-          </option>
-        ))}
-      </select>
+      <div className="relative">
+        <select
+          value={city}
+          onChange={(e) => updateFilter('city', e.target.value)}
+          disabled={cityList.length === 0}
+          aria-label={t('hero.city', 'City')}
+          className="appearance-none bg-secondary text-foreground text-sm font-body pl-4 pr-10 py-2.5 rounded-sm border border-border outline-none cursor-pointer disabled:cursor-not-allowed focus:border-primary transition-colors"
+        >
+          <option value="">{t('hero.allCities')}</option>
+          {cityList.map((c) => (
+            <option key={c.name} value={c.name}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <ChevronDown
+          size={16}
+          aria-hidden="true"
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-primary"
+        />
+      </div>
 
       {/* Price range */}
       <div className="flex items-center gap-2">
@@ -181,6 +197,7 @@ export default function Properties() {
           <input
             type="number"
             placeholder={t('filters.min')}
+            aria-label={t('filters.minPrice', 'Minimum price')}
             value={minPrice}
             onChange={(e) => updateFilter('minPrice', e.target.value)}
             className="bg-secondary text-foreground text-sm font-body pl-7 pr-3 py-2.5 rounded-sm border border-border outline-none w-28 focus:border-primary transition-colors"
@@ -194,6 +211,7 @@ export default function Properties() {
           <input
             type="number"
             placeholder={t('filters.max')}
+            aria-label={t('filters.maxPrice', 'Maximum price')}
             value={maxPrice}
             onChange={(e) => updateFilter('maxPrice', e.target.value)}
             className="bg-secondary text-foreground text-sm font-body pl-7 pr-3 py-2.5 rounded-sm border border-border outline-none w-28 focus:border-primary transition-colors"
@@ -279,17 +297,25 @@ export default function Properties() {
             >
               <Bell size={12} />
             </button>
-            <select
-              value={sort}
-              onChange={(e) => updateFilter('sort', e.target.value)}
-              className="bg-secondary text-foreground text-xs font-body px-3 py-2 rounded-sm border border-border outline-none"
-            >
-              {sortOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                value={sort}
+                onChange={(e) => updateFilter('sort', e.target.value)}
+                aria-label={t('filters.sortBy', 'Sort by')}
+                className="appearance-none bg-secondary text-foreground text-xs font-body pl-3 pr-8 py-2 rounded-sm border border-border outline-none focus:border-primary transition-colors"
+              >
+                {sortOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                size={14}
+                aria-hidden="true"
+                className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-primary"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -311,7 +337,11 @@ export default function Properties() {
           <div className="container mx-auto px-6 py-8">
             <div className="flex items-center justify-between mb-8">
               <h2 className="font-heading text-2xl text-foreground">{t('filters.filters')}</h2>
-              <button onClick={() => setMobileFiltersOpen(false)} className="text-foreground">
+              <button
+                onClick={() => setMobileFiltersOpen(false)}
+                aria-label={t('common.close', 'Close')}
+                className="text-foreground"
+              >
                 <X size={24} />
               </button>
             </div>
@@ -360,11 +390,12 @@ export default function Properties() {
                 </>
               )}
             </p>
-            <div className="hidden md:block">
+            <div className="hidden md:block relative">
               <select
                 value={sort}
                 onChange={(e) => updateFilter('sort', e.target.value)}
-                className="bg-secondary text-foreground text-sm font-body px-4 py-2 rounded-sm border border-border outline-none cursor-pointer"
+                aria-label={t('filters.sortBy', 'Sort by')}
+                className="appearance-none bg-secondary text-foreground text-sm font-body pl-4 pr-10 py-2 rounded-sm border border-border outline-none cursor-pointer focus:border-primary transition-colors"
               >
                 {sortOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -372,6 +403,11 @@ export default function Properties() {
                   </option>
                 ))}
               </select>
+              <ChevronDown
+                size={16}
+                aria-hidden="true"
+                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-primary"
+              />
             </div>
           </div>
 
@@ -432,6 +468,7 @@ export default function Properties() {
               <button
                 onClick={() => updateFilter('page', String(page - 1))}
                 disabled={page <= 1}
+                aria-label={t('common.previousPage', 'Previous page')}
                 className="w-10 h-10 flex items-center justify-center rounded-sm border border-border text-muted-foreground hover:text-primary hover:border-primary transition-colors disabled:opacity-30 disabled:hover:text-muted-foreground disabled:hover:border-border"
               >
                 <ChevronLeft size={16} />
@@ -446,6 +483,8 @@ export default function Properties() {
                   <button
                     key={p}
                     onClick={() => updateFilter('page', String(p))}
+                    aria-label={t('common.goToPage', 'Go to page {{page}}', { page: p })}
+                    aria-current={p === page ? 'page' : undefined}
                     className={`w-10 h-10 flex items-center justify-center rounded-sm text-sm font-body transition-colors ${
                       p === page
                         ? 'border border-primary text-primary'
@@ -460,6 +499,7 @@ export default function Properties() {
               <button
                 onClick={() => updateFilter('page', String(page + 1))}
                 disabled={page >= totalPages}
+                aria-label={t('common.nextPage', 'Next page')}
                 className="w-10 h-10 flex items-center justify-center rounded-sm border border-border text-muted-foreground hover:text-primary hover:border-primary transition-colors disabled:opacity-30 disabled:hover:text-muted-foreground disabled:hover:border-border"
               >
                 <ChevronRight size={16} />

@@ -148,7 +148,7 @@ const sortedPages = useMemo(() => {
                     <div className="text-xs text-[hsl(0_0%_50%)] mt-0.5">{PAGE_LABELS[p.pageKey]?.description}</div>
                   </TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]" onClick={() => openEdit(p)}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_15%)]" onClick={() => openEdit(p)} aria-label={t('admin.common.edit')} title={t('admin.common.edit')}>
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
                   </TableCell>

@@ -76,10 +76,12 @@ export default function PropertyCard({ property, index = 0 }: Props) {
 
           {/* Specs */}
           <div className="flex items-center gap-4 text-xs text-muted-foreground font-body pt-1">
-            <span className="flex items-center gap-1.5">
-              <Maximize2 size={12} className="text-primary" />
-              {property.size} m²
-            </span>
+            {property.size != null && property.size > 0 && (
+              <span className="flex items-center gap-1.5">
+                <Maximize2 size={12} className="text-primary" />
+                {property.size} m²
+              </span>
+            )}
             {property.rooms != null && (
               <span className="flex items-center gap-1.5">
                 <DoorOpen size={12} className="text-primary" />

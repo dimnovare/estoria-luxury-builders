@@ -213,6 +213,9 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
                     placeholder={t('admin.tasks.link.dealIdPlaceholder')}
                     className="bg-white border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_55%)]"
                   />
+                  <p className="text-xs text-[hsl(0_0%_55%)] mt-1.5">
+                    {t('admin.tasks.link.dealIdHelp', 'Optional. Paste the ID from the deal’s web address (the part after /deals/). Leave blank if this task isn’t about a specific deal.')}
+                  </p>
                 </TabsContent>
                 <TabsContent value="property" className="mt-2">
                   <Input
@@ -221,6 +224,9 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
                     placeholder={t('admin.tasks.link.propertyIdPlaceholder')}
                     className="bg-white border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_55%)]"
                   />
+                  <p className="text-xs text-[hsl(0_0%_55%)] mt-1.5">
+                    {t('admin.tasks.link.propertyIdHelp', 'Optional. Paste the ID from the property’s web address (the part after /properties/). Leave blank if this task isn’t about a specific property.')}
+                  </p>
                 </TabsContent>
               </Tabs>
             </div>

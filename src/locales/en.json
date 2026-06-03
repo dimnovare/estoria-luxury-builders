@@ -8,7 +8,10 @@
     "blog": "Blog",
     "contact": "Contact",
     "careers": "Careers",
-    "contactUs": "Contact Us"
+    "contactUs": "Contact Us",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "switchLanguage": "Switch language to {{lang}}"
   },
   "hero": {
     "search": "Search",
@@ -92,7 +95,12 @@
         "totalFloors": "Total Floors",
         "yearBuilt": "Year Built",
         "energyClass": "Energy Class"
-      }
+      },
+      "openGallery": "Open photo gallery",
+      "galleryDialog": "Photo gallery",
+      "viewPhoto": "View photo {{number}}",
+      "nextPhoto": "Next photo",
+      "previousPhoto": "Previous photo"
     }
   },
   "filters": {
@@ -110,7 +118,8 @@
       "priceAsc": "Price: Low → High",
       "priceDesc": "Price: High → Low",
       "sizeDesc": "Size: Largest"
-    }
+    },
+    "sortBy": "Sort by"
   },
   "services": {
     "viewAll": "View All Services",
@@ -118,7 +127,8 @@
     "subtitle": "Comprehensive real estate solutions tailored to your needs.",
     "loadFailed": "Failed to load services. Please try again.",
     "ctaTitle": "Need help? Contact us for a free consultation",
-    "ctaSubtitle": "Our experts are ready to discuss your specific needs and create a tailored solution."
+    "ctaSubtitle": "Our experts are ready to discuss your specific needs and create a tailored solution.",
+    "priceLabel": "Pricing"
   },
   "about": {
     "title": "About Estoria",
@@ -153,7 +163,11 @@
     "backToTeam": "← Back to Team",
     "backLink": "Back to Team",
     "propertiesByAgent": "Properties by {{name}}",
-    "noActiveListings": "No active listings at this time."
+    "noActiveListings": "No active listings at this time.",
+    "call": "Call",
+    "email": "Email",
+    "callMember": "Call {{name}}",
+    "emailMember": "Email {{name}}"
   },
   "blog": {
     "title": "Insights & News",
@@ -165,7 +179,10 @@
     "relatedTitle": "Related Posts",
     "backToBlog": "← Back to Blog",
     "backLink": "Back to Blog",
-    "viewProfile": "View Profile →"
+    "viewProfile": "View Profile →",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "goToPage": "Go to page {{page}}"
   },
   "careers": {
     "title": "Join Our Team",
@@ -245,7 +262,10 @@
     "noSubject": "(no subject)",
     "cancel": "Cancel",
     "close": "Close",
-    "saving": "Saving…"
+    "saving": "Saving…",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "goToPage": "Go to page {{page}}"
   },
   "savedSearch": {
     "cta": "Save this search",
@@ -278,7 +298,8 @@
   "cookies": {
     "message": "We use cookies to improve your experience",
     "accept": "Accept",
-    "privacy": "Privacy Policy"
+    "privacy": "Privacy Policy",
+    "decline": "Decline"
   },
   "enums": {
     "propertyType": {
@@ -328,7 +349,13 @@
       "title": "Title",
       "type": "Type",
       "all": "All",
-      "page": "Page {{page}} of {{totalPages}}"
+      "undo": "Undo",
+      "confirmDeleteTitle": "Delete this item?",
+      "confirmDeleteDesc": "This action can't be undone.",
+      "page": "Page {{page}} of {{totalPages}}",
+      "close": "Close menu",
+      "next": "Next page",
+      "previous": "Previous page"
     },
     "layout": {
       "adminBadge": "Admin",
@@ -336,7 +363,8 @@
       "signOut": "Sign out",
       "breadcrumbAdmin": "Admin",
       "breadcrumbNew": "New",
-      "breadcrumbEdit": "Edit"
+      "breadcrumbEdit": "Edit",
+      "language": "Language"
     },
     "nav": {
       "dashboard": "Dashboard",
@@ -357,7 +385,11 @@
       "savedSearches": "Saved Searches",
       "activities": "Activities",
       "settings": "Settings",
-      "inbox": "Inbox"
+      "inbox": "Inbox",
+      "sections": {
+        "crm": "CRM",
+        "system": "System"
+      }
     },
     "login": {
       "portalTitle": "Admin Portal",
@@ -444,14 +476,19 @@
         "processingFailed": "Processing failed",
         "retry": "Retry processing",
         "reprocessQueued": "Reprocessing queued",
-        "reprocessFailed": "Couldn't queue reprocess"
+        "reprocessFailed": "Couldn't queue reprocess",
+        "confirmDeleteTitle": "Delete this image?",
+        "confirmDeleteDesc": "The image will be permanently removed. This can't be undone."
       },
       "features": {
         "addPlaceholder": "Add a feature…",
-        "empty": "No features added yet."
+        "empty": "No features added yet.",
+        "copyEnToAll": "Copy EN to all languages"
       },
       "saveDraft": "Save as Draft",
       "savePublish": "Save & Publish",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
       "geocodeButton": "Get from address",
       "geocodeMissing": "Geocode missing",
       "geocodeMissingHint": "Find coordinates from the address for every property that doesn't have them yet, so the map shows on each listing.",
@@ -477,12 +514,15 @@
         "geocodeBulkPartial": "Geocoded {{ok}}, {{failed}} couldn't be located — add or fix their address",
         "imageUploadFailed": "Failed to upload images",
         "imageRemoved": "Image removed",
-        "imageRemoveFailed": "Failed to remove image"
+        "imageRemoveFailed": "Failed to remove image",
+        "copiedFromEn": "Copied English — now translate it.",
+        "statusFailed": "Failed to update status"
       },
       "validation": {
         "titleRequired": "English title is required",
         "agentRequired": "Please select an agent in the Visibility & agent section"
-      }
+      },
+      "confirmDeleteDesc": "Delete \"{{title}}\"? This can't be undone."
     },
     "blog": {
       "title": "Blog Posts",
@@ -506,7 +546,9 @@
         "excerpt": "Excerpt",
         "content": "Content (HTML)",
         "metaTitle": "Meta Title",
-        "metaDescription": "Meta Description"
+        "metaDescription": "Meta Description",
+        "removeCover": "Remove cover image",
+        "replaceCover": "Replace image"
       },
       "savePost": "Save Post",
       "toast": {
@@ -517,10 +559,18 @@
         "saveFailed": "Failed to save post",
         "published": "Post published",
         "unpublished": "Post unpublished",
-        "statusFailed": "Failed to change post status"
+        "statusFailed": "Failed to change post status",
+        "savedDraft": "Saved as draft — not visible on the site yet."
       },
       "publish": "Publish",
-      "unpublish": "Unpublish"
+      "unpublish": "Unpublish",
+      "confirmDeleteDesc": "Delete \"{{title}}\"? This action can't be undone.",
+      "saveDraft": "Save as draft",
+      "savePublish": "Save & publish",
+      "validation": {
+        "authorRequired": "Please select an author.",
+        "titleRequired": "An English title is required to save."
+      }
     },
     "team": {
       "title": "Team Members",
@@ -564,7 +614,8 @@
         "saveFailed": "Failed to save member",
         "removed": "Member removed",
         "removeFailed": "Failed to remove member"
-      }
+      },
+      "confirmDeleteDesc": "Remove \"{{name}}\" from the team? This action can't be undone."
     },
     "services": {
       "title": "Services",
@@ -590,7 +641,9 @@
         "saveFailed": "Failed to save service",
         "deleted": "Service deleted",
         "deleteFailed": "Failed to delete service"
-      }
+      },
+      "confirmDeleteDesc": "Delete the \"{{name}}\" service? This action can't be undone.",
+      "dragToReorder": "Drag to reorder"
     },
     "pages": {
       "title": "Pages",
@@ -635,7 +688,9 @@
         "saveFailed": "Failed to save position",
         "deleted": "Position deleted",
         "deleteFailed": "Failed to delete position"
-      }
+      },
+      "deleteTitle": "Delete this job posting?",
+      "deleteDesc": "This will permanently remove the posting and all its translations. This action can't be undone."
     },
     "messages": {
       "title": "Messages",
@@ -654,7 +709,17 @@
       "markReplied": "Mark Replied",
       "toast": {
         "marked": "Marked as {{status}}",
-        "updateFailed": "Failed to update status"
+        "updateFailed": "Failed to update status",
+        "deleted": "Message deleted",
+        "deleteFailed": "Failed to delete message"
+      },
+      "subtitle": "Contact form submissions from the public website. Mark as Read once followed up.",
+      "confirmDeleteTitle": "Delete this message?",
+      "confirmDeleteDesc": "This permanently removes the enquiry from your inbox. This action cannot be undone.",
+      "markUnread": "Mark Unread",
+      "actions": {
+        "createContact": "Create Contact",
+        "createDeal": "Create Deal"
       }
     },
     "newsletter": {
@@ -708,8 +773,16 @@
         "recipients": "Recipients",
         "success": "Success",
         "failed": "Failed",
-        "empty": "No campaigns yet."
-      }
+        "empty": "No campaigns yet.",
+        "confirmDeleteTitle": "Delete this campaign?",
+        "confirmDeleteDesc": "This permanently removes the campaign record and its send history. This action cannot be undone.",
+        "deleted": "Campaign deleted",
+        "deleteFailed": "Failed to delete campaign"
+      },
+      "subtitle": "Send email newsletters to subscribers. Use the Compose tab to write a campaign, then send a test to yourself before broadcasting.",
+      "unsubscribe": "Unsubscribe",
+      "confirmUnsubTitle": "Unsubscribe this person?",
+      "confirmUnsubDesc": "They will stop receiving newsletters. You can re-add them later if needed."
     },
     "users": {
       "title": "Users",
@@ -751,7 +824,9 @@
         "reactivateFailed": "Failed to reactivate user",
         "passwordReset": "Password reset successfully",
         "passwordResetFailed": "Failed to reset password"
-      }
+      },
+      "deactivateTitle": "Deactivate this user?",
+      "deactivateDesc": "They will lose access immediately and can no longer sign in. You can reactivate them later."
     },
     "audit": {
       "title": "Audit Log",
@@ -766,7 +841,10 @@
         "action": "Action",
         "entityType": "Entity Type",
         "dateRange": "Date Range"
-      }
+      },
+      "copyId": "Copy ID",
+      "showDetails": "Show details",
+      "hideDetails": "Hide details"
     },
     "contacts": {
       "title": "Contacts",
@@ -827,7 +905,9 @@
         "assignedAgent": "Assigned Agent",
         "selectAgent": "Select agent",
         "consentToMarketing": "Consent to Marketing",
-        "notesPlaceholder": "Internal notes about this contact…"
+        "notesPlaceholder": "Internal notes about this contact…",
+        "newsletterSubscriber": "Newsletter subscriber",
+        "subscribedNow": "Subscribed"
       },
       "tabs": {
         "timeline": "Timeline",
@@ -861,8 +941,16 @@
         "created": "Contact created",
         "saveFailed": "Failed to save contact",
         "activityAdded": "Activity logged",
-        "noteAdded": "Note added"
-      }
+        "noteAdded": "Note added",
+        "noteDeleted": "Note deleted",
+        "subscribed": "Subscribed to newsletter",
+        "subscribeFailed": "Failed to subscribe"
+      },
+      "subtitle": "CRM contact list. Contacts can be linked to deals and email threads.",
+      "confirmDeleteNote": "Delete this note?",
+      "pinNote": "Pin note",
+      "unpinNote": "Unpin note",
+      "removeTag": "Remove tag"
     },
     "deals": {
       "title": "Deals",
@@ -921,7 +1009,10 @@
         "commissionPercent": "Commission %",
         "expectedCloseDate": "Expected Close Date",
         "lossReason": "Loss Reason",
-        "participantRole": "Role"
+        "participantRole": "Role",
+        "linkedProperty": "Linked property",
+        "propertyIdPlaceholder": "Property ID (optional)",
+        "propertyIdHelp": "Optional. Open the property in Properties and copy the ID from the end of its web address (URL) into this field to link it to the deal. Leave empty if there is no property yet."
       },
       "tabs": {
         "participants": "Participants",
@@ -952,7 +1043,10 @@
         "closing": "Closing",
         "won": "Won",
         "lost": "Lost"
-      }
+      },
+      "subtitle": "Track deals through stages from lead to close. Link deals to contacts, properties, and email threads.",
+      "confirmRemoveParticipant": "Remove this participant?",
+      "removeParticipant": "Remove participant"
     },
     "activities": {
       "title": "Activities",
@@ -997,6 +1091,11 @@
     },
     "tasks": {
       "title": "My Tasks",
+      "status": {
+        "pending": "Pending",
+        "done": "Done",
+        "all": "All"
+      },
       "addNew": "New Task",
       "editTitle": "Edit Task",
       "newTitle": "New Task",
@@ -1045,7 +1144,9 @@
         "deal": "Deal",
         "property": "Property",
         "dealIdPlaceholder": "Deal ID…",
-        "propertyIdPlaceholder": "Property ID…"
+        "propertyIdPlaceholder": "Property ID…",
+        "dealIdHelp": "Optional. Paste the ID from the deal's web address (the part after /deals/). Leave blank if this task isn't about a specific deal.",
+        "propertyIdHelp": "Optional. Paste the ID from the property's web address (the part after /properties/). Leave blank if this task isn't about a specific property."
       },
       "toast": {
         "created": "Task created",
@@ -1055,8 +1156,10 @@
         "saveFailed": "Failed to save task",
         "toggleFailed": "Failed to update task status",
         "requiredFields": "Title and due date are required",
-        "reminderBeforeDue": "Reminder must be before the due date"
-      }
+        "reminderBeforeDue": "Reminder must be before the due date",
+        "markedDone": "Task marked done"
+      },
+      "taskActions": "Task actions"
     },
     "birthday": {
       "title": "Birthdays",
@@ -1081,7 +1184,9 @@
         "templateSaveFailed": "Failed to save template",
         "autoSendUpdated": "Auto-send setting updated",
         "autoSendFailed": "Failed to update auto-send setting"
-      }
+      },
+      "confirmSendTitle": "Send birthday email now?",
+      "confirmSendDesc": "A birthday email will be sent immediately to {{name}}. This cannot be unsent."
     },
     "savedSearches": {
       "title": "Saved Searches",
@@ -1154,7 +1259,8 @@
       },
       "toast": {
         "saveFailed": "Failed to save setting"
-      }
+      },
+      "saved": "Saved"
     },
     "inbox": {
       "title": "Inbox",
@@ -1181,7 +1287,9 @@
         "attachments": "Attachments",
         "reply": "Reply",
         "replyAll": "Reply All",
-        "forward": "Forward"
+        "forward": "Forward",
+        "archive": "Archive",
+        "download": "Download {{name}}"
       },
       "link": {
         "title": "Link message",
@@ -1198,7 +1306,10 @@
         "subject": "Subject",
         "bodyPlaceholder": "Write your message…",
         "send": "Send",
-        "sizeWarning": "Total attachments exceed 10 MB limit"
+        "sizeWarning": "Total attachments exceed 10 MB limit",
+        "attach": "Attach files",
+        "removeAttachment": "Remove {{name}}",
+        "removeRecipient": "Remove {{email}}"
       },
       "toast": {
         "sent": "Message sent",
@@ -1208,7 +1319,19 @@
         "linked": "Message linked",
         "linkError": "Failed to link message",
         "downloadError": "Failed to download attachment"
+      },
+      "actions": {
+        "sender": "Sender",
+        "unlink": "Unlink",
+        "createContact": "Create Contact",
+        "createDeal": "Create Deal",
+        "linkDeal": "Link to Existing Deal",
+        "linkContact": "Link to Existing Contact"
       }
     }
+  },
+  "pagination": {
+    "previous": "Previous page",
+    "next": "Next page"
   }
 }

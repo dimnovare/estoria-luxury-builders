@@ -35,7 +35,11 @@ test('home page loads with a title', async ({ page }) => {
 
 test('careers page has its own SEO title', async ({ page }) => {
   await page.goto(`${BASE}/careers`, { waitUntil: 'networkidle' });
-  await expect(page).toHaveTitle(/Careers/i);
+  // This is the only smoke check that truly depends on react-helmet having
+  // flushed the title (the home/privacy defaults already contain their match).
+  // On a cold Vercel load, hydration + helmet can take longer than the default
+  // 5s assertion timeout, so give it a generous window to absorb cold starts.
+  await expect(page).toHaveTitle(/Careers/i, { timeout: 20_000 });
 });
 
 test('privacy page has SEO title + canonical', async ({ page }) => {

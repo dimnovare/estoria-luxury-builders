@@ -204,19 +204,27 @@ export default function Index() {
               <div className="font-nav text-[9px] tracking-[0.2em] text-muted-foreground uppercase mb-1">
                 {t('hero.city')}
               </div>
-              <select
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-                disabled={cityList.length === 0}
-                className="w-full bg-transparent text-foreground text-sm font-body border-none outline-none appearance-none cursor-pointer disabled:cursor-not-allowed"
-              >
-                <option value="">{t('hero.allCities')}</option>
-                {cityList.map((c) => (
-                  <option key={c.name} value={c.name}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  value={selectedCity}
+                  onChange={(e) => setSelectedCity(e.target.value)}
+                  disabled={cityList.length === 0}
+                  aria-label={t('hero.city')}
+                  className="w-full bg-transparent text-foreground text-sm font-body border-none outline-none appearance-none cursor-pointer disabled:cursor-not-allowed pr-6"
+                >
+                  <option value="">{t('hero.allCities')}</option>
+                  {cityList.map((c) => (
+                    <option key={c.name} value={c.name}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown
+                  size={14}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-primary"
+                />
+              </div>
             </div>
 
             {/* Type field */}
@@ -224,18 +232,26 @@ export default function Index() {
               <div className="font-nav text-[9px] tracking-[0.2em] text-muted-foreground uppercase mb-1">
                 {t('hero.type')}
               </div>
-              <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-                className="w-full bg-transparent text-foreground text-sm font-body border-none outline-none appearance-none cursor-pointer"
-              >
-                <option value="">{t('hero.allTypes')}</option>
-                {propertyTypes.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  value={selectedType}
+                  onChange={(e) => setSelectedType(e.target.value)}
+                  aria-label={t('hero.type')}
+                  className="w-full bg-transparent text-foreground text-sm font-body border-none outline-none appearance-none cursor-pointer pr-6"
+                >
+                  <option value="">{t('hero.allTypes')}</option>
+                  {propertyTypes.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown
+                  size={14}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-primary"
+                />
+              </div>
             </div>
 
             {/* Search button */}

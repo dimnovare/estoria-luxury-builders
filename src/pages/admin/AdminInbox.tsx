@@ -269,11 +269,24 @@ function MessageDetail({
       {/* Header */}
       <div className="px-4 py-3 border-b border-border shrink-0 space-y-2">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="shrink-0" onClick={onBack}>
+          <Button
+            variant="ghost" size="icon"
+            className="shrink-0 text-muted-foreground hover:text-foreground"
+            onClick={onBack}
+            aria-label={t('admin.common.back')}
+            title={t('admin.common.back')}
+          >
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <h2 className="text-base font-semibold text-foreground truncate flex-1">{message.subject}</h2>
-          <Button variant="ghost" size="icon" onClick={() => archiveMut.mutate(message.id)}>
+          <Button
+            variant="ghost" size="icon"
+            className="text-muted-foreground hover:text-foreground"
+            onClick={() => archiveMut.mutate(message.id)}
+            disabled={archiveMut.isPending}
+            aria-label={t('admin.inbox.detail.archive', 'Archive')}
+            title={t('admin.inbox.detail.archive', 'Archive')}
+          >
             <Archive className="h-4 w-4" />
           </Button>
         </div>
@@ -346,8 +359,10 @@ function MessageDetail({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-6 w-6"
+                  className="h-6 w-6 text-muted-foreground hover:text-foreground"
                   onClick={() => downloadMut.mutate({ messageId: message.id, attachmentId: att.id, filename: att.name })}
+                  aria-label={t('admin.inbox.detail.download', 'Download {{name}}', { name: att.name })}
+                  title={t('admin.inbox.detail.download', 'Download {{name}}', { name: att.name })}
                 >
                   <Download className="h-3 w-3" />
                 </Button>
@@ -475,10 +490,10 @@ export default function AdminInbox() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-heading font-semibold text-[hsl(0_0%_20%)]">{t('admin.inbox.title')}</h1>
-            <p className="text-sm text-[hsl(0_0%_50%)]">Shared mailbox for info@estoria.estate. Emails appear here when Microsoft Graph is configured. For contact form submissions, see Messages.</p>
+            <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.inbox.subtitle', 'Shared mailbox for info@estoria.estate. Emails appear here when Microsoft Graph is configured. For contact form submissions, see Messages.')}</p>
           </div>
           {!isMobile && (
-            <Button size="sm" onClick={() => setComposer({})}>
+            <Button size="sm" onClick={() => setComposer({})} aria-label={t('admin.inbox.compose')} title={t('admin.inbox.compose')}>
               <Mail className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">{t('admin.inbox.compose')}</span>
             </Button>
@@ -527,7 +542,12 @@ export default function AdminInbox() {
               {/* Mobile: back arrow + current folder name */}
               {isMobile && (
                 <div className="flex items-center gap-2 px-3 py-2 border-b border-border bg-muted/10">
-                  <button onClick={() => setMobileStep(1)} className="text-muted-foreground hover:text-foreground">
+                  <button
+                    onClick={() => setMobileStep(1)}
+                    className="text-muted-foreground hover:text-foreground"
+                    aria-label={t('admin.common.back')}
+                    title={t('admin.common.back')}
+                  >
                     <ArrowLeft className="h-4 w-4" />
                   </button>
                   <span className="text-sm font-medium flex-1">{folderLabel}</span>

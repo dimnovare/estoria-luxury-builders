@@ -20,6 +20,11 @@ export default function CookieBanner() {
     setVisible(false);
   };
 
+  const decline = () => {
+    localStorage.setItem(STORAGE_KEY, 'declined');
+    setVisible(false);
+  };
+
   if (!visible) return null;
 
   return (
@@ -42,8 +47,14 @@ export default function CookieBanner() {
             {t('cookies.privacy')}
           </Link>
           <button
+            onClick={decline}
+            className="px-6 py-2 rounded-sm border border-border text-muted-foreground font-nav text-xs uppercase tracking-[0.15em] hover:text-foreground hover:border-foreground/40 transition-colors"
+          >
+            {t('cookies.decline', 'Decline')}
+          </button>
+          <button
             onClick={accept}
-            className="px-6 py-2 bg-primary text-primary-foreground font-nav text-xs uppercase tracking-[0.15em] hover:bg-primary/90 transition-colors"
+            className="px-6 py-2 rounded-sm bg-primary text-primary-foreground font-nav text-xs uppercase tracking-[0.15em] hover:bg-primary/90 transition-colors"
           >
             {t('cookies.accept')}
           </button>

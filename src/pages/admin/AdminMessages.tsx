@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useAdminContacts, useUpdateContactStatus, useDeleteContactMessage, type ContactMessage } from '@/hooks/api/useAdmin';
 import { contactStatusLabel } from '@/lib/enumLabels';
 import { toast } from 'sonner';
@@ -27,6 +28,7 @@ export default function AdminMessages() {
   const deleteMsg = useDeleteContactMessage();
 
   const [selected, setSelected] = useState<ContactMessage | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
   const messages = data?.items ?? [];
 
@@ -53,7 +55,7 @@ export default function AdminMessages() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.messages.title')}</h1>
-      <p className="text-sm text-[hsl(0_0%_45%)] mt-1 mb-4">Contact form submissions from the public website. Mark as Read once followed up.</p>
+      <p className="text-sm text-[hsl(0_0%_45%)] mt-1 mb-4">{t('admin.messages.subtitle', 'Contact form submissions from the public website. Mark as Read once followed up.')}</p>
 
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
@@ -98,10 +100,11 @@ export default function AdminMessages() {
                   <TableCell onClick={e => e.stopPropagation()}>
                     <Button
                       variant="ghost" size="icon"
-                      className="h-7 w-7 text-[hsl(0_0%_55%)] hover:text-red-500"
+                      className="h-7 w-7 text-[hsl(0_0%_45%)] hover:text-red-600 hover:bg-red-50"
                       disabled={deleteMsg.isPending}
-                      onClick={() => handleDelete(m.id)}
-                      title="Delete"
+                      onClick={() => setPendingDelete(m.id)}
+                      aria-label={t('admin.common.delete')}
+                      title={t('admin.common.delete')}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
@@ -202,6 +205,14 @@ export default function AdminMessages() {
           )}
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={!!pendingDelete}
+        onOpenChange={(o) => !o && setPendingDelete(null)}
+        onConfirm={() => { if (pendingDelete) handleDelete(pendingDelete); setPendingDelete(null); }}
+        title={t('admin.messages.confirmDeleteTitle', 'Delete this message?')}
+        description={t('admin.messages.confirmDeleteDesc', 'This permanently removes the enquiry from your inbox. This action cannot be undone.')}
+      />
     </div>
   );
 }

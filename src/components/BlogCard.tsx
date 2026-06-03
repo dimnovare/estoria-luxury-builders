@@ -23,7 +23,11 @@ export default function BlogCard({ post, index = 0 }: Props) {
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
-      <Link to={`/blog/${post.slug}`} className="group block">
+      <Link
+        to={`/blog/${post.slug}`}
+        aria-label={post.title}
+        className="group block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      >
         {/* Image */}
         <div className="relative overflow-hidden rounded-sm aspect-video bg-muted">
           <img

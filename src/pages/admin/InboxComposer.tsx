@@ -132,7 +132,12 @@ export default function InboxComposer({ prefill, onClose }: Props) {
         </span>
         <div className="flex items-center gap-1">
           {minimized ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          <button onClick={(e) => { e.stopPropagation(); onClose(); }} className="text-muted-foreground hover:text-foreground">
+          <button
+            onClick={(e) => { e.stopPropagation(); onClose(); }}
+            className="text-muted-foreground hover:text-foreground"
+            aria-label={t('admin.common.close', 'Close')}
+            title={t('admin.common.close', 'Close')}
+          >
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -148,7 +153,15 @@ export default function InboxComposer({ prefill, onClose }: Props) {
               {to.map((e) => (
                 <Badge key={e} variant="secondary" className="text-xs gap-1">
                   {e}
-                  <X className="h-3 w-3 cursor-pointer" onClick={() => setTo(to.filter((x) => x !== e))} />
+                  <button
+                    type="button"
+                    onClick={() => setTo(to.filter((x) => x !== e))}
+                    aria-label={t('admin.inbox.composer.removeRecipient', 'Remove {{email}}', { email: e })}
+                    title={t('admin.inbox.composer.removeRecipient', 'Remove {{email}}', { email: e })}
+                    className="inline-flex"
+                  >
+                    <X className="h-3 w-3 cursor-pointer" />
+                  </button>
                 </Badge>
               ))}
               <Input
@@ -173,7 +186,15 @@ export default function InboxComposer({ prefill, onClose }: Props) {
                 {cc.map((e) => (
                   <Badge key={e} variant="secondary" className="text-xs gap-1">
                     {e}
-                    <X className="h-3 w-3 cursor-pointer" onClick={() => setCc(cc.filter((x) => x !== e))} />
+                    <button
+                      type="button"
+                      onClick={() => setCc(cc.filter((x) => x !== e))}
+                      aria-label={t('admin.inbox.composer.removeRecipient', 'Remove {{email}}', { email: e })}
+                      title={t('admin.inbox.composer.removeRecipient', 'Remove {{email}}', { email: e })}
+                      className="inline-flex"
+                    >
+                      <X className="h-3 w-3 cursor-pointer" />
+                    </button>
                   </Badge>
                 ))}
                 <Input
@@ -215,7 +236,15 @@ export default function InboxComposer({ prefill, onClose }: Props) {
                   <Paperclip className="h-3 w-3 shrink-0" />
                   <span className="truncate">{a.file.name}</span>
                   <span className="shrink-0">({(a.file.size / 1024).toFixed(0)} KB)</span>
-                  <X className="h-3 w-3 cursor-pointer shrink-0" onClick={() => setAttachments(attachments.filter((_, j) => j !== i))} />
+                  <button
+                    type="button"
+                    onClick={() => setAttachments(attachments.filter((_, j) => j !== i))}
+                    aria-label={t('admin.inbox.composer.removeAttachment', 'Remove {{name}}', { name: a.file.name })}
+                    title={t('admin.inbox.composer.removeAttachment', 'Remove {{name}}', { name: a.file.name })}
+                    className="inline-flex shrink-0"
+                  >
+                    <X className="h-3 w-3 cursor-pointer" />
+                  </button>
                 </div>
               ))}
               {totalSize > MAX_ATTACHMENT_SIZE && (
@@ -234,7 +263,12 @@ export default function InboxComposer({ prefill, onClose }: Props) {
             </div>
             <div className="flex items-center gap-2">
               <input ref={fileRef} type="file" multiple hidden onChange={(e) => handleFiles(e.target.files)} />
-              <Button variant="ghost" size="icon" onClick={() => fileRef.current?.click()}>
+              <Button
+                variant="ghost" size="icon"
+                onClick={() => fileRef.current?.click()}
+                aria-label={t('admin.inbox.composer.attach', 'Attach files')}
+                title={t('admin.inbox.composer.attach', 'Attach files')}
+              >
                 <Paperclip className="h-4 w-4" />
               </Button>
             </div>

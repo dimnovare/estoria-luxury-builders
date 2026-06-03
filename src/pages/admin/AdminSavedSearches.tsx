@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import {
   useAdminSavedSearches,
   useForceSendSavedSearch,
@@ -148,6 +148,8 @@ export default function AdminSavedSearches() {
                         onClick={() => handleForceSend(r.id)}
                         disabled={forceSend.isPending}
                         className="h-7"
+                        aria-label={t('admin.savedSearches.actions.forceSend')}
+                        title={t('admin.savedSearches.actions.forceSend')}
                       >
                         <Send className="h-3 w-3 mr-1" />
                         <span className="hidden sm:inline">{t('admin.savedSearches.actions.forceSend')}</span>
@@ -157,6 +159,8 @@ export default function AdminSavedSearches() {
                         variant="ghost"
                         onClick={() => setDeleteId(r.id)}
                         className="h-7 text-red-500 hover:text-red-600"
+                        aria-label={t('admin.common.delete')}
+                        title={t('admin.common.delete')}
                       >
                         <Trash2 className="h-3 w-3" />
                       </Button>
@@ -177,20 +181,13 @@ export default function AdminSavedSearches() {
         </CardContent>
       </Card>
 
-      <Dialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('admin.savedSearches.confirmDelete')}</DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.savedSearches.confirmDeleteDesc')}</p>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteId(null)}>{t('admin.common.cancel')}</Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={remove.isPending}>
-              {t('admin.common.delete')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        open={!!deleteId}
+        onOpenChange={(o) => !o && setDeleteId(null)}
+        onConfirm={handleDelete}
+        title={t('admin.savedSearches.confirmDelete')}
+        description={t('admin.savedSearches.confirmDeleteDesc')}
+      />
     </div>
   );
 }

@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Building2, FileText, Users, Briefcase,
   Globe, GraduationCap, Mail, MessageSquare, ChevronLeft,
   ExternalLink, Menu, LogOut, ScrollText, UserCog, Contact, Handshake,
-  ListTodo, Cake, Bell, Settings,
+  ListTodo, Cake, Bell, Settings, X,
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
 import { useAuth, type UserRole } from '@/hooks/useAuth';
@@ -68,7 +68,7 @@ function getBreadcrumbs(pathname: string, t: TFunction) {
 }
 
 export default function AdminLayout() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
@@ -118,11 +118,21 @@ export default function AdminLayout() {
             <div key={item.path}>
               {showSection && (
                 <div className="px-4 pt-4 pb-1">
-                  <span className="text-[10px] font-nav uppercase tracking-widest text-[hsl(0_0%_60%)]/60">{item.section}</span>
+                  <span className="text-[10px] font-nav uppercase tracking-widest text-[hsl(0_0%_60%)]/60">
+                    {item.section === 'CRM'
+                      ? t('admin.nav.sections.crm')
+                      : item.section === 'System'
+                        ? t('admin.nav.sections.system')
+                        : item.section}
+                  </span>
                 </div>
               )}
               {item.disabled ? (
-                <div className="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-[hsl(0_0%_60%)]/40 cursor-not-allowed">
+                <div
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-[hsl(0_0%_60%)]/40 cursor-not-allowed"
+                  title={collapsed ? t(`admin.nav.${item.key}`) : undefined}
+                  aria-label={t(`admin.nav.${item.key}`)}
+                >
                   <item.icon className="h-4 w-4 shrink-0" />
                   {!collapsed && <span>{t(`admin.nav.${item.key}`)}</span>}
                 </div>
@@ -130,6 +140,8 @@ export default function AdminLayout() {
                 <Link
                   to={item.path}
                   onClick={() => setMobileOpen(false)}
+                  title={collapsed ? t(`admin.nav.${item.key}`) : undefined}
+                  aria-label={t(`admin.nav.${item.key}`)}
                   className={cn(
                     'flex items-center gap-3 px-4 py-2.5 text-sm font-body transition-colors relative',
                     isActive(item.path)
@@ -165,6 +177,8 @@ export default function AdminLayout() {
           href="/"
           target="_blank"
           rel="noopener noreferrer"
+          title={collapsed ? t('admin.layout.viewSite') : undefined}
+          aria-label={t('admin.layout.viewSite')}
           className="flex items-center gap-2 text-sm text-[hsl(0_0%_60%)] hover:text-[hsl(43_50%_54%)] transition-colors"
         >
           <ExternalLink className="h-4 w-4" />
@@ -175,6 +189,8 @@ export default function AdminLayout() {
         )}
         <button
           onClick={handleLogout}
+          title={collapsed ? t('admin.layout.signOut') : undefined}
+          aria-label={t('admin.layout.signOut')}
           className="flex items-center gap-2 text-sm text-[hsl(0_0%_60%)] hover:text-red-400 transition-colors"
         >
           <LogOut className="h-4 w-4" />
@@ -199,6 +215,14 @@ export default function AdminLayout() {
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
+        {/* Close button - mobile drawer only */}
+        <button
+          onClick={() => setMobileOpen(false)}
+          aria-label={t('admin.common.close', 'Close menu')}
+          className="lg:hidden absolute top-4 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full text-[hsl(0_0%_60%)] hover:text-[hsl(40_33%_95%)] hover:bg-[hsl(0_0%_16%)]/40 transition-colors"
+        >
+          <X className="h-5 w-5" />
+        </button>
         {sidebar}
         {/* Collapse button - desktop */}
         <button
@@ -230,15 +254,45 @@ export default function AdminLayout() {
               ))}
             </div>
           </div>
-          <a
-            href="/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:flex items-center gap-1.5 text-sm text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)] transition-colors"
-          >
-            <ExternalLink className="h-3.5 w-3.5" />
-            {t('admin.layout.viewSite')}
-          </a>
+          <div className="flex items-center gap-3">
+            {/* Language switcher — always reachable from the topbar */}
+            <div
+              className="flex items-center gap-0.5 rounded-md border border-[hsl(0_0%_90%)] p-0.5"
+              role="group"
+              aria-label={t('admin.layout.language', 'Language')}
+            >
+              {(['et', 'en', 'ru'] as const).map((lng) => {
+                const active = i18n.language?.startsWith(lng);
+                return (
+                  <button
+                    key={lng}
+                    onClick={() => i18n.changeLanguage(lng)}
+                    title={lng.toUpperCase()}
+                    aria-label={lng.toUpperCase()}
+                    aria-pressed={active}
+                    className={cn(
+                      'px-2 py-1 text-[11px] font-nav uppercase tracking-wider rounded transition-colors',
+                      active
+                        ? 'bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] font-semibold'
+                        : 'text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)] hover:bg-[hsl(0_0%_96%)]'
+                    )}
+                  >
+                    {lng}
+                  </button>
+                );
+              })}
+            </div>
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t('admin.layout.viewSite')}
+              className="hidden sm:flex items-center gap-1.5 text-sm text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)] transition-colors"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+              {t('admin.layout.viewSite')}
+            </a>
+          </div>
         </header>
 
         {/* Content */}

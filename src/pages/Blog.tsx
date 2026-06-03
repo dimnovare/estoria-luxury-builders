@@ -174,6 +174,8 @@ export default function Blog() {
                   <button
                     onClick={() => updatePage(page - 1)}
                     disabled={page <= 1}
+                    aria-label={t('blog.previousPage', 'Previous page')}
+                    title={t('blog.previousPage', 'Previous page')}
                     className="w-10 h-10 flex items-center justify-center rounded-sm border border-border text-muted-foreground hover:text-primary hover:border-primary transition-colors disabled:opacity-30"
                   >
                     <ChevronLeft size={16} />
@@ -187,6 +189,8 @@ export default function Blog() {
                       <button
                         key={p}
                         onClick={() => updatePage(p as number)}
+                        aria-label={t('blog.goToPage', { page: p, defaultValue: `Go to page ${p}` })}
+                        aria-current={p === page ? 'page' : undefined}
                         className={`w-10 h-10 flex items-center justify-center rounded-sm text-sm font-body transition-colors ${
                           p === page
                             ? 'border border-primary text-primary'
@@ -200,6 +204,8 @@ export default function Blog() {
                   <button
                     onClick={() => updatePage(page + 1)}
                     disabled={page >= totalPages}
+                    aria-label={t('blog.nextPage', 'Next page')}
+                    title={t('blog.nextPage', 'Next page')}
                     className="w-10 h-10 flex items-center justify-center rounded-sm border border-border text-muted-foreground hover:text-primary hover:border-primary transition-colors disabled:opacity-30"
                   >
                     <ChevronRight size={16} />

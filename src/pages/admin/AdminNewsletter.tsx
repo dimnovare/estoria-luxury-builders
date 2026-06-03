@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Download, Trash2, Eye, Send, TestTube2, RotateCcw } from 'lucide-react';
+import { Download, Trash2, Eye, Send, TestTube2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 
 import { useAdminSubscribers, useUnsubscribe } from '@/hooks/api/useAdmin';
 import { useNewsletterCampaigns, useSendNewsletterNow, useNewsletterSubscriberCount, useDeleteCampaign, type CampaignDto } from '@/hooks/api/useNewsletter';
@@ -232,6 +233,16 @@ function CampaignsTab() {
   const [detailId, setDetailId] = useState<string | null>(null);
   const detailCampaign = campaigns.find(c => c.id === detailId);
   const deleteCampaign = useDeleteCampaign();
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+
+  const handleDeleteCampaign = async (id: string) => {
+    try {
+      await deleteCampaign.mutateAsync(id);
+      toast.success(t('admin.newsletter.campaigns.deleted'));
+    } catch {
+      toast.error(t('admin.newsletter.campaigns.deleteFailed'));
+    }
+  };
 
   return (
     <>
@@ -270,16 +281,13 @@ function CampaignsTab() {
                   <TableCell>
                     <Button
                       variant="ghost" size="icon"
-                      className="h-7 w-7 text-[hsl(0_0%_50%)] hover:text-red-500"
+                      className="h-7 w-7 text-[hsl(0_0%_45%)] hover:text-red-600 hover:bg-red-50"
                       disabled={deleteCampaign.isPending}
-                      onClick={async (e) => {
+                      aria-label={t('admin.common.delete')}
+                      title={t('admin.common.delete')}
+                      onClick={(e) => {
                         e.stopPropagation();
-                        try {
-                          await deleteCampaign.mutateAsync(c.id);
-                          toast.success(t('admin.newsletter.campaigns.deleted'));
-                        } catch {
-                          toast.error(t('admin.newsletter.campaigns.deleteFailed'));
-                        }
+                        setPendingDelete(c.id);
                       }}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -315,6 +323,14 @@ function CampaignsTab() {
           )}
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={!!pendingDelete}
+        onOpenChange={(o) => !o && setPendingDelete(null)}
+        onConfirm={() => { if (pendingDelete) handleDeleteCampaign(pendingDelete); setPendingDelete(null); }}
+        title={t('admin.newsletter.campaigns.confirmDeleteTitle', 'Delete this campaign?')}
+        description={t('admin.newsletter.campaigns.confirmDeleteDesc', 'This permanently removes the campaign record and its send history. This action cannot be undone.')}
+      />
     </>
   );
 }
@@ -326,6 +342,7 @@ function SubscribersTab() {
   const { data, isLoading } = useAdminSubscribers();
   const unsubscribe = useUnsubscribe();
   const subscribers = data?.items ?? [];
+  const [pendingUnsub, setPendingUnsub] = useState<string | null>(null);
 
   const exportCsv = () => {
     const header = 'Email,Language,Subscribed,Active\n';
@@ -393,9 +410,11 @@ function SubscribersTab() {
                   <TableCell>
                     <Button
                       variant="ghost" size="icon"
-                      className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-red-500"
-                      onClick={() => handleUnsubscribe(s.id)}
-                      disabled={unsubscribe.isPending}
+                      className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-red-600 hover:bg-red-50"
+                      onClick={() => setPendingUnsub(s.id)}
+                      disabled={unsubscribe.isPending || !s.isActive}
+                      aria-label={t('admin.newsletter.unsubscribe', 'Unsubscribe')}
+                      title={t('admin.newsletter.unsubscribe', 'Unsubscribe')}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
@@ -410,6 +429,15 @@ function SubscribersTab() {
           </div>
         </CardContent>
       </Card>
+
+      <ConfirmDialog
+        open={!!pendingUnsub}
+        onOpenChange={(o) => !o && setPendingUnsub(null)}
+        onConfirm={() => { if (pendingUnsub) handleUnsubscribe(pendingUnsub); setPendingUnsub(null); }}
+        title={t('admin.newsletter.confirmUnsubTitle', 'Unsubscribe this person?')}
+        description={t('admin.newsletter.confirmUnsubDesc', 'They will stop receiving newsletters. You can re-add them later if needed.')}
+        confirmLabel={t('admin.newsletter.unsubscribe', 'Unsubscribe')}
+      />
     </div>
   );
 }
@@ -422,7 +450,7 @@ export default function AdminNewsletter() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.newsletter.title')}</h1>
-      <p className="text-sm text-[hsl(0_0%_45%)] mt-1 mb-4">Send email newsletters to subscribers. Use the Compose tab to write a campaign, then send a test to yourself before broadcasting.</p>
+      <p className="text-sm text-[hsl(0_0%_45%)] mt-1 mb-4">{t('admin.newsletter.subtitle', 'Send email newsletters to subscribers. Use the Compose tab to write a campaign, then send a test to yourself before broadcasting.')}</p>
 
       <Tabs defaultValue="compose">
         <TabsList>

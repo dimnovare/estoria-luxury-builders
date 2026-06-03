@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useAdminProperties, useDeleteProperty, useSetPropertyStatus } from '@/hooks/api/useAdmin';
 import { useGeocodeMissing } from '@/hooks/api/usePropertyGeocode';
 import { propertyTypeLabel, transactionTypeLabel, propertyStatusLabel } from '@/lib/enumLabels';
@@ -27,6 +28,7 @@ export default function AdminProperties() {
   const { t } = useTranslation();
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
   const { data, isLoading } = useAdminProperties();
   const deleteProperty = useDeleteProperty();
@@ -181,9 +183,10 @@ export default function AdminProperties() {
                     <div className="flex items-center gap-1">
                       <Button
                         variant="ghost" size="icon"
-                        className={`h-8 w-8 ${p.status === 'Active' ? 'text-green-600 hover:text-amber-600' : 'text-[hsl(0_0%_50%)] hover:text-green-600'}`}
+                        className={`h-8 w-8 ${p.status === 'Active' ? 'text-green-600 hover:text-amber-600' : 'text-[hsl(0_0%_40%)] hover:text-green-600'}`}
                         onClick={() => handleToggleStatus(p.id, p.status)}
                         disabled={setStatus.isPending}
+                        aria-label={p.status === 'Active' ? t('admin.properties.unpublish') : t('admin.properties.publish')}
                         title={p.status === 'Active' ? t('admin.properties.unpublish') : t('admin.properties.publish')}
                       >
                         {p.status === 'Active' ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
@@ -191,15 +194,23 @@ export default function AdminProperties() {
                       <Button
                         variant="ghost" size="icon"
                         asChild
-                        className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]"
+                        className="h-8 w-8 text-[hsl(0_0%_40%)] hover:text-[hsl(0_0%_20%)]"
                       >
-                        <Link to={`/admin/properties/${p.id}/edit`}><Pencil className="h-3.5 w-3.5" /></Link>
+                        <Link
+                          to={`/admin/properties/${p.id}/edit`}
+                          aria-label={t('admin.common.edit')}
+                          title={t('admin.common.edit')}
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Link>
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-red-500"
-                        onClick={() => handleDelete(p.id)}
+                        className="h-8 w-8 text-[hsl(0_0%_40%)] hover:text-red-500"
+                        onClick={() => setPendingDelete(p.id)}
                         disabled={deleteProperty.isPending}
+                        aria-label={t('admin.common.delete')}
+                        title={t('admin.common.delete')}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
@@ -215,6 +226,19 @@ export default function AdminProperties() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmDialog
+        open={!!pendingDelete}
+        onOpenChange={(o) => !o && setPendingDelete(null)}
+        onConfirm={() => { if (pendingDelete) handleDelete(pendingDelete); setPendingDelete(null); }}
+        description={(() => {
+          const p = properties.find(x => x.id === pendingDelete);
+          const title = p?.translations?.['En']?.title ?? p?.slug;
+          return title
+            ? t('admin.properties.confirmDeleteDesc', { title, defaultValue: `Delete "${title}"? This can't be undone.` })
+            : undefined;
+        })()}
+      />
     </div>
   );
 }

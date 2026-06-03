@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import {
   useAdminCareers,
   useCreateCareer,
@@ -35,6 +36,7 @@ export default function AdminCareers() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCareer, setEditingCareer] = useState<AdminCareer | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [active, setActive] = useState(true);
   const [translations, setTranslations] = useState<Record<string, TransFields>>({
     et: { ...emptyTrans },
@@ -65,11 +67,19 @@ export default function AdminCareers() {
   };
 
   const handleSave = async () => {
+    // DATA-LOSS GUARD: only send languages whose title was actually filled in.
+    // The list endpoint can't hydrate ET/RU tabs, so sending blank translations
+    // for the untouched languages would overwrite (wipe) existing rows on edit.
+    const translationEntries = langs
+      .filter(l => translations[l].title.trim() !== '')
+      .map(l => [toBeLang(l), {
+        title: translations[l].title,
+        description: translations[l].description,
+        location: translations[l].location || null,
+      }]);
     const dto = {
       isActive: active,
-      translations: Object.fromEntries(
-        langs.map(l => [toBeLang(l), { title: translations[l].title, description: translations[l].description, location: translations[l].location || null }])
-      ),
+      translations: Object.fromEntries(translationEntries),
     };
 
     try {
@@ -151,14 +161,22 @@ export default function AdminCareers() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]" onClick={() => openEdit(c)}>
+                      <Button
+                        variant="ghost" size="icon"
+                        className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_15%)]"
+                        onClick={() => openEdit(c)}
+                        aria-label={t('admin.common.edit')}
+                        title={t('admin.common.edit')}
+                      >
                         <Pencil className="h-3.5 w-3.5" />
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-[hsl(0_0%_50%)] hover:text-red-500"
-                        onClick={() => handleDelete(c.id)}
+                        className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-red-600"
+                        onClick={() => setPendingDelete(c.id)}
                         disabled={deleteCareer.isPending}
+                        aria-label={t('admin.common.delete')}
+                        title={t('admin.common.delete')}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
@@ -217,6 +235,17 @@ export default function AdminCareers() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={!!pendingDelete}
+        onOpenChange={(o) => { if (!o) setPendingDelete(null); }}
+        onConfirm={() => {
+          if (pendingDelete) handleDelete(pendingDelete);
+          setPendingDelete(null);
+        }}
+        title={t('admin.careers.deleteTitle', 'Delete this job posting?')}
+        description={t('admin.careers.deleteDesc', "This will permanently remove the posting and all its translations. This action can't be undone.")}
+      />
     </div>
   );
 }

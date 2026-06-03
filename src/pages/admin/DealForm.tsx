@@ -67,8 +67,6 @@ export default function DealForm() {
   const [selectedContactName, setSelectedContactName] = useState('');
   const { data: contactResults } = useContactSearch(contactSearch);
 
-  const [propertySearch, setPropertySearch] = useState('');
-
   const { register, handleSubmit, control, reset, setValue, formState: { errors } } = useForm<DealFormData>({
     resolver: zodResolver(isEdit ? editDealSchema : createDealSchema),
     defaultValues: {
@@ -142,7 +140,7 @@ export default function DealForm() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/deals')} className="text-[hsl(0_0%_50%)]">
+        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/deals')} className="text-[hsl(0_0%_50%)]" aria-label={t('admin.common.back', 'Back')} title={t('admin.common.back', 'Back')}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">
@@ -189,6 +187,21 @@ export default function DealForm() {
                 )}
               </div>
               {errors.primaryContactId && <p className="text-xs text-red-500 mt-1">{t(errors.primaryContactId.message ?? 'admin.deals.fields.contactRequired')}</p>}
+            </div>
+
+            {/* Linked property (optional) — paste the property ID from its URL */}
+            <div>
+              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">
+                {t('admin.deals.fields.linkedProperty', 'Linked property')}
+              </Label>
+              <Input
+                {...register('propertyId')}
+                placeholder={t('admin.deals.fields.propertyIdPlaceholder', 'Property ID (optional)')}
+                className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]"
+              />
+              <p className="text-xs text-[hsl(0_0%_55%)] mt-1">
+                {t('admin.deals.fields.propertyIdHelp', 'Optional. Open the property in Properties and copy the ID from the end of its web address (URL) into this field to link it to the deal. Leave empty if there is no property yet.')}
+              </p>
             </div>
 
             {/* Agent — disabled for non-Admin */}

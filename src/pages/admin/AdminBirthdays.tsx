@@ -11,6 +11,7 @@ import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import {
   useUpcomingBirthdays, useBirthdayTemplates, useBirthdayAutoSend,
   useSendBirthdayNow, useSaveBirthdayTemplate, useSetBirthdayAutoSend,
@@ -33,6 +34,10 @@ export default function AdminBirthdays() {
   const sendNow = useSendBirthdayNow();
   const saveTemplate = useSaveBirthdayTemplate();
   const setAutoSend = useSetBirthdayAutoSend();
+
+  // Contact pending a "send birthday email now" confirmation. Sending goes to a
+  // real client, so it must always be confirmed first.
+  const [sendConfirm, setSendConfirm] = useState<{ contactId: string; name: string } | null>(null);
 
   // Template editing state
   const [templateLang, setTemplateLang] = useState<BirthdayLanguage>('Et');
@@ -145,7 +150,7 @@ export default function AdminBirthdays() {
                               variant="outline"
                               size="sm"
                               className="border-[hsl(43_50%_54%)] text-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_54%)]/5"
-                              onClick={() => handleSendNow(b.contactId)}
+                              onClick={() => setSendConfirm({ contactId: b.contactId, name: b.fullName })}
                               disabled={sendNow.isPending}
                             >
                               <Send className="h-3 w-3 mr-1" />{t('admin.birthday.sendNow')}
@@ -236,6 +241,19 @@ export default function AdminBirthdays() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Confirm before sending a real birthday email to a client */}
+      <ConfirmDialog
+        open={!!sendConfirm}
+        onOpenChange={(o) => !o && setSendConfirm(null)}
+        onConfirm={() => { if (sendConfirm) handleSendNow(sendConfirm.contactId); setSendConfirm(null); }}
+        title={t('admin.birthday.confirmSendTitle', 'Send birthday email now?')}
+        description={sendConfirm
+          ? t('admin.birthday.confirmSendDesc', 'A birthday email will be sent immediately to {{name}}. This cannot be unsent.', { name: sendConfirm.name })
+          : ''}
+        confirmLabel={t('admin.birthday.sendNow')}
+        destructive={false}
+      />
     </div>
   );
 }

@@ -178,7 +178,7 @@ export default function ContactForm() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/contacts')} className="text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]">
+        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/contacts')} className="text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]" aria-label={t('admin.common.back', 'Back')} title={t('admin.common.back', 'Back')}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">
@@ -321,7 +321,7 @@ export default function ContactForm() {
                     {tags.map(tag => (
                       <Badge key={tag} variant="outline" className="bg-[hsl(43_50%_54%)]/10 text-[hsl(43_50%_44%)] border-[hsl(43_50%_54%)]/30 gap-1">
                         {tag}
-                        <button type="button" onClick={() => removeTag(tag)}><X className="h-3 w-3" /></button>
+                        <button type="button" onClick={() => removeTag(tag)} aria-label={t('admin.contacts.removeTag', 'Remove tag')} title={t('admin.contacts.removeTag', 'Remove tag')}><X className="h-3 w-3" /></button>
                       </Badge>
                     ))}
                   </div>
@@ -333,7 +333,7 @@ export default function ContactForm() {
                       placeholder={t('admin.contacts.fields.addTag')}
                       className="bg-secondary border-border text-[hsl(0_0%_15%)] flex-1"
                     />
-                    <Button type="button" variant="outline" size="icon" onClick={addTag}><Plus className="h-4 w-4" /></Button>
+                    <Button type="button" variant="outline" size="icon" onClick={addTag} aria-label={t('admin.contacts.fields.addTag')} title={t('admin.contacts.fields.addTag')}><Plus className="h-4 w-4" /></Button>
                   </div>
                 </div>
               </div>

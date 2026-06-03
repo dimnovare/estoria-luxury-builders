@@ -212,6 +212,8 @@ export default function AdminActivities() {
               size="sm"
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page <= 1}
+              aria-label={t('admin.common.previous', 'Previous page')}
+              title={t('admin.common.previous', 'Previous page')}
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -220,6 +222,8 @@ export default function AdminActivities() {
               size="sm"
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
+              aria-label={t('admin.common.next', 'Next page')}
+              title={t('admin.common.next', 'Next page')}
             >
               <ChevronRight className="h-4 w-4" />
             </Button>

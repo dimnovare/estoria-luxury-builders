@@ -148,7 +148,12 @@ export default function SenderActionsPanel({ message }: Props) {
                 {message.linkedContactName ?? matchedContact?.fullName}
               </button>
               {linkedContactId && (
-                <button onClick={() => handleUnlink('contact')} title="Unlink" className="text-[hsl(0_0%_50%)] hover:text-red-500">
+                <button
+                  onClick={() => handleUnlink('contact')}
+                  aria-label={t('admin.inbox.actions.unlink', 'Unlink')}
+                  title={t('admin.inbox.actions.unlink', 'Unlink')}
+                  className="text-[hsl(0_0%_45%)] hover:text-red-600"
+                >
                   <X className="h-3.5 w-3.5" />
                 </button>
               )}
@@ -181,7 +186,12 @@ export default function SenderActionsPanel({ message }: Props) {
               >
                 {message.linkedDealTitle ?? 'Linked deal'}
               </button>
-              <button onClick={() => handleUnlink('deal')} title="Unlink" className="text-[hsl(0_0%_50%)] hover:text-red-500">
+              <button
+                onClick={() => handleUnlink('deal')}
+                aria-label={t('admin.inbox.actions.unlink', 'Unlink')}
+                title={t('admin.inbox.actions.unlink', 'Unlink')}
+                className="text-[hsl(0_0%_45%)] hover:text-red-600"
+              >
                 <X className="h-3.5 w-3.5" />
               </button>
             </div>
