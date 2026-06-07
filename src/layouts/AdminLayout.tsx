@@ -83,7 +83,8 @@ export default function AdminLayout() {
   );
 
   const { data: inboxCounts } = useInboxCounts();
-  const inboxUnread = inboxCounts?.inbox ?? 0;
+  // Sidebar badge must reflect UNREAD/new mail, not the inbox folder total.
+  const inboxUnread = inboxCounts?.unread ?? 0;
   const { data: unreadContacts = 0 } = useContactMessageUnreadCount();
 
   const handleLogout = () => {

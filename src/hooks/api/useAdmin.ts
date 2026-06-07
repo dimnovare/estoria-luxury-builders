@@ -280,6 +280,16 @@ export function useDeletePropertyImage() {
   });
 }
 
+export function useReorderPropertyImages() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, items }: { id: string; items: { id: string; sortOrder: number }[] }) =>
+      api.put(`/admin/properties/${id}/images/reorder`, items),
+    onSuccess: (_d, vars) =>
+      qc.invalidateQueries({ queryKey: ['admin', 'property', vars.id] }),
+  });
+}
+
 export function useSetPropertyStatus() {
   const qc = useQueryClient();
   return useMutation({

@@ -19,6 +19,7 @@ import {
   useUpdateProperty,
   useUploadPropertyImages,
   useDeletePropertyImage,
+  useReorderPropertyImages,
   useReprocessPropertyImage,
   useAdminTeam,
   useSetPropertyStatus,
@@ -48,9 +49,47 @@ export default function PropertyForm() {
   const updateProperty = useUpdateProperty();
   const uploadImages = useUploadPropertyImages();
   const deleteImage = useDeletePropertyImage();
+  const reorderImages = useReorderPropertyImages();
   const reprocessImage = useReprocessPropertyImage();
   const setStatus = useSetPropertyStatus();
   const geocode = useGeocodeProperty();
+
+  // Local copy of the image order so drag-to-reorder feels instant; synced from
+  // the server list and persisted via the reorder endpoint on drop.
+  type PropImage = NonNullable<typeof existing>['images'][number];
+  const [orderedImages, setOrderedImages] = useState<PropImage[]>([]);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [overIndex, setOverIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    const imgs = existing?.images ?? [];
+    setOrderedImages([...imgs].sort((a, b) => a.sortOrder - b.sortOrder));
+  }, [existing?.images]);
+
+  const persistOrder = (imgs: PropImage[]) => {
+    if (!id) return;
+    reorderImages.mutate(
+      { id, items: imgs.map((img, i) => ({ id: img.id, sortOrder: i })) },
+      {
+        onSuccess: () => toast.success(t('admin.properties.images.reordered', 'Image order saved.')),
+        onError: () => toast.error(t('admin.properties.images.reorderFailed', "Couldn't save the new order.")),
+      }
+    );
+  };
+
+  const handleImageDrop = (target: number) => {
+    setOverIndex(null);
+    const from = dragIndex;
+    setDragIndex(null);
+    if (from === null || from === target) return;
+    setOrderedImages(prev => {
+      const next = [...prev];
+      const [moved] = next.splice(from, 1);
+      next.splice(target, 0, moved);
+      persistOrder(next);
+      return next;
+    });
+  };
 
   // Per-image timestamp tracking polling start. After 60s of Pending/Processing
   // we stop trusting the spinner and show "stuck" with a retry button —
@@ -588,9 +627,14 @@ export default function PropertyForm() {
               )}
 
               {/* Image grid */}
-              {(existing?.images ?? []).length > 0 && (
+              {orderedImages.length > 0 && (
+                <>
+                <p className="text-xs text-[hsl(0_0%_45%)] flex items-center gap-1.5">
+                  <GripVertical className="h-3.5 w-3.5" />
+                  {t('admin.properties.images.dragHint', 'Drag images to reorder. The first image is used as the cover.')}
+                </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {(existing?.images ?? []).map(img => {
+                  {orderedImages.map((img, idx) => {
                     const status = img.processingStatus ?? 'Done';
                     const isWorking = status === 'Pending' || status === 'Processing';
                     const isFailed = status === 'Failed';
@@ -612,9 +656,22 @@ export default function PropertyForm() {
                     const previewUrl = img.thumbUrl ?? img.url;
 
                     return (
-                      <div key={img.id} className="relative group rounded-lg overflow-hidden border border-[hsl(0_0%_90%)]">
+                      <div
+                        key={img.id}
+                        draggable={!isWorking}
+                        onDragStart={() => setDragIndex(idx)}
+                        onDragEnter={() => setOverIndex(idx)}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={() => handleImageDrop(idx)}
+                        onDragEnd={() => { setDragIndex(null); setOverIndex(null); }}
+                        className={`relative group rounded-lg overflow-hidden border bg-white transition-all ${!isWorking ? 'cursor-grab active:cursor-grabbing' : ''} ${
+                          overIndex === idx && dragIndex !== null && dragIndex !== idx
+                            ? 'border-[hsl(43_50%_54%)] ring-2 ring-[hsl(43_50%_54%)]'
+                            : 'border-[hsl(0_0%_90%)]'
+                        } ${dragIndex === idx ? 'opacity-40' : ''}`}
+                      >
                         {previewUrl ? (
-                          <img src={previewUrl} alt="" className="w-full h-24 object-cover" />
+                          <img src={previewUrl} alt="" draggable={false} className="w-full h-24 object-cover" />
                         ) : (
                           <div className="w-full h-24 bg-[hsl(0_0%_94%)] flex items-center justify-center">
                             <ImageIcon className="h-6 w-6 text-[hsl(0_0%_70%)]" />
@@ -685,6 +742,7 @@ export default function PropertyForm() {
                     );
                   })}
                 </div>
+                </>
               )}
             </CardContent>
           </Card>
