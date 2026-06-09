@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, type QueryKey } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { useAdminSubscribers } from './useAdmin';
 
@@ -23,8 +23,15 @@ export interface SendResult {
   status: string;
 }
 
+type CampaignPage = {
+  items: CampaignDto[];
+  totalCount: number;
+};
+
+type CampaignSnapshots = Array<[QueryKey, CampaignPage | undefined]>;
+
 export function useNewsletterCampaigns(page = 1) {
-  return useQuery<{ items: CampaignDto[]; totalCount: number }>({
+  return useQuery<CampaignPage>({
     queryKey: ['admin', 'campaigns', page],
     queryFn: () =>
       api.get('/admin/newsletter/campaigns', { params: { page, pageSize: 20 } }).then(r => r.data),
@@ -57,12 +64,12 @@ export function useSendNewsletterNow() {
 
 export function useDeleteCampaign() {
   const qc = useQueryClient();
-  return useMutation<void, Error, string>({
+  return useMutation<void, Error, string, { snapshots: CampaignSnapshots }>({
     mutationFn: (id) => api.delete(`/admin/newsletter/campaigns/${id}`).then(() => undefined),
     // Optimistically remove the row from all paged campaign queries.
     onMutate: async (id) => {
       await qc.cancelQueries({ queryKey: ['admin', 'campaigns'] });
-      const snapshots = qc.getQueriesData<{ items: CampaignDto[]; totalCount: number }>({ queryKey: ['admin', 'campaigns'] });
+      const snapshots = qc.getQueriesData<CampaignPage>({ queryKey: ['admin', 'campaigns'] });
       snapshots.forEach(([key, data]) => {
         if (data?.items) {
           qc.setQueryData(key, {
@@ -74,9 +81,9 @@ export function useDeleteCampaign() {
       });
       return { snapshots };
     },
-    onError: (_err, _id, ctx: any) => {
+    onError: (_err, _id, ctx) => {
       // Roll back on failure
-      ctx?.snapshots?.forEach(([key, data]: [unknown, unknown]) => {
+      ctx?.snapshots.forEach(([key, data]) => {
         qc.setQueryData(key, data);
       });
     },

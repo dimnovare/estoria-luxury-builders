@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, type QueryKey } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -159,6 +159,15 @@ export interface ContactMessage {
   status: string;
   createdAt: string;
 }
+
+type ContactMessagePage = {
+  items: ContactMessage[];
+  totalCount: number;
+};
+
+type ContactMessageSnapshots = Array<
+  [QueryKey, ContactMessagePage | ContactMessage[] | undefined]
+>;
 
 export interface Subscriber {
   id: string;
@@ -653,7 +662,7 @@ export function useUpdatePage() {
 // in the P2.3 CRM rollout.)
 
 export function useAdminContacts(page = 1) {
-  return useQuery<{ items: ContactMessage[]; totalCount: number }>({
+  return useQuery<ContactMessagePage>({
     queryKey: ['admin', 'contact-messages', page],
     queryFn: () =>
       api.get('/admin/contact-messages', { params: { page, pageSize: 20 } }).then(r => r.data),
@@ -673,19 +682,30 @@ export function useUpdateContactStatus() {
 
 export function useDeleteContactMessage() {
   const qc = useQueryClient();
-  return useMutation({
+  return useMutation<
+    Awaited<ReturnType<typeof api.delete>>,
+    Error,
+    string,
+    { prev: ContactMessageSnapshots }
+  >({
     mutationFn: (id: string) => api.delete(`/admin/contact-messages/${id}`),
     onMutate: async (id) => {
       await qc.cancelQueries({ queryKey: ['admin', 'contact-messages'] });
       // Optimistically remove from every page cache entry
-      const prev = qc.getQueriesData({ queryKey: ['admin', 'contact-messages'] });
-      qc.setQueriesData({ queryKey: ['admin', 'contact-messages'] }, (old: any) => {
-        if (!old || typeof old !== 'object') return old;
-        if (Array.isArray(old)) return old.filter((m: any) => m.id !== id);
-        if (Array.isArray(old.items))
-          return { ...old, items: old.items.filter((m: any) => m.id !== id) };
-        return old;
+      const prev = qc.getQueriesData<ContactMessagePage | ContactMessage[]>({
+        queryKey: ['admin', 'contact-messages'],
       });
+      qc.setQueriesData<ContactMessagePage | ContactMessage[]>(
+        { queryKey: ['admin', 'contact-messages'] },
+        (old) => {
+          if (!old || typeof old !== 'object') return old;
+          if (Array.isArray(old)) return old.filter((m) => m.id !== id);
+          if (Array.isArray(old.items)) {
+            return { ...old, items: old.items.filter((m) => m.id !== id) };
+          }
+          return old;
+        },
+      );
       return { prev };
     },
     onError: (_e, _id, ctx) => {

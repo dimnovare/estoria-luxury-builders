@@ -15,6 +15,8 @@ import { propertyTypeLabel } from '@/lib/enumLabels';
 import api from '@/lib/api';
 import Seo from '@/components/Seo';
 import { SafeHtml } from '@/components/SafeHtml';
+import MobilePropertyGallery, { type GalleryImage } from '@/components/MobilePropertyGallery';
+import { getPropertySocialImage } from '@/lib/propertyPageMetadata';
 
 const PropertyMap = lazy(() => import('@/components/PropertyMap'));
 
@@ -46,9 +48,7 @@ export default function PropertyDetail() {
    * string-based access via .display.
    */
   const images = useMemo(() => {
-    if (!property) return [] as Array<{
-      thumb?: string; medium?: string; large?: string; display: string;
-    }>;
+    if (!property) return [] as GalleryImage[];
     if (property.images && property.images.length > 0) {
       return property.images.map(i => {
         const display = i.largeUrl ?? i.mediumUrl ?? i.url ?? i.thumbUrl ?? '';
@@ -207,7 +207,7 @@ export default function PropertyDetail() {
     '@type': 'Apartment',
     name: property.title,
     description: property.description ?? property.title,
-    image: property.coverImageUrl,
+    image: getPropertySocialImage(property),
     url: `https://estoria.estate/properties/${property.slug}`,
     address: {
       '@type': 'PostalAddress',
@@ -230,7 +230,7 @@ export default function PropertyDetail() {
         title={`${property.title} — Estoria`}
         description={seoDescription}
         path={`/properties/${property.slug}`}
-        image={property.coverImageUrl}
+        image={getPropertySocialImage(property)}
         type="article"
         jsonLd={propertyLd}
       />
@@ -251,10 +251,21 @@ export default function PropertyDetail() {
 
       {/* Gallery */}
       <section className="container mx-auto px-4 sm:px-6 mb-10">
+        <MobilePropertyGallery
+          images={images}
+          title={property.title}
+          onOpen={openLightbox}
+          galleryLabel={t('properties.detail.galleryDialog', 'Photo gallery')}
+          openGalleryLabel={t('properties.detail.openGallery', 'Open photo gallery')}
+          getPhotoLabel={(index) =>
+            t('properties.detail.viewPhoto', 'View photo {{number}}', { number: index + 1 })
+          }
+        />
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-1 md:grid-cols-4 gap-2 rounded-sm overflow-hidden"
+          className="hidden md:grid md:grid-cols-4 gap-2 rounded-sm overflow-hidden"
         >
           {/* Main image */}
           <button
@@ -312,17 +323,6 @@ export default function PropertyDetail() {
           ))}
         </motion.div>
 
-        {/* Mobile gallery dots */}
-        <div className="md:hidden flex justify-center gap-2 mt-4">
-          {images.slice(0, 5).map((_, i) => (
-            <button
-              key={i}
-              onClick={() => openLightbox(i)}
-              aria-label={t('properties.detail.viewPhoto', 'View photo {{number}}', { number: i + 1 })}
-              className="w-2 h-2 rounded-full bg-muted-foreground/40 hover:bg-primary transition-colors"
-            />
-          ))}
-        </div>
       </section>
 
       {/* Content */}
