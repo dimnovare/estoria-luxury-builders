@@ -25,6 +25,7 @@ import Careers from "@/pages/Careers";
 import CareerDetail from "@/pages/CareerDetail";
 import Contact from "@/pages/Contact";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import EmailSignatures from "@/pages/EmailSignatures";
 import NotFound from "@/pages/NotFound";
 
 // Admin lives behind auth and is large; lazy-load every admin page so the
@@ -109,6 +110,7 @@ const App = () => (
             <Route path="/careers/:slug" element={<CareerDetail />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/email-signatures" element={<EmailSignatures />} />
           </Route>
           <Route path="/admin/login" element={<Login />} />
           <Route
