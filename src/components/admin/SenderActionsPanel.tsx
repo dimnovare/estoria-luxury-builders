@@ -184,7 +184,7 @@ export default function SenderActionsPanel({ message }: Props) {
                 onClick={() => navigate(`/admin/deals/${linkedDealId}`)}
                 className="flex-1 text-left truncate hover:underline"
               >
-                {message.linkedDealTitle ?? 'Linked deal'}
+                {message.linkedDealTitle ?? t('admin.inbox.actions.linkedDeal', 'Linked deal')}
               </button>
               <button
                 onClick={() => handleUnlink('deal')}
@@ -211,7 +211,7 @@ export default function SenderActionsPanel({ message }: Props) {
                   autoFocus
                   value={dealQuery}
                   onChange={(e) => setDealQuery(e.target.value)}
-                  placeholder="Search deals..."
+                  placeholder={t('admin.inbox.actions.searchDeals', 'Search deals...')}
                   className="h-8 text-sm"
                 />
                 {dealMatches.map((d) => (
@@ -224,7 +224,7 @@ export default function SenderActionsPanel({ message }: Props) {
                   </button>
                 ))}
                 {debouncedDeal && dealMatches.length === 0 && (
-                  <p className="text-xs text-[hsl(0_0%_55%)] px-2 py-1">No matches</p>
+                  <p className="text-xs text-[hsl(0_0%_55%)] px-2 py-1">{t('admin.inbox.actions.noMatches', 'No matches')}</p>
                 )}
               </div>
             )}
@@ -247,7 +247,7 @@ export default function SenderActionsPanel({ message }: Props) {
                   autoFocus
                   value={contactQuery}
                   onChange={(e) => setContactQuery(e.target.value)}
-                  placeholder="Search contacts..."
+                  placeholder={t('admin.inbox.actions.searchContacts', 'Search contacts...')}
                   className="h-8 text-sm"
                 />
                 {(contactSearch?.items ?? []).map((c) => (
@@ -260,7 +260,7 @@ export default function SenderActionsPanel({ message }: Props) {
                   </button>
                 ))}
                 {debouncedContact && (contactSearch?.items?.length ?? 0) === 0 && (
-                  <p className="text-xs text-[hsl(0_0%_55%)] px-2 py-1">No matches</p>
+                  <p className="text-xs text-[hsl(0_0%_55%)] px-2 py-1">{t('admin.inbox.actions.noMatches', 'No matches')}</p>
                 )}
               </div>
             )}

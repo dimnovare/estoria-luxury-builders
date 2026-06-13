@@ -142,7 +142,7 @@ export default function DealDetail() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <Badge className={stageColors[deal.stage]}>{t(`admin.deals.stages.${deal.stage}`)}</Badge>
                 <Button variant="outline" size="sm" onClick={() => setShowStageModal(true)}>
-                  {t('admin.deals.changeStage')}
+                  {t('admin.deals.changeStage', 'Change stage')}
                 </Button>
               </div>
 
@@ -312,10 +312,10 @@ export default function DealDetail() {
       {/* Stage change modal */}
       <Dialog open={showStageModal} onOpenChange={setShowStageModal}>
         <DialogContent>
-          <DialogHeader><DialogTitle>{t('admin.deals.changeStage')}</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{t('admin.deals.changeStage', 'Change stage')}</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <Select value={targetStage} onValueChange={(v) => setTargetStage(v as DealStage)}>
-              <SelectTrigger className="bg-secondary border-border"><SelectValue placeholder={t('admin.deals.selectStage')} /></SelectTrigger>
+              <SelectTrigger className="bg-secondary border-border"><SelectValue placeholder={t('admin.deals.selectStage', 'Select stage')} /></SelectTrigger>
               <SelectContent>
                 {DEAL_STAGES.filter(s => s !== deal.stage).map(s => (
                   <SelectItem key={s} value={s}>{t(`admin.deals.stages.${s}`)}</SelectItem>
@@ -338,7 +338,7 @@ export default function DealDetail() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowStageModal(false)}>{t('admin.common.cancel')}</Button>
             <Button className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]" onClick={handleStageChange} disabled={!targetStage || changeStage.isPending}>
-              {t('admin.deals.confirmStageChange')}
+              {t('admin.deals.confirmStageChange', 'Confirm')}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -418,7 +418,8 @@
       "close": "Close menu",
       "next": "Next page",
       "previous": "Previous page",
-      "required": "Required"
+      "required": "Required",
+      "example": "Example:"
     },
     "layout": {
       "adminBadge": "Admin",
@@ -527,7 +528,8 @@
         "address": "Address",
         "city": "City",
         "district": "District",
-        "description": "Description"
+        "description": "Description",
+        "descriptionPlaceholder": "Property description..."
       },
       "images": {
         "uploadEdit": "Click to upload images",
@@ -551,7 +553,9 @@
       "features": {
         "addPlaceholder": "Add a feature…",
         "empty": "No features added yet.",
-        "copyEnToAll": "Copy EN to all languages"
+        "copyEnToAll": "Copy EN to all languages",
+        "add": "Add feature",
+        "help": "Enter each feature in all three languages. Use the copy button to mirror the EN value into ET and RU."
       },
       "saveDraft": "Save as Draft",
       "savePublish": "Save & Publish",
@@ -597,7 +601,25 @@
       },
       "confirmDeleteDesc": "Delete \"{{title}}\"? This can't be undone.",
       "translateHint": "Write the listing in Estonian, then translate the title and description to the other languages with one click. You can edit afterwards.",
-      "copyFromEt": "Copy from Estonian"
+      "copyFromEt": "Copy from Estonian",
+      "help": {
+        "agent": "The contact shown on the listing and used for inquiries.",
+        "energyClass": "Estonia's A–G energy rating (A = most efficient). Leave blank if unknown.",
+        "featured": "Featured properties appear on the homepage.",
+        "locationIntro": "Set the address in the Translations tab, then click Find on map. We place the pin from the address automatically — no need to type coordinates by hand.",
+        "price": "In euros (€). For rentals, the monthly rent.",
+        "saveBeforeGeocode": "Save the property first, then come back here to find it on the map.",
+        "size": "Floor area in m².",
+        "titleDescNote": "The listing title and description are set per language in the Translations tab — at least the Estonian title is required to save."
+      },
+      "sections": {
+        "basics": "Basics",
+        "details": "Property details",
+        "location": "Location on map",
+        "optional": "(optional)",
+        "visibility": "Visibility & agent"
+      },
+      "subtitle": "Manage property listings. Create a listing, then add images and publish it to make it visible on the public site."
     },
     "blog": {
       "title": "Blog Posts",
@@ -646,7 +668,12 @@
         "authorRequired": "Please select an author.",
         "titleRequired": "An English title is required to save."
       },
-      "translateHint": "Write the post in Estonian, then translate it to the other languages with one click. You can edit afterwards."
+      "translateHint": "Write the post in Estonian, then translate it to the other languages with one click. You can edit afterwards.",
+      "status": {
+        "draftNote": "This post is a hidden draft. Publish it to make it live.",
+        "liveNote": "This post is live on the site. Saving as draft will hide it."
+      },
+      "subtitle": "Write and publish blog articles. Save as Draft to preview before publishing. Each post supports Estonian, English, and Russian content."
     },
     "team": {
       "title": "Team Members",
@@ -672,7 +699,8 @@
         "role": "Role",
         "bio": "Bio",
         "copyFromEstonian": "Copy from Estonian",
-        "estonianRequired": "Required"
+        "estonianRequired": "Required",
+        "bioPlaceholder": "Team member biography..."
       },
       "languages": {
         "estonian": "Estonian",
@@ -697,7 +725,8 @@
       "translateHint": "Write the role and bio in Estonian, then translate them to the other languages with one click. The name is copied as-is. You can edit afterwards.",
       "validation": {
         "nameRequired": "Estonian name is required."
-      }
+      },
+      "subtitle": "Manage team member profiles shown on the About page. Drag to reorder."
     },
     "services": {
       "title": "Services",
@@ -714,7 +743,8 @@
         "sortOrder": "Sort Order",
         "name": "Name",
         "description": "Description",
-        "priceInfo": "Price Info"
+        "priceInfo": "Price Info",
+        "descriptionPlaceholder": "Service description..."
       },
       "saveService": "Save Service",
       "toast": {
@@ -730,7 +760,8 @@
       "copyFromEt": "Copy from Estonian",
       "validation": {
         "nameRequired": "Estonian name is required."
-      }
+      },
+      "subtitle": "Edit the services shown on the homepage and services page. Type an icon name (for example home, key, building2 or scale) in the icon field."
     },
     "pages": {
       "title": "Pages",
@@ -743,14 +774,17 @@
         "body": "Body",
         "imageUrl": "Image URL",
         "videoUrl": "Video URL",
-        "videoUrlHint": "Direct video URL ending in .mp4, .webm, or .mov. YouTube URLs are not supported. Free sources: pexels.com/videos, coverr.co, pixabay.com/videos"
+        "videoUrlHint": "Direct video URL ending in .mp4, .webm, or .mov. YouTube URLs are not supported. Free sources: pexels.com/videos, coverr.co, pixabay.com/videos",
+        "imageUrlHint": "Paste the full web address of the image (starting with https://).",
+        "titleAccentHint": "Wrap the accent word in asterisks to make it gold and italic."
       },
       "savePage": "Save Page",
       "toast": {
         "saved": "Page content saved",
         "saveFailed": "Failed to save page content"
       },
-      "translateHint": "Write the content in Estonian, then translate the title and body to the other languages with one click. You can edit afterwards."
+      "translateHint": "Write the content in Estonian, then translate the title and body to the other languages with one click. You can edit afterwards.",
+      "subtitle": "Manage the text blocks shown on the public website. Each entry controls a specific section — edit the title, body, and images for each language (ET / EN / RU)."
     },
     "careers": {
       "title": "Careers",
@@ -779,7 +813,8 @@
       },
       "deleteTitle": "Delete this job posting?",
       "deleteDesc": "This will permanently remove the posting and all its translations. This action can't be undone.",
-      "translateHint": "Write the posting in Estonian, then translate the title, location and description to the other languages with one click. You can edit afterwards."
+      "translateHint": "Write the posting in Estonian, then translate the title, location and description to the other languages with one click. You can edit afterwards.",
+      "subtitle": "Manage job postings shown on the careers page. Toggle Active to show or hide a posting without deleting it."
     },
     "messages": {
       "title": "Messages",
@@ -854,7 +889,8 @@
           "sent": "Campaign sent — {{delivered}} delivered, {{failed}} failed.",
           "testSent": "Test email sent to your address.",
           "sendFailed": "Failed to send campaign"
-        }
+        },
+        "previewFrameTitle": "Preview"
       },
       "campaigns": {
         "subject": "Subject",
@@ -866,7 +902,8 @@
         "confirmDeleteTitle": "Delete this campaign?",
         "confirmDeleteDesc": "This permanently removes the campaign record and its send history. This action cannot be undone.",
         "deleted": "Campaign deleted",
-        "deleteFailed": "Failed to delete campaign"
+        "deleteFailed": "Failed to delete campaign",
+        "bodyFrameTitle": "Campaign body"
       },
       "subtitle": "Send email newsletters to subscribers. Use the Compose tab to write a campaign, then send a test to yourself before broadcasting.",
       "unsubscribe": "Unsubscribe",
@@ -942,7 +979,8 @@
       },
       "copyId": "Copy ID",
       "showDetails": "Show details",
-      "hideDetails": "Hide details"
+      "hideDetails": "Hide details",
+      "subtitle": "System log of all admin actions. Use for troubleshooting or compliance review."
     },
     "contacts": {
       "title": "Contacts",
@@ -1257,7 +1295,8 @@
         "reminderBeforeDue": "Reminder must be before the due date",
         "markedDone": "Task marked done"
       },
-      "taskActions": "Task actions"
+      "taskActions": "Task actions",
+      "subtitle": "Manage to-do items for yourself and team members. Set due dates and reminders."
     },
     "birthday": {
       "title": "Birthdays",
@@ -1273,7 +1312,8 @@
       "autoSendDescription": "When enabled, birthday greetings are sent automatically at midnight for contacts with email addresses.",
       "fields": {
         "subject": "Subject",
-        "bodyHtml": "Body (HTML)"
+        "bodyHtml": "Body (HTML)",
+        "bodyPlaceholder": "Birthday email body..."
       },
       "toast": {
         "sent": "Birthday greeting sent",
@@ -1387,14 +1427,18 @@
         "replyAll": "Reply All",
         "forward": "Forward",
         "archive": "Archive",
-        "download": "Download {{name}}"
+        "download": "Download {{name}}",
+        "bodyFrameTitle": "Email body",
+        "cc": "Cc"
       },
       "link": {
         "title": "Link message",
         "contactId": "Contact ID",
         "dealId": "Deal ID",
         "save": "Save",
-        "edit": "Edit link"
+        "edit": "Edit link",
+        "contactIdPlaceholder": "Contact ID",
+        "dealIdPlaceholder": "Deal ID"
       },
       "composer": {
         "newMessage": "New Message",
@@ -1407,7 +1451,8 @@
         "sizeWarning": "Total attachments exceed 10 MB limit",
         "attach": "Attach files",
         "removeAttachment": "Remove {{name}}",
-        "removeRecipient": "Remove {{email}}"
+        "removeRecipient": "Remove {{email}}",
+        "cc": "Cc"
       },
       "toast": {
         "sent": "Message sent",
@@ -1424,7 +1469,11 @@
         "createContact": "Create Contact",
         "createDeal": "Create Deal",
         "linkDeal": "Link to Existing Deal",
-        "linkContact": "Link to Existing Contact"
+        "linkContact": "Link to Existing Contact",
+        "linkedDeal": "Linked deal",
+        "noMatches": "No matches",
+        "searchContacts": "Search contacts...",
+        "searchDeals": "Search deals..."
       }
     }
   },

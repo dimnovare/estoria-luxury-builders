@@ -337,7 +337,7 @@ export default function PropertyForm() {
   const inputClass = "border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)] focus:border-[hsl(43_50%_54%)] focus:ring-[hsl(43_50%_54%)]";
   const labelClass = "text-sm text-[hsl(0_0%_40%)] font-medium";
   const helpClass = "text-xs text-[hsl(0_0%_55%)]";
-  const requiredMark = <span className="text-[hsl(43_50%_45%)]" title="Required">*</span>;
+  const requiredMark = <span className="text-[hsl(43_50%_45%)]" title={t('admin.common.required', 'Required')}>*</span>;
 
   if (isEdit && loadingProperty) {
     return (
@@ -377,7 +377,7 @@ export default function PropertyForm() {
             {/* ── Basics (required) ─────────────────────────────────────────── */}
             <AccordionItem value="basics" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
               <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">Basics</span>
+                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">{t('admin.properties.sections.basics', 'Basics')}</span>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -409,12 +409,12 @@ export default function PropertyForm() {
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.properties.fields.price')} {requiredMark}</Label>
                     <Input type="number" value={price} onChange={e => setPrice(e.target.value)} className={inputClass} />
-                    <p className={helpClass}>In euros (€). For rentals, the monthly rent.</p>
+                    <p className={helpClass}>{t('admin.properties.help.price', 'In euros (€). For rentals, the monthly rent.')}</p>
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.properties.fields.size')} {requiredMark}</Label>
                     <Input type="number" value={size} onChange={e => setSize(e.target.value)} className={inputClass} />
-                    <p className={helpClass}>Floor area in m².</p>
+                    <p className={helpClass}>{t('admin.properties.help.size', 'Floor area in m².')}</p>
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.properties.fields.rooms')}</Label>
@@ -422,7 +422,7 @@ export default function PropertyForm() {
                   </div>
                 </div>
                 <p className="text-xs text-[hsl(0_0%_55%)]">
-                  The listing title and description are set per language in the <strong>Translations</strong> tab — at least the Estonian title is required to save.
+                  {t('admin.properties.help.titleDescNote', 'The listing title and description are set per language in the Translations tab — at least the Estonian title is required to save.')}
                 </p>
               </AccordionContent>
             </AccordionItem>
@@ -430,7 +430,7 @@ export default function PropertyForm() {
             {/* ── Property details (optional) ───────────────────────────────── */}
             <AccordionItem value="details" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
               <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">Property details <span className="text-[hsl(0_0%_60%)] font-normal">(optional)</span></span>
+                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">{t('admin.properties.sections.details', 'Property details')} <span className="text-[hsl(0_0%_60%)] font-normal">{t('admin.properties.sections.optional', '(optional)')}</span></span>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 space-y-6">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -467,7 +467,7 @@ export default function PropertyForm() {
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className={helpClass}>Estonia's A–G energy rating (A = most efficient). Leave blank if unknown.</p>
+                    <p className={helpClass}>{t('admin.properties.help.energyClass', "Estonia's A–G energy rating (A = most efficient). Leave blank if unknown.")}</p>
                   </div>
                 </div>
               </AccordionContent>
@@ -476,12 +476,11 @@ export default function PropertyForm() {
             {/* ── Location ──────────────────────────────────────────────────── */}
             <AccordionItem value="location" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
               <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">Location on map <span className="text-[hsl(0_0%_60%)] font-normal">(optional)</span></span>
+                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">{t('admin.properties.sections.location', 'Location on map')} <span className="text-[hsl(0_0%_60%)] font-normal">{t('admin.properties.sections.optional', '(optional)')}</span></span>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 space-y-4">
                 <p className={helpClass}>
-                  Set the address in the <strong>Translations</strong> tab, then click <strong>Find on map</strong>.
-                  We place the pin from the address automatically — no need to type coordinates by hand.
+                  {t('admin.properties.help.locationIntro', 'Set the address in the Translations tab, then click Find on map. We place the pin from the address automatically — no need to type coordinates by hand.')}
                 </p>
 
                 {/* Resolved-location status. Coordinates are derived, never hand-entered. */}
@@ -535,7 +534,7 @@ export default function PropertyForm() {
                     {lat && lng ? t('admin.properties.location.refind') : t('admin.properties.geocodeButton')}
                   </Button>
                   {!id && (
-                    <p className={`${helpClass} mt-2`}>Save the property first, then come back here to find it on the map.</p>
+                    <p className={`${helpClass} mt-2`}>{t('admin.properties.help.saveBeforeGeocode', 'Save the property first, then come back here to find it on the map.')}</p>
                   )}
                 </div>
               </AccordionContent>
@@ -544,7 +543,7 @@ export default function PropertyForm() {
             {/* ── Visibility & agent ────────────────────────────────────────── */}
             <AccordionItem value="visibility" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
               <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">Visibility &amp; agent</span>
+                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">{t('admin.properties.sections.visibility', 'Visibility & agent')}</span>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 space-y-6">
                 <div className="space-y-2 max-w-sm">
@@ -557,14 +556,14 @@ export default function PropertyForm() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <p className={helpClass}>The contact shown on the listing and used for inquiries.</p>
+                  <p className={helpClass}>{t('admin.properties.help.agent', 'The contact shown on the listing and used for inquiries.')}</p>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <Switch checked={isFeatured} onCheckedChange={setIsFeatured} />
                   <div>
                     <Label className={labelClass}>{t('admin.properties.fields.featured')}</Label>
-                    <p className={helpClass}>Featured properties appear on the homepage.</p>
+                    <p className={helpClass}>{t('admin.properties.help.featured', 'Featured properties appear on the homepage.')}</p>
                   </div>
                 </div>
 
@@ -656,7 +655,7 @@ export default function PropertyForm() {
                       <RichTextEditor
                         value={translations[lang]?.description ?? ''}
                         onChange={(html) => updateTranslation(lang, 'description', html)}
-                        placeholder="Property description..."
+                        placeholder={t('admin.properties.fields.descriptionPlaceholder', 'Property description...')}
                         minHeight="200px"
                       />
                     </div>
@@ -845,7 +844,7 @@ export default function PropertyForm() {
           <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
             <CardContent className="p-6 space-y-3">
               <p className="text-xs text-[hsl(0_0%_50%)]">
-                Enter each feature in all three languages. Use the copy button to mirror the EN value into ET and RU.
+                {t('admin.properties.features.help', 'Enter each feature in all three languages. Use the copy button to mirror the EN value into ET and RU.')}
               </p>
               {features.map((f, idx) => (
                 <div key={idx} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto_auto] gap-2 items-center">
@@ -901,7 +900,7 @@ export default function PropertyForm() {
                 className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_30%)]"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Add Feature
+                {t('admin.properties.features.add', 'Add feature')}
               </Button>
             </CardContent>
           </Card>

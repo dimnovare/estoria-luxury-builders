@@ -193,7 +193,7 @@ function ComposeTab() {
                 sandbox=""
                 className="w-full max-h-[600px] border border-[hsl(0_0%_90%)] rounded bg-white"
                 style={{ minHeight: 200 }}
-                title="Preview"
+                title={t('admin.newsletter.compose.previewFrameTitle', 'Preview')}
               />
             ) : (
               <div className="h-[200px] bg-[hsl(0_0%_96%)] rounded flex items-center justify-center text-sm text-[hsl(0_0%_60%)]">
@@ -318,7 +318,7 @@ function CampaignsTab() {
               srcDoc={detailCampaign.bodyHtml}
               sandbox=""
               className="w-full h-[400px] border border-[hsl(0_0%_90%)] rounded bg-white"
-              title="Campaign body"
+              title={t('admin.newsletter.campaigns.bodyFrameTitle', 'Campaign body')}
             />
           )}
         </DialogContent>

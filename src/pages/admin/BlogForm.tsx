@@ -281,8 +281,8 @@ export default function BlogForm() {
       <div className="flex items-center justify-between gap-3 pt-2">
         <p className="text-xs text-[hsl(0_0%_55%)]">
           {currentStatus === 'Published'
-            ? 'This post is live on the site. Saving as draft will hide it.'
-            : 'This post is a hidden draft. Publish it to make it live.'}
+            ? t('admin.blog.status.liveNote', 'This post is live on the site. Saving as draft will hide it.')
+            : t('admin.blog.status.draftNote', 'This post is a hidden draft. Publish it to make it live.')}
         </p>
         <div className="flex gap-3">
           <Button

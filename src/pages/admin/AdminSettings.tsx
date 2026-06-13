@@ -31,6 +31,9 @@ interface FieldDef {
   key: string;
   labelKey: string;
   placeholder?: string;
+  // i18n key for a translatable placeholder (used when the example contains
+  // words that should localise, e.g. weekday names). Resolved at render time.
+  placeholderKey?: string;
   type?: 'textarea' | 'number' | 'switch';
   badge?: string;
   rows?: number;
@@ -50,7 +53,7 @@ const SECTIONS: SectionDef[] = [
       { key: 'contact.email', labelKey: 'admin.settings.fields.contactEmail', placeholder: 'info@estoria.estate' },
       { key: 'contact.phone', labelKey: 'admin.settings.fields.phone', placeholder: '+372 …' },
       { key: 'contact.address', labelKey: 'admin.settings.fields.address', type: 'textarea', rows: 3 },
-      { key: 'contact.hours', labelKey: 'admin.settings.fields.hours', placeholder: 'Mon–Fri 09:00–18:00' },
+      { key: 'contact.hours', labelKey: 'admin.settings.fields.hours', placeholderKey: 'admin.settings.fields.hoursPlaceholder', placeholder: 'Mon–Fri 09:00–18:00' },
     ],
   },
   {
@@ -103,6 +106,7 @@ function SettingRow({ setting, field }: { setting: SiteSettingDto | undefined; f
 
   const isSwitch = field.type === 'switch';
   const dirty = value !== (setting?.value ?? '');
+  const placeholder = field.placeholderKey ? t(field.placeholderKey, field.placeholder ?? '') : field.placeholder;
 
   const urlWarningVisible = field.urlWarning && value && !value.startsWith('https://');
 
@@ -156,7 +160,7 @@ function SettingRow({ setting, field }: { setting: SiteSettingDto | undefined; f
       value={value}
       onChange={(e) => setValue(e.target.value)}
       rows={field.rows ?? 3}
-      placeholder={field.placeholder}
+      placeholder={placeholder}
       className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-sm"
     />
   ) : field.type === 'number' ? (
@@ -166,14 +170,14 @@ function SettingRow({ setting, field }: { setting: SiteSettingDto | undefined; f
       min="0"
       value={value}
       onChange={(e) => setValue(e.target.value)}
-      placeholder={field.placeholder}
+      placeholder={placeholder}
       className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-sm max-w-[160px]"
     />
   ) : (
     <Input
       value={value}
       onChange={(e) => setValue(e.target.value)}
-      placeholder={field.placeholder}
+      placeholder={placeholder}
       className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-sm"
     />
   );
@@ -324,7 +328,7 @@ function TranslatableSettingRow({ field }: { field: FieldDef }) {
               language={lang}
               initialValue={lookup(lang)}
               type={field.type}
-              placeholder={field.placeholder}
+              placeholder={field.placeholderKey ? t(field.placeholderKey, field.placeholder ?? '') : field.placeholder}
               rows={field.rows}
             />
           </TabsContent>
@@ -372,7 +376,7 @@ export default function AdminSettings() {
     <div className="space-y-6 max-w-3xl">
       <div>
         <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.settings.title')}</h1>
-        <p className="text-sm text-[hsl(0_0%_45%)] mt-1">Global site settings — contact details, social links, and stats shown throughout the public site. Changes take effect within 30 seconds.</p>
+        <p className="text-sm text-[hsl(0_0%_45%)] mt-1">{t('admin.settings.subtitle', 'Global site settings — contact details, social links, and stats shown throughout the public site. Changes take effect within 30 seconds.')}</p>
       </div>
 
       {isLoading && <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.common.loading')}</p>}

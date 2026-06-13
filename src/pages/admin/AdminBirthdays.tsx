@@ -201,7 +201,7 @@ export default function AdminBirthdays() {
                       <RichTextEditor
                         value={getTemplate(lang).bodyHtml}
                         onChange={(html) => updateTemplate(lang, 'bodyHtml', html)}
-                        placeholder="Birthday email body..."
+                        placeholder={t('admin.birthday.fields.bodyPlaceholder', 'Birthday email body...')}
                         minHeight="200px"
                       />
                     </div>

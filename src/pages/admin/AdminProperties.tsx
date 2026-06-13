@@ -82,7 +82,7 @@ export default function AdminProperties() {
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.properties.title')}</h1>
-          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">Manage property listings. Create a listing, then add images and publish it to make it visible on the public site.</p>
+          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">{t('admin.properties.subtitle', 'Manage property listings. Create a listing, then add images and publish it to make it visible on the public site.')}</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <Button

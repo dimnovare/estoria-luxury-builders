@@ -163,7 +163,7 @@ export default function AdminTasks() {
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.tasks.title')}</h1>
-          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">Manage to-do items for yourself and team members. Set due dates and reminders.</p>
+          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">{t('admin.tasks.subtitle', 'Manage to-do items for yourself and team members. Set due dates and reminders.')}</p>
         </div>
         <Button
           onClick={() => { setEditTaskId(undefined); setShowForm(true); }}

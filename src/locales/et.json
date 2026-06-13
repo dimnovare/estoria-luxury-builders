@@ -418,7 +418,8 @@
       "close": "Sulge menüü",
       "next": "Järgmine leht",
       "previous": "Eelmine leht",
-      "required": "Kohustuslik"
+      "required": "Kohustuslik",
+      "example": "Näide:"
     },
     "layout": {
       "adminBadge": "Admin",
@@ -527,7 +528,8 @@
         "address": "Aadress",
         "city": "Linn",
         "district": "Linnaosa",
-        "description": "Kirjeldus"
+        "description": "Kirjeldus",
+        "descriptionPlaceholder": "Objekti kirjeldus..."
       },
       "images": {
         "uploadEdit": "Klõpsa piltide üleslaadimiseks",
@@ -551,7 +553,9 @@
       "features": {
         "addPlaceholder": "Lisa eripära…",
         "empty": "Eripärasid pole veel lisatud.",
-        "copyEnToAll": "Kopeeri EN kõikidesse keeltesse"
+        "copyEnToAll": "Kopeeri EN kõikidesse keeltesse",
+        "add": "Lisa eripära",
+        "help": "Sisesta iga eripära kõigis kolmes keeles. Kasuta kopeerimisnuppu, et peegeldada EN väärtus ET-sse ja RU-sse."
       },
       "saveDraft": "Salvesta mustandina",
       "savePublish": "Salvesta ja avalda",
@@ -597,7 +601,25 @@
       },
       "confirmDeleteDesc": "Kustutada \"{{title}}\"? Seda ei saa tagasi võtta.",
       "translateHint": "Kirjuta kuulutus eesti keeles, seejärel tõlgi pealkiri ja kirjeldus ühe klikiga teistesse keeltesse. Saad seejärel muuta.",
-      "copyFromEt": "Kopeeri eesti keelest"
+      "copyFromEt": "Kopeeri eesti keelest",
+      "help": {
+        "agent": "Kuulutusel kuvatav ja päringuteks kasutatav kontakt.",
+        "energyClass": "Eesti A–G energiamärgis (A = kõige tõhusam). Jäta tühjaks, kui pole teada.",
+        "featured": "Esiletõstetud objektid kuvatakse avalehel.",
+        "locationIntro": "Määra aadress vahekaardil Tõlked, seejärel klõpsa Leia kaardilt. Asetame nõela aadressi järgi automaatselt — koordinaate pole vaja käsitsi sisestada.",
+        "price": "Eurodes (€). Üürimisel kuuüür.",
+        "saveBeforeGeocode": "Salvesta objekt esmalt, seejärel tule siia tagasi, et see kaardilt leida.",
+        "size": "Pindala m².",
+        "titleDescNote": "Kuulutuse pealkiri ja kirjeldus määratakse keelte kaupa vahekaardil Tõlked — salvestamiseks on nõutav vähemalt eestikeelne pealkiri."
+      },
+      "sections": {
+        "basics": "Põhiandmed",
+        "details": "Objekti üksikasjad",
+        "location": "Asukoht kaardil",
+        "optional": "(valikuline)",
+        "visibility": "Nähtavus ja maakler"
+      },
+      "subtitle": "Halda kinnisvarakuulutusi. Loo kuulutus, seejärel lisa pildid ja avalda see, et see oleks avalikul saidil nähtav."
     },
     "blog": {
       "title": "Blogipostitused",
@@ -646,7 +668,12 @@
         "authorRequired": "Palun vali autor.",
         "titleRequired": "Salvestamiseks on vajalik ingliskeelne pealkiri."
       },
-      "translateHint": "Kirjuta postitus eesti keeles, seejärel tõlgi see ühe klikiga teistesse keeltesse. Saad seejärel muuta."
+      "translateHint": "Kirjuta postitus eesti keeles, seejärel tõlgi see ühe klikiga teistesse keeltesse. Saad seejärel muuta.",
+      "status": {
+        "draftNote": "See postitus on peidetud mustand. Avalda see, et see läheks elavaks.",
+        "liveNote": "See postitus on saidil avaldatud. Mustandina salvestamine peidab selle."
+      },
+      "subtitle": "Kirjuta ja avalda blogiartikleid. Salvesta mustandina, et enne avaldamist eelvaadata. Iga postitus toetab eesti-, inglis- ja venekeelset sisu."
     },
     "team": {
       "title": "Meeskonnaliikmed",
@@ -672,7 +699,8 @@
         "role": "Roll",
         "bio": "Tutvustus",
         "copyFromEstonian": "Kopeeri eesti keelest",
-        "estonianRequired": "Kohustuslik"
+        "estonianRequired": "Kohustuslik",
+        "bioPlaceholder": "Meeskonnaliikme tutvustus..."
       },
       "languages": {
         "estonian": "Eesti",
@@ -697,7 +725,8 @@
       "translateHint": "Kirjuta ametinimetus ja tutvustus eesti keeles, seejärel tõlgi need ühe klikiga teistesse keeltesse. Nimi kopeeritakse muutmata kujul. Saad seejärel muuta.",
       "validation": {
         "nameRequired": "Eesti nimi on kohustuslik."
-      }
+      },
+      "subtitle": "Halda Meist-lehel kuvatavaid meeskonnaliikmete profiile. Lohista ümberjärjestamiseks."
     },
     "services": {
       "title": "Teenused",
@@ -714,7 +743,8 @@
         "sortOrder": "Järjekord",
         "name": "Nimetus",
         "description": "Kirjeldus",
-        "priceInfo": "Hinnainfo"
+        "priceInfo": "Hinnainfo",
+        "descriptionPlaceholder": "Teenuse kirjeldus..."
       },
       "saveService": "Salvesta teenus",
       "toast": {
@@ -730,7 +760,8 @@
       "copyFromEt": "Kopeeri eesti keelest",
       "validation": {
         "nameRequired": "Eestikeelne nimi on kohustuslik."
-      }
+      },
+      "subtitle": "Muuda avalehel ja teenuste lehel kuvatavaid teenuseid. Sisesta ikooni väljale ikooni nimi (näiteks home, key, building2 või scale)."
     },
     "pages": {
       "title": "Lehed",
@@ -743,14 +774,17 @@
         "body": "Sisu",
         "imageUrl": "Pildi URL",
         "videoUrl": "Video URL",
-        "videoUrlHint": "Otsene video URL lõpuga .mp4, .webm või .mov. YouTube'i lingid pole toetatud. Tasuta allikad: pexels.com/videos, coverr.co, pixabay.com/videos"
+        "videoUrlHint": "Otsene video URL lõpuga .mp4, .webm või .mov. YouTube'i lingid pole toetatud. Tasuta allikad: pexels.com/videos, coverr.co, pixabay.com/videos",
+        "imageUrlHint": "Kleebi pildi täielik veebiaadress (algusega https://).",
+        "titleAccentHint": "Ümbritse rõhusõna tärnidega, et muuta see kuldseks ja kaldkirjaks."
       },
       "savePage": "Salvesta leht",
       "toast": {
         "saved": "Lehe sisu salvestatud",
         "saveFailed": "Lehe sisu salvestamine ebaõnnestus"
       },
-      "translateHint": "Kirjuta sisu eesti keeles, seejärel tõlgi pealkiri ja sisu ühe klikiga teistesse keeltesse. Saad seejärel muuta."
+      "translateHint": "Kirjuta sisu eesti keeles, seejärel tõlgi pealkiri ja sisu ühe klikiga teistesse keeltesse. Saad seejärel muuta.",
+      "subtitle": "Halda avalikul veebilehel kuvatavaid tekstiplokke. Iga kirje juhib kindlat sektsiooni — muuda iga keele (ET / EN / RU) pealkirja, sisu ja pilte."
     },
     "careers": {
       "title": "Karjäär",
@@ -779,7 +813,8 @@
       },
       "deleteTitle": "Kustutada see tööpakkumine?",
       "deleteDesc": "See eemaldab pakkumise ja kõik selle tõlked jäädavalt. Seda toimingut ei saa tagasi võtta.",
-      "translateHint": "Kirjuta kuulutus eesti keeles, seejärel tõlgi pealkiri, asukoht ja kirjeldus ühe klikiga teistesse keeltesse. Saad seejärel muuta."
+      "translateHint": "Kirjuta kuulutus eesti keeles, seejärel tõlgi pealkiri, asukoht ja kirjeldus ühe klikiga teistesse keeltesse. Saad seejärel muuta.",
+      "subtitle": "Halda karjäärilehel kuvatavaid tööpakkumisi. Lülita Aktiivne sisse või välja, et kuulutust näidata või peita ilma seda kustutamata."
     },
     "messages": {
       "title": "Sõnumid",
@@ -854,7 +889,8 @@
           "sent": "Kampaania saadetud — {{delivered}} edastatud, {{failed}} ebaõnnestunud.",
           "testSent": "Testkiri saadetud teie aadressile.",
           "sendFailed": "Kampaania saatmine ebaõnnestus"
-        }
+        },
+        "previewFrameTitle": "Eelvaade"
       },
       "campaigns": {
         "subject": "Teema",
@@ -866,7 +902,8 @@
         "confirmDeleteTitle": "Kustutada see kampaania?",
         "confirmDeleteDesc": "See eemaldab jäädavalt kampaania kirje ja selle saatmisajaloo. Seda toimingut ei saa tagasi võtta.",
         "deleted": "Kampaania kustutatud",
-        "deleteFailed": "Kampaania kustutamine ebaõnnestus"
+        "deleteFailed": "Kampaania kustutamine ebaõnnestus",
+        "bodyFrameTitle": "Kampaania sisu"
       },
       "subtitle": "Saada tellijatele e-uudiskirju. Kasuta vahekaarti Koosta kampaania kirjutamiseks ja saada enne väljasaatmist endale testkiri.",
       "unsubscribe": "Loobu tellimusest",
@@ -942,7 +979,8 @@
       },
       "copyId": "Kopeeri ID",
       "showDetails": "Näita üksikasju",
-      "hideDetails": "Peida üksikasjad"
+      "hideDetails": "Peida üksikasjad",
+      "subtitle": "Kõigi haldustoimingute süsteemilogi. Kasuta tõrkeotsinguks või vastavuse kontrolliks."
     },
     "contacts": {
       "title": "Kontaktid",
@@ -1257,7 +1295,8 @@
         "reminderBeforeDue": "Meeldetuletus peab olema enne tähtaega",
         "markedDone": "Ülesanne märgitud tehtuks"
       },
-      "taskActions": "Ülesande toimingud"
+      "taskActions": "Ülesande toimingud",
+      "subtitle": "Halda enda ja meeskonnaliikmete ülesandeid. Määra tähtajad ja meeldetuletused."
     },
     "birthday": {
       "title": "Sünnipäevad",
@@ -1273,7 +1312,8 @@
       "autoSendDescription": "Kui lubatud, saadetakse sünnipäevatervitused automaatselt keskööl kontaktidele, kellel on e-posti aadress.",
       "fields": {
         "subject": "Teema",
-        "bodyHtml": "Sisu (HTML)"
+        "bodyHtml": "Sisu (HTML)",
+        "bodyPlaceholder": "Sünnipäevakirja sisu..."
       },
       "toast": {
         "sent": "Sünnipäevatervitus saadetud",
@@ -1387,14 +1427,18 @@
         "replyAll": "Vasta kõigile",
         "forward": "Edasta",
         "archive": "Arhiveeri",
-        "download": "Laadi alla {{name}}"
+        "download": "Laadi alla {{name}}",
+        "bodyFrameTitle": "E-kirja sisu",
+        "cc": "Koopia"
       },
       "link": {
         "title": "Seo kiri",
         "contactId": "Kontakti ID",
         "dealId": "Tehingu ID",
         "save": "Salvesta",
-        "edit": "Muuda seost"
+        "edit": "Muuda seost",
+        "contactIdPlaceholder": "Kontakti ID",
+        "dealIdPlaceholder": "Tehingu ID"
       },
       "composer": {
         "newMessage": "Uus kiri",
@@ -1407,7 +1451,8 @@
         "sizeWarning": "Manuste kogumaht ületab 10 MB piiri",
         "attach": "Lisa failid",
         "removeAttachment": "Eemalda {{name}}",
-        "removeRecipient": "Eemalda {{email}}"
+        "removeRecipient": "Eemalda {{email}}",
+        "cc": "Koopia"
       },
       "toast": {
         "sent": "Kiri saadetud",
@@ -1424,7 +1469,11 @@
         "createContact": "Loo kontakt",
         "createDeal": "Loo tehing",
         "linkDeal": "Seo olemasoleva tehinguga",
-        "linkContact": "Seo olemasoleva kontaktiga"
+        "linkContact": "Seo olemasoleva kontaktiga",
+        "linkedDeal": "Seotud tehing",
+        "noMatches": "Vasteid pole",
+        "searchContacts": "Otsi kontakte...",
+        "searchDeals": "Otsi tehinguid..."
       }
     }
   },

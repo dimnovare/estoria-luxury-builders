@@ -274,7 +274,7 @@ export default function AdminDeals() {
                       </AccordionTrigger>
                       <AccordionContent className="p-2 space-y-2">
                         {deals.length === 0 ? (
-                          <EmptyState compact icon={Briefcase} title={t('admin.deals.kanbanEmpty')} />
+                          <EmptyState compact icon={Briefcase} title={t('admin.deals.kanbanEmpty', 'No deals')} />
                         ) : (
                           deals.map(deal => <DealCard key={deal.id} deal={deal} showStageBadge={group.stages.length > 1} />)
                         )}
@@ -306,7 +306,7 @@ export default function AdminDeals() {
                   </div>
                   <div className="bg-card border border-t-0 border-border rounded-b-lg p-2 space-y-2 min-h-[120px] max-h-[70vh] overflow-y-auto">
                     {deals.length === 0 && (
-                      <EmptyState compact icon={Briefcase} title={t('admin.deals.kanbanEmpty')} />
+                      <EmptyState compact icon={Briefcase} title={t('admin.deals.kanbanEmpty', 'No deals')} />
                     )}
                     {deals.map(deal => <DealCard key={deal.id} deal={deal} showStageBadge={group.stages.length > 1} />)}
                   </div>
@@ -321,20 +321,20 @@ export default function AdminDeals() {
       <Dialog open={!!changingDeal} onOpenChange={() => setChangingDeal(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('admin.deals.changeStage')}: {changingDeal?.title}</DialogTitle>
+            <DialogTitle>{t('admin.deals.changeStage', 'Change stage')}: {changingDeal?.title}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.currentStage')}</Label>
+              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.currentStage', 'Current stage')}</Label>
               <Badge variant="outline" className={`mt-1 ${stageColors[changingDeal?.stage ?? ''] ?? ''}`}>
                 {changingDeal?.stage && t(`admin.deals.stages.${changingDeal.stage}`)}
               </Badge>
             </div>
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.newStage')}</Label>
+              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.newStage', 'New stage')}</Label>
               <Select value={targetStage} onValueChange={(v) => setTargetStage(v as DealStage)}>
                 <SelectTrigger className="mt-1 bg-secondary border-border">
-                  <SelectValue placeholder={t('admin.deals.selectStage')} />
+                  <SelectValue placeholder={t('admin.deals.selectStage', 'Select stage')} />
                 </SelectTrigger>
                 <SelectContent>
                   {DEAL_STAGES.filter(s => s !== changingDeal?.stage).map(s => (
@@ -363,7 +363,7 @@ export default function AdminDeals() {
               onClick={handleStageChange}
               disabled={!targetStage || changeStage.isPending}
             >
-              {t('admin.deals.confirmStageChange')}
+              {t('admin.deals.confirmStageChange', 'Confirm')}
             </Button>
           </DialogFooter>
         </DialogContent>

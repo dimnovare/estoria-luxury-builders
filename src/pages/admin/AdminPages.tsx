@@ -18,35 +18,47 @@ const langs = ['et', 'en', 'ru'] as const;
 type TransFields = { title: string; body: string; imageUrl: string; videoUrl: string; };
 const emptyTrans: TransFields = { title: '', body: '', imageUrl: '', videoUrl: '' };
 
-const PAGE_LABELS: Record<string, { label: string; description: string }> = {
-  'homepage.hero':            { label: 'Homepage – Hero',           description: 'Main headline and subtitle on the homepage' },
-  'homepage.featured':        { label: 'Homepage – Featured',       description: 'Featured properties section heading' },
-  'homepage.services':        { label: 'Homepage – Services',       description: 'Services section on homepage' },
-  'about.intro':              { label: 'About – Introduction',      description: 'Opening section on the About page' },
-  'about.values.integrity':   { label: 'About – Value: Integrity',  description: 'First values card' },
-  'about.values.excellence':  { label: 'About – Value: Excellence', description: 'Second values card' },
-  'about.values.discretion':  { label: 'About – Value: Discretion', description: 'Third values card' },
-  'about.cta':                { label: 'About – Call to Action',    description: '"Ready to Find Your Future?" section' },
-  'team.hero':                { label: 'Team – Page Header',        description: 'Heading and subtitle on the Team page' },
-  'careers.hero':             { label: 'Careers – Page Header',     description: 'Heading and subtitle on the Careers page' },
-  'services.hero':            { label: 'Services – Page Header',    description: 'Heading and subtitle on the Services page' },
-  'contact.hero':             { label: 'Contact – Page Header',     description: 'Lead text on the Contact page' },
+// Friendly title + one-line "where it appears on the site" helper for each CMS
+// block. We store i18n keys + English fallbacks here and resolve them with t()
+// at render time so non-technical admins see this in their own language. The
+// underlying pageKeys are unchanged.
+const PAGE_LABELS: Record<string, { labelKey: string; labelFallback: string; descKey: string; descFallback: string }> = {
+  'homepage.hero':            { labelKey: 'admin.pages.blocks.homepageHero.title',         labelFallback: 'Homepage – hero section',          descKey: 'admin.pages.blocks.homepageHero.help',         descFallback: 'The big banner at the very top of the home page.' },
+  'homepage.featured':        { labelKey: 'admin.pages.blocks.homepageFeatured.title',     labelFallback: 'Homepage – featured properties',   descKey: 'admin.pages.blocks.homepageFeatured.help',     descFallback: 'The heading above the highlighted properties on the home page.' },
+  'homepage.services':        { labelKey: 'admin.pages.blocks.homepageServices.title',     labelFallback: 'Homepage – services section',      descKey: 'admin.pages.blocks.homepageServices.help',     descFallback: 'The services block further down the home page.' },
+  'about.intro':              { labelKey: 'admin.pages.blocks.aboutIntro.title',           labelFallback: 'About page – introduction',         descKey: 'admin.pages.blocks.aboutIntro.help',           descFallback: 'The opening text at the top of the About page.' },
+  'about.values.integrity':   { labelKey: 'admin.pages.blocks.aboutValueIntegrity.title',  labelFallback: 'About page – value: Integrity',     descKey: 'admin.pages.blocks.aboutValueIntegrity.help',  descFallback: 'The first of the three values cards on the About page.' },
+  'about.values.excellence':  { labelKey: 'admin.pages.blocks.aboutValueExcellence.title', labelFallback: 'About page – value: Excellence',    descKey: 'admin.pages.blocks.aboutValueExcellence.help', descFallback: 'The second of the three values cards on the About page.' },
+  'about.values.discretion':  { labelKey: 'admin.pages.blocks.aboutValueDiscretion.title', labelFallback: 'About page – value: Discretion',    descKey: 'admin.pages.blocks.aboutValueDiscretion.help', descFallback: 'The third of the three values cards on the About page.' },
+  'about.cta':                { labelKey: 'admin.pages.blocks.aboutCta.title',             labelFallback: 'About page – closing call to action', descKey: 'admin.pages.blocks.aboutCta.help',           descFallback: 'The “Ready to find your future?” banner at the bottom of the About page.' },
+  'team.hero':                { labelKey: 'admin.pages.blocks.teamHero.title',             labelFallback: 'Team page – header',                descKey: 'admin.pages.blocks.teamHero.help',             descFallback: 'The heading and intro text at the top of the Team page.' },
+  'careers.hero':             { labelKey: 'admin.pages.blocks.careersHero.title',          labelFallback: 'Careers page – header',             descKey: 'admin.pages.blocks.careersHero.help',          descFallback: 'The heading and intro text at the top of the Careers page.' },
+  'services.hero':            { labelKey: 'admin.pages.blocks.servicesHero.title',         labelFallback: 'Services page – header',            descKey: 'admin.pages.blocks.servicesHero.help',         descFallback: 'The heading and intro text at the top of the Services page.' },
+  'contact.hero':             { labelKey: 'admin.pages.blocks.contactHero.title',          labelFallback: 'Contact page – header',             descKey: 'admin.pages.blocks.contactHero.help',          descFallback: 'The lead text at the top of the Contact page.' },
 };
 
 const PAGES_WITH_IMAGE = ['homepage.hero', 'about.intro', 'homepage.featured'];
 const PAGES_WITH_VIDEO = ['homepage.hero'];
 
-function pageLabel(key: string) {
-  return PAGE_LABELS[key]?.label ?? key
-    .split('.')
-    .map(p => p.charAt(0).toUpperCase() + p.slice(1))
-    .join(' – ');
-}
-
 export default function AdminPages() {
   const { t } = useTranslation();
   const { data: pages, isLoading } = useAdminPages();
   const updatePage = useUpdatePage();
+
+  // Friendly, translated title for a CMS block (falls back to a humanised
+  // version of the pageKey for any block not listed in PAGE_LABELS).
+  const pageLabel = (key: string) => {
+    const entry = PAGE_LABELS[key];
+    if (entry) return t(entry.labelKey, entry.labelFallback);
+    return key
+      .split('.')
+      .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+      .join(' – ');
+  };
+  const pageDescription = (key: string) => {
+    const entry = PAGE_LABELS[key];
+    return entry ? t(entry.descKey, entry.descFallback) : '';
+  };
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingPage, setEditingPage] = useState<AdminPage | null>(null);
@@ -122,7 +134,7 @@ const sortedPages = useMemo(() => {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.pages.title')}</h1>
-      <p className="text-sm text-[hsl(0_0%_45%)] mt-1 mb-4">Manage translatable text blocks shown on the public website. Each entry controls a specific section — edit the title, body, and images for each language (ET / EN / RU).</p>
+      <p className="text-sm text-[hsl(0_0%_45%)] mt-1 mb-4">{t('admin.pages.subtitle', 'Manage the text blocks shown on the public website. Each entry controls a specific section — edit the title, body, and images for each language (ET / EN / RU).')}</p>
 
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
@@ -146,7 +158,7 @@ const sortedPages = useMemo(() => {
                   <TableCell className="text-sm text-[hsl(0_0%_40%)] font-mono hidden sm:table-cell">{p.pageKey}</TableCell>
                   <TableCell>
                     <div className="text-sm text-[hsl(0_0%_15%)] font-medium">{pageLabel(p.pageKey)}</div>
-                    <div className="text-xs text-[hsl(0_0%_50%)] mt-0.5">{PAGE_LABELS[p.pageKey]?.description}</div>
+                    <div className="text-xs text-[hsl(0_0%_50%)] mt-0.5">{pageDescription(p.pageKey)}</div>
                   </TableCell>
                   <TableCell>
                     <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_15%)]" onClick={() => openEdit(p)} aria-label={t('admin.common.edit')} title={t('admin.common.edit')}>
@@ -165,7 +177,7 @@ const sortedPages = useMemo(() => {
         <DialogContent className="max-w-2xl bg-white border-[hsl(0_0%_90%)]">
           <DialogHeader>
             <DialogTitle className="text-[hsl(0_0%_15%)]">
-              {editingPage ? (PAGE_LABELS[editingPage.pageKey]?.label ?? pageLabel(editingPage.pageKey)) : ''}
+              {editingPage ? pageLabel(editingPage.pageKey) : ''}
             </DialogTitle>
           </DialogHeader>
           {editingPage && (
@@ -205,8 +217,9 @@ const sortedPages = useMemo(() => {
                       <Input value={translations[lang]?.title || ''} onChange={e => updateTrans(lang, 'title', e.target.value)} className={inputClass} />
                       {editingPage?.pageKey.startsWith('homepage.') && (
                         <p className="text-xs text-[hsl(0_0%_50%)] mt-1">
-                          Wrap the accent word in asterisks to make it gold and italic.
-                          Example: <code className="bg-[hsl(0_0%_94%)] px-1 rounded text-[hsl(43_50%_45%)]">
+                          {t('admin.pages.fields.titleAccentHint', 'Wrap the accent word in asterisks to make it gold and italic.')}{' '}
+                          {t('admin.common.example', 'Example:')}{' '}
+                          <code className="bg-[hsl(0_0%_94%)] px-1 rounded text-[hsl(43_50%_45%)]">
                             Where Your *Future* Lives
                           </code>
                         </p>
@@ -226,7 +239,7 @@ const sortedPages = useMemo(() => {
                         <Label className={labelClass}>{t('admin.pages.fields.imageUrl')}</Label>
                         <Input value={translations[lang]?.imageUrl || ''} onChange={e => updateTrans(lang, 'imageUrl', e.target.value)} className={inputClass} />
                         <p className="text-xs text-[hsl(0_0%_50%)] mt-1">
-                          Use an absolute URL (e.g. from R2 CDN or Unsplash).
+                          {t('admin.pages.fields.imageUrlHint', 'Paste the full web address of the image (starting with https://).')}
                         </p>
                       </div>
                     )}

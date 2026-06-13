@@ -177,12 +177,12 @@ export default function InboxComposer({ prefill, onClose }: Props) {
             {/* Cc toggle */}
             {!showCc && (
               <button onClick={() => setShowCc(true)} className="text-xs text-muted-foreground hover:text-foreground">
-                Cc
+                {t('admin.inbox.composer.cc', 'Cc')}
               </button>
             )}
             {showCc && (
               <div className="flex items-center gap-2 flex-wrap border-b border-[hsl(0_0%_92%)] pb-1.5">
-                <span className="text-xs text-[hsl(0_0%_25%)] font-medium w-8 shrink-0">Cc</span>
+                <span className="text-xs text-[hsl(0_0%_25%)] font-medium w-8 shrink-0">{t('admin.inbox.composer.cc', 'Cc')}</span>
                 {cc.map((e) => (
                   <Badge key={e} variant="secondary" className="text-xs gap-1">
                     {e}

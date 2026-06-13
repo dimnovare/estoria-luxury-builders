@@ -221,7 +221,7 @@ export default function DealForm() {
                   </Select>
                 )}
               />
-              {!isAdmin && <p className="text-xs text-[hsl(0_0%_60%)] mt-1">{t('admin.deals.agentLocked')}</p>}
+              {!isAdmin && <p className="text-xs text-[hsl(0_0%_60%)] mt-1">{t('admin.deals.agentLocked', 'This deal is locked to your account. Ask an administrator to reassign it.')}</p>}
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2">
@@ -284,7 +284,7 @@ export default function DealForm() {
             {/* Edit-only: stage info (read-only, use /stage endpoint to change) */}
             {isEdit && existing && (
               <div className="border-t border-[hsl(0_0%_93%)] pt-4 space-y-4">
-                <p className="text-xs text-[hsl(0_0%_60%)]">{t('admin.deals.stageHint')}</p>
+                <p className="text-xs text-[hsl(0_0%_60%)]">{t('admin.deals.stageHint', 'The stage can only be changed from the deals board or the change-stage button, so every change is recorded in the activity log.')}</p>
                 {existing.stage === 'Won' && (
                   <div>
                     <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.actualValue')}</Label>

@@ -193,7 +193,7 @@ export default function AdminTeam() {
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.team.title')}</h1>
-          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">Manage team member profiles shown on the About page. Drag to reorder.</p>
+          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">{t('admin.team.subtitle', 'Manage team member profiles shown on the About page. Drag to reorder.')}</p>
         </div>
         <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
           <Plus className="h-4 w-4 mr-2" />{t('admin.team.addNew')}
@@ -374,7 +374,7 @@ export default function AdminTeam() {
                     </div>
                     <Input value={translations[lang]?.name || ''} onChange={e => updateTrans(lang, 'name', e.target.value)} className={inputClass} />
                     {lang === 'et' && (
-                      <p className="text-xs text-[hsl(0_0%_55%)]">{t('admin.team.fields.estonianRequired', 'Estonian')}</p>
+                      <p className="text-xs text-[hsl(0_0%_55%)]">{t('admin.team.fields.estonianRequired', 'The Estonian name is required.')}</p>
                     )}
                   </div>
                   <div className="space-y-2">
@@ -386,7 +386,7 @@ export default function AdminTeam() {
                     <RichTextEditor
                       value={translations[lang]?.bio ?? ''}
                       onChange={(html) => updateTrans(lang, 'bio', html)}
-                      placeholder="Team member biography..."
+                      placeholder={t('admin.team.fields.bioPlaceholder', 'Team member biography...')}
                       minHeight="150px"
                     />
                   </div>

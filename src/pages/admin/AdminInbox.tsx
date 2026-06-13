@@ -231,11 +231,11 @@ function LinkPopover({
       <div className="space-y-2">
         <div>
           <label className="text-xs text-muted-foreground">{t('admin.inbox.link.contactId')}</label>
-          <Input value={contactId} onChange={(e) => setContactId(e.target.value)} className="h-8 text-sm mt-1" placeholder="Contact ID" />
+          <Input value={contactId} onChange={(e) => setContactId(e.target.value)} className="h-8 text-sm mt-1" placeholder={t('admin.inbox.link.contactIdPlaceholder', 'Contact ID')} />
         </div>
         <div>
           <label className="text-xs text-muted-foreground">{t('admin.inbox.link.dealId')}</label>
-          <Input value={dealId} onChange={(e) => setDealId(e.target.value)} className="h-8 text-sm mt-1" placeholder="Deal ID" />
+          <Input value={dealId} onChange={(e) => setDealId(e.target.value)} className="h-8 text-sm mt-1" placeholder={t('admin.inbox.link.dealIdPlaceholder', 'Deal ID')} />
         </div>
       </div>
       <Button size="sm" onClick={handleSave} disabled={link.isPending} className="w-full">
@@ -304,7 +304,7 @@ function MessageDetail({
             <span>{t('admin.inbox.detail.to')}: {message.to.join(', ')}</span>
           ) : null}
           {message.cc?.length ? (
-            <span className="ml-2">Cc: {message.cc.join(', ')}</span>
+            <span className="ml-2">{t('admin.inbox.detail.cc', 'Cc')}: {message.cc.join(', ')}</span>
           ) : null}
         </div>
 
@@ -340,7 +340,7 @@ function MessageDetail({
         <iframe
           srcDoc={message.bodyHtml}
           sandbox=""
-          title="Email body"
+          title={t('admin.inbox.detail.bodyFrameTitle', 'Email body')}
           className="w-full min-h-[300px] h-full border-0 bg-white rounded"
           style={{ colorScheme: 'light' }}
         />
