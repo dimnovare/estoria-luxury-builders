@@ -63,9 +63,21 @@ test('property detail renders SEO canonical and (when geocoded) a real map', asy
   test.skip(!slug, 'no properties in sitemap');
   await page.goto(`${BASE}/properties/${slug}`, { waitUntil: 'networkidle' });
 
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
-    'href', new RegExp(`/properties/${slug}$`),
-  );
+  // Some canonical link ends with this property's slug. Poll over ALL canonical
+  // links (tolerates a static index.html canonical co-existing with the helmet
+  // one, and cold-start hydration timing) rather than a single strict locator.
+  await expect
+    .poll(
+      () =>
+        page
+          .locator('link[rel="canonical"]')
+          .evaluateAll(
+            (els, s) => els.some(e => (e.getAttribute('href') ?? '').endsWith(`/properties/${s}`)),
+            slug,
+          ),
+      { timeout: 20_000 },
+    )
+    .toBe(true);
 
   // If the property has coordinates, the Leaflet map mounts. Tiles load from
   // OpenStreetMap; assert the container and at least one loaded tile appear.
@@ -94,6 +106,33 @@ test('Kinnisvara24 feed is served as valid XML', async ({ request }) => {
   expect(res.status()).toBe(200);
   expect(res.headers()['content-type']).toContain('xml');
   const body = await res.text();
-  expect(body).toContain('<objects');
-  expect(body).toContain('</objects>');
+  // Valid whether empty (<objects />) or populated (<objects>…</objects>).
+  expect(body).toMatch(/<objects(\s*\/>|[\s>])/);
+});
+
+// ── Mobile (runs under the 'mobile' project at a 393px phone viewport) ─────────
+
+test('no horizontal overflow on key pages', async ({ page }) => {
+  for (const path of ['/', '/properties', '/contact']) {
+    await page.goto(`${BASE}${path}`, { waitUntil: 'networkidle' });
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow, `horizontal overflow on ${path}`).toBeLessThanOrEqual(2);
+  }
+});
+
+test('mobile menu opens the navigation', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'mobile viewport only');
+  await page.goto(BASE, { waitUntil: 'networkidle' });
+  // Hamburger aria-label comes from nav.openMenu (et/en/ru); match any.
+  const burger = page
+    .getByRole('button', { name: /open menu|ava menüü|открыть меню/i })
+    .first();
+  await expect(burger).toBeVisible();
+  await burger.click();
+  // A primary nav link should now be reachable.
+  await expect(
+    page.getByRole('link', { name: /properties|kinnisvara|недвижимост/i }).first(),
+  ).toBeVisible();
 });
