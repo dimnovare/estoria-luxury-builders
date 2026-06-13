@@ -250,7 +250,12 @@ export default function AdminLayout() {
         {/* Top bar */}
         <header className="h-16 bg-white border-b border-[hsl(0_0%_90%)] flex items-center justify-between px-4 lg:px-6 sticky top-0 z-30">
           <div className="flex items-center gap-3">
-            <button onClick={() => setMobileOpen(true)} className="lg:hidden text-[hsl(0_0%_40%)]">
+            <button
+              onClick={() => setMobileOpen(true)}
+              aria-label={t('admin.layout.openMenu', 'Open menu')}
+              title={t('admin.layout.openMenu', 'Open menu')}
+              className="lg:hidden flex h-11 w-11 -ml-2 items-center justify-center text-[hsl(0_0%_30%)] hover:text-[hsl(0_0%_15%)]"
+            >
               <Menu className="h-5 w-5" />
             </button>
             <div className="flex items-center gap-1.5 text-sm">

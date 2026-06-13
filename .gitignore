@@ -29,3 +29,6 @@ Thumbs.db
 test-results/
 playwright-report/
 playwright/.cache/
+
+# Playwright stored auth (contains a token)
+e2e/.auth/

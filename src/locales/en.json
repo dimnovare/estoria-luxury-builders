@@ -423,6 +423,7 @@
     },
     "layout": {
       "adminBadge": "Admin",
+      "openMenu": "Open menu",
       "viewSite": "View Site",
       "signOut": "Sign out",
       "breadcrumbAdmin": "Admin",

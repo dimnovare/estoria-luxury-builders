@@ -423,6 +423,7 @@
     },
     "layout": {
       "adminBadge": "Admin",
+      "openMenu": "Ava menüü",
       "viewSite": "Vaata saiti",
       "signOut": "Logi välja",
       "breadcrumbAdmin": "Admin",

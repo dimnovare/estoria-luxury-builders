@@ -423,6 +423,7 @@
     },
     "layout": {
       "adminBadge": "Админ",
+      "openMenu": "Открыть меню",
       "viewSite": "Открыть сайт",
       "signOut": "Выйти",
       "breadcrumbAdmin": "Админ",
