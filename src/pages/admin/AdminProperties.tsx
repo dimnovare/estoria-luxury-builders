@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import { useAdminProperties, useDeleteProperty, useSetPropertyStatus } from '@/hooks/api/useAdmin';
 import { useGeocodeMissing } from '@/hooks/api/usePropertyGeocode';
 import { propertyTypeLabel, transactionTypeLabel, propertyStatusLabel } from '@/lib/enumLabels';
@@ -79,28 +80,28 @@ export default function AdminProperties() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.properties.title')}</h1>
-          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">{t('admin.properties.subtitle', 'Manage property listings. Create a listing, then add images and publish it to make it visible on the public site.')}</p>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <Button
-            variant="outline"
-            onClick={handleGeocodeMissing}
-            disabled={geocodeMissing.isPending}
-            title={t('admin.properties.geocodeMissingHint')}
-          >
-            {geocodeMissing.isPending
-              ? <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              : <MapPin className="h-4 w-4 mr-2" />}
-            {t('admin.properties.geocodeMissing')}
-          </Button>
-          <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
-            <Link to="/admin/properties/new"><Plus className="h-4 w-4 mr-2" />{t('admin.properties.addNew')}</Link>
-          </Button>
-        </div>
-      </div>
+      <AdminPageHeader
+        title={t('admin.properties.title')}
+        subtitle={t('admin.properties.subtitle', 'Manage property listings. Create a listing, then add images and publish it to make it visible on the public site.')}
+        action={
+          <>
+            <Button
+              variant="outline"
+              onClick={handleGeocodeMissing}
+              disabled={geocodeMissing.isPending}
+              title={t('admin.properties.geocodeMissingHint')}
+            >
+              {geocodeMissing.isPending
+                ? <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                : <MapPin className="h-4 w-4 mr-2" />}
+              {t('admin.properties.geocodeMissing')}
+            </Button>
+            <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+              <Link to="/admin/properties/new"><Plus className="h-4 w-4 mr-2" />{t('admin.properties.addNew')}</Link>
+            </Button>
+          </>
+        }
+      />
 
       {/* Filters */}
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">

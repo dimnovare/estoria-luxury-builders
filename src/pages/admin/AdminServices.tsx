@@ -11,6 +11,7 @@ import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import TranslateButton from '@/components/admin/TranslateButton';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import {
   useAdminServices,
   useAdminService,
@@ -143,15 +144,15 @@ export default function AdminServices() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.services.title')}</h1>
-          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">{t('admin.services.subtitle', 'Edit the services shown on the homepage and services page. Type an icon name (for example home, key, building2 or scale) in the icon field.')}</p>
-        </div>
-        <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
-          <Plus className="h-4 w-4 mr-2" />{t('admin.services.addNew')}
-        </Button>
-      </div>
+      <AdminPageHeader
+        title={t('admin.services.title')}
+        subtitle={t('admin.services.subtitle', 'Edit the services shown on the homepage and services page. Type an icon name (for example home, key, building2 or scale) in the icon field.')}
+        action={
+          <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
+            <Plus className="h-4 w-4 mr-2" />{t('admin.services.addNew')}
+          </Button>
+        }
+      />
 
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">

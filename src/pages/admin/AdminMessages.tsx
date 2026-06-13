@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import { useAdminContacts, useUpdateContactStatus, useDeleteContactMessage, type ContactMessage } from '@/hooks/api/useAdmin';
 import { contactStatusLabel } from '@/lib/enumLabels';
 import { toast } from 'sonner';
@@ -54,8 +55,10 @@ export default function AdminMessages() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.messages.title')}</h1>
-      <p className="text-sm text-[hsl(0_0%_45%)] mt-1 mb-4">{t('admin.messages.subtitle', 'Contact form submissions from the public website. Mark as Read once followed up.')}</p>
+      <AdminPageHeader
+        title={t('admin.messages.title')}
+        subtitle={t('admin.messages.subtitle', 'Contact form submissions from the public website. Mark as Read once followed up.')}
+      />
 
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">

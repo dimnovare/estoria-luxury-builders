@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import { useAdminUsers, useDeleteUser, useUpdateUser, useResetPassword } from '@/hooks/api/useAdminUsers';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
@@ -81,12 +82,14 @@ export default function AdminUsers() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.users.title')}</h1>
-        <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
-          <Link to="/admin/users/new"><Plus className="h-4 w-4 mr-2" />{t('admin.users.addUser')}</Link>
-        </Button>
-      </div>
+      <AdminPageHeader
+        title={t('admin.users.title')}
+        action={
+          <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
+            <Link to="/admin/users/new"><Plus className="h-4 w-4 mr-2" />{t('admin.users.addUser')}</Link>
+          </Button>
+        }
+      />
 
       {/* Search */}
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">

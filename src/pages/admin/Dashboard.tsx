@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useAdminStats, useAdminContacts } from '@/hooks/api/useAdmin';
 import { contactStatusLabel } from '@/lib/enumLabels';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 
 const statusColor: Record<string, string> = {
   New: 'bg-primary/20 text-primary border-primary/30',
@@ -31,9 +32,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.dashboard.title')}</h1>
-      </div>
+      <AdminPageHeader title={t('admin.dashboard.title')} />
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">

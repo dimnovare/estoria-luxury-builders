@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { EmptyState } from '@/components/admin/EmptyState';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import {
   useAdminSavedSearches,
   useForceSendSavedSearch,
@@ -60,11 +61,7 @@ export default function AdminSavedSearches() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">
-          {t('admin.savedSearches.title')}
-        </h1>
-      </div>
+      <AdminPageHeader title={t('admin.savedSearches.title')} />
 
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
         <CardContent className="p-4 flex flex-wrap gap-3 items-center">

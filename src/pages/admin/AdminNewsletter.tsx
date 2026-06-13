@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 
 import { useAdminSubscribers, useUnsubscribe } from '@/hooks/api/useAdmin';
 import { useNewsletterCampaigns, useSendNewsletterNow, useNewsletterSubscriberCount, useDeleteCampaign, type CampaignDto } from '@/hooks/api/useNewsletter';
@@ -449,8 +450,10 @@ export default function AdminNewsletter() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.newsletter.title')}</h1>
-      <p className="text-sm text-[hsl(0_0%_45%)] mt-1 mb-4">{t('admin.newsletter.subtitle', 'Send email newsletters to subscribers. Use the Compose tab to write a campaign, then send a test to yourself before broadcasting.')}</p>
+      <AdminPageHeader
+        title={t('admin.newsletter.title')}
+        subtitle={t('admin.newsletter.subtitle', 'Send email newsletters to subscribers. Use the Compose tab to write a campaign, then send a test to yourself before broadcasting.')}
+      />
 
       <Tabs defaultValue="compose">
         <TabsList>

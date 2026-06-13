@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import TranslateButton from '@/components/admin/TranslateButton';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import { normalizeLanguages, languageLabel } from '@/lib/languages';
 import {
   useAdminTeam,
@@ -237,15 +238,15 @@ export default function AdminTeam() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.team.title')}</h1>
-          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">{t('admin.team.subtitle', 'Manage team member profiles shown on the About page. Drag to reorder.')}</p>
-        </div>
-        <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
-          <Plus className="h-4 w-4 mr-2" />{t('admin.team.addNew')}
-        </Button>
-      </div>
+      <AdminPageHeader
+        title={t('admin.team.title')}
+        subtitle={t('admin.team.subtitle', 'Manage team member profiles shown on the About page. Drag to reorder.')}
+        action={
+          <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
+            <Plus className="h-4 w-4 mr-2" />{t('admin.team.addNew')}
+          </Button>
+        }
+      />
 
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">

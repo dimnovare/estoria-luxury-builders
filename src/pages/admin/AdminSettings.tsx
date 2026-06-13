@@ -16,6 +16,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ChevronDown, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 
 /// Mirror of the backend SiteSettingService.TranslatableKeys whitelist —
 /// keys whose value is user-facing copy and should differ across EE/EN/RU.
@@ -374,10 +375,10 @@ export default function AdminSettings() {
 
   return (
     <div className="space-y-6 max-w-3xl">
-      <div>
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.settings.title')}</h1>
-        <p className="text-sm text-[hsl(0_0%_45%)] mt-1">{t('admin.settings.subtitle', 'Global site settings — contact details, social links, and stats shown throughout the public site. Changes take effect within 30 seconds.')}</p>
-      </div>
+      <AdminPageHeader
+        title={t('admin.settings.title')}
+        subtitle={t('admin.settings.subtitle', 'Global site settings — contact details, social links, and stats shown throughout the public site. Changes take effect within 30 seconds.')}
+      />
 
       {isLoading && <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.common.loading')}</p>}
 

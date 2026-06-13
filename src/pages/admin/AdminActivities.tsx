@@ -15,6 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { EmptyState } from '@/components/admin/EmptyState';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { useAdminUsers } from '@/hooks/api/useAdminUsers';
 import {
@@ -63,7 +64,7 @@ export default function AdminActivities() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.activities.title')}</h1>
+      <AdminPageHeader title={t('admin.activities.title')} />
 
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
         <CardContent className="p-4 flex flex-wrap gap-3 items-center">

@@ -11,6 +11,7 @@ import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAdminPages, useUpdatePage, type AdminPage, toBeLang } from '@/hooks/api/useAdmin';
 import TranslateButton from '@/components/admin/TranslateButton';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import { toast } from 'sonner';
 
 const langs = ['et', 'en', 'ru'] as const;
@@ -133,8 +134,10 @@ const sortedPages = useMemo(() => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.pages.title')}</h1>
-      <p className="text-sm text-[hsl(0_0%_45%)] mt-1 mb-4">{t('admin.pages.subtitle', 'Manage the text blocks shown on the public website. Each entry controls a specific section — edit the title, body, and images for each language (ET / EN / RU).')}</p>
+      <AdminPageHeader
+        title={t('admin.pages.title')}
+        subtitle={t('admin.pages.subtitle', 'Manage the text blocks shown on the public website. Each entry controls a specific section — edit the title, body, and images for each language (ET / EN / RU).')}
+      />
 
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">

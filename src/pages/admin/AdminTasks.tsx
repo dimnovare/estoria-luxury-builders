@@ -15,6 +15,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { EmptyState } from '@/components/admin/EmptyState';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useTasks, useToggleTaskStatus, useDeleteTask, type TaskDto, type TaskPriority } from '@/hooks/api/useTasks';
 import { useAuth } from '@/hooks/useAuth';
@@ -160,18 +161,18 @@ export default function AdminTasks() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.tasks.title')}</h1>
-          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">{t('admin.tasks.subtitle', 'Manage to-do items for yourself and team members. Set due dates and reminders.')}</p>
-        </div>
-        <Button
-          onClick={() => { setEditTaskId(undefined); setShowForm(true); }}
-          className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0"
-        >
-          <Plus className="h-4 w-4 mr-2" />{t('admin.tasks.addNew', 'New Task')}
-        </Button>
-      </div>
+      <AdminPageHeader
+        title={t('admin.tasks.title')}
+        subtitle={t('admin.tasks.subtitle', 'Manage to-do items for yourself and team members. Set due dates and reminders.')}
+        action={
+          <Button
+            onClick={() => { setEditTaskId(undefined); setShowForm(true); }}
+            className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0"
+          >
+            <Plus className="h-4 w-4 mr-2" />{t('admin.tasks.addNew', 'New Task')}
+          </Button>
+        }
+      />
 
       {/* Tabs */}
       <Tabs value={tab} onValueChange={(v) => setTab(v as TabValue)}>

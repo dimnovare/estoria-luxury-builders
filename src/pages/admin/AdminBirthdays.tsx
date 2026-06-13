@@ -12,6 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EmptyState } from '@/components/admin/EmptyState';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import {
   useUpcomingBirthdays, useBirthdayTemplates, useBirthdayAutoSend,
   useSendBirthdayNow, useSaveBirthdayTemplate, useSetBirthdayAutoSend,
@@ -104,7 +105,7 @@ export default function AdminBirthdays() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.birthday.title')}</h1>
+      <AdminPageHeader title={t('admin.birthday.title')} />
 
       {/* Section A — Upcoming Birthdays */}
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">

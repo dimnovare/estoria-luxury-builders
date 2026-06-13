@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import { useAdminBlogPosts, useDeleteBlogPost, useSetBlogPostStatus } from '@/hooks/api/useAdmin';
 import { blogStatusLabel } from '@/lib/enumLabels';
 import { toast } from 'sonner';
@@ -45,15 +46,15 @@ export default function AdminBlog() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.blog.title')}</h1>
-          <p className="text-sm text-[hsl(0_0%_45%)] mt-1">{t('admin.blog.subtitle', 'Write and publish blog articles. Save as Draft to preview before publishing. Each post supports Estonian, English, and Russian content.')}</p>
-        </div>
-        <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
-          <Link to="/admin/blog/new"><Plus className="h-4 w-4 mr-2" />{t('admin.blog.addNew')}</Link>
-        </Button>
-      </div>
+      <AdminPageHeader
+        title={t('admin.blog.title')}
+        subtitle={t('admin.blog.subtitle', 'Write and publish blog articles. Save as Draft to preview before publishing. Each post supports Estonian, English, and Russian content.')}
+        action={
+          <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
+            <Link to="/admin/blog/new"><Plus className="h-4 w-4 mr-2" />{t('admin.blog.addNew')}</Link>
+          </Button>
+        }
+      />
 
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
         <CardContent className="p-0">
