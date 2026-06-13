@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import type {
@@ -23,21 +24,26 @@ export default function PropertyPortalControls({
   states,
   onChange,
 }: PropertyPortalControlsProps) {
+  const { t } = useTranslation();
   if (portals.length === 0) return null;
 
   return (
     <div className="space-y-4">
       {portals.map(portal => {
         const errors = states[portal.key]?.validationErrors ?? [];
+        const label = t('admin.properties.portal.publishTo', { name: portal.displayName });
         return (
           <div key={portal.key} className="space-y-1.5">
             <div className="flex items-center justify-between gap-4">
-              <Label htmlFor={`portal-${portal.key}`} className="text-sm font-medium">
-                Publish to {portal.displayName}
+              <Label
+                htmlFor={`portal-${portal.key}`}
+                className="text-sm font-medium text-[hsl(0_0%_15%)]"
+              >
+                {label}
               </Label>
               <Switch
                 id={`portal-${portal.key}`}
-                aria-label={`Publish to ${portal.displayName}`}
+                aria-label={label}
                 checked={values[portal.key] ?? false}
                 onCheckedChange={checked => onChange(portal.key, checked)}
               />
@@ -52,8 +58,8 @@ export default function PropertyPortalControls({
           </div>
         );
       })}
-      <p className="text-xs text-muted-foreground">
-        Only active properties with valid portal data are included in the feed.
+      <p className="text-xs text-[hsl(0_0%_45%)]">
+        {t('admin.properties.portal.feedHelp')}
       </p>
     </div>
   );

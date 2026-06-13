@@ -1,6 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import i18n from '@/i18n';
 import PropertyPortalControls from '@/components/admin/PropertyPortalControls';
+
+// Force English so label assertions are deterministic regardless of detected lang.
+i18n.changeLanguage('en');
 
 describe('PropertyPortalControls', () => {
   it('renders discovered portals and reports switch changes', () => {

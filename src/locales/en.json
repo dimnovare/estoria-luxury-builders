@@ -492,6 +492,10 @@
       "savePublish": "Save & Publish",
       "publish": "Publish",
       "unpublish": "Unpublish",
+      "portal": {
+        "publishTo": "Publish to {{name}}",
+        "feedHelp": "Only active properties with valid portal data appear in the feed."
+      },
       "geocodeButton": "Get from address",
       "geocodeMissing": "Geocode missing",
       "geocodeMissingHint": "Find coordinates from the address for every property that doesn't have them yet, so the map shows on each listing.",

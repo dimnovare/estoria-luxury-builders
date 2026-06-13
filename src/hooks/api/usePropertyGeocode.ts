@@ -12,8 +12,11 @@ export interface GeoCoords {
 /// inputs — see PropertyForm.tsx.
 export function useGeocodeProperty() {
   return useMutation({
-    mutationFn: (id: string) =>
-      api.post<GeoCoords>(`/admin/properties/${id}/geocode`).then(r => r.data),
+    // Pass the address the form currently shows so geocoding works before the
+    // property is saved; the backend falls back to the stored address if omitted
+    // and persists the resolved coordinates either way.
+    mutationFn: ({ id, address, city }: { id: string; address?: string; city?: string }) =>
+      api.post<GeoCoords>(`/admin/properties/${id}/geocode`, { address, city }).then(r => r.data),
   });
 }
 

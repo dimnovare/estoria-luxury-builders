@@ -501,7 +501,11 @@ export default function PropertyForm() {
                     disabled={!id || geocode.isPending}
                     onClick={() => {
                       if (!id) return;
-                      geocode.mutate(id, {
+                      // Geocode the address currently typed in the Translations tab
+                      // (ET first, then EN, then RU) so it works before saving.
+                      const addr = translations.et?.address || translations.en?.address || translations.ru?.address || '';
+                      const cty = translations.et?.city || translations.en?.city || translations.ru?.city || '';
+                      geocode.mutate({ id, address: addr, city: cty }, {
                         onSuccess: (data) => {
                           setLat(data.latitude.toString());
                           setLng(data.longitude.toString());

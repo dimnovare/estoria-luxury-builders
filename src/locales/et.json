@@ -492,6 +492,10 @@
       "savePublish": "Salvesta ja avalda",
       "publish": "Avalda",
       "unpublish": "Peida",
+      "portal": {
+        "publishTo": "Avalda portaalis {{name}}",
+        "feedHelp": "Söödasse satuvad ainult aktiivsed, kehtivate portaaliandmetega kuulutused."
+      },
       "geocodeButton": "Hangi aadressilt",
       "geocodeMissing": "Geokodeeri puuduvad",
       "geocodeMissingHint": "Leia aadressi põhjal koordinaadid kõigile objektidele, millel need veel puuduvad, et kaart kuvataks igal kuulutusel.",
