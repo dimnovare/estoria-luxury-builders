@@ -261,11 +261,11 @@ export default function AdminLayout() {
             <div className="flex items-center gap-1.5 text-sm">
               {crumbs.map((c, i) => (
                 <span key={c.path} className="flex items-center gap-1.5">
-                  {i > 0 && <span className="text-[hsl(0_0%_75%)]">/</span>}
+                  {i > 0 && <span className="text-muted-foreground">/</span>}
                   {i === crumbs.length - 1 ? (
-                    <span className="text-[hsl(0_0%_20%)] font-medium">{c.label}</span>
+                    <span className="text-foreground font-medium">{c.label}</span>
                   ) : (
-                    <Link to={c.path} className="text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]">{c.label}</Link>
+                    <Link to={c.path} className="text-muted-foreground hover:text-foreground">{c.label}</Link>
                   )}
                 </span>
               ))}
