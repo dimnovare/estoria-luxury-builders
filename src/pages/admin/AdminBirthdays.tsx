@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useId, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Cake, Gift, Loader2, Send } from 'lucide-react';
@@ -28,6 +28,7 @@ const TEMPLATE_LANGS: BirthdayLanguage[] = ['Et', 'En', 'Ru'];
 
 export default function AdminBirthdays() {
   const { t } = useTranslation();
+  const fieldId = useId();
 
   const { data: birthdays, isLoading: loadingBirthdays, isError: birthdaysError, refetch: refetchBirthdays } = useUpcomingBirthdays(30);
   const { data: templates, isLoading: loadingTemplates } = useBirthdayTemplates();
@@ -195,8 +196,9 @@ export default function AdminBirthdays() {
               {TEMPLATE_LANGS.map(lang => (
                 <TabsContent key={lang} value={lang} className="space-y-4 mt-4">
                   <div>
-                    <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.birthday.fields.subject')}</Label>
+                    <Label htmlFor={`${fieldId}-subject-${lang}`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.birthday.fields.subject')}</Label>
                     <Input
+                      id={`${fieldId}-subject-${lang}`}
                       value={getTemplate(lang).subject}
                       onChange={(e) => updateTemplate(lang, 'subject', e.target.value)}
                       className="mt-1 bg-secondary border-border"

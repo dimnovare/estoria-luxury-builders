@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useId } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm, Controller } from 'react-hook-form';
@@ -57,6 +57,7 @@ export default function ContactForm() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const isEdit = !!id;
+  const fieldId = useId();
 
   const { data: existing, isLoading } = useContact(isEdit ? id : undefined);
   const { data: agentsData } = useAgents();
@@ -197,22 +198,22 @@ export default function ContactForm() {
             <AccordionContent className="px-6 pb-6">
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="sm:col-span-2">
-                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.fullName')}<span aria-hidden="true" className="text-destructive ml-0.5">*</span></Label>
-                  <Input {...register('fullName')} required aria-required autoComplete="name" className="mt-1 h-11 bg-secondary border-border text-foreground" />
+                  <Label htmlFor={`${fieldId}-fullName`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.fullName')}<span aria-hidden="true" className="text-destructive ml-0.5">*</span></Label>
+                  <Input id={`${fieldId}-fullName`} {...register('fullName')} required aria-required autoComplete="name" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                   {errors.fullName && <p className="text-xs text-destructive mt-1">{t(errors.fullName.message ?? '')}</p>}
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.email')}</Label>
-                  <Input {...register('email')} type="email" inputMode="email" autoComplete="email" className="mt-1 h-11 bg-secondary border-border text-foreground" />
+                  <Label htmlFor={`${fieldId}-email`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.email')}</Label>
+                  <Input id={`${fieldId}-email`} {...register('email')} type="email" inputMode="email" autoComplete="email" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                   {errors.email && <p className="text-xs text-destructive mt-1">{t(errors.email.message ?? '')}</p>}
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.phone')}</Label>
-                  <Input {...register('phone')} type="tel" inputMode="tel" autoComplete="tel" className="mt-1 h-11 bg-secondary border-border text-foreground" />
+                  <Label htmlFor={`${fieldId}-phone`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.phone')}</Label>
+                  <Input id={`${fieldId}-phone`} {...register('phone')} type="tel" inputMode="tel" autoComplete="tel" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.secondaryPhone')}</Label>
-                  <Input {...register('secondaryPhone')} type="tel" inputMode="tel" autoComplete="tel" className="mt-1 h-11 bg-secondary border-border text-foreground" />
+                  <Label htmlFor={`${fieldId}-secondaryPhone`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.secondaryPhone')}</Label>
+                  <Input id={`${fieldId}-secondaryPhone`} {...register('secondaryPhone')} type="tel" inputMode="tel" autoComplete="tel" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.preferredLang')}</Label>
@@ -232,8 +233,8 @@ export default function ContactForm() {
                   />
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.dateOfBirth')}</Label>
-                  <Input {...register('dateOfBirth')} type="date" className="mt-1 h-11 bg-secondary border-border text-foreground" />
+                  <Label htmlFor={`${fieldId}-dateOfBirth`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.dateOfBirth')}</Label>
+                  <Input id={`${fieldId}-dateOfBirth`} {...register('dateOfBirth')} type="date" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                   {errors.dateOfBirth && <p className="text-xs text-destructive mt-1">{t(errors.dateOfBirth.message ?? '')}</p>}
                 </div>
               </div>
@@ -248,16 +249,16 @@ export default function ContactForm() {
             <AccordionContent className="px-6 pb-6">
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="sm:col-span-2">
-                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.address')}</Label>
-                  <Input {...register('address')} autoComplete="street-address" className="mt-1 h-11 bg-secondary border-border text-foreground" />
+                  <Label htmlFor={`${fieldId}-address`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.address')}</Label>
+                  <Input id={`${fieldId}-address`} {...register('address')} autoComplete="street-address" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.company')}</Label>
-                  <Input {...register('company')} autoComplete="organization" className="mt-1 h-11 bg-secondary border-border text-foreground" />
+                  <Label htmlFor={`${fieldId}-company`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.company')}</Label>
+                  <Input id={`${fieldId}-company`} {...register('company')} autoComplete="organization" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.position')}</Label>
-                  <Input {...register('position')} autoComplete="organization-title" className="mt-1 h-11 bg-secondary border-border text-foreground" />
+                  <Label htmlFor={`${fieldId}-position`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.position')}</Label>
+                  <Input id={`${fieldId}-position`} {...register('position')} autoComplete="organization-title" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                 </div>
               </div>
             </AccordionContent>
@@ -287,7 +288,7 @@ export default function ContactForm() {
                 </div>
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div>
-                    <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.source')}</Label>
+                    <Label htmlFor={`${fieldId}-source`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.source')}</Label>
                     <Controller
                       control={control}
                       name="source"
@@ -300,7 +301,7 @@ export default function ContactForm() {
                           value={field.value || 'any'}
                           onValueChange={(v) => field.onChange(v === 'any' ? '' : v)}
                         >
-                          <SelectTrigger className="mt-1 bg-secondary border-border text-foreground">
+                          <SelectTrigger id={`${fieldId}-source`} className="mt-1 bg-secondary border-border text-foreground">
                             <SelectValue placeholder={t('admin.contacts.fields.selectSource')} />
                           </SelectTrigger>
                           <SelectContent>
@@ -312,12 +313,12 @@ export default function ContactForm() {
                     />
                   </div>
                   <div>
-                    <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.sourceDetail')}</Label>
-                    <Input {...register('sourceDetail')} className="mt-1 h-11 bg-secondary border-border text-foreground" />
+                    <Label htmlFor={`${fieldId}-sourceDetail`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.sourceDetail')}</Label>
+                    <Input id={`${fieldId}-sourceDetail`} {...register('sourceDetail')} className="mt-1 h-11 bg-secondary border-border text-foreground" />
                   </div>
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.tags')}</Label>
+                  <Label htmlFor={`${fieldId}-newTag`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.tags')}</Label>
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {tags.map(tag => (
                       <Badge key={tag} variant="outline" className="bg-primary/10 text-primary border-primary/30 gap-1">
@@ -328,6 +329,7 @@ export default function ContactForm() {
                   </div>
                   <div className="flex gap-2 mt-2">
                     <Input
+                      id={`${fieldId}-newTag`}
                       value={newTag}
                       onChange={(e) => setNewTag(e.target.value)}
                       onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } }}
@@ -348,7 +350,7 @@ export default function ContactForm() {
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.assignedAgent')}</Label>
+                <Label htmlFor={`${fieldId}-assignedAgent`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.assignedAgent')}</Label>
                 <Controller
                   control={control}
                   name="assignedAgentId"
@@ -360,7 +362,7 @@ export default function ContactForm() {
                       value={field.value || 'unassigned'}
                       onValueChange={(v) => field.onChange(v === 'unassigned' ? '' : v)}
                     >
-                      <SelectTrigger className="mt-1 bg-secondary border-border text-foreground w-full sm:w-[300px]">
+                      <SelectTrigger id={`${fieldId}-assignedAgent`} className="mt-1 bg-secondary border-border text-foreground w-full sm:w-[300px]">
                         <SelectValue placeholder={t('admin.contacts.fields.selectAgent')} />
                       </SelectTrigger>
                       <SelectContent>

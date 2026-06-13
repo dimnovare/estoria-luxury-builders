@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -49,6 +49,7 @@ export default function DealDetail() {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
+  const fieldId = useId();
 
   const { data: deal, isLoading, isError, refetch } = useDeal(id);
   const { data: activitiesData } = useActivities({ dealId: id, pageSize: 50 });
@@ -337,14 +338,14 @@ export default function DealDetail() {
             </Select>
             {targetStage === 'Won' && (
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.actualValue')} *</Label>
-                <Input value={actualValue} onChange={(e) => setActualValue(e.target.value)} type="number" className="mt-1 bg-background border-border text-foreground placeholder:text-muted-foreground" />
+                <Label htmlFor={`${fieldId}-actualValue`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.actualValue')} *</Label>
+                <Input id={`${fieldId}-actualValue`} value={actualValue} onChange={(e) => setActualValue(e.target.value)} type="number" className="mt-1 bg-background border-border text-foreground placeholder:text-muted-foreground" />
               </div>
             )}
             {targetStage === 'Lost' && (
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.lossReason')} *</Label>
-                <Textarea value={lossReason} onChange={(e) => setLossReason(e.target.value)} className="mt-1 bg-background border-border text-foreground placeholder:text-muted-foreground" rows={3} />
+                <Label htmlFor={`${fieldId}-lossReason`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.lossReason')} *</Label>
+                <Textarea id={`${fieldId}-lossReason`} value={lossReason} onChange={(e) => setLossReason(e.target.value)} className="mt-1 bg-background border-border text-foreground placeholder:text-muted-foreground" rows={3} />
               </div>
             )}
           </div>

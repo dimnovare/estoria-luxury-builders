@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -31,6 +31,7 @@ interface TaskFormProps {
 export default function TaskForm({ taskId, open, onClose, defaultContactId, defaultDealId, defaultPropertyId }: TaskFormProps) {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const fieldId = useId();
   const isEdit = !!taskId;
 
   const { data: existingTask, isLoading: loadingTask } = useTask(taskId);
@@ -130,20 +131,20 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
           <div className="space-y-4">
             {/* Title */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.title')}<RequiredMark /></Label>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} autoComplete="off" className="mt-1 h-11 bg-card border-border text-foreground placeholder:text-muted-foreground" />
+              <Label htmlFor={`${fieldId}-title`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.title')}<RequiredMark /></Label>
+              <Input id={`${fieldId}-title`} value={title} onChange={(e) => setTitle(e.target.value)} autoComplete="off" className="mt-1 h-11 bg-card border-border text-foreground placeholder:text-muted-foreground" />
             </div>
 
             {/* Description */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.description')}</Label>
-              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground" rows={3} />
+              <Label htmlFor={`${fieldId}-description`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.description')}</Label>
+              <Textarea id={`${fieldId}-description`} value={description} onChange={(e) => setDescription(e.target.value)} className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground" rows={3} />
             </div>
 
             {/* Due At */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.dueAt')}<RequiredMark /></Label>
-              <Input type="datetime-local" value={dueAt} onChange={(e) => setDueAt(e.target.value)} className="mt-1 h-11 bg-card border-border text-foreground placeholder:text-muted-foreground" />
+              <Label htmlFor={`${fieldId}-dueAt`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.dueAt')}<RequiredMark /></Label>
+              <Input id={`${fieldId}-dueAt`} type="datetime-local" value={dueAt} onChange={(e) => setDueAt(e.target.value)} className="mt-1 h-11 bg-card border-border text-foreground placeholder:text-muted-foreground" />
             </div>
 
             {/* Priority segmented */}
@@ -167,9 +168,9 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
 
             {/* Assigned To */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.assignedTo')}</Label>
+              <Label htmlFor={`${fieldId}-assignedTo`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.assignedTo')}</Label>
               <Select value={assignedToId} onValueChange={setAssignedToId}>
-                <SelectTrigger className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground"><SelectValue /></SelectTrigger>
+                <SelectTrigger id={`${fieldId}-assignedTo`} className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {(agents ?? []).map(a => (
                     <SelectItem key={a.id} value={a.id}>{a.fullName}</SelectItem>
@@ -238,16 +239,16 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
 
             {/* Reminder */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.reminderAt')}</Label>
-              <Input type="datetime-local" value={reminderAt} onChange={(e) => setReminderAt(e.target.value)} className="mt-1 h-11 bg-card border-border text-foreground placeholder:text-muted-foreground" />
+              <Label htmlFor={`${fieldId}-reminderAt`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.reminderAt')}</Label>
+              <Input id={`${fieldId}-reminderAt`} type="datetime-local" value={reminderAt} onChange={(e) => setReminderAt(e.target.value)} className="mt-1 h-11 bg-card border-border text-foreground placeholder:text-muted-foreground" />
             </div>
 
             {/* Recurrence */}
             <div>
               {/* TODO: P2.6 recurrence engine — currently UI-only, backend ignores */}
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.recurrence')}</Label>
+              <Label htmlFor={`${fieldId}-recurrence`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.recurrence')}</Label>
               <Select value={recurrence} onValueChange={(v) => setRecurrence(v as TaskRecurrence)}>
-                <SelectTrigger className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground"><SelectValue /></SelectTrigger>
+                <SelectTrigger id={`${fieldId}-recurrence`} className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {RECURRENCES.map(r => (
                     <SelectItem key={r} value={r}>{t(`admin.tasks.recurrence.${r}`)}</SelectItem>

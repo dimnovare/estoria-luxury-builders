@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useId, useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, ArrowRight, Plus, X, GripVertical, Image as ImageIcon, Loader2, AlertTriangle, RefreshCw, MapPin, Copy, Sparkles } from 'lucide-react';
@@ -47,6 +47,7 @@ export default function PropertyForm() {
   const navigate = useNavigate();
   const isEdit = !!id;
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const fieldId = useId();
 
   const { data: existing, isLoading: loadingProperty } = useAdminProperty(isEdit ? id : undefined);
   const { data: teamData } = useAdminTeam();
@@ -427,9 +428,9 @@ export default function PropertyForm() {
               <AccordionContent className="px-6 pb-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.properties.fields.propertyType')} {requiredMark}</Label>
+                    <Label htmlFor={`${fieldId}-propertyType`} className={labelClass}>{t('admin.properties.fields.propertyType')} {requiredMark}</Label>
                     <Select value={propertyType} onValueChange={setPropertyType}>
-                      <SelectTrigger className={inputClass}><SelectValue placeholder={t('admin.properties.fields.selectType')} /></SelectTrigger>
+                      <SelectTrigger id={`${fieldId}-propertyType`} className={inputClass}><SelectValue placeholder={t('admin.properties.fields.selectType')} /></SelectTrigger>
                       <SelectContent>
                         {PROPERTY_TYPE_VALUES.map(v => (
                           <SelectItem key={v} value={v}>{propertyTypeLabel(v, t)}</SelectItem>
@@ -438,9 +439,9 @@ export default function PropertyForm() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.properties.fields.transactionType')} {requiredMark}</Label>
+                    <Label htmlFor={`${fieldId}-transactionType`} className={labelClass}>{t('admin.properties.fields.transactionType')} {requiredMark}</Label>
                     <Select value={transactionType} onValueChange={setTransactionType}>
-                      <SelectTrigger className={inputClass}><SelectValue /></SelectTrigger>
+                      <SelectTrigger id={`${fieldId}-transactionType`} className={inputClass}><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {TRANSACTION_TYPE_VALUES.map(v => (
                           <SelectItem key={v} value={v}>{transactionTypeLabel(v, t)}</SelectItem>
@@ -452,18 +453,18 @@ export default function PropertyForm() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.properties.fields.price')} {requiredMark}</Label>
-                    <Input type="number" inputMode="numeric" value={price} onChange={e => setPrice(e.target.value)} className={inputClass} />
+                    <Label htmlFor={`${fieldId}-price`} className={labelClass}>{t('admin.properties.fields.price')} {requiredMark}</Label>
+                    <Input id={`${fieldId}-price`} type="number" inputMode="numeric" value={price} onChange={e => setPrice(e.target.value)} className={inputClass} />
                     <p className={helpClass}>{t('admin.properties.help.price', 'In euros (€). For rentals, the monthly rent.')}</p>
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.properties.fields.size')} {requiredMark}</Label>
-                    <Input type="number" inputMode="numeric" value={size} onChange={e => setSize(e.target.value)} className={inputClass} />
+                    <Label htmlFor={`${fieldId}-size`} className={labelClass}>{t('admin.properties.fields.size')} {requiredMark}</Label>
+                    <Input id={`${fieldId}-size`} type="number" inputMode="numeric" value={size} onChange={e => setSize(e.target.value)} className={inputClass} />
                     <p className={helpClass}>{t('admin.properties.help.size', 'Floor area in m².')}</p>
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.properties.fields.rooms')}</Label>
-                    <Input type="number" inputMode="numeric" value={rooms} onChange={e => setRooms(e.target.value)} className={inputClass} />
+                    <Label htmlFor={`${fieldId}-rooms`} className={labelClass}>{t('admin.properties.fields.rooms')}</Label>
+                    <Input id={`${fieldId}-rooms`} type="number" inputMode="numeric" value={rooms} onChange={e => setRooms(e.target.value)} className={inputClass} />
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground">
@@ -480,32 +481,32 @@ export default function PropertyForm() {
               <AccordionContent className="px-6 pb-6 space-y-6">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.properties.fields.bedrooms')}</Label>
-                    <Input type="number" inputMode="numeric" value={bedrooms} onChange={e => setBedrooms(e.target.value)} className={inputClass} />
+                    <Label htmlFor={`${fieldId}-bedrooms`} className={labelClass}>{t('admin.properties.fields.bedrooms')}</Label>
+                    <Input id={`${fieldId}-bedrooms`} type="number" inputMode="numeric" value={bedrooms} onChange={e => setBedrooms(e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.properties.fields.bathrooms')}</Label>
-                    <Input type="number" inputMode="numeric" value={bathrooms} onChange={e => setBathrooms(e.target.value)} className={inputClass} />
+                    <Label htmlFor={`${fieldId}-bathrooms`} className={labelClass}>{t('admin.properties.fields.bathrooms')}</Label>
+                    <Input id={`${fieldId}-bathrooms`} type="number" inputMode="numeric" value={bathrooms} onChange={e => setBathrooms(e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.properties.fields.floor')}</Label>
-                    <Input type="number" inputMode="numeric" value={floor} onChange={e => setFloor(e.target.value)} className={inputClass} />
+                    <Label htmlFor={`${fieldId}-floor`} className={labelClass}>{t('admin.properties.fields.floor')}</Label>
+                    <Input id={`${fieldId}-floor`} type="number" inputMode="numeric" value={floor} onChange={e => setFloor(e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.properties.fields.totalFloors')}</Label>
-                    <Input type="number" inputMode="numeric" value={totalFloors} onChange={e => setTotalFloors(e.target.value)} className={inputClass} />
+                    <Label htmlFor={`${fieldId}-totalFloors`} className={labelClass}>{t('admin.properties.fields.totalFloors')}</Label>
+                    <Input id={`${fieldId}-totalFloors`} type="number" inputMode="numeric" value={totalFloors} onChange={e => setTotalFloors(e.target.value)} className={inputClass} />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.properties.fields.yearBuilt')}</Label>
-                    <Input type="number" inputMode="numeric" value={yearBuilt} onChange={e => setYearBuilt(e.target.value)} className={inputClass} />
+                    <Label htmlFor={`${fieldId}-yearBuilt`} className={labelClass}>{t('admin.properties.fields.yearBuilt')}</Label>
+                    <Input id={`${fieldId}-yearBuilt`} type="number" inputMode="numeric" value={yearBuilt} onChange={e => setYearBuilt(e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.properties.fields.energyClass')}</Label>
+                    <Label htmlFor={`${fieldId}-energyClass`} className={labelClass}>{t('admin.properties.fields.energyClass')}</Label>
                     <Select value={energyClass} onValueChange={setEnergyClass}>
-                      <SelectTrigger className={inputClass}><SelectValue placeholder={t('admin.properties.fields.selectEnergyClass')} /></SelectTrigger>
+                      <SelectTrigger id={`${fieldId}-energyClass`} className={inputClass}><SelectValue placeholder={t('admin.properties.fields.selectEnergyClass')} /></SelectTrigger>
                       <SelectContent>
                         {['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(c => (
                           <SelectItem key={c} value={c}>{c}</SelectItem>
@@ -592,9 +593,9 @@ export default function PropertyForm() {
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 space-y-6">
                 <div className="space-y-2 max-w-sm">
-                  <Label className={labelClass}>{t('admin.properties.fields.agent')}</Label>
+                  <Label htmlFor={`${fieldId}-agent`} className={labelClass}>{t('admin.properties.fields.agent')}</Label>
                   <Select value={agentId} onValueChange={setAgentId}>
-                    <SelectTrigger className={inputClass}><SelectValue placeholder={t('admin.properties.fields.selectAgent')} /></SelectTrigger>
+                    <SelectTrigger id={`${fieldId}-agent`} className={inputClass}><SelectValue placeholder={t('admin.properties.fields.selectAgent')} /></SelectTrigger>
                     <SelectContent>
                       {(teamData ?? []).map(member => (
                         <SelectItem key={member.id} value={member.id}>{member.name}</SelectItem>
@@ -678,22 +679,22 @@ export default function PropertyForm() {
                       </div>
                     )}
                     <div className="space-y-2">
-                      <Label className={labelClass}>{t('admin.properties.fields.title')} {lang === 'et' && requiredMark}</Label>
-                      <Input value={translations[lang]?.title || ''} onChange={e => updateTranslation(lang, 'title', e.target.value)} className={inputClass} />
+                      <Label htmlFor={`${fieldId}-title-${lang}`} className={labelClass}>{t('admin.properties.fields.title')} {lang === 'et' && requiredMark}</Label>
+                      <Input id={`${fieldId}-title-${lang}`} value={translations[lang]?.title || ''} onChange={e => updateTranslation(lang, 'title', e.target.value)} className={inputClass} />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label className={labelClass}>{t('admin.properties.fields.address')}</Label>
-                        <Input value={translations[lang]?.address || ''} onChange={e => updateTranslation(lang, 'address', e.target.value)} className={inputClass} />
+                        <Label htmlFor={`${fieldId}-address-${lang}`} className={labelClass}>{t('admin.properties.fields.address')}</Label>
+                        <Input id={`${fieldId}-address-${lang}`} value={translations[lang]?.address || ''} onChange={e => updateTranslation(lang, 'address', e.target.value)} className={inputClass} />
                       </div>
                       <div className="space-y-2">
-                        <Label className={labelClass}>{t('admin.properties.fields.city')}</Label>
-                        <Input value={translations[lang]?.city || ''} onChange={e => updateTranslation(lang, 'city', e.target.value)} className={inputClass} />
+                        <Label htmlFor={`${fieldId}-city-${lang}`} className={labelClass}>{t('admin.properties.fields.city')}</Label>
+                        <Input id={`${fieldId}-city-${lang}`} value={translations[lang]?.city || ''} onChange={e => updateTranslation(lang, 'city', e.target.value)} className={inputClass} />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label className={labelClass}>{t('admin.properties.fields.district')}</Label>
-                      <Input value={translations[lang]?.district || ''} onChange={e => updateTranslation(lang, 'district', e.target.value)} className={inputClass} />
+                      <Label htmlFor={`${fieldId}-district-${lang}`} className={labelClass}>{t('admin.properties.fields.district')}</Label>
+                      <Input id={`${fieldId}-district-${lang}`} value={translations[lang]?.district || ''} onChange={e => updateTranslation(lang, 'district', e.target.value)} className={inputClass} />
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between gap-3">

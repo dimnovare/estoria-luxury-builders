@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useId, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Pencil, Trash2, Loader2, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -35,6 +35,7 @@ const emptyTrans: TransFields = { title: '', location: '', description: '' };
 
 export default function AdminCareers() {
   const { t } = useTranslation();
+  const fieldId = useId();
   const { data: careers, isLoading, isError, refetch } = useAdminCareers();
   const createCareer = useCreateCareer();
   const updateCareer = useUpdateCareer();
@@ -293,15 +294,15 @@ export default function AdminCareers() {
               {langs.map(lang => (
                 <TabsContent key={lang} value={lang} className="mt-3 space-y-3">
                   <div className="space-y-2">
-                    <Label className={labelClass}>
+                    <Label htmlFor={`${fieldId}-title-${lang}`} className={labelClass}>
                       {t('admin.careers.fields.title')}
                       {lang === 'et' && <span className="text-destructive ml-0.5">*</span>}
                     </Label>
-                    <Input value={translations[lang]?.title || ''} onChange={e => updateTrans(lang, 'title', e.target.value)} className={inputClass} />
+                    <Input id={`${fieldId}-title-${lang}`} value={translations[lang]?.title || ''} onChange={e => updateTrans(lang, 'title', e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.careers.fields.location')}</Label>
-                    <Input value={translations[lang]?.location || ''} onChange={e => updateTrans(lang, 'location', e.target.value)} className={inputClass} />
+                    <Label htmlFor={`${fieldId}-location-${lang}`} className={labelClass}>{t('admin.careers.fields.location')}</Label>
+                    <Input id={`${fieldId}-location-${lang}`} value={translations[lang]?.location || ''} onChange={e => updateTrans(lang, 'location', e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.careers.fields.description')}</Label>

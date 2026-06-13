@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
@@ -11,6 +11,7 @@ export default function Login() {
   const { t } = useTranslation();
   const { login } = useAuth();
   const navigate = useNavigate();
+  const fieldId = useId();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -56,11 +57,12 @@ export default function Login() {
 
         <div className="space-y-5">
           <div>
-            <Label className="text-foreground text-xs tracking-wider uppercase">
+            <Label htmlFor={`${fieldId}-email`} className="text-foreground text-xs tracking-wider uppercase">
               {t('admin.login.emailLabel')}
               <span className="text-destructive"> *</span>
             </Label>
             <Input
+              id={`${fieldId}-email`}
               type="email"
               inputMode="email"
               autoComplete="email"
@@ -73,12 +75,13 @@ export default function Login() {
           </div>
 
           <div>
-            <Label className="text-foreground text-xs tracking-wider uppercase">
+            <Label htmlFor={`${fieldId}-password`} className="text-foreground text-xs tracking-wider uppercase">
               {t('admin.login.passwordLabel')}
               <span className="text-destructive"> *</span>
             </Label>
             <div className="relative">
               <Input
+                id={`${fieldId}-password`}
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
                 value={password}

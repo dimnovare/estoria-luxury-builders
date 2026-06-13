@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useId, useState, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm, Controller } from 'react-hook-form';
@@ -55,6 +55,7 @@ export default function DealForm() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const isEdit = !!id;
+  const fieldId = useId();
   const { user, hasRole } = useAuth();
   const isAdmin = hasRole('Admin');
 
@@ -167,16 +168,17 @@ export default function DealForm() {
         <Card className="bg-card border-border shadow-sm">
           <CardContent className="p-6 space-y-6">
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.title')}<RequiredMark /></Label>
-              <Input {...register('title')} className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
+              <Label htmlFor={`${fieldId}-title`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.title')}<RequiredMark /></Label>
+              <Input id={`${fieldId}-title`} {...register('title')} className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
               {errors.title && <p className="text-xs text-destructive mt-1">{t(errors.title.message ?? '')}</p>}
             </div>
 
             {/* Contact autocomplete */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.primaryContact')}<RequiredMark /></Label>
+              <Label htmlFor={`${fieldId}-primary-contact`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.primaryContact')}<RequiredMark /></Label>
               <div className="relative mt-1">
                 <Input
+                  id={`${fieldId}-primary-contact`}
                   value={selectedContactName || contactSearch}
                   onChange={(e) => { setContactSearch(e.target.value); setSelectedContactName(''); setValue('primaryContactId', ''); }}
                   placeholder={t('admin.deals.fields.searchContact')}
@@ -229,13 +231,13 @@ export default function DealForm() {
 
             {/* Agent — disabled for non-Admin */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.assignedAgent')}<RequiredMark /></Label>
+              <Label htmlFor={`${fieldId}-assigned-agent`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.assignedAgent')}<RequiredMark /></Label>
               <Controller
                 control={control}
                 name="assignedAgentId"
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange} disabled={!isAdmin}>
-                    <SelectTrigger className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground">
+                    <SelectTrigger id={`${fieldId}-assigned-agent`} className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground">
                       <SelectValue placeholder={t('admin.contacts.fields.selectAgent')} />
                     </SelectTrigger>
                     <SelectContent>
@@ -250,13 +252,13 @@ export default function DealForm() {
 
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.dealType')}</Label>
+                <Label htmlFor={`${fieldId}-deal-type`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.dealType')}</Label>
                 <Controller
                   control={control}
                   name="dealType"
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground"><SelectValue /></SelectTrigger>
+                      <SelectTrigger id={`${fieldId}-deal-type`} className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Sale">{t('admin.deals.dealTypes.Sale')}</SelectItem>
                         <SelectItem value="Rent">{t('admin.deals.dealTypes.Rent')}</SelectItem>
@@ -266,13 +268,13 @@ export default function DealForm() {
                 />
               </div>
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.side')}</Label>
+                <Label htmlFor={`${fieldId}-side`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.side')}</Label>
                 <Controller
                   control={control}
                   name="side"
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground"><SelectValue /></SelectTrigger>
+                      <SelectTrigger id={`${fieldId}-side`} className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="BuySide">{t('admin.deals.sides.BuySide')}</SelectItem>
                         <SelectItem value="SellSide">{t('admin.deals.sides.SellSide')}</SelectItem>
@@ -285,23 +287,23 @@ export default function DealForm() {
 
             <div className="grid gap-6 sm:grid-cols-3">
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.expectedValue')}</Label>
-                <Input {...register('expectedValue')} type="number" inputMode="numeric" className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
+                <Label htmlFor={`${fieldId}-expected-value`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.expectedValue')}</Label>
+                <Input id={`${fieldId}-expected-value`} {...register('expectedValue')} type="number" inputMode="numeric" className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
                 {errors.expectedValue && <p className="text-xs text-destructive mt-1">{t(errors.expectedValue.message ?? '')}</p>}
               </div>
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.currency')}</Label>
-                <Input {...register('currency')} className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
+                <Label htmlFor={`${fieldId}-currency`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.currency')}</Label>
+                <Input id={`${fieldId}-currency`} {...register('currency')} className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
               </div>
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.commissionPercent')}</Label>
-                <Input {...register('commissionPercent')} type="number" step="0.1" inputMode="decimal" className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
+                <Label htmlFor={`${fieldId}-commission-percent`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.commissionPercent')}</Label>
+                <Input id={`${fieldId}-commission-percent`} {...register('commissionPercent')} type="number" step="0.1" inputMode="decimal" className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
               </div>
             </div>
 
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.expectedCloseDate')}</Label>
-              <Input {...register('expectedCloseDate')} type="date" className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground w-auto" />
+              <Label htmlFor={`${fieldId}-expected-close-date`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.expectedCloseDate')}</Label>
+              <Input id={`${fieldId}-expected-close-date`} {...register('expectedCloseDate')} type="date" className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground w-auto" />
               {errors.expectedCloseDate && <p className="text-xs text-destructive mt-1">{t(errors.expectedCloseDate.message ?? '')}</p>}
             </div>
 

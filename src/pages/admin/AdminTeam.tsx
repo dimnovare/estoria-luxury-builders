@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useId, useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -48,6 +48,7 @@ const emptyTrans: TransFields = { name: '', role: '', bio: '' };
 
 export default function AdminTeam() {
   const { t } = useTranslation();
+  const fieldId = useId();
   const { data: team, isLoading, isError, refetch } = useAdminTeam();
   const createMember = useCreateTeamMember();
   const updateMember = useUpdateTeamMember();
@@ -374,7 +375,7 @@ export default function AdminTeam() {
           <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
             {/* Photo */}
             <div className="space-y-2">
-              <Label className={labelClass}>{t('admin.team.fields.photo')}</Label>
+              <Label htmlFor={`${fieldId}-photo`} className={labelClass}>{t('admin.team.fields.photo')}</Label>
               {photoPreview ? (
                 <div className="flex items-center gap-3">
                   <img src={photoPreview} alt="" className="h-16 w-16 rounded-full object-cover border border-border" />
@@ -392,23 +393,23 @@ export default function AdminTeam() {
                   </p>
                 </div>
               )}
-              <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+              <input id={`${fieldId}-photo`} ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className={labelClass}>{t('admin.team.fields.phone')}</Label>
-                <Input type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} />
+                <Label htmlFor={`${fieldId}-phone`} className={labelClass}>{t('admin.team.fields.phone')}</Label>
+                <Input id={`${fieldId}-phone`} type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} />
               </div>
               <div className="space-y-2">
-                <Label className={labelClass}>{t('admin.team.fields.email')}</Label>
-                <Input type="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} />
+                <Label htmlFor={`${fieldId}-email`} className={labelClass}>{t('admin.team.fields.email')}</Label>
+                <Input id={`${fieldId}-email`} type="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label className={labelClass}>{t('admin.team.fields.sortOrder')}</Label>
-              <Input type="number" inputMode="numeric" value={sortOrder} onChange={e => setSortOrder(e.target.value)} className={`w-32 ${inputClass}`} />
+              <Label htmlFor={`${fieldId}-sortOrder`} className={labelClass}>{t('admin.team.fields.sortOrder')}</Label>
+              <Input id={`${fieldId}-sortOrder`} type="number" inputMode="numeric" value={sortOrder} onChange={e => setSortOrder(e.target.value)} className={`w-32 ${inputClass}`} />
             </div>
 
             <div className="space-y-2">
@@ -456,7 +457,7 @@ export default function AdminTeam() {
                 <TabsContent key={lang} value={lang} className="mt-3 space-y-3">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between gap-2">
-                      <Label className={labelClass}>
+                      <Label htmlFor={`${fieldId}-name-${lang}`} className={labelClass}>
                         {t('admin.team.fields.name')}
                         {lang === 'et' && <span className="text-destructive ml-0.5">*</span>}
                       </Label>
@@ -472,14 +473,14 @@ export default function AdminTeam() {
                         </Button>
                       )}
                     </div>
-                    <Input value={translations[lang]?.name || ''} onChange={e => updateTrans(lang, 'name', e.target.value)} className={inputClass} />
+                    <Input id={`${fieldId}-name-${lang}`} value={translations[lang]?.name || ''} onChange={e => updateTrans(lang, 'name', e.target.value)} className={inputClass} />
                     {lang === 'et' && (
                       <p className="text-xs text-muted-foreground">{t('admin.team.fields.estonianRequired', 'The Estonian name is required.')}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.team.fields.role')}</Label>
-                    <Input value={translations[lang]?.role || ''} onChange={e => updateTrans(lang, 'role', e.target.value)} className={inputClass} />
+                    <Label htmlFor={`${fieldId}-role-${lang}`} className={labelClass}>{t('admin.team.fields.role')}</Label>
+                    <Input id={`${fieldId}-role-${lang}`} value={translations[lang]?.role || ''} onChange={e => updateTrans(lang, 'role', e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.team.fields.bio')}</Label>
@@ -543,9 +544,9 @@ export default function AdminTeam() {
                 : ''}
             </p>
             <div className="space-y-2">
-              <Label className={labelClass}>{t('admin.team.transfer.agent', 'Receiving agent')}</Label>
+              <Label htmlFor={`${fieldId}-transferAgent`} className={labelClass}>{t('admin.team.transfer.agent', 'Receiving agent')}</Label>
               <Select value={transferTo} onValueChange={setTransferTo}>
-                <SelectTrigger className={inputClass}>
+                <SelectTrigger id={`${fieldId}-transferAgent`} className={inputClass}>
                   <SelectValue placeholder={t('admin.team.transfer.selectAgent', 'Select an agent…')} />
                 </SelectTrigger>
                 <SelectContent>

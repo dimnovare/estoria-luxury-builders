@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Plus, Pencil, KeyRound, UserX, UserCheck, Search, ChevronLeft, ChevronRight, Users } from 'lucide-react';
@@ -28,6 +28,7 @@ const roleBadgeColors: Record<string, string> = {
 
 export default function AdminUsers() {
   const { t } = useTranslation();
+  const fieldId = useId();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
@@ -275,8 +276,9 @@ export default function AdminUsers() {
           </DialogHeader>
           <p className="text-sm text-muted-foreground">{passwordModal?.name}</p>
           <div className="space-y-2">
-            <Label className="text-sm text-muted-foreground font-medium">{t('admin.users.fields.password')}</Label>
+            <Label htmlFor={`${fieldId}-password`} className="text-sm text-muted-foreground font-medium">{t('admin.users.fields.password')}</Label>
             <Input
+              id={`${fieldId}-password`}
               type="password"
               value={newPassword}
               onChange={e => setNewPassword(e.target.value)}

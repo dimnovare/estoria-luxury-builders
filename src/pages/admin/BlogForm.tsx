@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useId } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Image as ImageIcon, Loader2, X } from 'lucide-react';
@@ -33,6 +33,7 @@ export default function BlogForm() {
   const navigate = useNavigate();
   const isEdit = !!id;
   const coverInputRef = useRef<HTMLInputElement>(null);
+  const fieldId = useId();
 
   const { data: existing, isLoading: loadingPost } = useAdminBlogPost(isEdit ? id : undefined);
   const { data: teamData } = useAdminTeam();
@@ -204,12 +205,12 @@ export default function BlogForm() {
           </div>
 
           <div className="space-y-2">
-            <Label className={labelClass}>
+            <Label htmlFor={`${fieldId}-author`} className={labelClass}>
               {t('admin.blog.fields.author')}
               <span className="text-destructive ml-1" aria-hidden="true">*</span>
             </Label>
             <Select value={authorId} onValueChange={setAuthorId}>
-              <SelectTrigger className={inputClass}><SelectValue placeholder={t('admin.blog.fields.selectAuthor')} /></SelectTrigger>
+              <SelectTrigger id={`${fieldId}-author`} className={inputClass}><SelectValue placeholder={t('admin.blog.fields.selectAuthor')} /></SelectTrigger>
               <SelectContent>
                 {(teamData ?? []).map(member => <SelectItem key={member.id} value={member.id}>{member.name}</SelectItem>)}
               </SelectContent>
@@ -246,15 +247,15 @@ export default function BlogForm() {
             {langs.map(lang => (
               <TabsContent key={lang} value={lang} className="mt-4 space-y-4">
                 <div className="space-y-2">
-                  <Label className={labelClass}>
+                  <Label htmlFor={`${fieldId}-title-${lang}`} className={labelClass}>
                     {t('admin.blog.fields.title')}
                     {lang === 'et' && <span className="text-destructive ml-1" aria-hidden="true">*</span>}
                   </Label>
-                  <Input value={translations[lang]?.title || ''} onChange={e => updateT(lang, 'title', e.target.value)} className={inputClass} />
+                  <Input id={`${fieldId}-title-${lang}`} value={translations[lang]?.title || ''} onChange={e => updateT(lang, 'title', e.target.value)} className={inputClass} />
                 </div>
                 <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.blog.fields.excerpt')}</Label>
-                  <Textarea rows={3} value={translations[lang]?.excerpt || ''} onChange={e => updateT(lang, 'excerpt', e.target.value)} className={inputClass} />
+                  <Label htmlFor={`${fieldId}-excerpt-${lang}`} className={labelClass}>{t('admin.blog.fields.excerpt')}</Label>
+                  <Textarea id={`${fieldId}-excerpt-${lang}`} rows={3} value={translations[lang]?.excerpt || ''} onChange={e => updateT(lang, 'excerpt', e.target.value)} className={inputClass} />
                 </div>
                 <div className="space-y-2">
                   <Label className={labelClass}>{t('admin.blog.fields.content')}</Label>
@@ -267,12 +268,12 @@ export default function BlogForm() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.blog.fields.metaTitle')}</Label>
-                    <Input value={translations[lang]?.metaTitle || ''} onChange={e => updateT(lang, 'metaTitle', e.target.value)} className={inputClass} />
+                    <Label htmlFor={`${fieldId}-metaTitle-${lang}`} className={labelClass}>{t('admin.blog.fields.metaTitle')}</Label>
+                    <Input id={`${fieldId}-metaTitle-${lang}`} value={translations[lang]?.metaTitle || ''} onChange={e => updateT(lang, 'metaTitle', e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.blog.fields.metaDescription')}</Label>
-                    <Input value={translations[lang]?.metaDescription || ''} onChange={e => updateT(lang, 'metaDescription', e.target.value)} className={inputClass} />
+                    <Label htmlFor={`${fieldId}-metaDescription-${lang}`} className={labelClass}>{t('admin.blog.fields.metaDescription')}</Label>
+                    <Input id={`${fieldId}-metaDescription-${lang}`} value={translations[lang]?.metaDescription || ''} onChange={e => updateT(lang, 'metaDescription', e.target.value)} className={inputClass} />
                   </div>
                 </div>
               </TabsContent>

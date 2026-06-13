@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Plus, Calendar, Clock, Briefcase } from 'lucide-react';
@@ -54,6 +54,7 @@ const stageColors: Record<string, string> = {
 
 export default function AdminDeals() {
   const { t } = useTranslation();
+  const fieldId = useId();
 
   const [agentFilter, setAgentFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
@@ -339,9 +340,9 @@ export default function AdminDeals() {
               </Badge>
             </div>
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.newStage', 'New stage')}</Label>
+              <Label htmlFor={`${fieldId}-newStage`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.newStage', 'New stage')}</Label>
               <Select value={targetStage} onValueChange={(v) => setTargetStage(v as DealStage)}>
-                <SelectTrigger className="mt-1 bg-background border-border text-foreground">
+                <SelectTrigger id={`${fieldId}-newStage`} className="mt-1 bg-background border-border text-foreground">
                   <SelectValue placeholder={t('admin.deals.selectStage', 'Select stage')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -353,14 +354,14 @@ export default function AdminDeals() {
             </div>
             {targetStage === 'Won' && (
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.actualValue')} *</Label>
-                <Input value={actualValue} onChange={(e) => setActualValue(e.target.value)} type="number" className="mt-1 bg-background border-border text-foreground" />
+                <Label htmlFor={`${fieldId}-actualValue`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.actualValue')} *</Label>
+                <Input id={`${fieldId}-actualValue`} value={actualValue} onChange={(e) => setActualValue(e.target.value)} type="number" className="mt-1 bg-background border-border text-foreground" />
               </div>
             )}
             {targetStage === 'Lost' && (
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.lossReason')} *</Label>
-                <Textarea value={lossReason} onChange={(e) => setLossReason(e.target.value)} className="mt-1 bg-background border-border text-foreground" rows={3} />
+                <Label htmlFor={`${fieldId}-lossReason`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.lossReason')} *</Label>
+                <Textarea id={`${fieldId}-lossReason`} value={lossReason} onChange={(e) => setLossReason(e.target.value)} className="mt-1 bg-background border-border text-foreground" rows={3} />
               </div>
             )}
           </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useId } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Loader2, X, ImagePlus } from 'lucide-react';
@@ -22,6 +22,7 @@ export default function UserForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEdit = !!id;
+  const fieldId = useId();
 
   const { data: existing, isLoading: loadingUser } = useAdminUser(isEdit ? id : undefined);
   const { data: teamData } = useAdminTeam();
@@ -158,25 +159,25 @@ export default function UserForm() {
         <CardContent className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className={labelClass}>{t('admin.users.fields.email')}{!isEdit && <RequiredMark />}</Label>
-              <Input ref={emailRef} type="email" autoComplete="email" required={!isEdit} aria-required={!isEdit} value={email} onChange={e => setEmail(e.target.value)} className={inputClass} disabled={isEdit} />
+              <Label htmlFor={`${fieldId}-email`} className={labelClass}>{t('admin.users.fields.email')}{!isEdit && <RequiredMark />}</Label>
+              <Input id={`${fieldId}-email`} ref={emailRef} type="email" autoComplete="email" required={!isEdit} aria-required={!isEdit} value={email} onChange={e => setEmail(e.target.value)} className={inputClass} disabled={isEdit} />
             </div>
             <div className="space-y-2">
-              <Label className={labelClass}>{t('admin.users.fields.fullName')}<RequiredMark /></Label>
-              <Input ref={fullNameRef} autoComplete="name" required aria-required value={fullName} onChange={e => setFullName(e.target.value)} className={inputClass} />
+              <Label htmlFor={`${fieldId}-fullName`} className={labelClass}>{t('admin.users.fields.fullName')}<RequiredMark /></Label>
+              <Input id={`${fieldId}-fullName`} ref={fullNameRef} autoComplete="name" required aria-required value={fullName} onChange={e => setFullName(e.target.value)} className={inputClass} />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className={labelClass}>{t('admin.users.fields.phone')}</Label>
-              <Input type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} />
+              <Label htmlFor={`${fieldId}-phone`} className={labelClass}>{t('admin.users.fields.phone')}</Label>
+              <Input id={`${fieldId}-phone`} type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} />
             </div>
           </div>
 
           {/* Photo — upload with preview (replaces the old raw URL text input) */}
           <div className="space-y-2">
-            <Label className={labelClass}>{t('admin.users.fields.photo', 'Photo')}</Label>
+            <Label htmlFor={`${fieldId}-photo`} className={labelClass}>{t('admin.users.fields.photo', 'Photo')}</Label>
             <div className="flex items-center gap-3">
               {photoUrl ? (
                 <img src={photoUrl} alt="" className="h-16 w-16 rounded-full object-cover border border-border" />
@@ -216,7 +217,7 @@ export default function UserForm() {
             <p className="text-xs text-muted-foreground">
               {t('admin.users.fields.photoHint', 'Upload a profile picture (JPG or PNG). It appears next to this user across the admin.')}
             </p>
-            <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+            <input id={`${fieldId}-photo`} ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
           </div>
 
           {/* Languages */}
@@ -263,9 +264,9 @@ export default function UserForm() {
 
           {/* Team Member */}
           <div className="space-y-2">
-            <Label className={labelClass}>{t('admin.users.fields.teamMember')}</Label>
+            <Label htmlFor={`${fieldId}-teamMember`} className={labelClass}>{t('admin.users.fields.teamMember')}</Label>
             <Select value={teamMemberId} onValueChange={setTeamMemberId}>
-              <SelectTrigger className={inputClass}>
+              <SelectTrigger id={`${fieldId}-teamMember`} className={inputClass}>
                 <SelectValue placeholder="—" />
               </SelectTrigger>
               <SelectContent>
@@ -288,8 +289,8 @@ export default function UserForm() {
           {/* Password (create only) */}
           {!isEdit && (
             <div className="space-y-2">
-              <Label className={labelClass}>{t('admin.users.fields.password')}<RequiredMark /></Label>
-              <Input ref={passwordRef} type="password" required aria-required value={password} onChange={e => setPassword(e.target.value)} className={inputClass} autoComplete="new-password" />
+              <Label htmlFor={`${fieldId}-password`} className={labelClass}>{t('admin.users.fields.password')}<RequiredMark /></Label>
+              <Input id={`${fieldId}-password`} ref={passwordRef} type="password" required aria-required value={password} onChange={e => setPassword(e.target.value)} className={inputClass} autoComplete="new-password" />
             </div>
           )}
         </CardContent>

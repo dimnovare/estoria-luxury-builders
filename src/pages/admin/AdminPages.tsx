@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pencil, Loader2, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -46,6 +46,7 @@ const PAGES_WITH_VIDEO = ['homepage.hero'];
 
 export default function AdminPages() {
   const { t } = useTranslation();
+  const fieldId = useId();
   const { data: pages, isLoading, isError, refetch } = useAdminPages();
   const updatePage = useUpdatePage();
 
@@ -239,8 +240,8 @@ const sortedPages = useMemo(() => {
                 {langs.map(lang => (
                   <TabsContent key={lang} value={lang} className="mt-3 space-y-3">
                     <div className="space-y-2">
-                      <Label className={labelClass}>{t('admin.pages.fields.title')}</Label>
-                      <Input value={translations[lang]?.title || ''} onChange={e => updateTrans(lang, 'title', e.target.value)} className={inputClass} />
+                      <Label htmlFor={`${fieldId}-title-${lang}`} className={labelClass}>{t('admin.pages.fields.title')}</Label>
+                      <Input id={`${fieldId}-title-${lang}`} value={translations[lang]?.title || ''} onChange={e => updateTrans(lang, 'title', e.target.value)} className={inputClass} />
                       {editingPage?.pageKey.startsWith('homepage.') && (
                         <p className="text-xs text-muted-foreground mt-1">
                           {t('admin.pages.fields.titleAccentHint', 'Wrap the accent word in asterisks to make it gold and italic.')}{' '}
@@ -262,8 +263,8 @@ const sortedPages = useMemo(() => {
                     </div>
                     {PAGES_WITH_IMAGE.includes(editingPage.pageKey) && (
                       <div className="space-y-2">
-                        <Label className={labelClass}>{t('admin.pages.fields.imageUrl')}</Label>
-                        <Input value={translations[lang]?.imageUrl || ''} onChange={e => updateTrans(lang, 'imageUrl', e.target.value)} className={inputClass} />
+                        <Label htmlFor={`${fieldId}-imageUrl-${lang}`} className={labelClass}>{t('admin.pages.fields.imageUrl')}</Label>
+                        <Input id={`${fieldId}-imageUrl-${lang}`} value={translations[lang]?.imageUrl || ''} onChange={e => updateTrans(lang, 'imageUrl', e.target.value)} className={inputClass} />
                         <p className="text-xs text-muted-foreground mt-1">
                           {t('admin.pages.fields.imageUrlHint', 'Paste the full web address of the image (starting with https://).')}
                         </p>
@@ -271,8 +272,8 @@ const sortedPages = useMemo(() => {
                     )}
                     {PAGES_WITH_VIDEO.includes(editingPage.pageKey) && (
                       <div className="space-y-2">
-                        <Label className={labelClass}>{t('admin.pages.fields.videoUrl')}</Label>
-                        <Input value={translations[lang]?.videoUrl || ''} onChange={e => updateTrans(lang, 'videoUrl', e.target.value)} className={inputClass} />
+                        <Label htmlFor={`${fieldId}-videoUrl-${lang}`} className={labelClass}>{t('admin.pages.fields.videoUrl')}</Label>
+                        <Input id={`${fieldId}-videoUrl-${lang}`} value={translations[lang]?.videoUrl || ''} onChange={e => updateTrans(lang, 'videoUrl', e.target.value)} className={inputClass} />
                         <p className="text-xs text-muted-foreground mt-1">
                           {t('admin.pages.fields.videoUrlHint')}
                         </p>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Pencil, GripVertical, Trash2, Loader2, Copy, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -34,6 +34,7 @@ const emptyTrans: TransFields = { name: '', description: '', priceInfo: '' };
 
 export default function AdminServices() {
   const { t } = useTranslation();
+  const fieldId = useId();
   const { data: services, isLoading, isError, refetch } = useAdminServices();
   const createService = useCreateService();
   const updateService = useUpdateService();
@@ -265,12 +266,12 @@ export default function AdminServices() {
           <div className="space-y-4 overflow-y-auto px-6 py-4 flex-1 min-h-0">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className={labelClass}>{t('admin.services.fields.iconName')}</Label>
-                <Input value={iconName} onChange={e => setIconName(e.target.value)} placeholder="Building2" className={inputClass} />
+                <Label htmlFor={`${fieldId}-iconName`} className={labelClass}>{t('admin.services.fields.iconName')}</Label>
+                <Input id={`${fieldId}-iconName`} value={iconName} onChange={e => setIconName(e.target.value)} placeholder="Building2" className={inputClass} />
               </div>
               <div className="space-y-2">
-                <Label className={labelClass}>{t('admin.services.fields.sortOrder')}</Label>
-                <Input type="number" inputMode="numeric" value={sortOrder} onChange={e => setSortOrder(e.target.value)} className={inputClass} />
+                <Label htmlFor={`${fieldId}-sortOrder`} className={labelClass}>{t('admin.services.fields.sortOrder')}</Label>
+                <Input id={`${fieldId}-sortOrder`} type="number" inputMode="numeric" value={sortOrder} onChange={e => setSortOrder(e.target.value)} className={inputClass} />
               </div>
             </div>
 
@@ -326,8 +327,8 @@ export default function AdminServices() {
                     </div>
                   )}
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.services.fields.name')} {lang === 'et' && <span className="text-primary" title={t('admin.common.required', 'Required')}>*</span>}</Label>
-                    <Input value={translations[lang]?.name || ''} onChange={e => updateTrans(lang, 'name', e.target.value)} className={inputClass} />
+                    <Label htmlFor={`${fieldId}-name-${lang}`} className={labelClass}>{t('admin.services.fields.name')} {lang === 'et' && <span className="text-primary" title={t('admin.common.required', 'Required')}>*</span>}</Label>
+                    <Input id={`${fieldId}-name-${lang}`} value={translations[lang]?.name || ''} onChange={e => updateTrans(lang, 'name', e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.services.fields.description')}</Label>
@@ -339,8 +340,8 @@ export default function AdminServices() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.services.fields.priceInfo')}</Label>
-                    <Input value={translations[lang]?.priceInfo || ''} onChange={e => updateTrans(lang, 'priceInfo', e.target.value)} className={inputClass} />
+                    <Label htmlFor={`${fieldId}-priceInfo-${lang}`} className={labelClass}>{t('admin.services.fields.priceInfo')}</Label>
+                    <Input id={`${fieldId}-priceInfo-${lang}`} value={translations[lang]?.priceInfo || ''} onChange={e => updateTrans(lang, 'priceInfo', e.target.value)} className={inputClass} />
                   </div>
                 </TabsContent>
               ))}
