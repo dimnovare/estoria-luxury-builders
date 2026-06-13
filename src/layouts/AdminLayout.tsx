@@ -234,8 +234,10 @@ export default function AdminLayout() {
         </button>
       </aside>
 
-      {/* Main */}
-      <div className={cn('flex-1 transition-all duration-300', collapsed ? 'lg:ml-16' : 'lg:ml-60')}>
+      {/* Main. text-foreground (dark under .admin-theme) is the default so any
+          shadcn Label / plain text that doesn't set its own colour stays legible
+          on the white admin surface instead of inheriting the dark-theme cream. */}
+      <div className={cn('flex-1 transition-all duration-300 text-foreground', collapsed ? 'lg:ml-16' : 'lg:ml-60')}>
         {/* Top bar */}
         <header className="h-16 bg-white border-b border-[hsl(0_0%_90%)] flex items-center justify-between px-4 lg:px-6 sticky top-0 z-30">
           <div className="flex items-center gap-3">
