@@ -2,6 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "https://api.estoria.estate/sitemap.xml" },
+    { "source": "/kinnisvara24.xml", "destination": "https://api.estoria.estate/kinnisvara24.xml" },
     { "source": "/properties/:slug", "destination": "/api/property-page?slug=:slug" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],

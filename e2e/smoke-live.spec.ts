@@ -88,3 +88,12 @@ test('admin login page renders (bundle loads, no white screen)', async ({ page }
   // the admin chunk loaded and didn't crash on mount.
   await expect(page.locator('input[type="password"]').first()).toBeVisible();
 });
+
+test('Kinnisvara24 feed is served as valid XML', async ({ request }) => {
+  const res = await request.get(`${BASE}/kinnisvara24.xml`);
+  expect(res.status()).toBe(200);
+  expect(res.headers()['content-type']).toContain('xml');
+  const body = await res.text();
+  expect(body).toContain('<objects');
+  expect(body).toContain('</objects>');
+});
