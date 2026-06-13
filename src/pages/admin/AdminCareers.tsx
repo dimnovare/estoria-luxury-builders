@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Loader2, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +14,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import TranslateButton from '@/components/admin/TranslateButton';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
+import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
+import { TableSkeleton } from '@/components/admin/TableSkeleton';
 import {
   useAdminCareers,
   useCreateCareer,
@@ -31,7 +34,7 @@ const emptyTrans: TransFields = { title: '', location: '', description: '' };
 
 export default function AdminCareers() {
   const { t } = useTranslation();
-  const { data: careers, isLoading } = useAdminCareers();
+  const { data: careers, isLoading, isError, refetch } = useAdminCareers();
   const createCareer = useCreateCareer();
   const updateCareer = useUpdateCareer();
   const deleteCareer = useDeleteCareer();
@@ -109,8 +112,8 @@ export default function AdminCareers() {
 
   const isSaving = createCareer.isPending || updateCareer.isPending;
 
-  const inputClass = "border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)] focus:border-[hsl(43_50%_54%)] focus:ring-[hsl(43_50%_54%)]";
-  const labelClass = "text-sm text-[hsl(0_0%_40%)] font-medium";
+  const inputClass = "border-border bg-card text-foreground focus:border-primary focus:ring-primary";
+  const labelClass = "text-sm text-muted-foreground font-medium";
 
   return (
     <div className="space-y-6">
@@ -118,45 +121,67 @@ export default function AdminCareers() {
         title={t('admin.careers.title')}
         subtitle={t('admin.careers.subtitle', 'Manage job postings shown on the careers page. Toggle Active to show or hide a posting without deleting it.')}
         action={
-          <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
+          <Button onClick={openNew} className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0">
             <Plus className="h-4 w-4 mr-2" />{t('admin.careers.addNew')}
           </Button>
         }
       />
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
+      {isError ? (
+        <ErrorState
+          description={t('admin.careers.loadError', 'Could not load job postings. Please try again.')}
+          onRetry={() => refetch()}
+        />
+      ) : isLoading ? (
+        <Card className="bg-card border-border shadow-sm overflow-hidden">
+          <CardContent className="p-4">
+            <TableSkeleton rows={6} cols={4} />
+          </CardContent>
+        </Card>
+      ) : (careers ?? []).length === 0 ? (
+        <Card className="bg-card border-border shadow-sm overflow-hidden">
+          <CardContent className="p-0">
+            <EmptyState
+              icon={Briefcase}
+              title={t('admin.careers.empty.title', 'No job postings yet')}
+              description={t('admin.careers.empty.description', 'Create your first job posting to show it on the careers page.')}
+              action={
+                <Button onClick={openNew} className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                  <Plus className="h-4 w-4 mr-2" />{t('admin.careers.addNew')}
+                </Button>
+              }
+            />
+          </CardContent>
+        </Card>
+      ) : (
+      <Card className="bg-card border-border shadow-sm overflow-hidden">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.careers.table.title')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.careers.table.location')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
+              <TableRow className="border-border">
+                <TableHead className="text-muted-foreground text-xs">{t('admin.careers.table.title')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.careers.table.location')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs">{t('admin.common.status')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
-                </TableRow>
-              )}
-              {!isLoading && (careers ?? []).map(c => (
-                <TableRow key={c.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
+              {(careers ?? []).map(c => (
+                <TableRow key={c.id} className="border-border">
+                  <TableCell className="text-sm text-foreground font-medium">
                     <div>{c.title}</div>
-                    <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">{c.location}</div>
+                    <div className="text-xs text-muted-foreground sm:hidden">{c.location}</div>
                   </TableCell>
                   <TableCell className="hidden sm:table-cell">
                     {c.location && (
-                      <Badge variant="secondary" className="text-[10px] bg-[hsl(0_0%_93%)] text-[hsl(0_0%_40%)]">{c.location}</Badge>
+                      <Badge variant="secondary" className="text-[10px] bg-muted text-muted-foreground">{c.location}</Badge>
                     )}
                   </TableCell>
                   <TableCell>
                     <Badge
                       variant="outline"
-                      className={`text-[10px] ${c.isActive ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-600 border-gray-200'}`}
+                      className={`text-[10px] ${c.isActive ? 'bg-success/10 text-success border-success/20' : 'bg-muted text-muted-foreground border-border'}`}
                     >
                       {c.isActive ? t('admin.careers.active') : t('admin.careers.inactive')}
                     </Badge>
@@ -165,7 +190,7 @@ export default function AdminCareers() {
                     <div className="flex items-center gap-1">
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_15%)]"
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
                         onClick={() => openEdit(c)}
                         aria-label={t('admin.common.edit')}
                         title={t('admin.common.edit')}
@@ -174,7 +199,7 @@ export default function AdminCareers() {
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-red-600"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
                         onClick={() => setPendingDelete(c.id)}
                         disabled={deleteCareer.isPending}
                         aria-label={t('admin.common.delete')}
@@ -191,11 +216,12 @@ export default function AdminCareers() {
           </div>
         </CardContent>
       </Card>
+      )}
 
       <Dialog open={dialogOpen} onOpenChange={open => { if (!open) setDialogOpen(false); }}>
-        <DialogContent className="max-w-xl bg-white border-[hsl(0_0%_90%)]">
+        <DialogContent className="max-w-xl bg-card border-border">
           <DialogHeader>
-            <DialogTitle className="text-[hsl(0_0%_15%)]">
+            <DialogTitle className="text-foreground">
               {editingCareer ? t('admin.careers.editTitle') : t('admin.careers.newTitle')}
             </DialogTitle>
           </DialogHeader>
@@ -205,8 +231,8 @@ export default function AdminCareers() {
               <Label className={labelClass}>{t('admin.careers.fields.active')}</Label>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-[hsl(0_0%_92%)]">
-              <p className="text-xs text-[hsl(0_0%_45%)]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-border">
+              <p className="text-xs text-muted-foreground">
                 {t('admin.careers.translateHint', 'Write the posting in Estonian, then translate the title, location and description to the other languages with one click. You can edit afterwards.')}
               </p>
               <TranslateButton
@@ -224,9 +250,9 @@ export default function AdminCareers() {
             </div>
 
             <Tabs defaultValue="et">
-              <TabsList className="bg-[hsl(0_0%_96%)] border border-[hsl(0_0%_90%)]">
+              <TabsList className="bg-muted border border-border">
                 {langs.map(l => (
-                  <TabsTrigger key={l} value={l} className="uppercase text-xs data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">{l}</TabsTrigger>
+                  <TabsTrigger key={l} value={l} className="uppercase text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{l}</TabsTrigger>
                 ))}
               </TabsList>
               {langs.map(lang => (
@@ -234,7 +260,7 @@ export default function AdminCareers() {
                   <div className="space-y-2">
                     <Label className={labelClass}>
                       {t('admin.careers.fields.title')}
-                      {lang === 'et' && <span className="text-red-500 ml-0.5">*</span>}
+                      {lang === 'et' && <span className="text-destructive ml-0.5">*</span>}
                     </Label>
                     <Input value={translations[lang]?.title || ''} onChange={e => updateTrans(lang, 'title', e.target.value)} className={inputClass} />
                   </div>
@@ -251,7 +277,7 @@ export default function AdminCareers() {
             </Tabs>
           </div>
           <div className="flex justify-end pt-2">
-            <Button onClick={handleSave} disabled={isSaving} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+            <Button onClick={handleSave} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-primary-foreground">
               {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {t('admin.careers.savePosition')}
             </Button>

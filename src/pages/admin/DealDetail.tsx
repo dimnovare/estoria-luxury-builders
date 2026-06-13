@@ -25,7 +25,8 @@ import {
   type DealStage, type ActivityType,
 } from '@/hooks/api/useCrm';
 import { toast } from 'sonner';
-import { formatDistanceToNow, format } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
+import { formatDate } from '@/lib/formatDate';
 
 const stageColors: Record<string, string> = {
   Lead: 'bg-gray-100 text-gray-700', Qualified: 'bg-blue-50 text-blue-700',
@@ -75,7 +76,7 @@ export default function DealDetail() {
   if (isLoading || !deal) {
     return (
       <div className="flex items-center justify-center py-24">
-        <Loader2 className="h-6 w-6 animate-spin text-[hsl(43_50%_54%)]" />
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
       </div>
     );
   }
@@ -128,16 +129,16 @@ export default function DealDetail() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/deals')} className="text-[hsl(0_0%_50%)]" aria-label={t('admin.common.back', 'Back')} title={t('admin.common.back', 'Back')}>
+        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/deals')} className="text-muted-foreground" aria-label={t('admin.common.back', 'Back')} title={t('admin.common.back', 'Back')}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{deal.title}</h1>
+        <h1 className="text-2xl font-semibold text-foreground">{deal.title}</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* LEFT — Deal Card */}
         <div className="lg:sticky lg:top-20 lg:self-start space-y-4">
-          <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+          <Card className="bg-card border-border shadow-sm">
             <CardContent className="p-6 space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <Badge className={stageColors[deal.stage]}>{t(`admin.deals.stages.${deal.stage}`)}</Badge>
@@ -148,41 +149,41 @@ export default function DealDetail() {
 
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-[hsl(0_0%_50%)]">{t('admin.deals.fields.dealType')}</span>
-                  <span className="text-[hsl(0_0%_20%)]">{t(`admin.deals.dealTypes.${deal.dealType}`)}</span>
+                  <span className="text-muted-foreground">{t('admin.deals.fields.dealType')}</span>
+                  <span className="text-foreground">{t(`admin.deals.dealTypes.${deal.dealType}`)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[hsl(0_0%_50%)]">{t('admin.deals.fields.side')}</span>
-                  <span className="text-[hsl(0_0%_20%)]">{t(`admin.deals.sides.${deal.side}`)}</span>
+                  <span className="text-muted-foreground">{t('admin.deals.fields.side')}</span>
+                  <span className="text-foreground">{t(`admin.deals.sides.${deal.side}`)}</span>
                 </div>
                 {deal.expectedValue && (
                   <div className="flex justify-between">
-                    <span className="text-[hsl(0_0%_50%)]">{t('admin.deals.fields.expectedValue')}</span>
-                    <span className="text-[hsl(0_0%_20%)] font-medium">€{deal.expectedValue.toLocaleString()}</span>
+                    <span className="text-muted-foreground">{t('admin.deals.fields.expectedValue')}</span>
+                    <span className="text-foreground font-medium">€{deal.expectedValue.toLocaleString()}</span>
                   </div>
                 )}
                 {deal.actualValue && (
                   <div className="flex justify-between">
-                    <span className="text-[hsl(0_0%_50%)]">{t('admin.deals.fields.actualValue')}</span>
-                    <span className="text-[hsl(0_0%_20%)] font-medium">€{deal.actualValue.toLocaleString()}</span>
+                    <span className="text-muted-foreground">{t('admin.deals.fields.actualValue')}</span>
+                    <span className="text-foreground font-medium">€{deal.actualValue.toLocaleString()}</span>
                   </div>
                 )}
                 {deal.expectedCloseDate && (
                   <div className="flex justify-between">
-                    <span className="text-[hsl(0_0%_50%)]">{t('admin.deals.fields.expectedCloseDate')}</span>
-                    <span className="text-[hsl(0_0%_20%)]">{new Date(deal.expectedCloseDate).toLocaleDateString()}</span>
+                    <span className="text-muted-foreground">{t('admin.deals.fields.expectedCloseDate')}</span>
+                    <span className="text-foreground">{formatDate(deal.expectedCloseDate)}</span>
                   </div>
                 )}
               </div>
 
-              <div className="border-t border-[hsl(0_0%_93%)] pt-3 space-y-2 text-sm">
-                <Link to={`/admin/contacts/${deal.primaryContactId}`} className="text-[hsl(43_50%_54%)] hover:underline block">
+              <div className="border-t border-border pt-3 space-y-2 text-sm">
+                <Link to={`/admin/contacts/${deal.primaryContactId}`} className="text-primary hover:underline block">
                   {deal.primaryContactName}
                 </Link>
                 {deal.propertyTitle && (
-                  <p className="text-[hsl(0_0%_40%)]">{deal.propertyTitle}</p>
+                  <p className="text-muted-foreground">{deal.propertyTitle}</p>
                 )}
-                <p className="text-[hsl(0_0%_50%)]">{deal.assignedAgentName}</p>
+                <p className="text-muted-foreground">{deal.assignedAgentName}</p>
               </div>
 
               <Button variant="outline" size="sm" asChild className="w-full">
@@ -195,7 +196,7 @@ export default function DealDetail() {
         {/* RIGHT — Workspace */}
         <div className="lg:col-span-2">
           <Tabs defaultValue="timeline">
-            <TabsList className="bg-[hsl(0_0%_95%)]">
+            <TabsList className="bg-muted">
               <TabsTrigger value="timeline">{t('admin.contacts.tabs.timeline')}</TabsTrigger>
               <TabsTrigger value="participants">{t('admin.deals.tabs.participants')}</TabsTrigger>
               <TabsTrigger value="documents">{t('admin.deals.tabs.documents')}</TabsTrigger>
@@ -208,21 +209,21 @@ export default function DealDetail() {
               </Button>
 
               {showActivityForm && (
-                <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+                <Card className="bg-card border-border shadow-sm">
                   <CardContent className="p-4 space-y-3">
                     <div className="grid gap-3 sm:grid-cols-2">
                       <Select value={activityType} onValueChange={(v) => setActivityType(v as ActivityType)}>
-                        <SelectTrigger className="bg-secondary border-border"><SelectValue /></SelectTrigger>
+                        <SelectTrigger className="bg-background border-border text-foreground"><SelectValue /></SelectTrigger>
                         <SelectContent>
                           {ACTIVITY_TYPES.map(at => <SelectItem key={at} value={at}>{t(`admin.activities.types.${at}`)}</SelectItem>)}
                         </SelectContent>
                       </Select>
-                      <Input value={activityTitle} onChange={(e) => setActivityTitle(e.target.value)} placeholder={t('admin.common.title')} className="bg-secondary border-border" />
+                      <Input value={activityTitle} onChange={(e) => setActivityTitle(e.target.value)} placeholder={t('admin.common.title')} className="bg-background border-border text-foreground placeholder:text-muted-foreground" />
                     </div>
-                    <Textarea value={activityBody} onChange={(e) => setActivityBody(e.target.value)} className="bg-secondary border-border" rows={3} />
+                    <Textarea value={activityBody} onChange={(e) => setActivityBody(e.target.value)} className="bg-background border-border text-foreground placeholder:text-muted-foreground" rows={3} />
                     <div className="flex justify-end gap-2">
                       <Button variant="outline" size="sm" onClick={() => setShowActivityForm(false)}>{t('admin.common.cancel')}</Button>
-                      <Button size="sm" className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]" onClick={handleLogActivity}>{t('admin.common.save')}</Button>
+                      <Button size="sm" onClick={handleLogActivity}>{t('admin.common.save')}</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -231,18 +232,18 @@ export default function DealDetail() {
               {activities.map(a => {
                 const Icon = activityIcons[a.type] || StickyNote;
                 return (
-                  <Card key={a.id} className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+                  <Card key={a.id} className="bg-card border-border shadow-sm">
                     <CardContent className="p-4 flex gap-3">
-                      <div className="h-8 w-8 rounded-full bg-[hsl(43_50%_54%)]/10 flex items-center justify-center shrink-0">
-                        <Icon className="h-4 w-4 text-[hsl(43_50%_54%)]" />
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <Icon className="h-4 w-4 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-baseline gap-2">
-                          <span className="text-sm font-medium text-[hsl(0_0%_20%)]">{a.title}</span>
-                          <span className="text-xs text-[hsl(0_0%_60%)]">{a.userName}</span>
-                          <span className="text-xs text-[hsl(0_0%_60%)] ml-auto">{formatDistanceToNow(new Date(a.createdAt), { addSuffix: true })}</span>
+                          <span className="text-sm font-medium text-foreground">{a.title}</span>
+                          <span className="text-xs text-muted-foreground">{a.userName}</span>
+                          <span className="text-xs text-muted-foreground ml-auto">{formatDistanceToNow(new Date(a.createdAt), { addSuffix: true })}</span>
                         </div>
-                        {a.body && <p className="text-sm text-[hsl(0_0%_40%)] mt-1 whitespace-pre-wrap">{a.body}</p>}
+                        {a.body && <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{a.body}</p>}
                       </div>
                     </CardContent>
                   </Card>
@@ -265,14 +266,14 @@ export default function DealDetail() {
                 </Button>
               )}
               {(deal.participants ?? []).map(p => (
-                <Card key={p.id} className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+                <Card key={p.id} className="bg-card border-border shadow-sm">
                   <CardContent className="p-4 flex items-center justify-between">
                     <div>
-                      <Link to={`/admin/contacts/${p.contactId}`} className="text-sm font-medium text-[hsl(0_0%_20%)] hover:text-[hsl(43_50%_54%)]">{p.contactName}</Link>
-                      <p className="text-xs text-[hsl(0_0%_50%)]">{p.role}</p>
+                      <Link to={`/admin/contacts/${p.contactId}`} className="text-sm font-medium text-foreground hover:text-primary">{p.contactName}</Link>
+                      <p className="text-xs text-muted-foreground">{p.role}</p>
                     </div>
                     {PARTICIPANTS_WRITE_ENABLED && (
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-[hsl(0_0%_55%)] hover:text-red-500"
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive"
                         onClick={() => setPendingParticipantRemove(p.id)}
                         aria-label={t('admin.deals.removeParticipant', 'Remove participant')}
                         title={t('admin.deals.removeParticipant', 'Remove participant')}
@@ -315,7 +316,7 @@ export default function DealDetail() {
           <DialogHeader><DialogTitle>{t('admin.deals.changeStage', 'Change stage')}</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <Select value={targetStage} onValueChange={(v) => setTargetStage(v as DealStage)}>
-              <SelectTrigger className="bg-secondary border-border"><SelectValue placeholder={t('admin.deals.selectStage', 'Select stage')} /></SelectTrigger>
+              <SelectTrigger className="bg-background border-border text-foreground"><SelectValue placeholder={t('admin.deals.selectStage', 'Select stage')} /></SelectTrigger>
               <SelectContent>
                 {DEAL_STAGES.filter(s => s !== deal.stage).map(s => (
                   <SelectItem key={s} value={s}>{t(`admin.deals.stages.${s}`)}</SelectItem>
@@ -324,20 +325,20 @@ export default function DealDetail() {
             </Select>
             {targetStage === 'Won' && (
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.actualValue')} *</Label>
-                <Input value={actualValue} onChange={(e) => setActualValue(e.target.value)} type="number" className="mt-1 bg-secondary border-border" />
+                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.actualValue')} *</Label>
+                <Input value={actualValue} onChange={(e) => setActualValue(e.target.value)} type="number" className="mt-1 bg-background border-border text-foreground placeholder:text-muted-foreground" />
               </div>
             )}
             {targetStage === 'Lost' && (
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.lossReason')} *</Label>
-                <Textarea value={lossReason} onChange={(e) => setLossReason(e.target.value)} className="mt-1 bg-secondary border-border" rows={3} />
+                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.lossReason')} *</Label>
+                <Textarea value={lossReason} onChange={(e) => setLossReason(e.target.value)} className="mt-1 bg-background border-border text-foreground placeholder:text-muted-foreground" rows={3} />
               </div>
             )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowStageModal(false)}>{t('admin.common.cancel')}</Button>
-            <Button className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]" onClick={handleStageChange} disabled={!targetStage || changeStage.isPending}>
+            <Button onClick={handleStageChange} disabled={!targetStage || changeStage.isPending}>
               {t('admin.deals.confirmStageChange', 'Confirm')}
             </Button>
           </DialogFooter>
@@ -354,12 +355,12 @@ export default function DealDetail() {
                 value={participantSearch}
                 onChange={(e) => { setParticipantSearch(e.target.value); setSelectedParticipantId(''); }}
                 placeholder={t('admin.deals.fields.searchContact')}
-                className="bg-secondary border-border"
+                className="bg-background border-border text-foreground placeholder:text-muted-foreground"
               />
               {participantSearch.length >= 2 && !selectedParticipantId && participantResults && participantResults.length > 0 && (
-                <div className="absolute z-10 mt-1 w-full bg-white border border-[hsl(0_0%_85%)] rounded-md shadow-lg max-h-48 overflow-auto">
+                <div className="absolute z-10 mt-1 w-full bg-card border border-border rounded-md shadow-lg max-h-48 overflow-auto">
                   {participantResults.map(c => (
-                    <button key={c.id} type="button" className="w-full text-left px-3 py-2 text-sm hover:bg-[hsl(0_0%_96%)]"
+                    <button key={c.id} type="button" className="w-full text-left px-3 py-2 text-sm text-foreground hover:bg-muted"
                       onClick={() => { setSelectedParticipantId(c.id); setParticipantSearch(c.fullName); }}>
                       {c.fullName}
                     </button>
@@ -367,11 +368,11 @@ export default function DealDetail() {
                 </div>
               )}
             </div>
-            <Input value={participantRole} onChange={(e) => setParticipantRole(e.target.value)} placeholder={t('admin.deals.fields.participantRole')} className="bg-secondary border-border" />
+            <Input value={participantRole} onChange={(e) => setParticipantRole(e.target.value)} placeholder={t('admin.deals.fields.participantRole')} className="bg-background border-border text-foreground placeholder:text-muted-foreground" />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowAddParticipant(false)}>{t('admin.common.cancel')}</Button>
-            <Button className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]" onClick={handleAddParticipant} disabled={!selectedParticipantId || !participantRole}>
+            <Button onClick={handleAddParticipant} disabled={!selectedParticipantId || !participantRole}>
               {t('admin.common.save')}
             </Button>
           </DialogFooter>

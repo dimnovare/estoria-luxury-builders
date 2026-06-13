@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
+import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
+import { TableSkeleton } from '@/components/admin/TableSkeleton';
 import { useAdminProperties, useDeleteProperty, useSetPropertyStatus } from '@/hooks/api/useAdmin';
 import { useGeocodeMissing } from '@/hooks/api/usePropertyGeocode';
 import { propertyTypeLabel, transactionTypeLabel, propertyStatusLabel } from '@/lib/enumLabels';
@@ -31,7 +34,7 @@ export default function AdminProperties() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
-  const { data, isLoading } = useAdminProperties();
+  const { data, isLoading, isError, refetch } = useAdminProperties();
   const deleteProperty = useDeleteProperty();
   const setStatus = useSetPropertyStatus();
   const geocodeMissing = useGeocodeMissing();
@@ -96,7 +99,7 @@ export default function AdminProperties() {
                 : <MapPin className="h-4 w-4 mr-2" />}
               {t('admin.properties.geocodeMissing')}
             </Button>
-            <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+            <Button asChild>
               <Link to="/admin/properties/new"><Plus className="h-4 w-4 mr-2" />{t('admin.properties.addNew')}</Link>
             </Button>
           </>
@@ -104,10 +107,10 @@ export default function AdminProperties() {
       />
 
       {/* Filters */}
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-card border-border shadow-sm">
         <CardContent className="p-4 flex flex-wrap gap-3">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[160px] border-border bg-card text-foreground">
               <SelectValue placeholder={t('admin.properties.filters.status')} />
             </SelectTrigger>
             <SelectContent>
@@ -118,7 +121,7 @@ export default function AdminProperties() {
             </SelectContent>
           </Select>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-full sm:w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[160px] border-border bg-card text-foreground">
               <SelectValue placeholder={t('admin.properties.filters.type')} />
             </SelectTrigger>
             <SelectContent>
@@ -132,31 +135,36 @@ export default function AdminProperties() {
       </Card>
 
       {/* Table */}
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
+      {isError ? (
+        <ErrorState
+          description={t('admin.properties.loadError', 'Could not load properties. Please try again.')}
+          onRetry={() => refetch()}
+        />
+      ) : isLoading ? (
+        <Card className="bg-card border-border shadow-sm overflow-hidden">
+          <CardContent className="p-4">
+            <TableSkeleton rows={6} cols={7} />
+          </CardContent>
+        </Card>
+      ) : (
+      <Card className="bg-card border-border shadow-sm overflow-hidden">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12 hidden sm:table-cell"></TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.title')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.properties.table.type')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.properties.table.transaction')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.properties.table.price')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.properties.table.status')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
+              <TableRow className="border-border">
+                <TableHead className="text-muted-foreground text-xs w-12 hidden sm:table-cell"></TableHead>
+                <TableHead className="text-muted-foreground text-xs">{t('admin.properties.table.title')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden md:table-cell">{t('admin.properties.table.type')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden md:table-cell">{t('admin.properties.table.transaction')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.properties.table.price')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs">{t('admin.properties.table.status')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">
-                    {t('admin.common.loading')}
-                  </TableCell>
-                </TableRow>
-              )}
-              {!isLoading && filtered.map(p => (
-                <TableRow key={p.id} className="border-[hsl(0_0%_93%)]">
+              {filtered.map(p => (
+                <TableRow key={p.id} className="border-border">
                   <TableCell className="py-2 hidden sm:table-cell">
                     <img
                       src={p.coverImageUrl || '/placeholder.jpg'}
@@ -164,12 +172,12 @@ export default function AdminProperties() {
                       className="h-10 w-14 object-cover rounded"
                     />
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
+                  <TableCell className="text-sm text-foreground font-medium">
                     {p.translations?.['En']?.title ?? p.slug}
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell">{propertyTypeLabel(p.propertyType, t)}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell">{transactionTypeLabel(p.transactionType, t)}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium hidden sm:table-cell">
+                  <TableCell className="text-sm text-muted-foreground hidden md:table-cell">{propertyTypeLabel(p.propertyType, t)}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground hidden md:table-cell">{transactionTypeLabel(p.transactionType, t)}</TableCell>
+                  <TableCell className="text-sm text-foreground font-medium hidden sm:table-cell">
                     €{p.price.toLocaleString()}
                   </TableCell>
                   <TableCell>
@@ -184,7 +192,7 @@ export default function AdminProperties() {
                     <div className="flex items-center gap-1">
                       <Button
                         variant="ghost" size="icon"
-                        className={`h-8 w-8 ${p.status === 'Active' ? 'text-green-600 hover:text-amber-600' : 'text-[hsl(0_0%_40%)] hover:text-green-600'}`}
+                        className={`h-8 w-8 ${p.status === 'Active' ? 'text-success hover:text-amber-600' : 'text-muted-foreground hover:text-success'}`}
                         onClick={() => handleToggleStatus(p.id, p.status)}
                         disabled={setStatus.isPending}
                         aria-label={p.status === 'Active' ? t('admin.properties.unpublish') : t('admin.properties.publish')}
@@ -195,7 +203,7 @@ export default function AdminProperties() {
                       <Button
                         variant="ghost" size="icon"
                         asChild
-                        className="h-8 w-8 text-[hsl(0_0%_40%)] hover:text-[hsl(0_0%_20%)]"
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
                       >
                         <Link
                           to={`/admin/properties/${p.id}/edit`}
@@ -207,7 +215,7 @@ export default function AdminProperties() {
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-[hsl(0_0%_40%)] hover:text-red-500"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
                         onClick={() => setPendingDelete(p.id)}
                         disabled={deleteProperty.isPending}
                         aria-label={t('admin.common.delete')}
@@ -222,11 +230,29 @@ export default function AdminProperties() {
             </TableBody>
           </Table>
           </div>
-          {!isLoading && filtered.length === 0 && (
-            <p className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.properties.noMatch')}</p>
+          {filtered.length === 0 && (
+            properties.length === 0 ? (
+              <EmptyState
+                icon={MapPin}
+                title={t('admin.properties.empty.title', 'No properties yet')}
+                description={t('admin.properties.empty.description', 'Create your first listing, then add images and publish it to make it visible on the public site.')}
+                action={
+                  <Button asChild>
+                    <Link to="/admin/properties/new"><Plus className="h-4 w-4 mr-2" />{t('admin.properties.addNew')}</Link>
+                  </Button>
+                }
+              />
+            ) : (
+              <EmptyState
+                icon={MapPin}
+                title={t('admin.properties.noMatch')}
+                description={t('admin.properties.empty.noMatchHint', 'Try adjusting or clearing the filters above.')}
+              />
+            )
           )}
         </CardContent>
       </Card>
+      )}
 
       <ConfirmDialog
         open={!!pendingDelete}

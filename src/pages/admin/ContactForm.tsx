@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useContact, useCreateContact, useUpdateContact, useAgents, handleCrmError } from '@/hooks/api/useCrm';
 import { useSubscribeContact } from '@/hooks/api/useNewsletter';
+import { formatDate } from '@/lib/formatDate';
 import { toast } from 'sonner';
 import { useState } from 'react';
 
@@ -170,7 +171,7 @@ export default function ContactForm() {
   if (isEdit && isLoading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <Loader2 className="h-6 w-6 animate-spin text-[hsl(43_50%_54%)]" />
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
       </div>
     );
   }
@@ -178,10 +179,10 @@ export default function ContactForm() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/contacts')} className="text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]" aria-label={t('admin.common.back', 'Back')} title={t('admin.common.back', 'Back')}>
+        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/contacts')} className="text-muted-foreground hover:text-foreground" aria-label={t('admin.common.back', 'Back')} title={t('admin.common.back', 'Back')}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">
+        <h1 className="text-2xl font-semibold text-foreground">
           {isEdit ? t('admin.contacts.editTitle') : t('admin.contacts.newTitle')}
         </h1>
       </div>
@@ -189,39 +190,39 @@ export default function ContactForm() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Accordion type="multiple" defaultValue={['identity', 'classification', 'assignment']} className="space-y-4">
           {/* Identity */}
-          <AccordionItem value="identity" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
-            <AccordionTrigger className="px-6 py-4 text-sm font-nav uppercase tracking-wider text-[hsl(0_0%_40%)] hover:no-underline">
+          <AccordionItem value="identity" className="border rounded-lg bg-card border-border shadow-sm">
+            <AccordionTrigger className="px-6 py-4 text-sm font-nav uppercase tracking-wider text-muted-foreground hover:no-underline">
               {t('admin.contacts.sections.identity')}
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="sm:col-span-2">
-                  <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.fullName')} *</Label>
-                  <Input {...register('fullName')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
-                  {errors.fullName && <p className="text-xs text-red-500 mt-1">{t(errors.fullName.message ?? '')}</p>}
+                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.fullName')} *</Label>
+                  <Input {...register('fullName')} className="mt-1 bg-secondary border-border text-foreground" />
+                  {errors.fullName && <p className="text-xs text-destructive mt-1">{t(errors.fullName.message ?? '')}</p>}
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.common.email')}</Label>
-                  <Input {...register('email')} type="email" className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
-                  {errors.email && <p className="text-xs text-red-500 mt-1">{t(errors.email.message ?? '')}</p>}
+                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.email')}</Label>
+                  <Input {...register('email')} type="email" className="mt-1 bg-secondary border-border text-foreground" />
+                  {errors.email && <p className="text-xs text-destructive mt-1">{t(errors.email.message ?? '')}</p>}
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.common.phone')}</Label>
-                  <Input {...register('phone')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
+                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.phone')}</Label>
+                  <Input {...register('phone')} className="mt-1 bg-secondary border-border text-foreground" />
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.secondaryPhone')}</Label>
-                  <Input {...register('secondaryPhone')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
+                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.secondaryPhone')}</Label>
+                  <Input {...register('secondaryPhone')} className="mt-1 bg-secondary border-border text-foreground" />
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.preferredLang')}</Label>
+                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.preferredLang')}</Label>
                   <Controller
                     control={control}
                     name="preferredLanguage"
                     render={({ field }) => (
                       <div className="flex gap-4 mt-2">
                         {['et', 'en', 'ru'].map(lang => (
-                          <label key={lang} className="flex items-center gap-1.5 text-sm text-[hsl(0_0%_30%)]">
+                          <label key={lang} className="flex items-center gap-1.5 text-sm text-foreground">
                             <input type="radio" value={lang} checked={field.value === lang} onChange={() => field.onChange(lang)} className="accent-[hsl(43_50%_54%)]" />
                             {lang.toUpperCase()}
                           </label>
@@ -231,40 +232,40 @@ export default function ContactForm() {
                   />
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.dateOfBirth')}</Label>
-                  <Input {...register('dateOfBirth')} type="date" className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
-                  {errors.dateOfBirth && <p className="text-xs text-red-500 mt-1">{t(errors.dateOfBirth.message ?? '')}</p>}
+                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.dateOfBirth')}</Label>
+                  <Input {...register('dateOfBirth')} type="date" className="mt-1 bg-secondary border-border text-foreground" />
+                  {errors.dateOfBirth && <p className="text-xs text-destructive mt-1">{t(errors.dateOfBirth.message ?? '')}</p>}
                 </div>
               </div>
             </AccordionContent>
           </AccordionItem>
 
           {/* Address & Company */}
-          <AccordionItem value="address" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
-            <AccordionTrigger className="px-6 py-4 text-sm font-nav uppercase tracking-wider text-[hsl(0_0%_40%)] hover:no-underline">
+          <AccordionItem value="address" className="border rounded-lg bg-card border-border shadow-sm">
+            <AccordionTrigger className="px-6 py-4 text-sm font-nav uppercase tracking-wider text-muted-foreground hover:no-underline">
               {t('admin.contacts.sections.address')}
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="sm:col-span-2">
-                  <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.address')}</Label>
-                  <Input {...register('address')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
+                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.address')}</Label>
+                  <Input {...register('address')} className="mt-1 bg-secondary border-border text-foreground" />
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.company')}</Label>
-                  <Input {...register('company')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
+                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.company')}</Label>
+                  <Input {...register('company')} className="mt-1 bg-secondary border-border text-foreground" />
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.position')}</Label>
-                  <Input {...register('position')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
+                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.position')}</Label>
+                  <Input {...register('position')} className="mt-1 bg-secondary border-border text-foreground" />
                 </div>
               </div>
             </AccordionContent>
           </AccordionItem>
 
           {/* Classification */}
-          <AccordionItem value="classification" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
-            <AccordionTrigger className="px-6 py-4 text-sm font-nav uppercase tracking-wider text-[hsl(0_0%_40%)] hover:no-underline">
+          <AccordionItem value="classification" className="border rounded-lg bg-card border-border shadow-sm">
+            <AccordionTrigger className="px-6 py-4 text-sm font-nav uppercase tracking-wider text-muted-foreground hover:no-underline">
               {t('admin.contacts.sections.classification')}
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
@@ -276,7 +277,7 @@ export default function ContactForm() {
                       control={control}
                       name={field}
                       render={({ field: f }) => (
-                        <label className="flex items-center gap-2 text-sm text-[hsl(0_0%_30%)]">
+                        <label className="flex items-center gap-2 text-sm text-foreground">
                           <Checkbox checked={f.value} onCheckedChange={f.onChange} />
                           {t(`admin.contacts.fields.${field}`)}
                         </label>
@@ -286,7 +287,7 @@ export default function ContactForm() {
                 </div>
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div>
-                    <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.source')}</Label>
+                    <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.source')}</Label>
                     <Controller
                       control={control}
                       name="source"
@@ -299,7 +300,7 @@ export default function ContactForm() {
                           value={field.value || 'any'}
                           onValueChange={(v) => field.onChange(v === 'any' ? '' : v)}
                         >
-                          <SelectTrigger className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]">
+                          <SelectTrigger className="mt-1 bg-secondary border-border text-foreground">
                             <SelectValue placeholder={t('admin.contacts.fields.selectSource')} />
                           </SelectTrigger>
                           <SelectContent>
@@ -311,15 +312,15 @@ export default function ContactForm() {
                     />
                   </div>
                   <div>
-                    <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.sourceDetail')}</Label>
-                    <Input {...register('sourceDetail')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)]" />
+                    <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.sourceDetail')}</Label>
+                    <Input {...register('sourceDetail')} className="mt-1 bg-secondary border-border text-foreground" />
                   </div>
                 </div>
                 <div>
-                  <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.tags')}</Label>
+                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.tags')}</Label>
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {tags.map(tag => (
-                      <Badge key={tag} variant="outline" className="bg-[hsl(43_50%_54%)]/10 text-[hsl(43_50%_44%)] border-[hsl(43_50%_54%)]/30 gap-1">
+                      <Badge key={tag} variant="outline" className="bg-primary/10 text-primary border-primary/30 gap-1">
                         {tag}
                         <button type="button" onClick={() => removeTag(tag)} aria-label={t('admin.contacts.removeTag', 'Remove tag')} title={t('admin.contacts.removeTag', 'Remove tag')}><X className="h-3 w-3" /></button>
                       </Badge>
@@ -331,7 +332,7 @@ export default function ContactForm() {
                       onChange={(e) => setNewTag(e.target.value)}
                       onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } }}
                       placeholder={t('admin.contacts.fields.addTag')}
-                      className="bg-secondary border-border text-[hsl(0_0%_15%)] flex-1"
+                      className="bg-secondary border-border text-foreground flex-1"
                     />
                     <Button type="button" variant="outline" size="icon" onClick={addTag} aria-label={t('admin.contacts.fields.addTag')} title={t('admin.contacts.fields.addTag')}><Plus className="h-4 w-4" /></Button>
                   </div>
@@ -341,13 +342,13 @@ export default function ContactForm() {
           </AccordionItem>
 
           {/* Assignment */}
-          <AccordionItem value="assignment" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
-            <AccordionTrigger className="px-6 py-4 text-sm font-nav uppercase tracking-wider text-[hsl(0_0%_40%)] hover:no-underline">
+          <AccordionItem value="assignment" className="border rounded-lg bg-card border-border shadow-sm">
+            <AccordionTrigger className="px-6 py-4 text-sm font-nav uppercase tracking-wider text-muted-foreground hover:no-underline">
               {t('admin.contacts.sections.assignment')}
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.contacts.fields.assignedAgent')}</Label>
+                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.assignedAgent')}</Label>
                 <Controller
                   control={control}
                   name="assignedAgentId"
@@ -359,7 +360,7 @@ export default function ContactForm() {
                       value={field.value || 'unassigned'}
                       onValueChange={(v) => field.onChange(v === 'unassigned' ? '' : v)}
                     >
-                      <SelectTrigger className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] w-full sm:w-[300px]">
+                      <SelectTrigger className="mt-1 bg-secondary border-border text-foreground w-full sm:w-[300px]">
                         <SelectValue placeholder={t('admin.contacts.fields.selectAgent')} />
                       </SelectTrigger>
                       <SelectContent>
@@ -374,8 +375,8 @@ export default function ContactForm() {
           </AccordionItem>
 
           {/* Privacy */}
-          <AccordionItem value="privacy" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
-            <AccordionTrigger className="px-6 py-4 text-sm font-nav uppercase tracking-wider text-[hsl(0_0%_40%)] hover:no-underline">
+          <AccordionItem value="privacy" className="border rounded-lg bg-card border-border shadow-sm">
+            <AccordionTrigger className="px-6 py-4 text-sm font-nav uppercase tracking-wider text-muted-foreground hover:no-underline">
               {t('admin.contacts.sections.privacy')}
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
@@ -386,10 +387,10 @@ export default function ContactForm() {
                   render={({ field }) => (
                     <div className="flex items-center gap-3">
                       <Switch checked={field.value} onCheckedChange={field.onChange} />
-                      <span className="text-sm text-[hsl(0_0%_30%)]">{t('admin.contacts.fields.consentToMarketing')}</span>
+                      <span className="text-sm text-foreground">{t('admin.contacts.fields.consentToMarketing')}</span>
                       {existing?.consentToMarketingAt && (
-                        <span className="text-xs text-[hsl(0_0%_60%)]">
-                          ({new Date(existing.consentToMarketingAt).toLocaleDateString()})
+                        <span className="text-xs text-muted-foreground">
+                          ({formatDate(existing.consentToMarketingAt)})
                         </span>
                       )}
                     </div>
@@ -398,7 +399,7 @@ export default function ContactForm() {
                 {/* Newsletter subscriber — available in edit mode when contact has an email.
                     Toggling on subscribes the contact; unsubscribe is done from the Newsletter admin. */}
                 {isEdit && existing?.email && (
-                  <div className="flex items-center gap-3 pt-3 border-t border-[hsl(0_0%_93%)]">
+                  <div className="flex items-center gap-3 pt-3 border-t border-border">
                     <Switch
                       checked={isNewsletterSubscriber}
                       disabled={isNewsletterSubscriber || subscribeContact.isPending}
@@ -416,9 +417,9 @@ export default function ContactForm() {
                         }
                       }}
                     />
-                    <span className="text-sm text-[hsl(0_0%_30%)]">{t('admin.contacts.fields.newsletterSubscriber')}</span>
+                    <span className="text-sm text-foreground">{t('admin.contacts.fields.newsletterSubscriber')}</span>
                     {isNewsletterSubscriber && (
-                      <span className="text-xs text-green-600">{t('admin.contacts.fields.subscribedNow')}</span>
+                      <span className="text-xs text-success">{t('admin.contacts.fields.subscribedNow')}</span>
                     )}
                   </div>
                 )}
@@ -427,19 +428,19 @@ export default function ContactForm() {
           </AccordionItem>
 
           {/* Notes */}
-          <AccordionItem value="notes" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
-            <AccordionTrigger className="px-6 py-4 text-sm font-nav uppercase tracking-wider text-[hsl(0_0%_40%)] hover:no-underline">
+          <AccordionItem value="notes" className="border rounded-lg bg-card border-border shadow-sm">
+            <AccordionTrigger className="px-6 py-4 text-sm font-nav uppercase tracking-wider text-muted-foreground hover:no-underline">
               {t('admin.contacts.sections.notes')}
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
-              <Textarea {...register('notes')} rows={4} className="bg-secondary border-border text-[hsl(0_0%_15%)]" placeholder={t('admin.contacts.fields.notesPlaceholder')} />
+              <Textarea {...register('notes')} rows={4} className="bg-secondary border-border text-foreground" placeholder={t('admin.contacts.fields.notesPlaceholder')} />
             </AccordionContent>
           </AccordionItem>
         </Accordion>
 
         <div className="flex justify-end gap-3 mt-6">
           <Button type="button" variant="outline" onClick={() => navigate('/admin/contacts')}>{t('admin.common.cancel')}</Button>
-          <Button type="submit" className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]" disabled={createContact.isPending || updateContact.isPending}>
+          <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground" disabled={createContact.isPending || updateContact.isPending}>
             {t('admin.contacts.saveContact')}
           </Button>
         </div>

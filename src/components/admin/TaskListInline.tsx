@@ -16,9 +16,9 @@ import { formatDistanceToNow, parseISO, isBefore } from 'date-fns';
 import TaskForm from '@/pages/admin/TaskForm';
 
 const priorityStyles: Record<TaskPriority, string> = {
-  Low: 'bg-[hsl(0_0%_90%)] text-[hsl(0_0%_45%)]',
-  Normal: 'bg-[hsl(0_0%_20%)] text-[hsl(0_0%_95%)]',
-  High: 'bg-[hsl(43_50%_54%)]/20 text-[hsl(43_50%_44%)]',
+  Low: 'bg-muted text-muted-foreground',
+  Normal: 'bg-secondary text-secondary-foreground',
+  High: 'bg-primary/20 text-primary',
 };
 
 interface TaskListInlineProps {
@@ -66,7 +66,7 @@ export default function TaskListInline({ contactId, dealId, propertyId }: TaskLi
       <div className="flex justify-end">
         <Button
           variant="outline"
-          className="border-[hsl(43_50%_54%)] text-[hsl(43_50%_54%)]"
+          className="border-primary text-primary"
           onClick={() => { setEditTaskId(undefined); setShowForm(true); }}
         >
           <Plus className="h-4 w-4 mr-1" />{t('admin.tasks.addNew')}
@@ -84,25 +84,25 @@ export default function TaskListInline({ contactId, dealId, propertyId }: TaskLi
           const due = parseISO(task.dueAt);
           const isLate = isBefore(due, new Date()) && task.status === 'Pending';
           return (
-            <Card key={task.id} className={`bg-white border-[hsl(0_0%_90%)] shadow-sm ${task.status === 'Done' ? 'opacity-50' : ''}`}>
+            <Card key={task.id} className={`bg-card border-border shadow-sm ${task.status === 'Done' ? 'opacity-50' : ''}`}>
               <CardContent className="p-3 flex items-center gap-3">
                 <Checkbox
                   checked={task.status === 'Done'}
                   onCheckedChange={() => handleToggle(task)}
-                  className="border-[hsl(0_0%_70%)] data-[state=checked]:bg-[hsl(43_50%_54%)] data-[state=checked]:border-[hsl(43_50%_54%)]"
+                  className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                 />
                 <div className="flex-1 min-w-0">
-                  <span className={`text-sm ${task.status === 'Done' ? 'line-through text-[hsl(0_0%_60%)]' : 'font-medium text-[hsl(0_0%_15%)]'}`}>
+                  <span className={`text-sm ${task.status === 'Done' ? 'line-through text-muted-foreground' : 'font-medium text-foreground'}`}>
                     {task.title}
                   </span>
                 </div>
                 <Badge className={`text-[10px] ${priorityStyles[task.priority]}`}>{t(`admin.tasks.priority.${task.priority}`)}</Badge>
-                <span className={`text-xs whitespace-nowrap ${isLate ? 'text-red-500 font-medium' : 'text-[hsl(0_0%_50%)]'}`}>
+                <span className={`text-xs whitespace-nowrap ${isLate ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
                   {formatDistanceToNow(due, { addSuffix: true })}
                 </span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-7 w-7 text-[hsl(0_0%_50%)]" aria-label={t('admin.tasks.taskActions', 'Task actions')} title={t('admin.tasks.taskActions', 'Task actions')}>
+                    <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" aria-label={t('admin.tasks.taskActions', 'Task actions')} title={t('admin.tasks.taskActions', 'Task actions')}>
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -110,7 +110,7 @@ export default function TaskListInline({ contactId, dealId, propertyId }: TaskLi
                     <DropdownMenuItem onClick={() => { setEditTaskId(task.id); setShowForm(true); }}>
                       <Pencil className="h-3.5 w-3.5 mr-2" />{t('admin.common.edit')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-red-500" onClick={() => setDeleteConfirm(task.id)}>
+                    <DropdownMenuItem className="text-destructive" onClick={() => setDeleteConfirm(task.id)}>
                       <Trash2 className="h-3.5 w-3.5 mr-2" />{t('admin.common.delete')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>

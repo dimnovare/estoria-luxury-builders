@@ -38,52 +38,52 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[hsl(0_0%_4%)]">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md bg-[hsl(0_0%_7%)] border border-[hsl(0_0%_13%)] p-10 space-y-8"
+        className="w-full max-w-md bg-card border border-border p-10 space-y-8"
       >
         <div className="text-center space-y-2">
-          <h1 className="font-heading text-3xl tracking-[0.3em] text-[hsl(43_50%_54%)]">
+          <h1 className="font-heading text-3xl tracking-[0.3em] text-primary">
             ESTORIA
           </h1>
-          <p className="text-sm tracking-widest uppercase text-[hsl(0_0%_65%)]">
+          <p className="text-sm tracking-widest uppercase text-muted-foreground">
             {t('admin.login.portalTitle')}
           </p>
         </div>
 
         <div className="space-y-5">
           <div>
-            <Label className="text-[hsl(40_33%_95%)] text-xs tracking-wider uppercase">{t('admin.login.emailLabel')}</Label>
+            <Label className="text-foreground text-xs tracking-wider uppercase">{t('admin.login.emailLabel')}</Label>
             <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="mt-2 bg-[hsl(0_0%_10%)] border-[hsl(0_0%_20%)] text-[hsl(40_33%_95%)]"
+              className="mt-2 bg-background border-input text-foreground"
               autoFocus
             />
           </div>
 
           <div>
-            <Label className="text-[hsl(40_33%_95%)] text-xs tracking-wider uppercase">{t('admin.login.passwordLabel')}</Label>
+            <Label className="text-foreground text-xs tracking-wider uppercase">{t('admin.login.passwordLabel')}</Label>
             <Input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="mt-2 bg-[hsl(0_0%_10%)] border-[hsl(0_0%_20%)] text-[hsl(40_33%_95%)]"
+              className="mt-2 bg-background border-input text-foreground"
             />
           </div>
 
           {error && (
-            <p className="text-sm text-red-400 text-center">{error}</p>
+            <p className="text-sm text-destructive text-center">{error}</p>
           )}
 
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] font-semibold tracking-wider uppercase"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold tracking-wider uppercase"
           >
             {loading ? t('admin.login.signingIn') : t('admin.login.signIn')}
           </Button>

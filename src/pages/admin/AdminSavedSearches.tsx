@@ -4,10 +4,11 @@ import { Send, Trash2, Search } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
+import { TableSkeleton } from '@/components/admin/TableSkeleton';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import {
@@ -29,7 +30,7 @@ export default function AdminSavedSearches() {
   const [active, setActive] = useState<ActiveFilter>('all');
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const { data, isLoading } = useAdminSavedSearches({
+  const { data, isLoading, isError, refetch } = useAdminSavedSearches({
     frequency: frequency === 'all' ? undefined : frequency,
     isActive: active === 'all' ? undefined : active === 'active',
   });
@@ -63,10 +64,10 @@ export default function AdminSavedSearches() {
     <div className="space-y-6">
       <AdminPageHeader title={t('admin.savedSearches.title')} />
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-card border-border shadow-sm">
         <CardContent className="p-4 flex flex-wrap gap-3 items-center">
           <Select value={frequency} onValueChange={(v) => setFrequency(v as FrequencyFilter)}>
-            <SelectTrigger className="w-full sm:w-[180px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[180px] border-border bg-card text-foreground">
               <SelectValue placeholder={t('admin.savedSearches.filters.frequency')} />
             </SelectTrigger>
             <SelectContent>
@@ -77,7 +78,7 @@ export default function AdminSavedSearches() {
             </SelectContent>
           </Select>
           <Select value={active} onValueChange={(v) => setActive(v as ActiveFilter)}>
-            <SelectTrigger className="w-full sm:w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[160px] border-border bg-card text-foreground">
               <SelectValue placeholder={t('admin.savedSearches.filters.active')} />
             </SelectTrigger>
             <SelectContent>
@@ -89,12 +90,25 @@ export default function AdminSavedSearches() {
         </CardContent>
       </Card>
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
+      <Card className="bg-card border-border shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          {isError ? (
+            <div className="p-4">
+              <ErrorState
+                description={t('admin.savedSearches.loadError', 'Could not load saved searches.')}
+                onRetry={() => refetch()}
+              />
+            </div>
+          ) : isLoading ? (
+            <div className="p-4">
+              <TableSkeleton rows={4} cols={7} />
+            </div>
+          ) : (
+          <>
           <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-[hsl(0_0%_93%)]">
+              <TableRow className="border-border">
                 <TableHead>{t('admin.savedSearches.fields.email')}</TableHead>
                 <TableHead className="hidden md:table-cell">{t('admin.savedSearches.fields.name')}</TableHead>
                 <TableHead className="hidden sm:table-cell">{t('admin.savedSearches.fields.frequency')}</TableHead>
@@ -105,21 +119,10 @@ export default function AdminSavedSearches() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && Array.from({ length: 4 }).map((_, i) => (
-                <TableRow key={`skeleton-${i}`} className="border-[hsl(0_0%_93%)]">
-                  <TableCell><Skeleton className="h-4 w-44" /></TableCell>
-                  <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-32" /></TableCell>
-                  <TableCell className="hidden sm:table-cell"><Skeleton className="h-4 w-16" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                  <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
-                  <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-10" /></TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              ))}
-              {!isLoading && rows.map(r => (
-                <TableRow key={r.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] truncate max-w-[200px]">{r.email}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell">{r.name ?? '—'}</TableCell>
+              {rows.map(r => (
+                <TableRow key={r.id} className="border-border">
+                  <TableCell className="text-sm text-foreground truncate max-w-[200px]">{r.email}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground hidden md:table-cell">{r.name ?? '—'}</TableCell>
                   <TableCell className="hidden sm:table-cell">
                     <Badge variant="outline" className="text-[10px]">
                       {t(`admin.savedSearches.frequency.${r.frequency}`)}
@@ -128,15 +131,15 @@ export default function AdminSavedSearches() {
                   <TableCell>
                     <Badge
                       variant="outline"
-                      className={`text-[10px] ${r.isActive ? 'border-green-300 text-green-700' : 'border-[hsl(0_0%_85%)] text-[hsl(0_0%_50%)]'}`}
+                      className={`text-[10px] ${r.isActive ? 'border-success text-success' : 'border-border text-muted-foreground'}`}
                     >
                       {r.isActive ? t('admin.savedSearches.active') : t('admin.savedSearches.inactive')}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-xs text-[hsl(0_0%_50%)] hidden lg:table-cell whitespace-nowrap">
+                  <TableCell className="text-xs text-muted-foreground hidden lg:table-cell whitespace-nowrap">
                     {r.lastSentAt ? format(new Date(r.lastSentAt), 'dd.MM.yyyy HH:mm') : '—'}
                   </TableCell>
-                  <TableCell className="text-xs text-[hsl(0_0%_40%)] hidden lg:table-cell">{r.lastResultsCount}</TableCell>
+                  <TableCell className="text-xs text-muted-foreground hidden lg:table-cell">{r.lastResultsCount}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
                       <Button
@@ -155,7 +158,7 @@ export default function AdminSavedSearches() {
                         size="sm"
                         variant="ghost"
                         onClick={() => setDeleteId(r.id)}
-                        className="h-7 text-red-500 hover:text-red-600"
+                        className="h-7 text-destructive hover:text-destructive"
                         aria-label={t('admin.common.delete')}
                         title={t('admin.common.delete')}
                       >
@@ -168,12 +171,14 @@ export default function AdminSavedSearches() {
             </TableBody>
           </Table>
           </div>
-          {!isLoading && rows.length === 0 && (
+          {rows.length === 0 && (
             <EmptyState
               icon={Search}
               title={t('admin.savedSearches.empty')}
               description={t('admin.savedSearches.emptyDescription')}
             />
+          )}
+          </>
           )}
         </CardContent>
       </Card>

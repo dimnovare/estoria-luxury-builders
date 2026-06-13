@@ -12,9 +12,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { cn } from '@/lib/utils';
+import { formatDate } from '@/lib/formatDate';
 import {
   useDeals, useChangeStage, useAgents, handleCrmError,
   DEAL_STAGES, type DealStage, type DealListDto, type DealFilter,
@@ -75,7 +77,7 @@ export default function AdminDeals() {
     mineOnly: mineOnly || undefined,
   };
 
-  const { data: kanban, isLoading } = useDeals(filter);
+  const { data: kanban, isLoading, isError, refetch } = useDeals(filter);
   const changeStage = useChangeStage();
 
   const openStageChange = (deal: DealListDto) => {
@@ -128,7 +130,7 @@ export default function AdminDeals() {
   const DealCard = ({ deal, showStageBadge = false }: { deal: DealListDto; showStageBadge?: boolean }) => {
     const daysInStage = getDaysInStage(deal);
     return (
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => openStageChange(deal)}>
+      <Card className="bg-card border-border shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => openStageChange(deal)}>
         <CardContent className="p-3 space-y-2">
           {showStageBadge && (
             <Badge variant="outline" className={`text-[10px] ${stageColors[deal.stage] ?? ''}`}>
@@ -136,11 +138,11 @@ export default function AdminDeals() {
             </Badge>
           )}
           <div className="flex items-start justify-between gap-2">
-            <Link to={`/admin/deals/${deal.id}`} className="text-sm font-medium text-[hsl(0_0%_20%)] hover:text-[hsl(43_50%_54%)] line-clamp-2" onClick={(e) => e.stopPropagation()}>
+            <Link to={`/admin/deals/${deal.id}`} className="text-sm font-medium text-foreground hover:text-primary line-clamp-2" onClick={(e) => e.stopPropagation()}>
               {deal.title}
             </Link>
           </div>
-          <Link to={`/admin/contacts/${deal.primaryContactId}`} className="text-xs text-[hsl(0_0%_50%)] hover:text-[hsl(43_50%_54%)] block truncate" onClick={(e) => e.stopPropagation()}>
+          <Link to={`/admin/contacts/${deal.primaryContactId}`} className="text-xs text-muted-foreground hover:text-primary block truncate" onClick={(e) => e.stopPropagation()}>
             {deal.primaryContactName}
           </Link>
           {deal.propertyThumbUrl && (
@@ -148,22 +150,22 @@ export default function AdminDeals() {
           )}
           <div className="flex items-center justify-between text-xs gap-2">
             {deal.expectedValue != null && (
-              <span className="text-[hsl(0_0%_30%)] font-medium">€{deal.expectedValue.toLocaleString()}</span>
+              <span className="text-foreground font-medium">€{deal.expectedValue.toLocaleString()}</span>
             )}
             {deal.expectedCloseDate && (
-              <span className="text-[hsl(0_0%_60%)] flex items-center gap-1 shrink-0">
+              <span className="text-muted-foreground flex items-center gap-1 shrink-0">
                 <Calendar className="h-3 w-3" />
-                {new Date(deal.expectedCloseDate).toLocaleDateString()}
+                {formatDate(deal.expectedCloseDate)}
               </span>
             )}
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-[10px] text-[hsl(0_0%_60%)] truncate">{deal.assignedAgentName}</span>
+            <span className="text-[10px] text-muted-foreground truncate">{deal.assignedAgentName}</span>
             {daysInStage > 0 && (
               <Badge variant="outline" className={`text-[10px] shrink-0 ${
-                daysInStage > 30 ? 'bg-red-50 text-red-600 border-red-200'
-                  : daysInStage > 14 ? 'bg-[hsl(43_50%_54%)]/10 text-[hsl(43_50%_44%)] border-[hsl(43_50%_54%)]/30'
-                  : 'text-[hsl(0_0%_60%)]'
+                daysInStage > 30 ? 'bg-destructive/10 text-destructive border-destructive/30'
+                  : daysInStage > 14 ? 'bg-primary/10 text-primary border-primary/30'
+                  : 'text-muted-foreground'
               }`}>
                 <Clock className="h-2.5 w-2.5 mr-0.5" />{daysInStage}d
               </Badge>
@@ -180,17 +182,17 @@ export default function AdminDeals() {
         title={t('admin.deals.title')}
         subtitle={t('admin.deals.subtitle', 'Track deals through stages from lead to close. Link deals to contacts, properties, and email threads.')}
         action={
-          <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
+          <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0">
             <Link to="/admin/deals/new"><Plus className="h-4 w-4 mr-2" />{t('admin.deals.addNew')}</Link>
           </Button>
         }
       />
 
       {/* Filters */}
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-card border-border shadow-sm">
         <CardContent className="p-3 sm:p-4 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3 items-center">
           <Select value={agentFilter} onValueChange={setAgentFilter}>
-            <SelectTrigger className="w-full sm:w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)] text-sm h-9">
+            <SelectTrigger className="w-full sm:w-[160px] border-border bg-card text-foreground text-sm h-9">
               <SelectValue placeholder={t('admin.contacts.filters.agent')} />
             </SelectTrigger>
             <SelectContent>
@@ -199,7 +201,7 @@ export default function AdminDeals() {
             </SelectContent>
           </Select>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-full sm:w-[140px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)] text-sm h-9">
+            <SelectTrigger className="w-full sm:w-[140px] border-border bg-card text-foreground text-sm h-9">
               <SelectValue placeholder={t('admin.deals.filters.dealType')} />
             </SelectTrigger>
             <SelectContent>
@@ -209,7 +211,7 @@ export default function AdminDeals() {
             </SelectContent>
           </Select>
           <Select value={sideFilter} onValueChange={setSideFilter}>
-            <SelectTrigger className="w-full sm:w-[140px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)] text-sm h-9">
+            <SelectTrigger className="w-full sm:w-[140px] border-border bg-card text-foreground text-sm h-9">
               <SelectValue placeholder={t('admin.deals.filters.side')} />
             </SelectTrigger>
             <SelectContent>
@@ -222,8 +224,8 @@ export default function AdminDeals() {
             onClick={() => setMineOnly(!mineOnly)}
             className={`px-3 py-1.5 text-xs font-nav uppercase tracking-wider rounded-full border transition-colors col-span-2 sm:col-span-1 ${
               mineOnly
-                ? 'bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] border-[hsl(43_50%_54%)]'
-                : 'border-[hsl(0_0%_85%)] text-[hsl(0_0%_50%)] hover:border-[hsl(0_0%_70%)]'
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'border-border text-muted-foreground hover:border-muted-foreground'
             }`}
           >
             {t('admin.deals.filters.mineOnly')}
@@ -232,7 +234,12 @@ export default function AdminDeals() {
       </Card>
 
       {/* Kanban / Accordion */}
-      {isLoading ? (
+      {isError ? (
+        <ErrorState
+          description={t('admin.deals.loadError', 'Could not load deals. Please try again.')}
+          onRetry={() => refetch()}
+        />
+      ) : isLoading ? (
         <div className="space-y-3">
           {STAGE_GROUPS.slice(0, 3).map(g => (
             <Card key={g.id}>
@@ -259,17 +266,17 @@ export default function AdminDeals() {
                         group.color
                       )}>
                         <div className="flex items-center gap-3 flex-1">
-                          <span className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_25%)] font-medium">
+                          <span className="text-xs font-nav uppercase tracking-wider text-foreground font-medium">
                             {t(`admin.deals.groups.${group.id}`)}
                           </span>
                           <Badge
                             variant="outline"
-                            className="text-[10px] h-5 min-w-[24px] px-2 justify-center text-[hsl(0_0%_30%)] bg-white"
+                            className="text-[10px] h-5 min-w-[24px] px-2 justify-center text-foreground bg-card"
                           >
                             {deals.length}
                           </Badge>
                           {totalValue > 0 && (
-                            <span className="text-xs text-[hsl(0_0%_50%)] ml-auto mr-2">€{totalValue.toLocaleString()}</span>
+                            <span className="text-xs text-muted-foreground ml-auto mr-2">€{totalValue.toLocaleString()}</span>
                           )}
                         </div>
                       </AccordionTrigger>
@@ -296,13 +303,13 @@ export default function AdminDeals() {
                 <div key={group.id} className="min-w-0">
                   <div className={`rounded-t-lg px-3 py-2.5 border border-b-0 ${group.color}`}>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_30%)]">
+                      <span className="text-xs font-nav uppercase tracking-wider text-foreground">
                         {t(`admin.deals.groups.${group.id}`)}
                       </span>
-                      <Badge variant="outline" className="text-[10px] text-[hsl(0_0%_30%)]">{deals.length}</Badge>
+                      <Badge variant="outline" className="text-[10px] text-foreground">{deals.length}</Badge>
                     </div>
                     {totalValue > 0 && (
-                      <p className="text-xs text-[hsl(0_0%_45%)] mt-0.5">€{totalValue.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">€{totalValue.toLocaleString()}</p>
                     )}
                   </div>
                   <div className="bg-card border border-t-0 border-border rounded-b-lg p-2 space-y-2 min-h-[120px] max-h-[70vh] overflow-y-auto">
@@ -326,15 +333,15 @@ export default function AdminDeals() {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.currentStage', 'Current stage')}</Label>
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.currentStage', 'Current stage')}</Label>
               <Badge variant="outline" className={`mt-1 ${stageColors[changingDeal?.stage ?? ''] ?? ''}`}>
                 {changingDeal?.stage && t(`admin.deals.stages.${changingDeal.stage}`)}
               </Badge>
             </div>
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.newStage', 'New stage')}</Label>
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.newStage', 'New stage')}</Label>
               <Select value={targetStage} onValueChange={(v) => setTargetStage(v as DealStage)}>
-                <SelectTrigger className="mt-1 bg-secondary border-border">
+                <SelectTrigger className="mt-1 bg-background border-border text-foreground">
                   <SelectValue placeholder={t('admin.deals.selectStage', 'Select stage')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -346,21 +353,21 @@ export default function AdminDeals() {
             </div>
             {targetStage === 'Won' && (
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.actualValue')} *</Label>
-                <Input value={actualValue} onChange={(e) => setActualValue(e.target.value)} type="number" className="mt-1 bg-secondary border-border" />
+                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.actualValue')} *</Label>
+                <Input value={actualValue} onChange={(e) => setActualValue(e.target.value)} type="number" className="mt-1 bg-background border-border text-foreground" />
               </div>
             )}
             {targetStage === 'Lost' && (
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.lossReason')} *</Label>
-                <Textarea value={lossReason} onChange={(e) => setLossReason(e.target.value)} className="mt-1 bg-secondary border-border" rows={3} />
+                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.lossReason')} *</Label>
+                <Textarea value={lossReason} onChange={(e) => setLossReason(e.target.value)} className="mt-1 bg-background border-border text-foreground" rows={3} />
               </div>
             )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setChangingDeal(null)}>{t('admin.common.cancel')}</Button>
             <Button
-              className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
               onClick={handleStageChange}
               disabled={!targetStage || changeStage.isPending}
             >

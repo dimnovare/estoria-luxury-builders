@@ -122,25 +122,25 @@ export default function SenderActionsPanel({ message }: Props) {
   const linkedDealId = message.linkedDealId;
 
   const btnClass =
-    'w-full flex items-center gap-2 text-left text-sm px-3 py-2 rounded-md hover:bg-[hsl(43_50%_95%)] text-[hsl(0_0%_25%)] border border-[hsl(0_0%_88%)] bg-white transition-colors';
+    'w-full flex items-center gap-2 text-left text-sm px-3 py-2 rounded-md hover:bg-primary/10 text-foreground border border-border bg-card transition-colors';
 
   return (
-    <aside className="md:w-64 md:border-l md:border-[hsl(0_0%_90%)] bg-[hsl(0_0%_97%)] p-3 md:p-4 shrink-0 overflow-y-auto">
+    <aside className="md:w-64 md:border-l md:border-border bg-muted p-3 md:p-4 shrink-0 overflow-y-auto">
       {/* Sender */}
       <div className="mb-4">
-        <p className="text-xs font-semibold uppercase tracking-wider text-[hsl(0_0%_45%)] mb-2">
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
           {t('admin.inbox.actions.sender', { defaultValue: 'Sender' })}
         </p>
-        <p className="text-sm font-medium text-[hsl(0_0%_20%)] truncate">{message.fromName || message.from}</p>
-        <p className="text-xs text-[hsl(0_0%_50%)] truncate">{message.from}</p>
+        <p className="text-sm font-medium text-foreground truncate">{message.fromName || message.from}</p>
+        <p className="text-xs text-muted-foreground truncate">{message.from}</p>
       </div>
 
       <div className="space-y-2">
         {/* Contact action */}
         {matchedContact || linkedContactId ? (
-          <div className="border border-[hsl(43_50%_75%)] bg-[hsl(43_50%_97%)] rounded-md px-3 py-2">
-            <div className="flex items-center gap-2 text-sm text-[hsl(0_0%_25%)]">
-              <Check className="h-3.5 w-3.5 text-[hsl(43_50%_45%)] shrink-0" />
+          <div className="border border-primary bg-primary/10 rounded-md px-3 py-2">
+            <div className="flex items-center gap-2 text-sm text-foreground">
+              <Check className="h-3.5 w-3.5 text-primary shrink-0" />
               <button
                 onClick={() => navigate(`/admin/contacts/${linkedContactId ?? matchedContact!.id}`)}
                 className="flex-1 text-left truncate hover:underline"
@@ -152,7 +152,7 @@ export default function SenderActionsPanel({ message }: Props) {
                   onClick={() => handleUnlink('contact')}
                   aria-label={t('admin.inbox.actions.unlink', 'Unlink')}
                   title={t('admin.inbox.actions.unlink', 'Unlink')}
-                  className="text-[hsl(0_0%_45%)] hover:text-red-600"
+                  className="text-muted-foreground hover:text-destructive"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
@@ -177,9 +177,9 @@ export default function SenderActionsPanel({ message }: Props) {
 
         {/* Link to existing deal */}
         {linkedDealId ? (
-          <div className="border border-[hsl(43_50%_75%)] bg-[hsl(43_50%_97%)] rounded-md px-3 py-2">
-            <div className="flex items-center gap-2 text-sm text-[hsl(0_0%_25%)]">
-              <Check className="h-3.5 w-3.5 text-[hsl(43_50%_45%)] shrink-0" />
+          <div className="border border-primary bg-primary/10 rounded-md px-3 py-2">
+            <div className="flex items-center gap-2 text-sm text-foreground">
+              <Check className="h-3.5 w-3.5 text-primary shrink-0" />
               <button
                 onClick={() => navigate(`/admin/deals/${linkedDealId}`)}
                 className="flex-1 text-left truncate hover:underline"
@@ -190,7 +190,7 @@ export default function SenderActionsPanel({ message }: Props) {
                 onClick={() => handleUnlink('deal')}
                 aria-label={t('admin.inbox.actions.unlink', 'Unlink')}
                 title={t('admin.inbox.actions.unlink', 'Unlink')}
-                className="text-[hsl(0_0%_45%)] hover:text-red-600"
+                className="text-muted-foreground hover:text-destructive"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
@@ -200,13 +200,13 @@ export default function SenderActionsPanel({ message }: Props) {
           <>
             <button
               onClick={() => setOpenPanel(openPanel === 'deal' ? null : 'deal')}
-              className={cn(btnClass, openPanel === 'deal' && 'bg-[hsl(43_50%_95%)]')}
+              className={cn(btnClass, openPanel === 'deal' && 'bg-primary/10')}
             >
               <LinkIcon className="h-3.5 w-3.5" />
               <span>{t('admin.inbox.actions.linkDeal', { defaultValue: 'Link to Existing Deal' })}</span>
             </button>
             {openPanel === 'deal' && (
-              <div className="border border-[hsl(0_0%_88%)] rounded-md bg-white p-2 space-y-1">
+              <div className="border border-border rounded-md bg-card p-2 space-y-1">
                 <Input
                   autoFocus
                   value={dealQuery}
@@ -218,13 +218,13 @@ export default function SenderActionsPanel({ message }: Props) {
                   <button
                     key={d.id}
                     onClick={() => handleLinkDeal(d.id)}
-                    className="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-[hsl(43_50%_95%)] text-[hsl(0_0%_25%)] truncate"
+                    className="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-primary/10 text-foreground truncate"
                   >
                     {d.title}
                   </button>
                 ))}
                 {debouncedDeal && dealMatches.length === 0 && (
-                  <p className="text-xs text-[hsl(0_0%_55%)] px-2 py-1">{t('admin.inbox.actions.noMatches', 'No matches')}</p>
+                  <p className="text-xs text-muted-foreground px-2 py-1">{t('admin.inbox.actions.noMatches', 'No matches')}</p>
                 )}
               </div>
             )}
@@ -236,13 +236,13 @@ export default function SenderActionsPanel({ message }: Props) {
           <>
             <button
               onClick={() => setOpenPanel(openPanel === 'contact' ? null : 'contact')}
-              className={cn(btnClass, openPanel === 'contact' && 'bg-[hsl(43_50%_95%)]')}
+              className={cn(btnClass, openPanel === 'contact' && 'bg-primary/10')}
             >
               <User className="h-3.5 w-3.5" />
               <span>{t('admin.inbox.actions.linkContact', { defaultValue: 'Link to Existing Contact' })}</span>
             </button>
             {openPanel === 'contact' && (
-              <div className="border border-[hsl(0_0%_88%)] rounded-md bg-white p-2 space-y-1">
+              <div className="border border-border rounded-md bg-card p-2 space-y-1">
                 <Input
                   autoFocus
                   value={contactQuery}
@@ -254,13 +254,13 @@ export default function SenderActionsPanel({ message }: Props) {
                   <button
                     key={c.id}
                     onClick={() => handleLinkContact(c.id)}
-                    className="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-[hsl(43_50%_95%)] text-[hsl(0_0%_25%)] truncate"
+                    className="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-primary/10 text-foreground truncate"
                   >
-                    {c.fullName} <span className="text-[hsl(0_0%_55%)]">{c.email}</span>
+                    {c.fullName} <span className="text-muted-foreground">{c.email}</span>
                   </button>
                 ))}
                 {debouncedContact && (contactSearch?.items?.length ?? 0) === 0 && (
-                  <p className="text-xs text-[hsl(0_0%_55%)] px-2 py-1">{t('admin.inbox.actions.noMatches', 'No matches')}</p>
+                  <p className="text-xs text-muted-foreground px-2 py-1">{t('admin.inbox.actions.noMatches', 'No matches')}</p>
                 )}
               </div>
             )}

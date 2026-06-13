@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Download, Trash2, Eye, Send, TestTube2 } from 'lucide-react';
+import { Download, Trash2, Send, TestTube2, Mail, Inbox } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
+import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
+import { TableSkeleton } from '@/components/admin/TableSkeleton';
 
 import { useAdminSubscribers, useUnsubscribe } from '@/hooks/api/useAdmin';
 import { useNewsletterCampaigns, useSendNewsletterNow, useNewsletterSubscriberCount, useDeleteCampaign, type CampaignDto } from '@/hooks/api/useNewsletter';
@@ -25,6 +28,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSiteSettings } from '@/hooks/api/useSiteSettings';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { format } from 'date-fns';
+import { formatDate } from '@/lib/formatDate';
 
 // ── Compose schema ──────────────────────────────────────────────────────────
 
@@ -40,9 +44,9 @@ type ComposeValues = z.infer<typeof composeSchema>;
 
 function StatusPill({ status }: { status: string }) {
   const cls =
-    status === 'Sent' ? 'bg-green-100 text-green-700 border-green-200' :
+    status === 'Sent' ? 'bg-success/10 text-success border-success/30' :
     status === 'Sending' ? 'bg-amber-100 text-amber-700 border-amber-200 animate-pulse' :
-    status === 'Failed' ? 'bg-red-100 text-red-700 border-red-200' :
+    status === 'Failed' ? 'bg-destructive/10 text-destructive border-destructive/30' :
     'bg-gray-100 text-gray-600 border-gray-200';
   return <Badge variant="outline" className={`text-[10px] ${cls}`}>{status}</Badge>;
 }
@@ -113,8 +117,8 @@ function ComposeTab() {
               name="subject"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_45%)]">{t('admin.newsletter.compose.subject')}</FormLabel>
-                  <FormControl><Input {...field} className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_55%)]" /></FormControl>
+                  <FormLabel className="text-xs font-nav uppercase tracking-wider text-muted-foreground">{t('admin.newsletter.compose.subject')}</FormLabel>
+                  <FormControl><Input {...field} className="bg-muted border-border text-foreground placeholder:text-muted-foreground" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -124,10 +128,10 @@ function ComposeTab() {
               name="language"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_45%)]">{t('admin.newsletter.compose.languageFilter')}</FormLabel>
+                  <FormLabel className="text-xs font-nav uppercase tracking-wider text-muted-foreground">{t('admin.newsletter.compose.languageFilter')}</FormLabel>
                   <Select value={field.value ?? 'all'} onValueChange={field.onChange}>
                     <FormControl>
-                      <SelectTrigger className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)]">
+                      <SelectTrigger className="bg-muted border-border text-foreground">
                         <SelectValue />
                       </SelectTrigger>
                     </FormControl>
@@ -147,7 +151,7 @@ function ComposeTab() {
               name="bodyHtml"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_45%)]">{t('admin.newsletter.compose.body')}</FormLabel>
+                  <FormLabel className="text-xs font-nav uppercase tracking-wider text-muted-foreground">{t('admin.newsletter.compose.body')}</FormLabel>
                   <FormControl>
                     <RichTextEditor
                       value={field.value}
@@ -156,13 +160,13 @@ function ComposeTab() {
                       minHeight="320px"
                     />
                   </FormControl>
-                  <p className="text-xs text-[hsl(0_0%_50%)]">{t('admin.newsletter.compose.bodyHelp')}</p>
+                  <p className="text-xs text-muted-foreground">{t('admin.newsletter.compose.bodyHelp')}</p>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <div className="flex items-center gap-2 text-sm text-[hsl(0_0%_50%)]">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Badge variant="outline" className="text-[10px] bg-blue-50 text-blue-700 border-blue-200">
                 {t('admin.newsletter.compose.willReach', { count: recipientCount })}
               </Badge>
@@ -172,7 +176,7 @@ function ComposeTab() {
               <Button type="submit" disabled={sendMut.isPending}>
                 <Send className="h-4 w-4 mr-2" />{t('admin.newsletter.compose.sendNow')}
               </Button>
-              <Button type="button" variant="outline" className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_30%)]" onClick={onSendTest} disabled={sendMut.isPending}>
+              <Button type="button" variant="outline" className="border-border text-foreground" onClick={onSendTest} disabled={sendMut.isPending}>
                 <TestTube2 className="h-4 w-4 mr-2" />{t('admin.newsletter.compose.sendTest')}
               </Button>
             </div>
@@ -182,9 +186,9 @@ function ComposeTab() {
 
       {/* Right — preview */}
       <div className="space-y-2">
-        <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+        <Card className="bg-card border-border shadow-sm">
           <CardContent className="p-4 space-y-3">
-            <div className="text-xs text-[hsl(0_0%_50%)] space-y-1">
+            <div className="text-xs text-muted-foreground space-y-1">
               <p><span className="font-medium">{t('admin.newsletter.compose.from')}:</span> {fromEmail}</p>
               <p><span className="font-medium">{t('admin.newsletter.compose.to')}:</span> {recipientCount} {t('admin.newsletter.compose.subscribers')}</p>
             </div>
@@ -192,12 +196,12 @@ function ComposeTab() {
               <iframe
                 srcDoc={debouncedBody}
                 sandbox=""
-                className="w-full max-h-[600px] border border-[hsl(0_0%_90%)] rounded bg-white"
+                className="w-full max-h-[600px] border border-border rounded bg-card"
                 style={{ minHeight: 200 }}
                 title={t('admin.newsletter.compose.previewFrameTitle', 'Preview')}
               />
             ) : (
-              <div className="h-[200px] bg-[hsl(0_0%_96%)] rounded flex items-center justify-center text-sm text-[hsl(0_0%_60%)]">
+              <div className="h-[200px] bg-muted rounded flex items-center justify-center text-sm text-muted-foreground">
                 {t('admin.newsletter.compose.previewPlaceholder')}
               </div>
             )}
@@ -229,7 +233,7 @@ function ComposeTab() {
 function CampaignsTab() {
   const { t } = useTranslation();
   const [page] = useState(1);
-  const { data, isLoading } = useNewsletterCampaigns(page);
+  const { data, isLoading, isError, refetch } = useNewsletterCampaigns(page);
   const campaigns = data?.items ?? [];
   const [detailId, setDetailId] = useState<string | null>(null);
   const detailCampaign = campaigns.find(c => c.id === detailId);
@@ -247,42 +251,56 @@ function CampaignsTab() {
 
   return (
     <>
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
+      {isError ? (
+        <ErrorState
+          description={t('admin.newsletter.campaigns.loadError', 'Could not load campaigns. Please try again.')}
+          onRetry={() => refetch()}
+        />
+      ) : (
+      <Card className="bg-card border-border shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          {isLoading ? (
+            <div className="p-4">
+              <TableSkeleton rows={6} cols={8} />
+            </div>
+          ) : campaigns.length === 0 ? (
+            <EmptyState
+              icon={Inbox}
+              title={t('admin.newsletter.campaigns.emptyTitle', 'No campaigns yet')}
+              description={t('admin.newsletter.campaigns.empty')}
+            />
+          ) : (
           <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.newsletter.campaigns.subject')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.newsletter.campaigns.sentAt')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden lg:table-cell">{t('admin.newsletter.table.language')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.newsletter.campaigns.recipients')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.newsletter.campaigns.success')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.newsletter.campaigns.failed')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12"></TableHead>
+              <TableRow className="border-border">
+                <TableHead className="text-muted-foreground text-xs">{t('admin.newsletter.campaigns.subject')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.newsletter.campaigns.sentAt')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden lg:table-cell">{t('admin.newsletter.table.language')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden md:table-cell">{t('admin.newsletter.campaigns.recipients')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden md:table-cell">{t('admin.newsletter.campaigns.success')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden md:table-cell">{t('admin.newsletter.campaigns.failed')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs">{t('admin.common.status')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs w-12"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && (
-                <TableRow><TableCell colSpan={8} className="text-center py-12 text-sm text-[hsl(0_0%_50%)]">{t('admin.common.loading')}</TableCell></TableRow>
-              )}
-              {!isLoading && campaigns.map(c => (
-                <TableRow key={c.id} className="border-[hsl(0_0%_93%)] hover:bg-[hsl(0_0%_97%)]">
-                  <TableCell className="text-sm font-medium text-[hsl(0_0%_20%)] cursor-pointer" onClick={() => setDetailId(c.id)}>
+              {campaigns.map(c => (
+                <TableRow key={c.id} className="border-border hover:bg-muted">
+                  <TableCell className="text-sm font-medium text-foreground cursor-pointer" onClick={() => setDetailId(c.id)}>
                     <div>{c.subject}</div>
-                    <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy') : '—'}</div>
+                    <div className="text-xs text-muted-foreground sm:hidden">{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy') : '—'}</div>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy HH:mm') : '—'}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] uppercase hidden lg:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.language ?? t('admin.newsletter.compose.langAll')}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.recipientsCount}</TableCell>
-                  <TableCell className="text-sm text-green-600 hidden md:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.successCount}</TableCell>
-                  <TableCell className="text-sm text-red-500 hidden md:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.failureCount}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy HH:mm') : '—'}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground uppercase hidden lg:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.language ?? t('admin.newsletter.compose.langAll')}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground hidden md:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.recipientsCount}</TableCell>
+                  <TableCell className="text-sm text-success hidden md:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.successCount}</TableCell>
+                  <TableCell className="text-sm text-destructive hidden md:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.failureCount}</TableCell>
                   <TableCell className="cursor-pointer" onClick={() => setDetailId(c.id)}><StatusPill status={c.status} /></TableCell>
                   <TableCell>
                     <Button
                       variant="ghost" size="icon"
-                      className="h-7 w-7 text-[hsl(0_0%_45%)] hover:text-red-600 hover:bg-red-50"
+                      className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                       disabled={deleteCampaign.isPending}
                       aria-label={t('admin.common.delete')}
                       title={t('admin.common.delete')}
@@ -296,14 +314,13 @@ function CampaignsTab() {
                   </TableCell>
                 </TableRow>
               ))}
-              {!isLoading && campaigns.length === 0 && (
-                <TableRow><TableCell colSpan={8} className="text-center py-12 text-sm text-[hsl(0_0%_50%)]">{t('admin.newsletter.campaigns.empty')}</TableCell></TableRow>
-              )}
             </TableBody>
           </Table>
           </div>
+          )}
         </CardContent>
       </Card>
+      )}
 
       {/* Detail modal */}
       <Dialog open={!!detailId} onOpenChange={() => setDetailId(null)}>
@@ -318,7 +335,7 @@ function CampaignsTab() {
             <iframe
               srcDoc={detailCampaign.bodyHtml}
               sandbox=""
-              className="w-full h-[400px] border border-[hsl(0_0%_90%)] rounded bg-white"
+              className="w-full h-[400px] border border-border rounded bg-card"
               title={t('admin.newsletter.campaigns.bodyFrameTitle', 'Campaign body')}
             />
           )}
@@ -340,7 +357,7 @@ function CampaignsTab() {
 
 function SubscribersTab() {
   const { t } = useTranslation();
-  const { data, isLoading } = useAdminSubscribers();
+  const { data, isLoading, isError, refetch } = useAdminSubscribers();
   const unsubscribe = useUnsubscribe();
   const subscribers = data?.items ?? [];
   const [pendingUnsub, setPendingUnsub] = useState<string | null>(null);
@@ -348,7 +365,7 @@ function SubscribersTab() {
   const exportCsv = () => {
     const header = 'Email,Language,Subscribed,Active\n';
     const rows = subscribers
-      .map(s => `${s.email},${s.language},${new Date(s.subscribedAt).toLocaleDateString()},${s.isActive}`)
+      .map(s => `${s.email},${s.language},${formatDate(s.subscribedAt, { year: 'numeric', month: '2-digit', day: '2-digit' })},${s.isActive}`)
       .join('\n');
     const blob = new Blob([header + rows], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -372,38 +389,52 @@ function SubscribersTab() {
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <Button onClick={exportCsv} variant="outline" className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_30%)]">
+        <Button onClick={exportCsv} variant="outline" className="border-border text-foreground">
           <Download className="h-4 w-4 mr-2" />{t('admin.newsletter.exportCsv')}
         </Button>
       </div>
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
+      {isError ? (
+        <ErrorState
+          description={t('admin.newsletter.loadError', 'Could not load subscribers. Please try again.')}
+          onRetry={() => refetch()}
+        />
+      ) : (
+      <Card className="bg-card border-border shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          {isLoading ? (
+            <div className="p-4">
+              <TableSkeleton rows={6} cols={5} />
+            </div>
+          ) : subscribers.length === 0 ? (
+            <EmptyState
+              icon={Mail}
+              title={t('admin.newsletter.emptyTitle', 'No subscribers yet')}
+              description={t('admin.newsletter.empty')}
+            />
+          ) : (
           <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.email')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.newsletter.table.language')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.newsletter.table.subscribed')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-16"></TableHead>
+              <TableRow className="border-border">
+                <TableHead className="text-muted-foreground text-xs">{t('admin.common.email')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.newsletter.table.language')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.newsletter.table.subscribed')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs">{t('admin.common.status')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs w-16"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && (
-                <TableRow><TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell></TableRow>
-              )}
-              {!isLoading && subscribers.map(s => (
-                <TableRow key={s.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium break-all">{s.email}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] uppercase hidden sm:table-cell">{s.language}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_50%)] hidden sm:table-cell">
-                    {s.subscribedAt ? new Date(s.subscribedAt).toLocaleDateString() : '—'}
+              {subscribers.map(s => (
+                <TableRow key={s.id} className="border-border">
+                  <TableCell className="text-sm text-foreground font-medium break-all">{s.email}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground uppercase hidden sm:table-cell">{s.language}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell">
+                    {s.subscribedAt ? formatDate(s.subscribedAt) : '—'}
                   </TableCell>
                   <TableCell>
                     <Badge
                       variant="outline"
-                      className={`text-[10px] ${s.isActive ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-600 border-gray-200'}`}
+                      className={`text-[10px] ${s.isActive ? 'bg-success/10 text-success border-success/30' : 'bg-gray-100 text-gray-600 border-gray-200'}`}
                     >
                       {s.isActive ? t('admin.newsletter.active') : t('admin.newsletter.unsubscribed')}
                     </Badge>
@@ -411,7 +442,7 @@ function SubscribersTab() {
                   <TableCell>
                     <Button
                       variant="ghost" size="icon"
-                      className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-red-600 hover:bg-red-50"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                       onClick={() => setPendingUnsub(s.id)}
                       disabled={unsubscribe.isPending || !s.isActive}
                       aria-label={t('admin.newsletter.unsubscribe', 'Unsubscribe')}
@@ -422,14 +453,13 @@ function SubscribersTab() {
                   </TableCell>
                 </TableRow>
               ))}
-              {!isLoading && subscribers.length === 0 && (
-                <TableRow><TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.newsletter.empty')}</TableCell></TableRow>
-              )}
             </TableBody>
           </Table>
           </div>
+          )}
         </CardContent>
       </Card>
+      )}
 
       <ConfirmDialog
         open={!!pendingUnsub}

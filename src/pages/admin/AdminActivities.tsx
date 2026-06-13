@@ -11,10 +11,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
+import { TableSkeleton } from '@/components/admin/TableSkeleton';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { useAdminUsers } from '@/hooks/api/useAdminUsers';
@@ -57,7 +58,7 @@ export default function AdminActivities() {
     pageSize: PAGE_SIZE,
   }), [type, userId, debouncedSearch, occurredAfter, occurredBefore, page]);
 
-  const { data, isLoading } = useActivities(filter);
+  const { data, isLoading, isError, refetch } = useActivities(filter);
   const activities = data?.items ?? [];
   const totalCount = data?.totalCount ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
@@ -66,20 +67,20 @@ export default function AdminActivities() {
     <div className="space-y-6">
       <AdminPageHeader title={t('admin.activities.title')} />
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-card border-border shadow-sm">
         <CardContent className="p-4 flex flex-wrap gap-3 items-center">
           <div className="relative flex-1 min-w-[180px]">
-            <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-[hsl(0_0%_60%)]" />
+            <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
               placeholder={t('admin.activities.searchPlaceholder')}
-              className="pl-9 bg-white border-[hsl(0_0%_85%)] text-sm"
+              className="pl-9 bg-card border-border text-sm"
             />
           </div>
 
           <Select value={type} onValueChange={(v) => { setType(v as 'all' | AdminActivityType); setPage(1); }}>
-            <SelectTrigger className="w-full sm:w-[160px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[160px] border-border bg-card text-foreground">
               <SelectValue placeholder={t('admin.activities.filters.type')} />
             </SelectTrigger>
             <SelectContent>
@@ -91,7 +92,7 @@ export default function AdminActivities() {
           </Select>
 
           <Select value={userId} onValueChange={(v) => { setUserId(v); setPage(1); }}>
-            <SelectTrigger className="w-full sm:w-[180px] border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]">
+            <SelectTrigger className="w-full sm:w-[180px] border-border bg-card text-foreground">
               <SelectValue placeholder={t('admin.activities.filters.user')} />
             </SelectTrigger>
             <SelectContent>
@@ -107,26 +108,39 @@ export default function AdminActivities() {
               type="date"
               value={occurredAfter}
               onChange={(e) => { setOccurredAfter(e.target.value); setPage(1); }}
-              className="flex-1 sm:w-[150px] bg-white border-[hsl(0_0%_85%)] text-sm"
+              className="flex-1 sm:w-[150px] bg-card border-border text-sm"
               aria-label={t('admin.activities.filters.from')}
             />
             <Input
               type="date"
               value={occurredBefore}
               onChange={(e) => { setOccurredBefore(e.target.value); setPage(1); }}
-              className="flex-1 sm:w-[150px] bg-white border-[hsl(0_0%_85%)] text-sm"
+              className="flex-1 sm:w-[150px] bg-card border-border text-sm"
               aria-label={t('admin.activities.filters.to')}
             />
           </div>
         </CardContent>
       </Card>
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
+      <Card className="bg-card border-border shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          {isError ? (
+            <ErrorState
+              description={t('admin.activities.loadError', 'Could not load activities.')}
+              onRetry={() => refetch()}
+              className="border-0"
+            />
+          ) : (
+          <>
           <div className="overflow-x-auto">
+          {isLoading ? (
+            <div className="p-4">
+              <TableSkeleton rows={6} cols={5} />
+            </div>
+          ) : (
           <Table>
             <TableHeader>
-              <TableRow className="border-[hsl(0_0%_93%)]">
+              <TableRow className="border-border">
                 <TableHead>{t('admin.activities.table.when')}</TableHead>
                 <TableHead>{t('admin.activities.table.type')}</TableHead>
                 <TableHead className="hidden sm:table-cell">{t('admin.activities.table.title')}</TableHead>
@@ -135,20 +149,11 @@ export default function AdminActivities() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && Array.from({ length: 6 }).map((_, i) => (
-                <TableRow key={`skeleton-${i}`} className="border-[hsl(0_0%_93%)]">
-                  <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-48" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-28" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-28" /></TableCell>
-                </TableRow>
-              ))}
-              {!isLoading && activities.map(a => {
+              {activities.map(a => {
                 const Icon = activityIcons[a.type] ?? StickyNote;
                 return (
-                  <TableRow key={a.id} className="border-[hsl(0_0%_93%)]">
-                    <TableCell className="text-xs text-[hsl(0_0%_50%)]">
+                  <TableRow key={a.id} className="border-border">
+                    <TableCell className="text-xs text-muted-foreground">
                       <Tooltip>
                         <TooltipTrigger>{formatDistanceToNow(new Date(a.occurredAt), { addSuffix: true })}</TooltipTrigger>
                         <TooltipContent>{format(new Date(a.occurredAt), 'dd.MM.yyyy HH:mm')}</TooltipContent>
@@ -160,19 +165,19 @@ export default function AdminActivities() {
                         {t(`admin.activities.types.${a.type}`)}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-sm text-[hsl(0_0%_20%)] hidden sm:table-cell">{a.title}</TableCell>
+                    <TableCell className="text-sm text-foreground hidden sm:table-cell">{a.title}</TableCell>
                     <TableCell className="text-xs hidden md:table-cell">
                       <div className="flex flex-wrap gap-1">
                         {a.contactId && (
                           <Link to={`/admin/contacts/${a.contactId}`}>
-                            <Badge variant="outline" className="text-[10px] hover:bg-[hsl(0_0%_96%)]">
+                            <Badge variant="outline" className="text-[10px] hover:bg-muted">
                               {t('admin.activities.linked.contact')}
                             </Badge>
                           </Link>
                         )}
                         {a.dealId && (
                           <Link to={`/admin/deals/${a.dealId}`}>
-                            <Badge variant="outline" className="text-[10px] hover:bg-[hsl(0_0%_96%)]">
+                            <Badge variant="outline" className="text-[10px] hover:bg-muted">
                               {t('admin.activities.linked.deal')}
                             </Badge>
                           </Link>
@@ -184,12 +189,13 @@ export default function AdminActivities() {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="text-xs text-[hsl(0_0%_50%)] hidden lg:table-cell">{a.userName}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground hidden lg:table-cell">{a.userName}</TableCell>
                   </TableRow>
                 );
               })}
             </TableBody>
           </Table>
+          )}
           </div>
           {!isLoading && activities.length === 0 && (
             <EmptyState
@@ -198,13 +204,15 @@ export default function AdminActivities() {
               description={t('admin.activities.emptyDescription')}
             />
           )}
+          </>
+          )}
         </CardContent>
       </Card>
 
       {/* Pagination — same shape as the contacts list. */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between text-sm">
-          <span className="text-[hsl(0_0%_50%)]">
+          <span className="text-muted-foreground">
             {t('admin.common.page', { page, totalPages })}
           </span>
           <div className="flex gap-2">

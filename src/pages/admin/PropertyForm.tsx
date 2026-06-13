@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Plus, X, GripVertical, ChevronLeft, ChevronRight, Image as ImageIcon, Loader2, AlertTriangle, RefreshCw, MapPin, Copy, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Plus, X, GripVertical, Image as ImageIcon, Loader2, AlertTriangle, RefreshCw, MapPin, Copy, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -379,15 +379,15 @@ export default function PropertyForm() {
 
   const isSaving = createProperty.isPending || updateProperty.isPending;
 
-  const inputClass = "border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)] focus:border-[hsl(43_50%_54%)] focus:ring-[hsl(43_50%_54%)]";
-  const labelClass = "text-sm text-[hsl(0_0%_40%)] font-medium";
-  const helpClass = "text-xs text-[hsl(0_0%_55%)]";
-  const requiredMark = <span className="text-[hsl(43_50%_45%)]" title={t('admin.common.required', 'Required')}>*</span>;
+  const inputClass = "border-border bg-card text-foreground focus:border-primary focus:ring-primary";
+  const labelClass = "text-sm text-muted-foreground font-medium";
+  const helpClass = "text-xs text-muted-foreground";
+  const requiredMark = <span className="text-primary" title={t('admin.common.required', 'Required')}>*</span>;
 
   if (isEdit && loadingProperty) {
     return (
       <div className="flex items-center justify-center py-24">
-        <Loader2 className="h-6 w-6 animate-spin text-[hsl(43_50%_54%)]" />
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
       </div>
     );
   }
@@ -401,28 +401,28 @@ export default function PropertyForm() {
           onClick={() => navigate('/admin/properties')}
           aria-label={t('admin.common.back')}
           title={t('admin.common.back')}
-          className="text-[hsl(0_0%_40%)]"
+          className="text-muted-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{isEdit ? t('admin.properties.editTitle') : t('admin.properties.newTitle')}</h1>
+        <h1 className="text-2xl font-semibold text-foreground">{isEdit ? t('admin.properties.editTitle') : t('admin.properties.newTitle')}</h1>
       </div>
 
       <Tabs defaultValue="general">
-        <TabsList className="bg-white border border-[hsl(0_0%_90%)]">
-          <TabsTrigger value="general"      className="data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">{t('admin.properties.tabs.general')}</TabsTrigger>
-          <TabsTrigger value="translations" className="data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">{t('admin.properties.tabs.translations')}</TabsTrigger>
-          <TabsTrigger value="images"       className="data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">{t('admin.properties.tabs.images')}</TabsTrigger>
-          <TabsTrigger value="features"     className="data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">{t('admin.properties.tabs.features')}</TabsTrigger>
+        <TabsList className="flex flex-wrap h-auto bg-card border border-border">
+          <TabsTrigger value="general"      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('admin.properties.tabs.general')}</TabsTrigger>
+          <TabsTrigger value="translations" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('admin.properties.tabs.translations')}</TabsTrigger>
+          <TabsTrigger value="images"       className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('admin.properties.tabs.images')}</TabsTrigger>
+          <TabsTrigger value="features"     className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('admin.properties.tabs.features')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="mt-4">
           <Accordion type="multiple" defaultValue={['basics', 'details', 'location', 'visibility']} className="space-y-4">
 
             {/* ── Basics (required) ─────────────────────────────────────────── */}
-            <AccordionItem value="basics" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
+            <AccordionItem value="basics" className="border rounded-lg bg-card border-border shadow-sm">
               <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">{t('admin.properties.sections.basics', 'Basics')}</span>
+                <span className="text-sm font-medium text-foreground">{t('admin.properties.sections.basics', 'Basics')}</span>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -466,16 +466,16 @@ export default function PropertyForm() {
                     <Input type="number" value={rooms} onChange={e => setRooms(e.target.value)} className={inputClass} />
                   </div>
                 </div>
-                <p className="text-xs text-[hsl(0_0%_55%)]">
+                <p className="text-xs text-muted-foreground">
                   {t('admin.properties.help.titleDescNote', 'The listing title and description are set per language in the Translations tab — at least the Estonian title is required to save.')}
                 </p>
               </AccordionContent>
             </AccordionItem>
 
             {/* ── Property details (optional) ───────────────────────────────── */}
-            <AccordionItem value="details" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
+            <AccordionItem value="details" className="border rounded-lg bg-card border-border shadow-sm">
               <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">{t('admin.properties.sections.details', 'Property details')} <span className="text-[hsl(0_0%_60%)] font-normal">{t('admin.properties.sections.optional', '(optional)')}</span></span>
+                <span className="text-sm font-medium text-foreground">{t('admin.properties.sections.details', 'Property details')} <span className="text-muted-foreground font-normal">{t('admin.properties.sections.optional', '(optional)')}</span></span>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 space-y-6">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -519,9 +519,9 @@ export default function PropertyForm() {
             </AccordionItem>
 
             {/* ── Location ──────────────────────────────────────────────────── */}
-            <AccordionItem value="location" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
+            <AccordionItem value="location" className="border rounded-lg bg-card border-border shadow-sm">
               <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">{t('admin.properties.sections.location', 'Location on map')} <span className="text-[hsl(0_0%_60%)] font-normal">{t('admin.properties.sections.optional', '(optional)')}</span></span>
+                <span className="text-sm font-medium text-foreground">{t('admin.properties.sections.location', 'Location on map')} <span className="text-muted-foreground font-normal">{t('admin.properties.sections.optional', '(optional)')}</span></span>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 space-y-4">
                 <p className={helpClass}>
@@ -529,24 +529,24 @@ export default function PropertyForm() {
                 </p>
 
                 {/* Resolved-location status. Coordinates are derived, never hand-entered. */}
-                <div className="rounded-md border border-[hsl(0_0%_90%)] bg-[hsl(0_0%_98%)] px-4 py-3 text-sm">
+                <div className="rounded-md border border-border bg-muted px-4 py-3 text-sm">
                   {lat && lng ? (
                     <div className="flex items-center justify-between gap-3">
-                      <span className="flex items-center gap-2 text-[hsl(0_0%_25%)]">
-                        <MapPin className="h-4 w-4 text-green-600 shrink-0" />
+                      <span className="flex items-center gap-2 text-foreground">
+                        <MapPin className="h-4 w-4 text-success shrink-0" />
                         {t('admin.properties.location.located')}{' '}
-                        <span className="font-mono text-[hsl(0_0%_45%)]">{parseFloat(lat).toFixed(5)}, {parseFloat(lng).toFixed(5)}</span>
+                        <span className="font-mono text-muted-foreground">{parseFloat(lat).toFixed(5)}, {parseFloat(lng).toFixed(5)}</span>
                       </span>
                       <button
                         type="button"
-                        className="text-xs text-[hsl(0_0%_50%)] hover:text-red-500 underline shrink-0"
+                        className="text-xs text-muted-foreground hover:text-destructive underline shrink-0"
                         onClick={() => { setLat(''); setLng(''); }}
                       >
                         {t('admin.properties.location.clear')}
                       </button>
                     </div>
                   ) : (
-                    <span className="text-[hsl(0_0%_50%)]">{t('admin.properties.location.notSet')}</span>
+                    <span className="text-muted-foreground">{t('admin.properties.location.notSet')}</span>
                   )}
                 </div>
 
@@ -586,9 +586,9 @@ export default function PropertyForm() {
             </AccordionItem>
 
             {/* ── Visibility & agent ────────────────────────────────────────── */}
-            <AccordionItem value="visibility" className="border rounded-lg bg-white border-[hsl(0_0%_90%)] shadow-sm">
+            <AccordionItem value="visibility" className="border rounded-lg bg-card border-border shadow-sm">
               <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                <span className="text-sm font-medium text-[hsl(0_0%_25%)]">{t('admin.properties.sections.visibility', 'Visibility & agent')}</span>
+                <span className="text-sm font-medium text-foreground">{t('admin.properties.sections.visibility', 'Visibility & agent')}</span>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 space-y-6">
                 <div className="space-y-2 max-w-sm">
@@ -613,7 +613,7 @@ export default function PropertyForm() {
                 </div>
 
                 {exportPortals.length > 0 && (
-                  <div className="pt-2 border-t border-[hsl(0_0%_92%)]">
+                  <div className="pt-2 border-t border-border">
                     <PropertyPortalControls
                       portals={exportPortals}
                       values={portalPublications}
@@ -630,10 +630,10 @@ export default function PropertyForm() {
         </TabsContent>
 
         <TabsContent value="translations" className="mt-4">
-          <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+          <Card className="bg-card border-border shadow-sm">
             <CardContent className="p-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-[hsl(0_0%_92%)]">
-                <p className="text-xs text-[hsl(0_0%_45%)]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-border">
+                <p className="text-xs text-muted-foreground">
                   {t('admin.properties.translateHint', 'Write the listing in Estonian, then translate the title and description to the other languages with one click. You can edit afterwards.')}
                 </p>
                 <TranslateButton
@@ -657,9 +657,9 @@ export default function PropertyForm() {
                 />
               </div>
               <Tabs defaultValue="et">
-                <TabsList className="bg-[hsl(0_0%_96%)] border border-[hsl(0_0%_90%)]">
+                <TabsList className="bg-muted border border-border">
                   {langs.map(l => (
-                    <TabsTrigger key={l} value={l} className="uppercase text-xs data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">{l}</TabsTrigger>
+                    <TabsTrigger key={l} value={l} className="uppercase text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{l}</TabsTrigger>
                   ))}
                 </TabsList>
                 {langs.map(lang => (
@@ -671,7 +671,7 @@ export default function PropertyForm() {
                           variant="ghost"
                           size="sm"
                           onClick={() => copyTranslationFromEt(lang)}
-                          className="text-xs text-[hsl(0_0%_50%)] hover:text-[hsl(43_50%_45%)]"
+                          className="text-xs text-muted-foreground hover:text-primary"
                         >
                           <Copy className="h-3.5 w-3.5 mr-1" /> {t('admin.properties.copyFromEt', 'Copy from Estonian')}
                         </Button>
@@ -705,7 +705,7 @@ export default function PropertyForm() {
                             size="sm"
                             onClick={handleGenerateDescription}
                             disabled={generateDescription.isPending}
-                            className="text-xs text-[hsl(0_0%_50%)] hover:text-[hsl(43_50%_45%)]"
+                            className="text-xs text-muted-foreground hover:text-primary"
                           >
                             {generateDescription.isPending
                               ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
@@ -729,20 +729,20 @@ export default function PropertyForm() {
         </TabsContent>
 
         <TabsContent value="images" className="mt-4">
-          <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+          <Card className="bg-card border-border shadow-sm">
             <CardContent className="p-6 space-y-4">
               {/* Upload zone */}
               <div
-                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${isEdit ? 'border-[hsl(0_0%_85%)] hover:border-[hsl(43_50%_54%)] cursor-pointer' : 'border-[hsl(0_0%_90%)] opacity-60 cursor-not-allowed'}`}
+                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${isEdit ? 'border-border hover:border-primary cursor-pointer' : 'border-border opacity-60 cursor-not-allowed'}`}
                 onClick={() => isEdit && fileInputRef.current?.click()}
               >
-                <ImageIcon className="h-8 w-8 mx-auto text-[hsl(0_0%_70%)] mb-2" />
+                <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                 {isEdit ? (
-                  <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.properties.images.uploadEdit')}</p>
+                  <p className="text-sm text-muted-foreground">{t('admin.properties.images.uploadEdit')}</p>
                 ) : (
-                  <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.properties.images.uploadCreate')}</p>
+                  <p className="text-sm text-muted-foreground">{t('admin.properties.images.uploadCreate')}</p>
                 )}
-                <p className="text-xs text-[hsl(0_0%_70%)] mt-1">{t('admin.properties.images.uploadHint')}</p>
+                <p className="text-xs text-muted-foreground mt-1">{t('admin.properties.images.uploadHint')}</p>
               </div>
               <input
                 ref={fileInputRef}
@@ -754,7 +754,7 @@ export default function PropertyForm() {
                 disabled={!isEdit}
               />
               {uploadImages.isPending && (
-                <div className="flex items-center gap-2 text-sm text-[hsl(0_0%_50%)]">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Loader2 className="h-4 w-4 animate-spin" /> {t('admin.properties.images.uploading')}
                 </div>
               )}
@@ -762,7 +762,7 @@ export default function PropertyForm() {
               {/* Image grid */}
               {orderedImages.length > 0 && (
                 <>
-                <p className="text-xs text-[hsl(0_0%_45%)] flex items-center gap-1.5">
+                <p className="text-xs text-muted-foreground flex items-center gap-1.5">
                   <GripVertical className="h-3.5 w-3.5" />
                   {t('admin.properties.images.dragHint', 'Drag images to reorder. The first image is used as the cover.')}
                 </p>
@@ -797,17 +797,17 @@ export default function PropertyForm() {
                         onDragOver={(e) => e.preventDefault()}
                         onDrop={() => handleImageDrop(idx)}
                         onDragEnd={() => { setDragIndex(null); setOverIndex(null); }}
-                        className={`relative group rounded-lg overflow-hidden border bg-white transition-all ${!isWorking ? 'cursor-grab active:cursor-grabbing' : ''} ${
+                        className={`relative group rounded-lg overflow-hidden border bg-card transition-all ${!isWorking ? 'cursor-grab active:cursor-grabbing' : ''} ${
                           overIndex === idx && dragIndex !== null && dragIndex !== idx
-                            ? 'border-[hsl(43_50%_54%)] ring-2 ring-[hsl(43_50%_54%)]'
-                            : 'border-[hsl(0_0%_90%)]'
+                            ? 'border-primary ring-2 ring-primary'
+                            : 'border-border'
                         } ${dragIndex === idx ? 'opacity-40' : ''}`}
                       >
                         {previewUrl ? (
                           <img src={previewUrl} alt="" draggable={false} className="w-full h-24 object-cover" />
                         ) : (
-                          <div className="w-full h-24 bg-[hsl(0_0%_94%)] flex items-center justify-center">
-                            <ImageIcon className="h-6 w-6 text-[hsl(0_0%_70%)]" />
+                          <div className="w-full h-24 bg-muted flex items-center justify-center">
+                            <ImageIcon className="h-6 w-6 text-muted-foreground" />
                           </div>
                         )}
 
@@ -840,7 +840,7 @@ export default function PropertyForm() {
 
                         {/* Failed — same retry affordance, different copy. */}
                         {isFailed && (
-                          <div className="absolute inset-0 bg-red-500/55 flex flex-col items-center justify-center gap-1 px-2 text-center">
+                          <div className="absolute inset-0 bg-destructive/55 flex flex-col items-center justify-center gap-1 px-2 text-center">
                             <AlertTriangle className="h-5 w-5 text-white" />
                             <span className="text-[10px] text-white font-medium">
                               {t('admin.properties.images.processingFailed')}
@@ -857,31 +857,33 @@ export default function PropertyForm() {
                         )}
 
                         {/* Always visible on touch; hover-reveal on desktop. Move
-                            buttons are the touch reorder fallback (drag also works on desktop). */}
-                        <div className="absolute inset-0 bg-black/45 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
+                            buttons are the touch reorder fallback (drag also works on desktop).
+                            pointer-events follow visibility: tappable on touch, only on
+                            hover on desktop so they don't intercept clicks while hidden. */}
+                        <div className="absolute inset-0 bg-black/45 opacity-100 pointer-events-auto sm:opacity-0 sm:pointer-events-none sm:group-hover:opacity-100 sm:group-hover:pointer-events-auto transition-opacity flex items-center justify-center gap-1">
                           <button
                             type="button"
                             disabled={idx === 0}
-                            className="text-white disabled:opacity-30 h-9 w-9 flex items-center justify-center hover:text-[hsl(43_60%_72%)]"
+                            className="text-white disabled:opacity-30 h-11 w-11 flex items-center justify-center hover:text-primary"
                             onClick={() => moveImage(idx, idx - 1)}
                             aria-label={t('admin.properties.images.moveLeft', 'Move left')}
                             title={t('admin.properties.images.moveLeft', 'Move left')}
                           >
-                            <ChevronLeft className="h-5 w-5" />
+                            <ArrowLeft className="h-5 w-5" />
                           </button>
                           <button
                             type="button"
                             disabled={idx === orderedImages.length - 1}
-                            className="text-white disabled:opacity-30 h-9 w-9 flex items-center justify-center hover:text-[hsl(43_60%_72%)]"
+                            className="text-white disabled:opacity-30 h-11 w-11 flex items-center justify-center hover:text-primary"
                             onClick={() => moveImage(idx, idx + 1)}
                             aria-label={t('admin.properties.images.moveRight', 'Move right')}
                             title={t('admin.properties.images.moveRight', 'Move right')}
                           >
-                            <ChevronRight className="h-5 w-5" />
+                            <ArrowRight className="h-5 w-5" />
                           </button>
                           <button
                             type="button"
-                            className="text-white hover:text-red-400 h-9 w-9 flex items-center justify-center"
+                            className="text-white hover:text-destructive h-11 w-11 flex items-center justify-center"
                             onClick={() => setPendingImageDelete(img.id)}
                             aria-label={t('admin.common.delete')}
                             title={t('admin.common.delete')}
@@ -890,7 +892,7 @@ export default function PropertyForm() {
                           </button>
                         </div>
                         {img.isCover && (
-                          <span className="absolute top-1 left-1 text-[8px] bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] px-1.5 py-0.5 rounded font-medium">{t('admin.properties.images.cover')}</span>
+                          <span className="absolute top-1 left-1 text-[8px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded font-medium">{t('admin.properties.images.cover')}</span>
                         )}
                       </div>
                     );
@@ -903,9 +905,9 @@ export default function PropertyForm() {
         </TabsContent>
 
         <TabsContent value="features" className="mt-4">
-          <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+          <Card className="bg-card border-border shadow-sm">
             <CardContent className="p-6 space-y-3">
-              <p className="text-xs text-[hsl(0_0%_50%)]">
+              <p className="text-xs text-muted-foreground">
                 {t('admin.properties.features.help', 'Enter each feature in all three languages. Use the copy button to mirror the EN value into ET and RU.')}
               </p>
               {features.map((f, idx) => (
@@ -935,7 +937,7 @@ export default function PropertyForm() {
                     aria-label={t('admin.properties.features.copyEnToAll', 'Copy EN to all languages')}
                     title={t('admin.properties.features.copyEnToAll', 'Copy EN to all languages')}
                     onClick={() => copyFeatureToAllLanguages(idx, f.en)}
-                    className="h-9 w-9 text-[hsl(0_0%_45%)] hover:text-[hsl(43_50%_45%)]"
+                    className="h-9 w-9 text-muted-foreground hover:text-primary"
                   >
                     <Copy className="h-3.5 w-3.5" />
                   </Button>
@@ -946,20 +948,20 @@ export default function PropertyForm() {
                     onClick={() => removeFeature(idx)}
                     aria-label={t('admin.common.delete')}
                     title={t('admin.common.delete')}
-                    className="h-9 w-9 text-[hsl(0_0%_45%)] hover:text-red-500"
+                    className="h-9 w-9 text-muted-foreground hover:text-destructive"
                   >
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
               ))}
               {features.length === 0 && (
-                <p className="text-sm text-[hsl(0_0%_60%)]">{t('admin.properties.features.empty')}</p>
+                <p className="text-sm text-muted-foreground">{t('admin.properties.features.empty')}</p>
               )}
               <Button
                 type="button"
                 onClick={addFeature}
                 variant="outline"
-                className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_30%)]"
+                className="border-border text-foreground"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 {t('admin.properties.features.add', 'Add feature')}
@@ -971,11 +973,11 @@ export default function PropertyForm() {
 
       {/* Save buttons */}
       <div className="flex gap-3 justify-end pt-2">
-        <Button variant="outline" onClick={() => handleSave(true)} disabled={isSaving} className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)]">
+        <Button variant="outline" onClick={() => handleSave(true)} disabled={isSaving} className="border-border text-muted-foreground">
           {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           {t('admin.properties.saveDraft')}
         </Button>
-        <Button onClick={() => handleSave(false)} disabled={isSaving} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+        <Button onClick={() => handleSave(false)} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-primary-foreground">
           {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           {t('admin.properties.savePublish')}
         </Button>

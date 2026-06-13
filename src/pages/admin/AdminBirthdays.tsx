@@ -11,6 +11,7 @@ import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import {
@@ -28,7 +29,7 @@ const TEMPLATE_LANGS: BirthdayLanguage[] = ['Et', 'En', 'Ru'];
 export default function AdminBirthdays() {
   const { t } = useTranslation();
 
-  const { data: birthdays, isLoading: loadingBirthdays } = useUpcomingBirthdays(30);
+  const { data: birthdays, isLoading: loadingBirthdays, isError: birthdaysError, refetch: refetchBirthdays } = useUpcomingBirthdays(30);
   const { data: templates, isLoading: loadingTemplates } = useBirthdayTemplates();
   const { data: autoSendEnabled, isLoading: loadingAutoSend } = useBirthdayAutoSend();
 
@@ -108,49 +109,54 @@ export default function AdminBirthdays() {
       <AdminPageHeader title={t('admin.birthday.title')} />
 
       {/* Section A — Upcoming Birthdays */}
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-card border-border shadow-sm">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Cake className="h-5 w-5 text-[hsl(43_50%_54%)]" />
+            <Cake className="h-5 w-5 text-primary" />
             {t('admin.birthday.upcoming')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           {loadingBirthdays ? (
-            <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-[hsl(43_50%_54%)]" /></div>
+            <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-primary" /></div>
+          ) : birthdaysError ? (
+            <ErrorState
+              description={t('admin.birthday.loadError', 'Could not load upcoming birthdays.')}
+              onRetry={() => refetchBirthdays()}
+            />
           ) : grouped.length === 0 ? (
             <EmptyState icon={Gift} title={t('admin.birthday.noBirthdays')} />
           ) : (
             <div className="space-y-6">
               {grouped.map(week => (
                 <div key={week.label}>
-                  <h3 className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_50%)] mb-2">{week.label}</h3>
+                  <h3 className="text-xs font-nav uppercase tracking-wider text-muted-foreground mb-2">{week.label}</h3>
                   <div className="space-y-2">
                     {week.items.map(b => {
                       const daysUntil = b.daysUntil;
                       return (
-                        <div key={b.contactId} className="flex items-center justify-between py-2 px-3 rounded-md bg-[hsl(0_0%_98%)] border border-[hsl(0_0%_93%)]">
+                        <div key={b.contactId} className="flex items-center justify-between py-2 px-3 rounded-md bg-muted border border-border">
                           <div className="flex items-center gap-3">
-                            <div className="h-9 w-9 rounded-full bg-[hsl(43_50%_54%)]/10 flex items-center justify-center">
-                              <Cake className="h-4 w-4 text-[hsl(43_50%_54%)]" />
+                            <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center">
+                              <Cake className="h-4 w-4 text-primary" />
                             </div>
                             <div>
-                              <Link to={`/admin/contacts/${b.contactId}`} className="text-sm font-medium text-[hsl(0_0%_20%)] hover:text-[hsl(43_50%_54%)]">
+                              <Link to={`/admin/contacts/${b.contactId}`} className="text-sm font-medium text-foreground hover:text-primary">
                                 {b.fullName}
                               </Link>
-                              <p className="text-xs text-[hsl(0_0%_50%)]">
+                              <p className="text-xs text-muted-foreground">
                                 {t('admin.birthday.turningAge', { age: b.turningAge })} · {format(parseISO(b.nextBirthday), 'dd.MM')}
                               </p>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
                             {daysUntil <= 0 && (
-                              <Badge className="bg-[hsl(43_50%_54%)]/20 text-[hsl(43_50%_44%)] text-[10px]">{t('admin.birthday.today')}</Badge>
+                              <Badge className="bg-primary/20 text-primary text-[10px]">{t('admin.birthday.today')}</Badge>
                             )}
                             <Button
                               variant="outline"
                               size="sm"
-                              className="border-[hsl(43_50%_54%)] text-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_54%)]/5"
+                              className="border-primary text-primary hover:bg-primary/5"
                               onClick={() => setSendConfirm({ contactId: b.contactId, name: b.fullName })}
                               disabled={sendNow.isPending}
                             >
@@ -169,19 +175,19 @@ export default function AdminBirthdays() {
       </Card>
 
       {/* Section B — Template Editor */}
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-card border-border shadow-sm">
         <CardHeader>
           <CardTitle className="text-lg">{t('admin.birthday.templateEditor')}</CardTitle>
-          <p className="text-xs text-[hsl(0_0%_50%)] mt-1">
-            {t('admin.birthday.variablesHint')}: <code className="bg-[hsl(0_0%_95%)] px-1 rounded">{'{{firstName}}'}</code>, <code className="bg-[hsl(0_0%_95%)] px-1 rounded">{'{{fullName}}'}</code>, <code className="bg-[hsl(0_0%_95%)] px-1 rounded">{'{{age}}'}</code>
+          <p className="text-xs text-muted-foreground mt-1">
+            {t('admin.birthday.variablesHint')}: <code className="bg-muted px-1 rounded">{'{{firstName}}'}</code>, <code className="bg-muted px-1 rounded">{'{{fullName}}'}</code>, <code className="bg-muted px-1 rounded">{'{{age}}'}</code>
           </p>
         </CardHeader>
         <CardContent>
           {loadingTemplates ? (
-            <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-[hsl(43_50%_54%)]" /></div>
+            <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-primary" /></div>
           ) : (
             <Tabs value={templateLang} onValueChange={(v) => setTemplateLang(v as BirthdayLanguage)}>
-              <TabsList className="bg-[hsl(0_0%_95%)]">
+              <TabsList className="bg-muted">
                 {TEMPLATE_LANGS.map(l => (
                   <TabsTrigger key={l} value={l}>{l.toUpperCase()}</TabsTrigger>
                 ))}
@@ -189,7 +195,7 @@ export default function AdminBirthdays() {
               {TEMPLATE_LANGS.map(lang => (
                 <TabsContent key={lang} value={lang} className="space-y-4 mt-4">
                   <div>
-                    <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.birthday.fields.subject')}</Label>
+                    <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.birthday.fields.subject')}</Label>
                     <Input
                       value={getTemplate(lang).subject}
                       onChange={(e) => updateTemplate(lang, 'subject', e.target.value)}
@@ -197,7 +203,7 @@ export default function AdminBirthdays() {
                     />
                   </div>
                   <div>
-                    <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.birthday.fields.bodyHtml')}</Label>
+                    <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.birthday.fields.bodyHtml')}</Label>
                     <div className="mt-1">
                       <RichTextEditor
                         value={getTemplate(lang).bodyHtml}
@@ -208,7 +214,6 @@ export default function AdminBirthdays() {
                     </div>
                   </div>
                   <Button
-                    className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]"
                     onClick={() => handleSaveTemplate(lang)}
                     disabled={saveTemplate.isPending}
                   >
@@ -222,12 +227,12 @@ export default function AdminBirthdays() {
       </Card>
 
       {/* Section C — Auto-send toggle */}
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-card border-border shadow-sm">
         <CardContent className="p-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h3 className="text-sm font-medium text-[hsl(0_0%_20%)]">{t('admin.birthday.autoSend')}</h3>
-              <p className="text-xs text-[hsl(0_0%_50%)] mt-1">{t('admin.birthday.autoSendDescription')}</p>
+              <h3 className="text-sm font-medium text-foreground">{t('admin.birthday.autoSend')}</h3>
+              <p className="text-xs text-muted-foreground mt-1">{t('admin.birthday.autoSendDescription')}</p>
             </div>
             <Switch
               checked={autoSendEnabled ?? false}

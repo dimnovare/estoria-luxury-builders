@@ -136,13 +136,13 @@ function SettingRow({ setting, field }: { setting: SiteSettingDto | undefined; f
   if (isSwitch) {
     const checked = value === 'true';
     return (
-      <div className="flex items-center justify-between py-3 border-b border-[hsl(0_0%_93%)] last:border-0">
+      <div className="flex items-center justify-between py-3 border-b border-border last:border-0">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-[hsl(0_0%_20%)]">{t(field.labelKey)}</span>
+          <span className="text-sm text-foreground">{t(field.labelKey)}</span>
           {field.badge && (
             <Badge variant="outline" className="text-[9px] bg-amber-50 text-amber-700 border-amber-200">{field.badge}</Badge>
           )}
-          {saved && <Check className="h-3.5 w-3.5 text-green-500" />}
+          {saved && <Check className="h-3.5 w-3.5 text-success" />}
         </div>
         <Switch
           checked={checked}
@@ -162,7 +162,7 @@ function SettingRow({ setting, field }: { setting: SiteSettingDto | undefined; f
       onChange={(e) => setValue(e.target.value)}
       rows={field.rows ?? 3}
       placeholder={placeholder}
-      className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-sm"
+      className="bg-muted border-border text-sm"
     />
   ) : field.type === 'number' ? (
     <Input
@@ -172,21 +172,21 @@ function SettingRow({ setting, field }: { setting: SiteSettingDto | undefined; f
       value={value}
       onChange={(e) => setValue(e.target.value)}
       placeholder={placeholder}
-      className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-sm max-w-[160px]"
+      className="bg-muted border-border text-sm max-w-[160px]"
     />
   ) : (
     <Input
       value={value}
       onChange={(e) => setValue(e.target.value)}
       placeholder={placeholder}
-      className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-sm"
+      className="bg-muted border-border text-sm"
     />
   );
 
   return (
-    <div className="py-3 border-b border-[hsl(0_0%_93%)] last:border-0 space-y-1.5">
+    <div className="py-3 border-b border-border last:border-0 space-y-1.5">
       <div className="flex items-center gap-2">
-        <label className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_45%)]">{t(field.labelKey)}</label>
+        <label className="text-xs font-nav uppercase tracking-wider text-muted-foreground">{t(field.labelKey)}</label>
         {field.badge && (
           <Badge variant="outline" className="text-[9px]">{field.badge}</Badge>
         )}
@@ -196,7 +196,7 @@ function SettingRow({ setting, field }: { setting: SiteSettingDto | undefined; f
         <Button
           size="sm"
           variant={dirty ? 'default' : 'outline'}
-          className={cn('shrink-0', dirty ? '' : 'border-[hsl(0_0%_85%)] text-[hsl(0_0%_50%)]')}
+          className={cn('shrink-0', dirty ? '' : 'border-border text-muted-foreground')}
           disabled={!dirty && !update.isPending}
           onClick={() => handleSave()}
           aria-label={saved ? t('admin.settings.saved', 'Saved') : t('admin.settings.save')}
@@ -208,7 +208,7 @@ function SettingRow({ setting, field }: { setting: SiteSettingDto | undefined; f
       {urlWarningVisible && (
         <p className="text-xs text-amber-600">{t('admin.settings.validation.urlWarning')}</p>
       )}
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
 }
@@ -268,14 +268,14 @@ function TranslatableSettingEditor({
       onChange={(e) => setValue(e.target.value)}
       rows={rows ?? 3}
       placeholder={placeholder}
-      className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-sm"
+      className="bg-muted border-border text-sm"
     />
   ) : (
     <Input
       value={value}
       onChange={(e) => setValue(e.target.value)}
       placeholder={placeholder}
-      className="bg-[hsl(0_0%_97%)] border-[hsl(0_0%_88%)] text-sm"
+      className="bg-muted border-border text-sm"
     />
   );
 
@@ -286,7 +286,7 @@ function TranslatableSettingEditor({
         <Button
           size="sm"
           variant={dirty ? 'default' : 'outline'}
-          className={cn('shrink-0', dirty ? '' : 'border-[hsl(0_0%_85%)] text-[hsl(0_0%_50%)]')}
+          className={cn('shrink-0', dirty ? '' : 'border-border text-muted-foreground')}
           disabled={!dirty || update.isPending}
           onClick={handleSave}
           aria-label={saved ? t('admin.settings.saved', 'Saved') : t('admin.settings.save')}
@@ -295,7 +295,7 @@ function TranslatableSettingEditor({
           {saved ? <Check className="h-3.5 w-3.5" /> : t('admin.settings.save')}
         </Button>
       </div>
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
 }
@@ -311,9 +311,9 @@ function TranslatableSettingRow({ field }: { field: FieldDef }) {
     detail?.translations?.find(t => t.language === lang)?.value ?? '';
 
   return (
-    <div className="py-3 border-b border-[hsl(0_0%_93%)] last:border-0 space-y-1.5">
+    <div className="py-3 border-b border-border last:border-0 space-y-1.5">
       <div className="flex items-center gap-2">
-        <label className="text-xs font-nav uppercase tracking-wider text-[hsl(0_0%_45%)]">{t(field.labelKey)}</label>
+        <label className="text-xs font-nav uppercase tracking-wider text-muted-foreground">{t(field.labelKey)}</label>
         <Badge variant="outline" className="text-[9px]">EE / EN / RU</Badge>
       </div>
       <Tabs defaultValue="Et">
@@ -356,7 +356,7 @@ function OtherSettingRow({ setting }: { setting: SiteSettingDto }) {
   };
 
   return (
-    <div className="py-3 border-b border-[hsl(0_0%_93%)] last:border-0">
+    <div className="py-3 border-b border-border last:border-0">
       <SettingRow setting={setting} field={{ ...field, labelKey: setting.key }} />
     </div>
   );
@@ -380,21 +380,21 @@ export default function AdminSettings() {
         subtitle={t('admin.settings.subtitle', 'Global site settings — contact details, social links, and stats shown throughout the public site. Changes take effect within 30 seconds.')}
       />
 
-      {isLoading && <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.common.loading')}</p>}
+      {isLoading && <p className="text-sm text-muted-foreground">{t('admin.common.loading')}</p>}
 
       {!isLoading && SECTIONS.map((section) => (
         <Collapsible key={section.titleKey} defaultOpen>
-          <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+          <Card className="bg-card border-border shadow-sm">
             <CollapsibleTrigger className="w-full">
               <CardHeader className="cursor-pointer">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <CardTitle className="text-lg font-heading text-[hsl(0_0%_15%)]">{t(section.titleKey)}</CardTitle>
+                    <CardTitle className="text-lg font-heading text-foreground">{t(section.titleKey)}</CardTitle>
                     {section.descriptionKey && (
-                      <CardDescription className="text-sm text-[hsl(0_0%_50%)] mt-0.5">{t(section.descriptionKey)}</CardDescription>
+                      <CardDescription className="text-sm text-muted-foreground mt-0.5">{t(section.descriptionKey)}</CardDescription>
                     )}
                   </div>
-                  <ChevronDown className="h-4 w-4 text-[hsl(0_0%_50%)] transition-transform [[data-state=open]>&]:rotate-180" />
+                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform [[data-state=open]>&]:rotate-180" />
                 </div>
               </CardHeader>
             </CollapsibleTrigger>
@@ -413,12 +413,12 @@ export default function AdminSettings() {
 
       {!isLoading && unknownSettings.length > 0 && (
         <Collapsible defaultOpen>
-          <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+          <Card className="bg-card border-border shadow-sm">
             <CollapsibleTrigger className="w-full">
               <CardHeader className="cursor-pointer">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <CardTitle className="text-lg font-heading text-[hsl(0_0%_15%)]">{t('admin.settings.sections.other')}</CardTitle>
-                  <ChevronDown className="h-4 w-4 text-[hsl(0_0%_50%)] transition-transform [[data-state=open]>&]:rotate-180" />
+                  <CardTitle className="text-lg font-heading text-foreground">{t('admin.settings.sections.other')}</CardTitle>
+                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform [[data-state=open]>&]:rotate-180" />
                 </div>
               </CardHeader>
             </CollapsibleTrigger>

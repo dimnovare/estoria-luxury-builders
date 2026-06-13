@@ -438,7 +438,9 @@
       "next": "Järgmine leht",
       "previous": "Eelmine leht",
       "required": "Kohustuslik",
-      "example": "Näide:"
+      "example": "Näide:",
+      "errorTitle": "Midagi läks valesti",
+      "retry": "Proovi uuesti"
     },
     "layout": {
       "adminBadge": "Admin",
@@ -642,7 +644,13 @@
         "optional": "(valikuline)",
         "visibility": "Nähtavus ja maakler"
       },
-      "subtitle": "Halda kinnisvarakuulutusi. Loo kuulutus, seejärel lisa pildid ja avalda see, et see oleks avalikul saidil nähtav."
+      "subtitle": "Halda kinnisvarakuulutusi. Loo kuulutus, seejärel lisa pildid ja avalda see, et see oleks avalikul saidil nähtav.",
+      "loadError": "Objektide laadimine ebaõnnestus. Palun proovige uuesti.",
+      "empty": {
+        "title": "Objekte pole veel",
+        "description": "Loo oma esimene kuulutus, seejärel lisa pildid ja avalda see, et see oleks avalikul saidil nähtav.",
+        "noMatchHint": "Proovi ülal olevaid filtreid muuta või tühjendada."
+      }
     },
     "blog": {
       "title": "Blogipostitused",
@@ -696,7 +704,9 @@
         "draftNote": "See postitus on peidetud mustand. Avalda see, et see läheks elavaks.",
         "liveNote": "See postitus on saidil avaldatud. Mustandina salvestamine peidab selle."
       },
-      "subtitle": "Kirjuta ja avalda blogiartikleid. Salvesta mustandina, et enne avaldamist eelvaadata. Iga postitus toetab eesti-, inglis- ja venekeelset sisu."
+      "subtitle": "Kirjuta ja avalda blogiartikleid. Salvesta mustandina, et enne avaldamist eelvaadata. Iga postitus toetab eesti-, inglis- ja venekeelset sisu.",
+      "error": "Blogipostituste laadimine ebaõnnestus. Palun proovige uuesti.",
+      "emptyDesc": "Loo oma esimene blogipostitus, et jagada uudiseid ja lugusid."
     },
     "team": {
       "title": "Meeskonnaliikmed",
@@ -765,7 +775,10 @@
         "agent": "Vastuvõttev maakler",
         "selectAgent": "Vali maakler…",
         "confirm": "Peida ja anna üle"
-      }
+      },
+      "loadError": "Meeskonnaliikmete laadimine ebaõnnestus.",
+      "empty": "Meeskonnaliikmeid pole veel",
+      "emptyDescription": "Lisa meeskonnaliige, et teda kuvataks Meist-lehel."
     },
     "services": {
       "title": "Teenused",
@@ -800,7 +813,12 @@
       "validation": {
         "nameRequired": "Eestikeelne nimi on kohustuslik."
       },
-      "subtitle": "Muuda avalehel ja teenuste lehel kuvatavaid teenuseid. Sisesta ikooni väljale ikooni nimi (näiteks home, key, building2 või scale)."
+      "subtitle": "Muuda avalehel ja teenuste lehel kuvatavaid teenuseid. Sisesta ikooni väljale ikooni nimi (näiteks home, key, building2 või scale).",
+      "loadError": "Teenuste laadimine ebaõnnestus.",
+      "empty": {
+        "title": "Teenuseid pole veel",
+        "description": "Lisa oma esimene teenus, et see kuvataks avalehel ja teenuste lehel."
+      }
     },
     "pages": {
       "title": "Lehed",
@@ -823,7 +841,12 @@
         "saveFailed": "Lehe sisu salvestamine ebaõnnestus"
       },
       "translateHint": "Kirjuta sisu eesti keeles, seejärel tõlgi pealkiri ja sisu ühe klikiga teistesse keeltesse. Saad seejärel muuta.",
-      "subtitle": "Halda avalikul veebilehel kuvatavaid tekstiplokke. Iga kirje juhib kindlat sektsiooni — muuda iga keele (ET / EN / RU) pealkirja, sisu ja pilte."
+      "subtitle": "Halda avalikul veebilehel kuvatavaid tekstiplokke. Iga kirje juhib kindlat sektsiooni — muuda iga keele (ET / EN / RU) pealkirja, sisu ja pilte.",
+      "error": "Lehe sisu laadimine ebaõnnestus. Palun proovige uuesti.",
+      "empty": {
+        "title": "Sisuplokke pole veel",
+        "description": "Lehe sisuplokid ilmuvad siia, kui need on lisatud."
+      }
     },
     "careers": {
       "title": "Karjäär",
@@ -853,7 +876,12 @@
       "deleteTitle": "Kustutada see tööpakkumine?",
       "deleteDesc": "See eemaldab pakkumise ja kõik selle tõlked jäädavalt. Seda toimingut ei saa tagasi võtta.",
       "translateHint": "Kirjuta kuulutus eesti keeles, seejärel tõlgi pealkiri, asukoht ja kirjeldus ühe klikiga teistesse keeltesse. Saad seejärel muuta.",
-      "subtitle": "Halda karjäärilehel kuvatavaid tööpakkumisi. Lülita Aktiivne sisse või välja, et kuulutust näidata või peita ilma seda kustutamata."
+      "subtitle": "Halda karjäärilehel kuvatavaid tööpakkumisi. Lülita Aktiivne sisse või välja, et kuulutust näidata või peita ilma seda kustutamata.",
+      "loadError": "Tööpakkumiste laadimine ebaõnnestus. Palun proovige uuesti.",
+      "empty": {
+        "title": "Tööpakkumisi pole veel",
+        "description": "Loo oma esimene tööpakkumine, et see kuvataks karjäärilehel."
+      }
     },
     "messages": {
       "title": "Sõnumid",
@@ -883,7 +911,9 @@
       "actions": {
         "createContact": "Loo kontakt",
         "createDeal": "Loo tehing"
-      }
+      },
+      "error": "Sõnumite laadimine ebaõnnestus. Palun proovige uuesti.",
+      "emptyDesc": "Avaliku veebilehe kontaktivormi esildised ilmuvad siia."
     },
     "newsletter": {
       "title": "Uudiskiri",
@@ -942,12 +972,16 @@
         "confirmDeleteDesc": "See eemaldab jäädavalt kampaania kirje ja selle saatmisajaloo. Seda toimingut ei saa tagasi võtta.",
         "deleted": "Kampaania kustutatud",
         "deleteFailed": "Kampaania kustutamine ebaõnnestus",
-        "bodyFrameTitle": "Kampaania sisu"
+        "bodyFrameTitle": "Kampaania sisu",
+        "loadError": "Kampaaniate laadimine ebaõnnestus. Palun proovige uuesti.",
+        "emptyTitle": "Kampaaniaid pole veel"
       },
       "subtitle": "Saada tellijatele e-uudiskirju. Kasuta vahekaarti Koosta kampaania kirjutamiseks ja saada enne väljasaatmist endale testkiri.",
       "unsubscribe": "Loobu tellimusest",
       "confirmUnsubTitle": "Tühistada selle isiku tellimus?",
-      "confirmUnsubDesc": "Nad ei saa enam uudiskirju. Saate nad vajadusel hiljem uuesti lisada."
+      "confirmUnsubDesc": "Nad ei saa enam uudiskirju. Saate nad vajadusel hiljem uuesti lisada.",
+      "loadError": "Tellijate laadimine ebaõnnestus. Palun proovige uuesti.",
+      "emptyTitle": "Tellijaid pole veel"
     },
     "users": {
       "title": "Kasutajad",
@@ -1000,7 +1034,9 @@
         "passwordResetFailed": "Parooli lähtestamine ebaõnnestus"
       },
       "deactivateTitle": "Deaktiveerida see kasutaja?",
-      "deactivateDesc": "Nad kaotavad kohe juurdepääsu ega saa enam sisse logida. Saate nad hiljem uuesti aktiveerida."
+      "deactivateDesc": "Nad kaotavad kohe juurdepääsu ega saa enam sisse logida. Saate nad hiljem uuesti aktiveerida.",
+      "emptyDescription": "Lisa kasutaja, et alustada.",
+      "loadError": "Kasutajate laadimine ebaõnnestus. Palun proovige uuesti."
     },
     "audit": {
       "title": "Tegevuslogi",
@@ -1019,7 +1055,8 @@
       "copyId": "Kopeeri ID",
       "showDetails": "Näita üksikasju",
       "hideDetails": "Peida üksikasjad",
-      "subtitle": "Kõigi haldustoimingute süsteemilogi. Kasuta tõrkeotsinguks või vastavuse kontrolliks."
+      "subtitle": "Kõigi haldustoimingute süsteemilogi. Kasuta tõrkeotsinguks või vastavuse kontrolliks.",
+      "loadError": "Tegevuslogi laadimine ebaõnnestus. Palun proovige uuesti."
     },
     "contacts": {
       "title": "Kontaktid",
@@ -1125,7 +1162,8 @@
       "confirmDeleteNote": "Kustutada see märkus?",
       "pinNote": "Kinnita märkus",
       "unpinNote": "Vabasta märkus",
-      "removeTag": "Eemalda silt"
+      "removeTag": "Eemalda silt",
+      "loadError": "Kontaktide laadimine ebaõnnestus. Palun proovige uuesti."
     },
     "deals": {
       "title": "Tehingud",
@@ -1187,7 +1225,9 @@
         "participantRole": "Roll",
         "linkedProperty": "Seotud kinnisvara",
         "propertyIdPlaceholder": "Kinnisvara ID (valikuline)",
-        "propertyIdHelp": "Valikuline. Ava kinnisvara jaotises Kinnisvara ja kopeeri ID selle veebiaadressi (URL) lõpust siia välja, et siduda see tehinguga. Jäta tühjaks, kui kinnisvara veel pole."
+        "propertyIdHelp": "Valikuline. Ava kinnisvara jaotises Kinnisvara ja kopeeri ID selle veebiaadressi (URL) lõpust siia välja, et siduda see tehinguga. Jäta tühjaks, kui kinnisvara veel pole.",
+        "searchProperty": "Otsi kinnisvara…",
+        "propertyPickerHelp": "Valikuline. Otsi ja vali kinnisvara, mille selle tehinguga siduda. Jäta tühjaks, kui kinnisvara veel pole."
       },
       "tabs": {
         "participants": "Osalejad",
@@ -1221,7 +1261,8 @@
       },
       "subtitle": "Jälgi tehinguid etappide kaupa müügivihjest sõlmimiseni. Seo tehingud kontaktide, kinnisvara ja e-kirjavestlustega.",
       "confirmRemoveParticipant": "Eemaldada see osaleja?",
-      "removeParticipant": "Eemalda osaleja"
+      "removeParticipant": "Eemalda osaleja",
+      "loadError": "Tehingute laadimine ebaõnnestus. Palun proovige uuesti."
     },
     "activities": {
       "title": "Tegevused",
@@ -1256,7 +1297,8 @@
         "StageChange": "Etapi muutus",
         "ContractEvent": "Lepingu sündmus",
         "SystemEvent": "Süsteem"
-      }
+      },
+      "loadError": "Tegevuste laadimine ebaõnnestus."
     },
     "crm": {
       "toast": {
@@ -1321,7 +1363,9 @@
         "dealIdPlaceholder": "Tehingu ID…",
         "propertyIdPlaceholder": "Objekti ID…",
         "dealIdHelp": "Valikuline. Kleebi ID tehingu veebiaadressist (osa pärast /deals/). Jäta tühjaks, kui see ülesanne pole seotud konkreetse tehinguga.",
-        "propertyIdHelp": "Valikuline. Kleebi ID kinnisvara veebiaadressist (osa pärast /properties/). Jäta tühjaks, kui see ülesanne pole seotud konkreetse kinnisvaraga."
+        "propertyIdHelp": "Valikuline. Kleebi ID kinnisvara veebiaadressist (osa pärast /properties/). Jäta tühjaks, kui see ülesanne pole seotud konkreetse kinnisvaraga.",
+        "dealPickerHelp": "Valikuline. Otsi ja vali tehing, millega see ülesanne seotud on, või jäta tühjaks, kui see ei käi konkreetse tehingu kohta.",
+        "propertyPickerHelp": "Valikuline. Otsi ja vali kinnisvara, millega see ülesanne seotud on, või jäta tühjaks, kui see ei käi konkreetse kinnisvara kohta."
       },
       "toast": {
         "created": "Ülesanne loodud",
@@ -1335,7 +1379,8 @@
         "markedDone": "Ülesanne märgitud tehtuks"
       },
       "taskActions": "Ülesande toimingud",
-      "subtitle": "Halda enda ja meeskonnaliikmete ülesandeid. Määra tähtajad ja meeldetuletused."
+      "subtitle": "Halda enda ja meeskonnaliikmete ülesandeid. Määra tähtajad ja meeldetuletused.",
+      "loadError": "Ülesannete laadimine ebaõnnestus."
     },
     "birthday": {
       "title": "Sünnipäevad",
@@ -1363,7 +1408,8 @@
         "autoSendFailed": "Automaatse saatmise seadistuse muutmine ebaõnnestus"
       },
       "confirmSendTitle": "Saada sünnipäevameil kohe?",
-      "confirmSendDesc": "Sünnipäevameil saadetakse kohe aadressile {{name}}. Seda ei saa tagasi võtta."
+      "confirmSendDesc": "Sünnipäevameil saadetakse kohe aadressile {{name}}. Seda ei saa tagasi võtta.",
+      "loadError": "Eelseisvate sünnipäevade laadimine ebaõnnestus."
     },
     "savedSearches": {
       "title": "Salvestatud otsingud",
@@ -1398,7 +1444,8 @@
         "sendFailed": "Saatmine ebaõnnestus",
         "deleted": "Salvestatud otsing kustutatud",
         "deleteFailed": "Kustutamine ebaõnnestus"
-      }
+      },
+      "loadError": "Salvestatud otsingute laadimine ebaõnnestus."
     },
     "settings": {
       "title": "Seaded",
@@ -1477,7 +1524,9 @@
         "save": "Salvesta",
         "edit": "Muuda seost",
         "contactIdPlaceholder": "Kontakti ID",
-        "dealIdPlaceholder": "Tehingu ID"
+        "dealIdPlaceholder": "Tehingu ID",
+        "contactPickerPlaceholder": "Otsi kontakte…",
+        "dealPickerPlaceholder": "Otsi tehinguid…"
       },
       "composer": {
         "newMessage": "Uus kiri",
@@ -1514,6 +1563,13 @@
         "searchContacts": "Otsi kontakte...",
         "searchDeals": "Otsi tehinguid..."
       }
+    },
+    "entityPicker": {
+      "search": "Otsi…",
+      "empty": "Tulemusi pole",
+      "loading": "Laadimine…",
+      "unknown": "Valitud (pole loendis)",
+      "clear": "Tühjenda valik"
     }
   },
   "pagination": {

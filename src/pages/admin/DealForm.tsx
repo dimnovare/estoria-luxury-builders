@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import EntityLinkPicker from '@/components/admin/EntityLinkPicker';
 import {
   useDeal, useCreateDeal, useUpdateDeal, useAgents, useContactSearch,
   handleCrmError, DEAL_STAGES, type DealStage,
@@ -132,7 +133,7 @@ export default function DealForm() {
   if (isEdit && isLoading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <Loader2 className="h-6 w-6 animate-spin text-[hsl(43_50%_54%)]" />
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
       </div>
     );
   }
@@ -140,79 +141,87 @@ export default function DealForm() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/deals')} className="text-[hsl(0_0%_50%)]" aria-label={t('admin.common.back', 'Back')} title={t('admin.common.back', 'Back')}>
+        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/deals')} className="text-muted-foreground" aria-label={t('admin.common.back', 'Back')} title={t('admin.common.back', 'Back')}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">
+        <h1 className="text-2xl font-semibold text-foreground">
           {isEdit ? t('admin.deals.editTitle') : t('admin.deals.newTitle')}
         </h1>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+        <Card className="bg-card border-border shadow-sm">
           <CardContent className="p-6 space-y-6">
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.title')} *</Label>
-              <Input {...register('title')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" />
-              {errors.title && <p className="text-xs text-red-500 mt-1">{t(errors.title.message ?? '')}</p>}
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.title')} *</Label>
+              <Input {...register('title')} className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
+              {errors.title && <p className="text-xs text-destructive mt-1">{t(errors.title.message ?? '')}</p>}
             </div>
 
             {/* Contact autocomplete */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.primaryContact')} *</Label>
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.primaryContact')} *</Label>
               <div className="relative mt-1">
                 <Input
                   value={selectedContactName || contactSearch}
                   onChange={(e) => { setContactSearch(e.target.value); setSelectedContactName(''); setValue('primaryContactId', ''); }}
                   placeholder={t('admin.deals.fields.searchContact')}
-                  className="bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]"
+                  className="bg-secondary border-border text-foreground placeholder:text-muted-foreground"
                 />
                 {contactSearch.length >= 2 && !selectedContactName && contactResults && contactResults.length > 0 && (
-                  <div className="absolute z-10 mt-1 w-full bg-white border border-[hsl(0_0%_85%)] rounded-md shadow-lg max-h-48 overflow-auto">
+                  <div className="absolute z-10 mt-1 w-full bg-card border border-border rounded-md shadow-lg max-h-48 overflow-auto">
                     {contactResults.map(c => (
                       <button
                         key={c.id}
                         type="button"
-                        className="w-full text-left px-3 py-2 text-sm hover:bg-[hsl(0_0%_96%)] text-[hsl(0_0%_20%)]"
+                        className="w-full text-left px-3 py-2 text-sm hover:bg-muted text-foreground"
                         onClick={() => {
                           setValue('primaryContactId', c.id);
                           setSelectedContactName(c.fullName);
                           setContactSearch('');
                         }}
                       >
-                        {c.fullName} {c.email && <span className="text-[hsl(0_0%_60%)]">({c.email})</span>}
+                        {c.fullName} {c.email && <span className="text-muted-foreground">({c.email})</span>}
                       </button>
                     ))}
                   </div>
                 )}
               </div>
-              {errors.primaryContactId && <p className="text-xs text-red-500 mt-1">{t(errors.primaryContactId.message ?? 'admin.deals.fields.contactRequired')}</p>}
+              {errors.primaryContactId && <p className="text-xs text-destructive mt-1">{t(errors.primaryContactId.message ?? 'admin.deals.fields.contactRequired')}</p>}
             </div>
 
-            {/* Linked property (optional) — paste the property ID from its URL */}
+            {/* Linked property (optional) — search & select instead of pasting a raw ID */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">
                 {t('admin.deals.fields.linkedProperty', 'Linked property')}
               </Label>
-              <Input
-                {...register('propertyId')}
-                placeholder={t('admin.deals.fields.propertyIdPlaceholder', 'Property ID (optional)')}
-                className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]"
+              <Controller
+                control={control}
+                name="propertyId"
+                render={({ field }) => (
+                  <EntityLinkPicker
+                    type="property"
+                    value={field.value || null}
+                    onChange={(id) => field.onChange(id ?? '')}
+                    placeholder={t('admin.deals.fields.searchProperty', 'Search a property…')}
+                    className="mt-1"
+                  />
+                )}
               />
-              <p className="text-xs text-[hsl(0_0%_55%)] mt-1">
-                {t('admin.deals.fields.propertyIdHelp', 'Optional. Open the property in Properties and copy the ID from the end of its web address (URL) into this field to link it to the deal. Leave empty if there is no property yet.')}
+              <p className="text-xs text-muted-foreground mt-1">
+                {t('admin.deals.fields.propertyPickerHelp', 'Optional. Search and select the property to link to this deal. Leave empty if there is no property yet.')}
               </p>
             </div>
 
             {/* Agent — disabled for non-Admin */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.assignedAgent')}</Label>
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.assignedAgent')}</Label>
               <Controller
                 control={control}
                 name="assignedAgentId"
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange} disabled={!isAdmin}>
-                    <SelectTrigger className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]">
+                    <SelectTrigger className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground">
                       <SelectValue placeholder={t('admin.contacts.fields.selectAgent')} />
                     </SelectTrigger>
                     <SelectContent>
@@ -221,18 +230,18 @@ export default function DealForm() {
                   </Select>
                 )}
               />
-              {!isAdmin && <p className="text-xs text-[hsl(0_0%_60%)] mt-1">{t('admin.deals.agentLocked', 'This deal is locked to your account. Ask an administrator to reassign it.')}</p>}
+              {!isAdmin && <p className="text-xs text-muted-foreground mt-1">{t('admin.deals.agentLocked', 'This deal is locked to your account. Ask an administrator to reassign it.')}</p>}
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.dealType')}</Label>
+                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.dealType')}</Label>
                 <Controller
                   control={control}
                   name="dealType"
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Sale">{t('admin.deals.dealTypes.Sale')}</SelectItem>
                         <SelectItem value="Rent">{t('admin.deals.dealTypes.Rent')}</SelectItem>
@@ -242,13 +251,13 @@ export default function DealForm() {
                 />
               </div>
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.side')}</Label>
+                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.side')}</Label>
                 <Controller
                   control={control}
                   name="side"
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="BuySide">{t('admin.deals.sides.BuySide')}</SelectItem>
                         <SelectItem value="SellSide">{t('admin.deals.sides.SellSide')}</SelectItem>
@@ -261,40 +270,40 @@ export default function DealForm() {
 
             <div className="grid gap-6 sm:grid-cols-3">
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.expectedValue')}</Label>
-                <Input {...register('expectedValue')} type="number" className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" />
-                {errors.expectedValue && <p className="text-xs text-red-500 mt-1">{t(errors.expectedValue.message ?? '')}</p>}
+                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.expectedValue')}</Label>
+                <Input {...register('expectedValue')} type="number" className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
+                {errors.expectedValue && <p className="text-xs text-destructive mt-1">{t(errors.expectedValue.message ?? '')}</p>}
               </div>
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.currency')}</Label>
-                <Input {...register('currency')} className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" />
+                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.currency')}</Label>
+                <Input {...register('currency')} className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
               </div>
               <div>
-                <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.commissionPercent')}</Label>
-                <Input {...register('commissionPercent')} type="number" step="0.1" className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)]" />
+                <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.commissionPercent')}</Label>
+                <Input {...register('commissionPercent')} type="number" step="0.1" className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
               </div>
             </div>
 
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.expectedCloseDate')}</Label>
-              <Input {...register('expectedCloseDate')} type="date" className="mt-1 bg-secondary border-border text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_50%)] w-auto" />
-              {errors.expectedCloseDate && <p className="text-xs text-red-500 mt-1">{t(errors.expectedCloseDate.message ?? '')}</p>}
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.expectedCloseDate')}</Label>
+              <Input {...register('expectedCloseDate')} type="date" className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground w-auto" />
+              {errors.expectedCloseDate && <p className="text-xs text-destructive mt-1">{t(errors.expectedCloseDate.message ?? '')}</p>}
             </div>
 
             {/* Edit-only: stage info (read-only, use /stage endpoint to change) */}
             {isEdit && existing && (
-              <div className="border-t border-[hsl(0_0%_93%)] pt-4 space-y-4">
-                <p className="text-xs text-[hsl(0_0%_60%)]">{t('admin.deals.stageHint', 'The stage can only be changed from the deals board or the change-stage button, so every change is recorded in the activity log.')}</p>
+              <div className="border-t border-border pt-4 space-y-4">
+                <p className="text-xs text-muted-foreground">{t('admin.deals.stageHint', 'The stage can only be changed from the deals board or the change-stage button, so every change is recorded in the activity log.')}</p>
                 {existing.stage === 'Won' && (
                   <div>
-                    <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.actualValue')}</Label>
-                    <p className="text-sm text-[hsl(0_0%_20%)] mt-1">€{existing.actualValue?.toLocaleString() ?? '—'}</p>
+                    <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.actualValue')}</Label>
+                    <p className="text-sm text-foreground mt-1">€{existing.actualValue?.toLocaleString() ?? '—'}</p>
                   </div>
                 )}
                 {existing.stage === 'Lost' && (
                   <div>
-                    <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.deals.fields.lossReason')}</Label>
-                    <p className="text-sm text-[hsl(0_0%_20%)] mt-1">{existing.lossReason || '—'}</p>
+                    <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.lossReason')}</Label>
+                    <p className="text-sm text-foreground mt-1">{existing.lossReason || '—'}</p>
                   </div>
                 )}
               </div>
@@ -304,7 +313,7 @@ export default function DealForm() {
 
         <div className="flex justify-end gap-3 mt-6">
           <Button type="button" variant="outline" onClick={() => navigate('/admin/deals')}>{t('admin.common.cancel')}</Button>
-          <Button type="submit" className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]" disabled={createDeal.isPending || updateDeal.isPending}>
+          <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground" disabled={createDeal.isPending || updateDeal.isPending}>
             {t('admin.deals.saveDeal')}
           </Button>
         </div>

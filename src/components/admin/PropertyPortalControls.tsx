@@ -37,7 +37,7 @@ export default function PropertyPortalControls({
             <div className="flex items-center justify-between gap-4">
               <Label
                 htmlFor={`portal-${portal.key}`}
-                className="text-sm font-medium text-[hsl(0_0%_15%)]"
+                className="text-sm font-medium text-foreground"
               >
                 {label}
               </Label>
@@ -58,7 +58,7 @@ export default function PropertyPortalControls({
           </div>
         );
       })}
-      <p className="text-xs text-[hsl(0_0%_45%)]">
+      <p className="text-xs text-muted-foreground">
         {t('admin.properties.portal.feedHelp')}
       </p>
     </div>

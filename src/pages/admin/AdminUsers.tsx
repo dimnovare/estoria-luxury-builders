@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, Pencil, KeyRound, UserX, UserCheck, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Pencil, KeyRound, UserX, UserCheck, Search, ChevronLeft, ChevronRight, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +12,9 @@ import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
+import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
+import { TableSkeleton } from '@/components/admin/TableSkeleton';
 import { useAdminUsers, useDeleteUser, useUpdateUser, useResetPassword } from '@/hooks/api/useAdminUsers';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
@@ -19,7 +22,7 @@ import { formatDistanceToNow } from 'date-fns';
 const roleBadgeColors: Record<string, string> = {
   Admin: 'bg-primary/20 text-primary border-primary/30',
   Agent: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-  Editor: 'bg-green-500/20 text-green-400 border-green-500/30',
+  Editor: 'bg-success/10 text-success border-success/30',
   Marketing: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
 };
 
@@ -32,7 +35,7 @@ export default function AdminUsers() {
   const [newPassword, setNewPassword] = useState('');
   const [pendingDeactivate, setPendingDeactivate] = useState<{ id: string; isActive: boolean; email: string; fullName: string; languages: string[]; roles: string[] } | null>(null);
 
-  const { data, isLoading } = useAdminUsers(page, search);
+  const { data, isLoading, isError, refetch } = useAdminUsers(page, search);
   const deleteUser = useDeleteUser();
   const updateUser = useUpdateUser();
   const resetPassword = useResetPassword();
@@ -85,26 +88,26 @@ export default function AdminUsers() {
       <AdminPageHeader
         title={t('admin.users.title')}
         action={
-          <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
+          <Button asChild className="shrink-0">
             <Link to="/admin/users/new"><Plus className="h-4 w-4 mr-2" />{t('admin.users.addUser')}</Link>
           </Button>
         }
       />
 
       {/* Search */}
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-card border-border shadow-sm">
         <CardContent className="p-4">
           <form onSubmit={handleSearch} className="flex gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[hsl(0_0%_50%)]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 value={searchInput}
                 onChange={e => setSearchInput(e.target.value)}
                 placeholder={t('admin.users.searchPlaceholder')}
-                className="pl-9 border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_20%)]"
+                className="pl-9 border-border bg-card text-foreground"
               />
             </div>
-            <Button type="submit" variant="outline" className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)] shrink-0">
+            <Button type="submit" variant="outline" className="border-border text-muted-foreground shrink-0">
               {t('filters.filters')}
             </Button>
           </form>
@@ -112,86 +115,91 @@ export default function AdminUsers() {
       </Card>
 
       {/* Table */}
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
+      {isError ? (
+        <ErrorState
+          description={t('admin.users.loadError', 'We could not load users. Please try again.')}
+          onRetry={() => refetch()}
+        />
+      ) : (
+      <Card className="bg-card border-border shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          {isLoading ? (
+            <div className="p-4">
+              <TableSkeleton rows={8} cols={6} />
+            </div>
+          ) : (
+          <>
           <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12 hidden sm:table-cell"></TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.users.fields.fullName')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.users.fields.email')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.users.fields.roles')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden lg:table-cell">{t('admin.users.fields.languages')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden lg:table-cell">{t('admin.users.lastLogin')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.common.status')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-20">{t('admin.common.actions')}</TableHead>
+              <TableRow className="border-border">
+                <TableHead className="text-muted-foreground text-xs w-12 hidden sm:table-cell"></TableHead>
+                <TableHead className="text-muted-foreground text-xs">{t('admin.users.fields.fullName')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden md:table-cell">{t('admin.users.fields.email')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.users.fields.roles')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden lg:table-cell">{t('admin.users.fields.languages')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden lg:table-cell">{t('admin.users.lastLogin')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.common.status')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs w-20">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && (
-                <TableRow>
-                  <TableCell colSpan={8} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">
-                    {t('admin.common.loading')}
-                  </TableCell>
-                </TableRow>
-              )}
-              {!isLoading && users.map(u => (
-                <TableRow key={u.id} className={`border-[hsl(0_0%_93%)] ${!u.isActive ? 'opacity-50' : ''}`}>
+              {users.map(u => (
+                <TableRow key={u.id} className={`border-border ${!u.isActive ? 'opacity-50' : ''}`}>
                   <TableCell className="py-2 hidden sm:table-cell">
                     {u.photoUrl ? (
                       <img src={u.photoUrl} alt="" className="h-8 w-8 rounded-full object-cover" />
                     ) : (
-                      <div className="h-8 w-8 rounded-full bg-[hsl(0_0%_90%)] flex items-center justify-center text-xs text-[hsl(0_0%_50%)]">
+                      <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs text-muted-foreground">
                         {u.fullName.charAt(0)}
                       </div>
                     )}
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
+                  <TableCell className="text-sm text-foreground font-medium">
                     <div>{u.fullName}</div>
-                    <div className="text-xs text-[hsl(0_0%_50%)] md:hidden">{u.email}</div>
+                    <div className="text-xs text-muted-foreground md:hidden">{u.email}</div>
                     <div className="flex flex-wrap gap-1 mt-1 sm:hidden">
                       {u.roles.map(role => (
-                        <Badge key={role} variant="outline" className={`text-[10px] ${roleBadgeColors[role] ?? 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                        <Badge key={role} variant="outline" className={`text-[10px] ${roleBadgeColors[role] ?? 'bg-muted text-muted-foreground border-border'}`}>
                           {role}
                         </Badge>
                       ))}
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden md:table-cell">{u.email}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground hidden md:table-cell">{u.email}</TableCell>
                   <TableCell className="hidden sm:table-cell">
                     <div className="flex flex-wrap gap-1">
                       {u.roles.map(role => (
-                        <Badge key={role} variant="outline" className={`text-[10px] ${roleBadgeColors[role] ?? 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                        <Badge key={role} variant="outline" className={`text-[10px] ${roleBadgeColors[role] ?? 'bg-muted text-muted-foreground border-border'}`}>
                           {role}
                         </Badge>
                       ))}
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden lg:table-cell">{(u.languages ?? []).join(', ')}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden lg:table-cell">
+                  <TableCell className="text-sm text-muted-foreground hidden lg:table-cell">{(u.languages ?? []).join(', ')}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground hidden lg:table-cell">
                     {u.lastLoginAt ? (
                       <Tooltip>
                         <TooltipTrigger>{formatDistanceToNow(new Date(u.lastLoginAt), { addSuffix: true })}</TooltipTrigger>
                         <TooltipContent>{new Date(u.lastLoginAt).toLocaleString()}</TooltipContent>
                       </Tooltip>
                     ) : (
-                      <span className="text-[hsl(0_0%_70%)] italic">{t('admin.users.neverLoggedIn')}</span>
+                      <span className="text-muted-foreground italic">{t('admin.users.neverLoggedIn')}</span>
                     )}
                   </TableCell>
                   <TableCell className="hidden sm:table-cell">
-                    <Badge variant="outline" className={`text-[10px] ${u.isActive ? 'bg-green-100 text-green-700 border-green-200' : 'bg-red-100 text-red-600 border-red-200'}`}>
+                    <Badge variant="outline" className={`text-[10px] ${u.isActive ? 'bg-success/10 text-success border-success/30' : 'bg-destructive/10 text-destructive border-destructive/30'}`}>
                       {u.isActive ? t('admin.users.active') : t('admin.users.inactive')}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_15%)]">
+                      <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-muted-foreground hover:text-foreground">
                         <Link to={`/admin/users/${u.id}/edit`} aria-label={t('admin.common.edit')} title={t('admin.common.edit')}><Pencil className="h-3.5 w-3.5" /></Link>
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(43_50%_48%)]"
+                        className="h-8 w-8 text-muted-foreground hover:text-primary"
                         onClick={() => { setPasswordModal({ id: u.id, name: u.fullName }); setNewPassword(''); }}
                         aria-label={t('admin.users.actions.resetPassword')}
                         title={t('admin.users.actions.resetPassword')}
@@ -201,7 +209,7 @@ export default function AdminUsers() {
                       {u.isActive ? (
                         <Button
                           variant="ghost" size="icon"
-                          className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-red-600"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive"
                           onClick={() => setPendingDeactivate(u)}
                           disabled={deleteUser.isPending}
                           aria-label={t('admin.users.actions.deactivate', 'Deactivate user')}
@@ -212,7 +220,7 @@ export default function AdminUsers() {
                       ) : (
                         <Button
                           variant="ghost" size="icon"
-                          className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-green-600"
+                          className="h-8 w-8 text-muted-foreground hover:text-success"
                           onClick={() => handleReactivate(u)}
                           disabled={updateUser.isPending}
                           aria-label={t('admin.users.actions.reactivate', 'Reactivate user')}
@@ -228,20 +236,32 @@ export default function AdminUsers() {
             </TableBody>
           </Table>
           </div>
-          {!isLoading && users.length === 0 && (
-            <p className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.users.empty')}</p>
+          {users.length === 0 && (
+            <EmptyState
+              icon={Users}
+              title={t('admin.users.empty')}
+              description={t('admin.users.emptyDescription', 'Add a user to get started.')}
+              action={
+                <Button asChild>
+                  <Link to="/admin/users/new"><Plus className="h-4 w-4 mr-2" />{t('admin.users.addUser')}</Link>
+                </Button>
+              }
+            />
+          )}
+          </>
           )}
         </CardContent>
       </Card>
+      )}
 
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
-          <Button variant="outline" size="icon" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="h-8 w-8 border-[hsl(0_0%_85%)]" aria-label={t('pagination.previous', 'Previous page')} title={t('pagination.previous', 'Previous page')}>
+          <Button variant="outline" size="icon" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="h-8 w-8 border-border" aria-label={t('pagination.previous', 'Previous page')} title={t('pagination.previous', 'Previous page')}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span className="text-sm text-[hsl(0_0%_50%)]">{page} / {totalPages}</span>
-          <Button variant="outline" size="icon" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} className="h-8 w-8 border-[hsl(0_0%_85%)]" aria-label={t('pagination.next', 'Next page')} title={t('pagination.next', 'Next page')}>
+          <span className="text-sm text-muted-foreground">{page} / {totalPages}</span>
+          <Button variant="outline" size="icon" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} className="h-8 w-8 border-border" aria-label={t('pagination.next', 'Next page')} title={t('pagination.next', 'Next page')}>
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
@@ -249,27 +269,26 @@ export default function AdminUsers() {
 
       {/* Reset Password Modal */}
       <Dialog open={!!passwordModal} onOpenChange={(open) => { if (!open) setPasswordModal(null); }}>
-        <DialogContent className="bg-white">
+        <DialogContent className="bg-card">
           <DialogHeader>
-            <DialogTitle className="text-[hsl(0_0%_15%)]">{t('admin.users.actions.resetPassword')}</DialogTitle>
+            <DialogTitle className="text-foreground">{t('admin.users.actions.resetPassword')}</DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-[hsl(0_0%_50%)]">{passwordModal?.name}</p>
+          <p className="text-sm text-muted-foreground">{passwordModal?.name}</p>
           <div className="space-y-2">
-            <Label className="text-sm text-[hsl(0_0%_40%)] font-medium">{t('admin.users.fields.password')}</Label>
+            <Label className="text-sm text-muted-foreground font-medium">{t('admin.users.fields.password')}</Label>
             <Input
               type="password"
               value={newPassword}
               onChange={e => setNewPassword(e.target.value)}
-              className="border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)]"
+              className="border-border bg-card text-foreground"
               autoComplete="new-password"
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setPasswordModal(null)} className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)]">{t('admin.common.cancel')}</Button>
+            <Button variant="outline" onClick={() => setPasswordModal(null)} className="border-border text-muted-foreground">{t('admin.common.cancel')}</Button>
             <Button
               onClick={handleResetPassword}
               disabled={!newPassword || resetPassword.isPending}
-              className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]"
             >
               {t('admin.common.save')}
             </Button>

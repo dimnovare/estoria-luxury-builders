@@ -10,7 +10,6 @@ import { formatDistanceToNow } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
@@ -30,6 +29,7 @@ import {
 } from '@/hooks/api/useInbox';
 import InboxComposer, { type ComposerPrefill } from './InboxComposer';
 import SenderActionsPanel from '@/components/admin/SenderActionsPanel';
+import EntityLinkPicker from '@/components/admin/EntityLinkPicker';
 import { cn } from '@/lib/utils';
 
 // ── Folder config ──────────────────────────────────────────────────────────────
@@ -229,14 +229,20 @@ function LinkPopover({
     <PopoverContent className="w-72 space-y-3" align="start">
       <p className="text-sm font-medium">{t('admin.inbox.link.title')}</p>
       <div className="space-y-2">
-        <div>
-          <label className="text-xs text-muted-foreground">{t('admin.inbox.link.contactId')}</label>
-          <Input value={contactId} onChange={(e) => setContactId(e.target.value)} className="h-8 text-sm mt-1" placeholder={t('admin.inbox.link.contactIdPlaceholder', 'Contact ID')} />
-        </div>
-        <div>
-          <label className="text-xs text-muted-foreground">{t('admin.inbox.link.dealId')}</label>
-          <Input value={dealId} onChange={(e) => setDealId(e.target.value)} className="h-8 text-sm mt-1" placeholder={t('admin.inbox.link.dealIdPlaceholder', 'Deal ID')} />
-        </div>
+        <EntityLinkPicker
+          type="contact"
+          value={contactId || null}
+          onChange={(id) => setContactId(id ?? '')}
+          label={t('admin.inbox.link.contactId')}
+          placeholder={t('admin.inbox.link.contactPickerPlaceholder', 'Search contacts…')}
+        />
+        <EntityLinkPicker
+          type="deal"
+          value={dealId || null}
+          onChange={(id) => setDealId(id ?? '')}
+          label={t('admin.inbox.link.dealId')}
+          placeholder={t('admin.inbox.link.dealPickerPlaceholder', 'Search deals…')}
+        />
       </div>
       <Button size="sm" onClick={handleSave} disabled={link.isPending} className="w-full">
         {t('admin.inbox.link.save')}
@@ -489,8 +495,8 @@ export default function AdminInbox() {
       {(!isMobile || mobileStep === 1) && (
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-heading font-semibold text-[hsl(0_0%_20%)]">{t('admin.inbox.title')}</h1>
-            <p className="text-sm text-[hsl(0_0%_50%)]">{t('admin.inbox.subtitle', 'Shared mailbox for info@estoria.estate. Emails appear here when Microsoft Graph is configured. For contact form submissions, see Messages.')}</p>
+            <h1 className="text-xl font-heading font-semibold text-foreground">{t('admin.inbox.title')}</h1>
+            <p className="text-sm text-muted-foreground">{t('admin.inbox.subtitle', 'Shared mailbox for info@estoria.estate. Emails appear here when Microsoft Graph is configured. For contact form submissions, see Messages.')}</p>
           </div>
           {!isMobile && (
             <Button size="sm" onClick={() => setComposer({})} aria-label={t('admin.inbox.compose')} title={t('admin.inbox.compose')}>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Trash2, UserPlus, Briefcase, CheckCheck, RotateCcw } from 'lucide-react';
+import { Trash2, UserPlus, Briefcase, CheckCheck, RotateCcw, Mail } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,22 +9,26 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
+import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
+import { TableSkeleton } from '@/components/admin/TableSkeleton';
 import { useAdminContacts, useUpdateContactStatus, useDeleteContactMessage, type ContactMessage } from '@/hooks/api/useAdmin';
 import { contactStatusLabel } from '@/lib/enumLabels';
+import { formatDate } from '@/lib/formatDate';
 import { toast } from 'sonner';
 
 const statusColors: Record<string, string> = {
-  New: 'bg-[hsl(43_50%_90%)] text-[hsl(43_50%_40%)] border-[hsl(43_50%_70%)]',
+  New: 'bg-primary/10 text-primary border-primary/30',
   Read: 'bg-blue-100 text-blue-700 border-blue-200',
-  Replied: 'bg-green-100 text-green-700 border-green-200',
+  Replied: 'bg-success/10 text-success border-success',
 };
 
 const actionBtnClass =
-  'inline-flex items-center gap-1.5 text-sm text-[hsl(0_0%_30%)] hover:text-[hsl(43_50%_45%)] transition-colors';
+  'inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors';
 
 export default function AdminMessages() {
   const { t } = useTranslation();
-  const { data, isLoading } = useAdminContacts();
+  const { data, isLoading, isError, refetch } = useAdminContacts();
   const updateStatus = useUpdateContactStatus();
   const deleteMsg = useDeleteContactMessage();
 
@@ -60,99 +64,108 @@ export default function AdminMessages() {
         subtitle={t('admin.messages.subtitle', 'Contact form submissions from the public website. Mark as Read once followed up.')}
       />
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.name')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.common.email')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.messages.table.subject')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.common.date')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.common.status')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-10"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading && (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
+      {isError ? (
+        <ErrorState
+          description={t('admin.messages.error', 'We could not load your messages. Please try again.')}
+          onRetry={() => refetch()}
+        />
+      ) : (
+        <Card className="bg-card border-border shadow-sm overflow-hidden">
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+            {isLoading ? (
+              <div className="p-4">
+                <TableSkeleton rows={8} cols={6} />
+              </div>
+            ) : messages.length === 0 ? (
+              <EmptyState
+                icon={Mail}
+                title={t('admin.messages.empty')}
+                description={t('admin.messages.emptyDesc', 'Contact form submissions from the public website will appear here.')}
+              />
+            ) : (
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border">
+                  <TableHead className="text-muted-foreground text-xs">{t('admin.common.name')}</TableHead>
+                  <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.common.email')}</TableHead>
+                  <TableHead className="text-muted-foreground text-xs hidden md:table-cell">{t('admin.messages.table.subject')}</TableHead>
+                  <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.common.date')}</TableHead>
+                  <TableHead className="text-muted-foreground text-xs">{t('admin.common.status')}</TableHead>
+                  <TableHead className="text-muted-foreground text-xs w-10"></TableHead>
                 </TableRow>
-              )}
-              {!isLoading && messages.map(m => (
-                <TableRow
-                  key={m.id}
-                  className="border-[hsl(0_0%_93%)] cursor-pointer hover:bg-[hsl(0_0%_98%)]"
-                  onClick={() => setSelected(m)}
-                >
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
-                    <div>{m.name}</div>
-                    <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">{m.email}</div>
-                  </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{m.email}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_30%)] hidden md:table-cell truncate max-w-[200px]">{m.subject}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_50%)] hidden sm:table-cell whitespace-nowrap">
-                    {m.createdAt ? new Date(m.createdAt).toLocaleDateString() : '—'}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className={`text-[10px] ${statusColors[m.status] ?? ''}`}>
-                      {contactStatusLabel(m.status, t)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell onClick={e => e.stopPropagation()}>
-                    <Button
-                      variant="ghost" size="icon"
-                      className="h-7 w-7 text-[hsl(0_0%_45%)] hover:text-red-600 hover:bg-red-50"
-                      disabled={deleteMsg.isPending}
-                      onClick={() => setPendingDelete(m.id)}
-                      aria-label={t('admin.common.delete')}
-                      title={t('admin.common.delete')}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {!isLoading && messages.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.messages.empty')}</TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-          </div>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {messages.map(m => (
+                  <TableRow
+                    key={m.id}
+                    className="border-border cursor-pointer hover:bg-muted"
+                    onClick={() => setSelected(m)}
+                  >
+                    <TableCell className="text-sm text-foreground font-medium">
+                      <div>{m.name}</div>
+                      <div className="text-xs text-muted-foreground sm:hidden">{m.email}</div>
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground hidden sm:table-cell">{m.email}</TableCell>
+                    <TableCell className="text-sm text-foreground hidden md:table-cell truncate max-w-[200px]">{m.subject}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground hidden sm:table-cell whitespace-nowrap">
+                      {m.createdAt ? formatDate(m.createdAt) : '—'}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={`text-[10px] ${statusColors[m.status] ?? ''}`}>
+                        {contactStatusLabel(m.status, t)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell onClick={e => e.stopPropagation()}>
+                      <Button
+                        variant="ghost" size="icon"
+                        className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                        disabled={deleteMsg.isPending}
+                        onClick={() => setPendingDelete(m.id)}
+                        aria-label={t('admin.common.delete')}
+                        title={t('admin.common.delete')}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Dialog open={!!selected} onOpenChange={open => !open && setSelected(null)}>
-        <DialogContent className="max-w-lg bg-white border-[hsl(0_0%_90%)]">
+        <DialogContent className="max-w-lg bg-card border-border">
           {selected && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-[hsl(0_0%_15%)]">{selected.subject || t('common.noSubject')}</DialogTitle>
+                <DialogTitle className="text-foreground">{selected.subject || t('common.noSubject')}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-                  <div><span className="text-[hsl(0_0%_50%)]">{t('admin.messages.dialog.from')}</span> <span className="text-[hsl(0_0%_20%)] font-medium">{selected.name}</span></div>
-                  <div><span className="text-[hsl(0_0%_50%)]">{t('admin.messages.dialog.email')}</span> <a href={`mailto:${selected.email}`} className="text-[hsl(43_50%_54%)] hover:underline break-all">{selected.email}</a></div>
+                  <div><span className="text-muted-foreground">{t('admin.messages.dialog.from')}</span> <span className="text-foreground font-medium">{selected.name}</span></div>
+                  <div><span className="text-muted-foreground">{t('admin.messages.dialog.email')}</span> <a href={`mailto:${selected.email}`} className="text-primary hover:underline break-all">{selected.email}</a></div>
                   {selected.phone && (
-                    <div><span className="text-[hsl(0_0%_50%)]">{t('admin.messages.dialog.phone')}</span> <span className="text-[hsl(0_0%_20%)]">{selected.phone}</span></div>
+                    <div><span className="text-muted-foreground">{t('admin.messages.dialog.phone')}</span> <span className="text-foreground">{selected.phone}</span></div>
                   )}
-                  <div><span className="text-[hsl(0_0%_50%)]">{t('admin.messages.dialog.date')}</span> <span className="text-[hsl(0_0%_20%)]">{selected.createdAt ? new Date(selected.createdAt).toLocaleDateString() : '—'}</span></div>
+                  <div><span className="text-muted-foreground">{t('admin.messages.dialog.date')}</span> <span className="text-foreground">{selected.createdAt ? formatDate(selected.createdAt) : '—'}</span></div>
                 </div>
                 {selected.propertyTitle && (
                   <div className="text-sm">
-                    <span className="text-[hsl(0_0%_50%)]">{t('admin.messages.dialog.property')}</span>{' '}
-                    <span className="text-[hsl(43_50%_54%)]">{selected.propertyTitle}</span>
+                    <span className="text-muted-foreground">{t('admin.messages.dialog.property')}</span>{' '}
+                    <span className="text-primary">{selected.propertyTitle}</span>
                   </div>
                 )}
-                <div className="bg-[hsl(0_0%_97%)] rounded-lg p-4 text-sm text-[hsl(0_0%_25%)] leading-relaxed">
+                <div className="bg-muted rounded-lg p-4 text-sm text-foreground leading-relaxed">
                   {selected.message}
                 </div>
 
                 {/* CRM quick-actions */}
-                <div className="border-t border-[hsl(0_0%_92%)] pt-3 flex flex-wrap gap-4">
+                <div className="border-t border-border pt-3 flex flex-wrap gap-4">
                   <Link
                     to={`/admin/contacts/new?name=${encodeURIComponent(selected.name)}&email=${encodeURIComponent(selected.email)}&phone=${encodeURIComponent(selected.phone ?? '')}`}
                     className={actionBtnClass}
@@ -175,7 +188,7 @@ export default function AdminMessages() {
                   {selected.status === 'Read' ? (
                     <Button
                       variant="outline"
-                      className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)] text-sm"
+                      className="border-border text-muted-foreground text-sm"
                       disabled={updateStatus.isPending}
                       onClick={() => handleStatusUpdate(selected.id, 'New')}
                     >
@@ -185,7 +198,7 @@ export default function AdminMessages() {
                   ) : (
                     <Button
                       variant="outline"
-                      className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)] text-sm"
+                      className="border-border text-muted-foreground text-sm"
                       disabled={updateStatus.isPending}
                       onClick={() => handleStatusUpdate(selected.id, 'Read')}
                     >
@@ -195,7 +208,7 @@ export default function AdminMessages() {
                   )}
                   {selected.status !== 'Replied' && (
                     <Button
-                      className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] text-sm"
+                      className="text-sm"
                       disabled={updateStatus.isPending}
                       onClick={() => handleStatusUpdate(selected.id, 'Replied')}
                     >

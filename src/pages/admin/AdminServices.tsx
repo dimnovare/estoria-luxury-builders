@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Pencil, GripVertical, Trash2, Loader2, Copy } from 'lucide-react';
+import { Plus, Pencil, GripVertical, Trash2, Loader2, Copy, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -12,6 +12,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import TranslateButton from '@/components/admin/TranslateButton';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
+import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
+import { TableSkeleton } from '@/components/admin/TableSkeleton';
 import {
   useAdminServices,
   useAdminService,
@@ -31,7 +34,7 @@ const emptyTrans: TransFields = { name: '', description: '', priceInfo: '' };
 
 export default function AdminServices() {
   const { t } = useTranslation();
-  const { data: services, isLoading } = useAdminServices();
+  const { data: services, isLoading, isError, refetch } = useAdminServices();
   const createService = useCreateService();
   const updateService = useUpdateService();
   const deleteService = useDeleteService();
@@ -139,8 +142,8 @@ export default function AdminServices() {
   const isSaving = createService.isPending || updateService.isPending;
   const pendingName = (services ?? []).find(s => s.id === pendingDelete)?.name;
 
-  const inputClass = "border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)] focus:border-[hsl(43_50%_54%)] focus:ring-[hsl(43_50%_54%)]";
-  const labelClass = "text-sm text-[hsl(0_0%_40%)] font-medium";
+  const inputClass = "border-border bg-card text-foreground focus:border-primary focus:ring-primary";
+  const labelClass = "text-sm text-muted-foreground font-medium";
 
   return (
     <div className="space-y-6">
@@ -148,32 +151,55 @@ export default function AdminServices() {
         title={t('admin.services.title')}
         subtitle={t('admin.services.subtitle', 'Edit the services shown on the homepage and services page. Type an icon name (for example home, key, building2 or scale) in the icon field.')}
         action={
-          <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
+          <Button onClick={openNew} className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0">
             <Plus className="h-4 w-4 mr-2" />{t('admin.services.addNew')}
           </Button>
         }
       />
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
+      <Card className="bg-card border-border shadow-sm overflow-hidden">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-8 hidden sm:table-cell"></TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.services.table.icon')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.services.table.name')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.services.table.priceInfo')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
+              <TableRow className="border-border">
+                <TableHead className="text-muted-foreground text-xs w-8 hidden sm:table-cell"></TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.services.table.icon')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs">{t('admin.services.table.name')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.services.table.priceInfo')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
+                  <TableCell colSpan={5} className="p-4">
+                    <TableSkeleton rows={5} cols={5} />
+                  </TableCell>
                 </TableRow>
               )}
-              {!isLoading && (services ?? []).map(s => (
+              {!isLoading && isError && (
+                <TableRow>
+                  <TableCell colSpan={5} className="p-4">
+                    <ErrorState
+                      description={t('admin.services.loadError', 'Could not load services.')}
+                      onRetry={() => refetch()}
+                    />
+                  </TableCell>
+                </TableRow>
+              )}
+              {!isLoading && !isError && (services ?? []).length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="p-4">
+                    <EmptyState
+                      icon={Wrench}
+                      title={t('admin.services.empty.title', 'No services yet')}
+                      description={t('admin.services.empty.description', 'Add your first service to show it on the homepage and services page.')}
+                    />
+                  </TableCell>
+                </TableRow>
+              )}
+              {!isLoading && !isError && (services ?? []).map(s => (
                 <TableRow
                   key={s.id}
                   draggable
@@ -194,24 +220,24 @@ export default function AdminServices() {
                     setDragId(null);
                     setOverId(null);
                   }}
-                  className={`border-[hsl(0_0%_93%)] transition-all ${dragId === s.id ? 'opacity-50' : ''} ${overId === s.id ? 'border-t-2 border-t-[hsl(43_50%_54%)]' : ''}`}
+                  className={`border-border transition-all ${dragId === s.id ? 'opacity-50' : ''} ${overId === s.id ? 'border-t-2 border-t-primary' : ''}`}
                 >
                   {/* Functional drag handle: dragging a row reorders services (see onDrop → reorderServices.mutate). */}
-                  <TableCell className="hidden sm:table-cell"><GripVertical className="h-4 w-4 text-[hsl(0_0%_60%)] cursor-grab active:cursor-grabbing" aria-label={t('admin.services.dragToReorder', 'Drag to reorder')} role="img" /></TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{s.iconName || '—'}</TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
+                  <TableCell className="hidden sm:table-cell"><GripVertical className="h-4 w-4 text-muted-foreground cursor-grab active:cursor-grabbing" aria-label={t('admin.services.dragToReorder', 'Drag to reorder')} role="img" /></TableCell>
+                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell">{s.iconName || '—'}</TableCell>
+                  <TableCell className="text-sm text-foreground font-medium">
                     <div>{s.name}</div>
-                    <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">{s.priceInfo || ''}</div>
+                    <div className="text-xs text-muted-foreground sm:hidden">{s.priceInfo || ''}</div>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_50%)] hidden sm:table-cell">{s.priceInfo || '—'}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell">{s.priceInfo || '—'}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_20%)]" onClick={() => openEdit(s)} title={t('admin.common.edit')} aria-label={t('admin.common.edit')}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={() => openEdit(s)} title={t('admin.common.edit')} aria-label={t('admin.common.edit')}>
                         <Pencil className="h-3.5 w-3.5" />
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-red-500"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
                         onClick={() => setPendingDelete(s.id)}
                         disabled={deleteService.isPending}
                         title={t('admin.common.delete')}
@@ -230,9 +256,9 @@ export default function AdminServices() {
       </Card>
 
       <Dialog open={dialogOpen} onOpenChange={open => { if (!open) setDialogOpen(false); }}>
-        <DialogContent className="max-w-xl bg-white border-[hsl(0_0%_90%)] max-h-[90vh] flex flex-col p-0 gap-0">
+        <DialogContent className="max-w-xl bg-card border-border max-h-[90vh] flex flex-col p-0 gap-0">
           <DialogHeader className="px-6 pt-6 pb-2 shrink-0">
-            <DialogTitle className="text-[hsl(0_0%_15%)]">
+            <DialogTitle className="text-foreground">
               {editingService ? t('admin.services.editTitle') : t('admin.services.newTitle')}
             </DialogTitle>
           </DialogHeader>
@@ -248,8 +274,8 @@ export default function AdminServices() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-[hsl(0_0%_92%)]">
-              <p className="text-xs text-[hsl(0_0%_45%)]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-border">
+              <p className="text-xs text-muted-foreground">
                 {t('admin.services.translateHint', 'Write the service in Estonian, then translate the name and description to the other languages with one click. You can edit afterwards.')}
               </p>
               <TranslateButton
@@ -271,9 +297,9 @@ export default function AdminServices() {
             </div>
 
             <Tabs defaultValue="et">
-              <TabsList className="bg-[hsl(0_0%_96%)] border border-[hsl(0_0%_90%)]">
+              <TabsList className="bg-muted border border-border">
                 {langs.map(l => (
-                  <TabsTrigger key={l} value={l} className="uppercase text-xs data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">{l}</TabsTrigger>
+                  <TabsTrigger key={l} value={l} className="uppercase text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{l}</TabsTrigger>
                 ))}
               </TabsList>
               {langs.map(lang => (
@@ -284,7 +310,7 @@ export default function AdminServices() {
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="h-7 text-xs text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_20%)]"
+                        className="h-7 text-xs text-muted-foreground hover:text-foreground"
                         onClick={() => setTranslations(prev => ({
                           ...prev,
                           [lang]: {
@@ -300,7 +326,7 @@ export default function AdminServices() {
                     </div>
                   )}
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.services.fields.name')} {lang === 'et' && <span className="text-[hsl(43_50%_45%)]" title={t('admin.common.required', 'Required')}>*</span>}</Label>
+                    <Label className={labelClass}>{t('admin.services.fields.name')} {lang === 'et' && <span className="text-primary" title={t('admin.common.required', 'Required')}>*</span>}</Label>
                     <Input value={translations[lang]?.name || ''} onChange={e => updateTrans(lang, 'name', e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
@@ -320,8 +346,8 @@ export default function AdminServices() {
               ))}
             </Tabs>
           </div>
-          <div className="flex justify-end px-6 py-4 border-t border-[hsl(0_0%_92%)] shrink-0 bg-white">
-            <Button onClick={handleSave} disabled={isSaving} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+          <div className="flex justify-end px-6 py-4 border-t border-border shrink-0 bg-card">
+            <Button onClick={handleSave} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-primary-foreground">
               {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {t('admin.services.saveService')}
             </Button>

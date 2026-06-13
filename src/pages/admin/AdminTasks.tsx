@@ -15,6 +15,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useTasks, useToggleTaskStatus, useDeleteTask, type TaskDto, type TaskPriority } from '@/hooks/api/useTasks';
@@ -25,9 +26,9 @@ import { formatDistanceToNow, isToday, isThisWeek, isBefore, startOfDay, addDays
 import TaskForm from './TaskForm';
 
 const priorityStyles: Record<TaskPriority, string> = {
-  Low: 'bg-[hsl(0_0%_90%)] text-[hsl(0_0%_45%)]',
+  Low: 'bg-muted text-muted-foreground',
   Normal: 'bg-[hsl(0_0%_20%)] text-[hsl(0_0%_95%)]',
-  High: 'bg-[hsl(43_50%_54%)]/20 text-[hsl(43_50%_44%)]',
+  High: 'bg-primary/20 text-primary',
 };
 
 type TabValue = 'today' | 'week' | 'overdue' | 'all';
@@ -69,7 +70,7 @@ export default function AdminTasks() {
     return f;
   }, [tab, statusFilter, assignedTo, priorityFilter, hasReminder, user?.id]);
 
-  const { data, isLoading } = useTasks(filter as never);
+  const { data, isLoading, isError, refetch } = useTasks(filter as never);
   const tasks = data?.items ?? [];
 
   // Client-side re-filter for "today" tab; also merge in recently-done tasks so
@@ -167,7 +168,7 @@ export default function AdminTasks() {
         action={
           <Button
             onClick={() => { setEditTaskId(undefined); setShowForm(true); }}
-            className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0"
+            className="shrink-0"
           >
             <Plus className="h-4 w-4 mr-2" />{t('admin.tasks.addNew', 'New Task')}
           </Button>
@@ -177,7 +178,7 @@ export default function AdminTasks() {
       {/* Tabs */}
       <Tabs value={tab} onValueChange={(v) => setTab(v as TabValue)}>
         <div className="flex flex-wrap items-center gap-4">
-          <TabsList className="bg-[hsl(0_0%_95%)]">
+          <TabsList className="bg-muted">
             <TabsTrigger value="today">{t('admin.tasks.tabs.today')}</TabsTrigger>
             <TabsTrigger value="week">{t('admin.tasks.tabs.week')}</TabsTrigger>
             <TabsTrigger value="overdue">{t('admin.tasks.tabs.overdue')}</TabsTrigger>
@@ -185,7 +186,7 @@ export default function AdminTasks() {
           </TabsList>
 
           {/* Status filter — Pending / Completed / All */}
-          <div className="flex rounded-md border border-[hsl(0_0%_88%)] overflow-hidden text-xs">
+          <div className="flex rounded-md border border-border overflow-hidden text-xs">
             {(['pending', 'done', 'all'] as StatusFilter[]).map(s => (
               <button
                 key={s}
@@ -193,9 +194,9 @@ export default function AdminTasks() {
                 onClick={() => setStatusFilter(s)}
                 className={`px-3 py-1.5 transition-colors ${
                   statusFilter === s
-                    ? 'bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] font-medium'
-                    : 'bg-white text-[hsl(0_0%_40%)] hover:bg-[hsl(0_0%_97%)]'
-                } border-r last:border-r-0 border-[hsl(0_0%_88%)]`}
+                    ? 'bg-primary text-primary-foreground font-medium'
+                    : 'bg-card text-muted-foreground hover:bg-muted'
+                } border-r last:border-r-0 border-border`}
               >
                 {s === 'pending' ? t('admin.tasks.status.pending') : s === 'done' ? t('admin.tasks.status.done') : t('admin.tasks.status.all')}
               </button>
@@ -205,7 +206,7 @@ export default function AdminTasks() {
           {/* Filters */}
           <div className="flex gap-2 flex-wrap">
             <Select value={assignedTo} onValueChange={setAssignedTo}>
-              <SelectTrigger className="w-[140px] bg-white border-[hsl(0_0%_85%)] text-sm text-[hsl(0_0%_20%)]">
+              <SelectTrigger className="w-[140px] bg-card border-border text-sm text-foreground">
                 <SelectValue placeholder={t('admin.tasks.filters.assignedTo')} />
               </SelectTrigger>
               <SelectContent>
@@ -215,7 +216,7 @@ export default function AdminTasks() {
             </Select>
 
             <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-              <SelectTrigger className="w-[120px] bg-white border-[hsl(0_0%_85%)] text-sm text-[hsl(0_0%_20%)]">
+              <SelectTrigger className="w-[120px] bg-card border-border text-sm text-foreground">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -227,7 +228,7 @@ export default function AdminTasks() {
             </Select>
 
             <Select value={hasReminder} onValueChange={setHasReminder}>
-              <SelectTrigger className="w-[140px] bg-white border-[hsl(0_0%_85%)] text-sm text-[hsl(0_0%_20%)]">
+              <SelectTrigger className="w-[140px] bg-card border-border text-sm text-foreground">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -242,8 +243,13 @@ export default function AdminTasks() {
       {/* Task list */}
       {isLoading ? (
         <div className="flex items-center justify-center py-24">
-          <Loader2 className="h-6 w-6 animate-spin text-[hsl(43_50%_54%)]" />
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
         </div>
+      ) : isError ? (
+        <ErrorState
+          description={t('admin.tasks.loadError', 'Could not load tasks.')}
+          onRetry={() => refetch()}
+        />
       ) : filtered.length === 0 ? (
         <EmptyState
           icon={CheckSquare}
@@ -256,21 +262,21 @@ export default function AdminTasks() {
             const due = getDueLabel(task.dueAt);
             const ctx = getContextLink(task);
             return (
-              <Card key={task.id} className={`bg-white border-[hsl(0_0%_90%)] shadow-sm ${task.status === 'Done' ? 'opacity-50' : ''}`}>
+              <Card key={task.id} className={`bg-card border-border shadow-sm ${task.status === 'Done' ? 'opacity-50' : ''}`}>
                 <CardContent className="p-4 flex items-start gap-3">
                   <Checkbox
                     checked={task.status === 'Done'}
                     onCheckedChange={() => handleToggle(task)}
-                    className="mt-0.5 border-[hsl(0_0%_70%)] data-[state=checked]:bg-[hsl(43_50%_54%)] data-[state=checked]:border-[hsl(43_50%_54%)]"
+                    className="mt-0.5 border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2 flex-wrap">
-                      <span className={`text-sm font-medium ${task.status === 'Done' ? 'line-through text-[hsl(0_0%_60%)]' : 'text-[hsl(0_0%_15%)]'}`}>
+                      <span className={`text-sm font-medium ${task.status === 'Done' ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
                         {task.title}
                       </span>
                     </div>
                     {ctx && (
-                      <Link to={ctx.to} className="flex items-center gap-1 text-xs text-[hsl(0_0%_50%)] hover:text-[hsl(43_50%_54%)] mt-0.5">
+                      <Link to={ctx.to} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary mt-0.5">
                         <ctx.icon className="h-3 w-3" />
                         {ctx.label}
                       </Link>
@@ -278,12 +284,12 @@ export default function AdminTasks() {
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <Badge className={`text-[10px] ${priorityStyles[task.priority]}`}>{t(`admin.tasks.priority.${task.priority}`)}</Badge>
-                    <span className={`text-xs whitespace-nowrap ${due.isLate ? 'text-red-500 font-medium' : 'text-[hsl(0_0%_50%)]'}`}>
+                    <span className={`text-xs whitespace-nowrap ${due.isLate ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
                       {due.label}
                     </span>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-[hsl(0_0%_50%)]" aria-label={t('admin.tasks.taskActions', 'Task actions')} title={t('admin.tasks.taskActions', 'Task actions')}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" aria-label={t('admin.tasks.taskActions', 'Task actions')} title={t('admin.tasks.taskActions', 'Task actions')}>
                           <MoreVertical className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
@@ -294,7 +300,7 @@ export default function AdminTasks() {
                         <DropdownMenuItem onClick={() => { setEditTaskId(task.id); setShowForm(true); }}>
                           <CalendarClock className="h-3.5 w-3.5 mr-2" />{t('admin.tasks.reschedule')}
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-500" onClick={() => setDeleteConfirm(task.id)}>
+                        <DropdownMenuItem className="text-destructive" onClick={() => setDeleteConfirm(task.id)}>
                           <Trash2 className="h-3.5 w-3.5 mr-2" />{t('admin.common.delete')}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -310,7 +316,7 @@ export default function AdminTasks() {
       {/* FAB */}
       <button
         onClick={() => { setEditTaskId(undefined); setShowForm(true); }}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shadow-lg flex items-center justify-center transition-colors z-40"
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg flex items-center justify-center transition-colors z-40"
         aria-label={t('admin.tasks.newTitle', 'New task')}
         title={t('admin.tasks.newTitle', 'New task')}
       >

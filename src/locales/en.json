@@ -438,7 +438,9 @@
       "next": "Next page",
       "previous": "Previous page",
       "required": "Required",
-      "example": "Example:"
+      "example": "Example:",
+      "errorTitle": "Something went wrong",
+      "retry": "Try again"
     },
     "layout": {
       "adminBadge": "Admin",
@@ -642,7 +644,13 @@
         "optional": "(optional)",
         "visibility": "Visibility & agent"
       },
-      "subtitle": "Manage property listings. Create a listing, then add images and publish it to make it visible on the public site."
+      "subtitle": "Manage property listings. Create a listing, then add images and publish it to make it visible on the public site.",
+      "loadError": "Could not load properties. Please try again.",
+      "empty": {
+        "title": "No properties yet",
+        "description": "Create your first listing, then add images and publish it to make it visible on the public site.",
+        "noMatchHint": "Try adjusting or clearing the filters above."
+      }
     },
     "blog": {
       "title": "Blog Posts",
@@ -696,7 +704,9 @@
         "draftNote": "This post is a hidden draft. Publish it to make it live.",
         "liveNote": "This post is live on the site. Saving as draft will hide it."
       },
-      "subtitle": "Write and publish blog articles. Save as Draft to preview before publishing. Each post supports Estonian, English, and Russian content."
+      "subtitle": "Write and publish blog articles. Save as Draft to preview before publishing. Each post supports Estonian, English, and Russian content.",
+      "error": "Could not load blog posts. Please try again.",
+      "emptyDesc": "Create your first blog post to share news and stories."
     },
     "team": {
       "title": "Team Members",
@@ -765,7 +775,10 @@
         "agent": "Receiving agent",
         "selectAgent": "Select an agent…",
         "confirm": "Hide & transfer"
-      }
+      },
+      "loadError": "Could not load team members.",
+      "empty": "No team members yet",
+      "emptyDescription": "Add a team member to show them on the About page."
     },
     "services": {
       "title": "Services",
@@ -800,7 +813,12 @@
       "validation": {
         "nameRequired": "Estonian name is required."
       },
-      "subtitle": "Edit the services shown on the homepage and services page. Type an icon name (for example home, key, building2 or scale) in the icon field."
+      "subtitle": "Edit the services shown on the homepage and services page. Type an icon name (for example home, key, building2 or scale) in the icon field.",
+      "loadError": "Could not load services.",
+      "empty": {
+        "title": "No services yet",
+        "description": "Add your first service to show it on the homepage and services page."
+      }
     },
     "pages": {
       "title": "Pages",
@@ -823,7 +841,12 @@
         "saveFailed": "Failed to save page content"
       },
       "translateHint": "Write the content in Estonian, then translate the title and body to the other languages with one click. You can edit afterwards.",
-      "subtitle": "Manage the text blocks shown on the public website. Each entry controls a specific section — edit the title, body, and images for each language (ET / EN / RU)."
+      "subtitle": "Manage the text blocks shown on the public website. Each entry controls a specific section — edit the title, body, and images for each language (ET / EN / RU).",
+      "error": "We couldn’t load the page content. Please try again.",
+      "empty": {
+        "title": "No content blocks yet",
+        "description": "Page content blocks will appear here once they are added."
+      }
     },
     "careers": {
       "title": "Careers",
@@ -853,7 +876,12 @@
       "deleteTitle": "Delete this job posting?",
       "deleteDesc": "This will permanently remove the posting and all its translations. This action can't be undone.",
       "translateHint": "Write the posting in Estonian, then translate the title, location and description to the other languages with one click. You can edit afterwards.",
-      "subtitle": "Manage job postings shown on the careers page. Toggle Active to show or hide a posting without deleting it."
+      "subtitle": "Manage job postings shown on the careers page. Toggle Active to show or hide a posting without deleting it.",
+      "loadError": "Could not load job postings. Please try again.",
+      "empty": {
+        "title": "No job postings yet",
+        "description": "Create your first job posting to show it on the careers page."
+      }
     },
     "messages": {
       "title": "Messages",
@@ -883,7 +911,9 @@
       "actions": {
         "createContact": "Create Contact",
         "createDeal": "Create Deal"
-      }
+      },
+      "error": "We could not load your messages. Please try again.",
+      "emptyDesc": "Contact form submissions from the public website will appear here."
     },
     "newsletter": {
       "title": "Newsletter",
@@ -942,12 +972,16 @@
         "confirmDeleteDesc": "This permanently removes the campaign record and its send history. This action cannot be undone.",
         "deleted": "Campaign deleted",
         "deleteFailed": "Failed to delete campaign",
-        "bodyFrameTitle": "Campaign body"
+        "bodyFrameTitle": "Campaign body",
+        "loadError": "Could not load campaigns. Please try again.",
+        "emptyTitle": "No campaigns yet"
       },
       "subtitle": "Send email newsletters to subscribers. Use the Compose tab to write a campaign, then send a test to yourself before broadcasting.",
       "unsubscribe": "Unsubscribe",
       "confirmUnsubTitle": "Unsubscribe this person?",
-      "confirmUnsubDesc": "They will stop receiving newsletters. You can re-add them later if needed."
+      "confirmUnsubDesc": "They will stop receiving newsletters. You can re-add them later if needed.",
+      "loadError": "Could not load subscribers. Please try again.",
+      "emptyTitle": "No subscribers yet"
     },
     "users": {
       "title": "Users",
@@ -1000,7 +1034,9 @@
         "passwordResetFailed": "Failed to reset password"
       },
       "deactivateTitle": "Deactivate this user?",
-      "deactivateDesc": "They will lose access immediately and can no longer sign in. You can reactivate them later."
+      "deactivateDesc": "They will lose access immediately and can no longer sign in. You can reactivate them later.",
+      "emptyDescription": "Add a user to get started.",
+      "loadError": "We could not load users. Please try again."
     },
     "audit": {
       "title": "Audit Log",
@@ -1019,7 +1055,8 @@
       "copyId": "Copy ID",
       "showDetails": "Show details",
       "hideDetails": "Hide details",
-      "subtitle": "System log of all admin actions. Use for troubleshooting or compliance review."
+      "subtitle": "System log of all admin actions. Use for troubleshooting or compliance review.",
+      "loadError": "Could not load the audit log. Please try again."
     },
     "contacts": {
       "title": "Contacts",
@@ -1125,7 +1162,8 @@
       "confirmDeleteNote": "Delete this note?",
       "pinNote": "Pin note",
       "unpinNote": "Unpin note",
-      "removeTag": "Remove tag"
+      "removeTag": "Remove tag",
+      "loadError": "Could not load contacts. Please try again."
     },
     "deals": {
       "title": "Deals",
@@ -1187,7 +1225,9 @@
         "participantRole": "Role",
         "linkedProperty": "Linked property",
         "propertyIdPlaceholder": "Property ID (optional)",
-        "propertyIdHelp": "Optional. Open the property in Properties and copy the ID from the end of its web address (URL) into this field to link it to the deal. Leave empty if there is no property yet."
+        "propertyIdHelp": "Optional. Open the property in Properties and copy the ID from the end of its web address (URL) into this field to link it to the deal. Leave empty if there is no property yet.",
+        "searchProperty": "Search a property…",
+        "propertyPickerHelp": "Optional. Search and select the property to link to this deal. Leave empty if there is no property yet."
       },
       "tabs": {
         "participants": "Participants",
@@ -1221,7 +1261,8 @@
       },
       "subtitle": "Track deals through stages from lead to close. Link deals to contacts, properties, and email threads.",
       "confirmRemoveParticipant": "Remove this participant?",
-      "removeParticipant": "Remove participant"
+      "removeParticipant": "Remove participant",
+      "loadError": "Could not load deals. Please try again."
     },
     "activities": {
       "title": "Activities",
@@ -1256,7 +1297,8 @@
         "StageChange": "Stage change",
         "ContractEvent": "Contract event",
         "SystemEvent": "System"
-      }
+      },
+      "loadError": "Could not load activities."
     },
     "crm": {
       "toast": {
@@ -1321,7 +1363,9 @@
         "dealIdPlaceholder": "Deal ID…",
         "propertyIdPlaceholder": "Property ID…",
         "dealIdHelp": "Optional. Paste the ID from the deal's web address (the part after /deals/). Leave blank if this task isn't about a specific deal.",
-        "propertyIdHelp": "Optional. Paste the ID from the property's web address (the part after /properties/). Leave blank if this task isn't about a specific property."
+        "propertyIdHelp": "Optional. Paste the ID from the property's web address (the part after /properties/). Leave blank if this task isn't about a specific property.",
+        "dealPickerHelp": "Optional. Search and select the deal this task relates to, or leave blank if it isn’t about a specific deal.",
+        "propertyPickerHelp": "Optional. Search and select the property this task relates to, or leave blank if it isn’t about a specific property."
       },
       "toast": {
         "created": "Task created",
@@ -1335,7 +1379,8 @@
         "markedDone": "Task marked done"
       },
       "taskActions": "Task actions",
-      "subtitle": "Manage to-do items for yourself and team members. Set due dates and reminders."
+      "subtitle": "Manage to-do items for yourself and team members. Set due dates and reminders.",
+      "loadError": "Could not load tasks."
     },
     "birthday": {
       "title": "Birthdays",
@@ -1363,7 +1408,8 @@
         "autoSendFailed": "Failed to update auto-send setting"
       },
       "confirmSendTitle": "Send birthday email now?",
-      "confirmSendDesc": "A birthday email will be sent immediately to {{name}}. This cannot be unsent."
+      "confirmSendDesc": "A birthday email will be sent immediately to {{name}}. This cannot be unsent.",
+      "loadError": "Could not load upcoming birthdays."
     },
     "savedSearches": {
       "title": "Saved Searches",
@@ -1398,7 +1444,8 @@
         "sendFailed": "Failed to force-send",
         "deleted": "Saved search deleted",
         "deleteFailed": "Failed to delete"
-      }
+      },
+      "loadError": "Could not load saved searches."
     },
     "settings": {
       "title": "Settings",
@@ -1477,7 +1524,9 @@
         "save": "Save",
         "edit": "Edit link",
         "contactIdPlaceholder": "Contact ID",
-        "dealIdPlaceholder": "Deal ID"
+        "dealIdPlaceholder": "Deal ID",
+        "contactPickerPlaceholder": "Search contacts…",
+        "dealPickerPlaceholder": "Search deals…"
       },
       "composer": {
         "newMessage": "New Message",
@@ -1514,6 +1563,13 @@
         "searchContacts": "Search contacts...",
         "searchDeals": "Search deals..."
       }
+    },
+    "entityPicker": {
+      "search": "Search…",
+      "empty": "No results",
+      "loading": "Loading…",
+      "unknown": "Selected (not in list)",
+      "clear": "Clear selection"
     }
   },
   "pagination": {

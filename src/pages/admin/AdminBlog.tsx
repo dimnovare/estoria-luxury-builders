@@ -1,20 +1,24 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, Pencil, Trash2, Globe, EyeOff } from 'lucide-react';
+import { Plus, Pencil, Trash2, Globe, EyeOff, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
+import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
+import { TableSkeleton } from '@/components/admin/TableSkeleton';
 import { useAdminBlogPosts, useDeleteBlogPost, useSetBlogPostStatus } from '@/hooks/api/useAdmin';
 import { blogStatusLabel } from '@/lib/enumLabels';
+import { formatDate } from '@/lib/formatDate';
 import { toast } from 'sonner';
 
 export default function AdminBlog() {
   const { t } = useTranslation();
-  const { data, isLoading } = useAdminBlogPosts();
+  const { data, isLoading, isError, refetch } = useAdminBlogPosts();
   const deleteBlogPost = useDeleteBlogPost();
   const setStatus = useSetBlogPostStatus();
 
@@ -50,56 +54,73 @@ export default function AdminBlog() {
         title={t('admin.blog.title')}
         subtitle={t('admin.blog.subtitle', 'Write and publish blog articles. Save as Draft to preview before publishing. Each post supports Estonian, English, and Russian content.')}
         action={
-          <Button asChild className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
+          <Button asChild className="shrink-0">
             <Link to="/admin/blog/new"><Plus className="h-4 w-4 mr-2" />{t('admin.blog.addNew')}</Link>
           </Button>
         }
       />
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
+      {isError ? (
+        <ErrorState
+          description={t('admin.blog.error', 'Could not load blog posts. Please try again.')}
+          onRetry={() => refetch()}
+        />
+      ) : (
+      <Card className="bg-card border-border shadow-sm overflow-hidden">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
+          {isLoading ? (
+            <div className="p-4">
+              <TableSkeleton rows={6} cols={5} />
+            </div>
+          ) : posts.length === 0 ? (
+            <EmptyState
+              icon={FileText}
+              title={t('admin.blog.empty')}
+              description={t('admin.blog.emptyDesc', 'Create your first blog post to share news and stories.')}
+              action={
+                <Button asChild>
+                  <Link to="/admin/blog/new"><Plus className="h-4 w-4 mr-2" />{t('admin.blog.addNew')}</Link>
+                </Button>
+              }
+            />
+          ) : (
           <Table>
             <TableHeader>
-              <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.blog.table.title')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.blog.table.author')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.blog.table.status')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.blog.table.date')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-20">{t('admin.common.actions')}</TableHead>
+              <TableRow className="border-border">
+                <TableHead className="text-muted-foreground text-xs">{t('admin.blog.table.title')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.blog.table.author')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.blog.table.status')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.blog.table.date')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs w-20">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
-                </TableRow>
-              )}
-              {!isLoading && posts.map(p => (
-                <TableRow key={p.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium max-w-[200px] sm:max-w-[300px] truncate">
+              {posts.map(p => (
+                <TableRow key={p.id} className="border-border">
+                  <TableCell className="text-sm text-foreground font-medium max-w-[200px] sm:max-w-[300px] truncate">
                     <div className="truncate">{p.translations?.['En']?.title ?? p.slug}</div>
-                    <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">
+                    <div className="text-xs text-muted-foreground sm:hidden">
                       {blogStatusLabel(p.status, t)}
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{p.authorName}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell">{p.authorName}</TableCell>
                   <TableCell className="hidden sm:table-cell">
                     <Badge
                       variant="outline"
-                      className={`text-[10px] ${p.status === 'Published' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-600 border-gray-200'}`}
+                      className={`text-[10px] ${p.status === 'Published' ? 'bg-success/10 text-success border-success/30' : 'bg-muted text-muted-foreground border-border'}`}
                     >
                       {blogStatusLabel(p.status, t)}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_50%)] hidden sm:table-cell">
-                    {p.publishedAt ? new Date(p.publishedAt).toLocaleDateString() : p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '—'}
+                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell">
+                    {p.publishedAt ? formatDate(p.publishedAt) : p.createdAt ? formatDate(p.createdAt) : '—'}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <Button
                         variant="ghost" size="icon"
-                        className={`h-8 w-8 ${p.status === 'Published' ? 'text-green-600 hover:text-amber-600' : 'text-[hsl(0_0%_45%)] hover:text-green-600'}`}
+                        className={`h-8 w-8 ${p.status === 'Published' ? 'text-success hover:text-amber-600' : 'text-muted-foreground hover:text-success'}`}
                         onClick={() => handleToggleStatus(p.id, p.status)}
                         disabled={setStatus.isPending}
                         title={p.status === 'Published' ? t('admin.blog.unpublish') : t('admin.blog.publish')}
@@ -109,12 +130,12 @@ export default function AdminBlog() {
                           ? <EyeOff className="h-3.5 w-3.5" />
                           : <Globe className="h-3.5 w-3.5" />}
                       </Button>
-                      <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_20%)]">
+                      <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-muted-foreground hover:text-foreground">
                         <Link to={`/admin/blog/${p.id}/edit`} title={t('admin.common.edit')} aria-label={t('admin.common.edit')}><Pencil className="h-3.5 w-3.5" /></Link>
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-red-500"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
                         onClick={() => setPendingDelete(p.id)}
                         disabled={deleteBlogPost.isPending}
                         title={t('admin.common.delete')}
@@ -126,16 +147,13 @@ export default function AdminBlog() {
                   </TableCell>
                 </TableRow>
               ))}
-              {!isLoading && posts.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.blog.empty')}</TableCell>
-                </TableRow>
-              )}
             </TableBody>
           </Table>
+          )}
           </div>
         </CardContent>
       </Card>
+      )}
 
       <ConfirmDialog
         open={!!pendingDelete}

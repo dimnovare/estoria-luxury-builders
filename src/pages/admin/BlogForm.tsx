@@ -135,13 +135,13 @@ export default function BlogForm() {
   const isSaving = createBlogPost.isPending || updateBlogPost.isPending || setStatus.isPending;
   const currentStatus = existing?.status;
 
-  const inputClass = "border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)] focus:border-[hsl(43_50%_54%)] focus:ring-[hsl(43_50%_54%)]";
-  const labelClass = "text-sm text-[hsl(0_0%_40%)] font-medium";
+  const inputClass = "border-border bg-card text-foreground focus:border-primary focus:ring-primary";
+  const labelClass = "text-sm text-muted-foreground font-medium";
 
   if (isEdit && loadingPost) {
     return (
       <div className="flex items-center justify-center py-24">
-        <Loader2 className="h-6 w-6 animate-spin text-[hsl(43_50%_54%)]" />
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
       </div>
     );
   }
@@ -149,19 +149,19 @@ export default function BlogForm() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/blog')} className="text-[hsl(0_0%_45%)]" title={t('admin.common.back')} aria-label={t('admin.common.back')}>
+        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/blog')} className="text-muted-foreground" title={t('admin.common.back')} aria-label={t('admin.common.back')}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{isEdit ? t('admin.blog.editTitle') : t('admin.blog.newTitle')}</h1>
+        <h1 className="text-2xl font-semibold text-foreground">{isEdit ? t('admin.blog.editTitle') : t('admin.blog.newTitle')}</h1>
       </div>
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-card border-border shadow-sm">
         <CardContent className="p-6 space-y-4">
           {/* Cover image */}
           <div className="space-y-2">
             <Label className={labelClass}>{t('admin.blog.fields.coverImage')}</Label>
             {coverImageUrl ? (
-              <div className="relative rounded-lg overflow-hidden border border-[hsl(0_0%_90%)] group">
+              <div className="relative rounded-lg overflow-hidden border border-border group">
                 <img src={coverImageUrl} alt="" className="w-full h-48 object-cover" />
                 <button
                   type="button"
@@ -177,7 +177,7 @@ export default function BlogForm() {
                   variant="outline"
                   size="sm"
                   onClick={() => coverInputRef.current?.click()}
-                  className="absolute bottom-2 right-2 bg-white/90 border-[hsl(0_0%_85%)] text-[hsl(0_0%_30%)] hover:bg-white"
+                  className="absolute bottom-2 right-2 bg-card/90 border-border text-foreground hover:bg-card"
                 >
                   <ImageIcon className="h-3.5 w-3.5 mr-1.5" />
                   {t('admin.blog.fields.replaceCover', 'Replace image')}
@@ -186,16 +186,16 @@ export default function BlogForm() {
             ) : (
               <button
                 type="button"
-                className="w-full border-2 border-dashed border-[hsl(0_0%_85%)] rounded-lg p-8 text-center hover:border-[hsl(43_50%_54%)] transition-colors cursor-pointer"
+                className="w-full border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer"
                 onClick={() => coverInputRef.current?.click()}
                 aria-label={t('admin.blog.fields.uploadCover')}
               >
                 {uploadingCover ? (
-                  <Loader2 className="h-6 w-6 mx-auto text-[hsl(43_50%_54%)] animate-spin" />
+                  <Loader2 className="h-6 w-6 mx-auto text-primary animate-spin" />
                 ) : (
                   <>
-                    <ImageIcon className="h-6 w-6 mx-auto text-[hsl(0_0%_60%)] mb-1" />
-                    <p className="text-sm text-[hsl(0_0%_45%)]">{t('admin.blog.fields.uploadCover')}</p>
+                    <ImageIcon className="h-6 w-6 mx-auto text-muted-foreground mb-1" />
+                    <p className="text-sm text-muted-foreground">{t('admin.blog.fields.uploadCover')}</p>
                   </>
                 )}
               </button>
@@ -216,10 +216,10 @@ export default function BlogForm() {
       </Card>
 
       {/* Translation tabs */}
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-card border-border shadow-sm">
         <CardContent className="p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-[hsl(0_0%_92%)]">
-            <p className="text-xs text-[hsl(0_0%_45%)]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-border">
+            <p className="text-xs text-muted-foreground">
               {t('admin.blog.translateHint', 'Write the post in Estonian, then translate it to the other languages with one click. You can edit afterwards.')}
             </p>
             <TranslateButton
@@ -235,9 +235,9 @@ export default function BlogForm() {
             />
           </div>
           <Tabs defaultValue="et">
-            <TabsList className="bg-[hsl(0_0%_96%)] border border-[hsl(0_0%_90%)]">
+            <TabsList className="bg-muted border border-border">
               {langs.map(l => (
-                <TabsTrigger key={l} value={l} className="uppercase text-xs data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">{l}</TabsTrigger>
+                <TabsTrigger key={l} value={l} className="uppercase text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{l}</TabsTrigger>
               ))}
             </TabsList>
             {langs.map(lang => (
@@ -245,7 +245,7 @@ export default function BlogForm() {
                 <div className="space-y-2">
                   <Label className={labelClass}>
                     {t('admin.blog.fields.title')}
-                    {lang === 'et' && <span className="text-[hsl(0_72%_51%)] ml-1" aria-hidden="true">*</span>}
+                    {lang === 'et' && <span className="text-destructive ml-1" aria-hidden="true">*</span>}
                   </Label>
                   <Input value={translations[lang]?.title || ''} onChange={e => updateT(lang, 'title', e.target.value)} className={inputClass} />
                 </div>
@@ -279,7 +279,7 @@ export default function BlogForm() {
       </Card>
 
       <div className="flex items-center justify-between gap-3 pt-2">
-        <p className="text-xs text-[hsl(0_0%_55%)]">
+        <p className="text-xs text-muted-foreground">
           {currentStatus === 'Published'
             ? t('admin.blog.status.liveNote', 'This post is live on the site. Saving as draft will hide it.')
             : t('admin.blog.status.draftNote', 'This post is a hidden draft. Publish it to make it live.')}
@@ -289,7 +289,7 @@ export default function BlogForm() {
             variant="outline"
             onClick={() => handleSave(false)}
             disabled={isSaving}
-            className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)]"
+            className="border-border text-muted-foreground"
           >
             {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
             {t('admin.blog.saveDraft', 'Save as draft')}
@@ -297,7 +297,7 @@ export default function BlogForm() {
           <Button
             onClick={() => handleSave(true)}
             disabled={isSaving}
-            className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
           >
             {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
             {t('admin.blog.savePublish', 'Save & publish')}

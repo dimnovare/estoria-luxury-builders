@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +15,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import TranslateButton from '@/components/admin/TranslateButton';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
+import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
+import { TableSkeleton } from '@/components/admin/TableSkeleton';
 import { normalizeLanguages, languageLabel } from '@/lib/languages';
 import {
   useAdminTeam,
@@ -45,7 +48,7 @@ const emptyTrans: TransFields = { name: '', role: '', bio: '' };
 
 export default function AdminTeam() {
   const { t } = useTranslation();
-  const { data: team, isLoading } = useAdminTeam();
+  const { data: team, isLoading, isError, refetch } = useAdminTeam();
   const createMember = useCreateTeamMember();
   const updateMember = useUpdateTeamMember();
   const deleteMember = useDeleteTeamMember();
@@ -233,8 +236,8 @@ export default function AdminTeam() {
   const isSaving = createMember.isPending || updateMember.isPending;
   const pendingName = (team ?? []).find(m => m.id === pendingDelete)?.name;
 
-  const inputClass = "border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)] focus:border-[hsl(43_50%_54%)] focus:ring-[hsl(43_50%_54%)]";
-  const labelClass = "text-sm text-[hsl(0_0%_40%)] font-medium";
+  const inputClass = "border-border bg-card text-foreground focus:border-primary focus:ring-primary";
+  const labelClass = "text-sm text-muted-foreground font-medium";
 
   return (
     <div className="space-y-6">
@@ -242,66 +245,84 @@ export default function AdminTeam() {
         title={t('admin.team.title')}
         subtitle={t('admin.team.subtitle', 'Manage team member profiles shown on the About page. Drag to reorder.')}
         action={
-          <Button onClick={openNew} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0">
+          <Button onClick={openNew} className="shrink-0">
             <Plus className="h-4 w-4 mr-2" />{t('admin.team.addNew')}
           </Button>
         }
       />
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
+      <Card className="bg-card border-border shadow-sm overflow-hidden">
         <CardContent className="p-0">
+          {isError ? (
+            <div className="p-4">
+              <ErrorState
+                description={t('admin.team.loadError', 'Could not load team members.')}
+                onRetry={() => refetch()}
+              />
+            </div>
+          ) : isLoading ? (
+            <div className="p-4">
+              <TableSkeleton rows={6} cols={6} />
+            </div>
+          ) : (team ?? []).length === 0 ? (
+            <EmptyState
+              icon={Users}
+              title={t('admin.team.empty', 'No team members yet')}
+              description={t('admin.team.emptyDescription', 'Add a team member to show them on the About page.')}
+              action={
+                <Button onClick={openNew}>
+                  <Plus className="h-4 w-4 mr-2" />{t('admin.team.addNew')}
+                </Button>
+              }
+            />
+          ) : (
           <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-12 hidden sm:table-cell"></TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.team.table.name')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.team.table.role')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden md:table-cell">{t('admin.team.table.languages')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden lg:table-cell">{t('admin.team.table.contact')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-24">{t('admin.common.actions')}</TableHead>
+              <TableRow className="border-border">
+                <TableHead className="text-muted-foreground text-xs w-12 hidden sm:table-cell"></TableHead>
+                <TableHead className="text-muted-foreground text-xs">{t('admin.team.table.name')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.team.table.role')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden md:table-cell">{t('admin.team.table.languages')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs hidden lg:table-cell">{t('admin.team.table.contact')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs w-24">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
-                </TableRow>
-              )}
-              {!isLoading && (team ?? []).map(m => (
-                <TableRow key={m.id} className={`border-[hsl(0_0%_93%)] ${m.isActive ? '' : 'opacity-60'}`}>
+              {(team ?? []).map(m => (
+                <TableRow key={m.id} className={`border-border ${m.isActive ? '' : 'opacity-60'}`}>
                   <TableCell className="hidden sm:table-cell">
                     <img src={m.photoUrl || '/placeholder.jpg'} alt="" className="h-9 w-9 rounded-full object-cover" />
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
+                  <TableCell className="text-sm text-foreground font-medium">
                     <div className="flex items-center gap-2">
                       <span>{m.name}</span>
                       {!m.isActive && (
-                        <Badge variant="secondary" className="text-[10px] bg-[hsl(0_0%_90%)] text-[hsl(0_0%_45%)]">
+                        <Badge variant="secondary" className="text-[10px] bg-muted text-muted-foreground">
                           {t('admin.team.hidden', 'Hidden')}
                         </Badge>
                       )}
                     </div>
-                    <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">{m.role}</div>
+                    <div className="text-xs text-muted-foreground sm:hidden">{m.role}</div>
                   </TableCell>
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{m.role}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell">{m.role}</TableCell>
                   <TableCell className="hidden md:table-cell">
                     <div className="flex flex-wrap gap-1">
                       {normalizeLanguages(m.languages).map(l => (
-                        <Badge key={l} variant="secondary" className="text-[10px] bg-[hsl(0_0%_93%)] text-[hsl(0_0%_40%)]">{languageLabel(l, t)}</Badge>
+                        <Badge key={l} variant="secondary" className="text-[10px] bg-muted text-muted-foreground">{languageLabel(l, t)}</Badge>
                       ))}
                     </div>
                   </TableCell>
-                  <TableCell className="text-xs text-[hsl(0_0%_50%)] hidden lg:table-cell">{m.email}</TableCell>
+                  <TableCell className="text-xs text-muted-foreground hidden lg:table-cell">{m.email}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_20%)]" onClick={() => openEdit(m)} title={t('admin.common.edit')} aria-label={t('admin.common.edit')}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={() => openEdit(m)} title={t('admin.common.edit')} aria-label={t('admin.common.edit')}>
                         <Pencil className="h-3.5 w-3.5" />
                       </Button>
                       {m.isActive ? (
                         <Button
                           variant="ghost" size="icon"
-                          className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_20%)]"
+                          className="h-8 w-8 text-muted-foreground hover:text-foreground"
                           onClick={() => handleHideClick(m)}
                           disabled={setActive.isPending}
                           title={t('admin.team.hide', 'Hide')}
@@ -312,7 +333,7 @@ export default function AdminTeam() {
                       ) : (
                         <Button
                           variant="ghost" size="icon"
-                          className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_20%)]"
+                          className="h-8 w-8 text-muted-foreground hover:text-foreground"
                           onClick={() => handleShow(m.id)}
                           disabled={setActive.isPending}
                           title={t('admin.team.show', 'Show')}
@@ -323,7 +344,7 @@ export default function AdminTeam() {
                       )}
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-red-500"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
                         onClick={() => setPendingDelete(m.id)}
                         disabled={deleteMember.isPending}
                         title={t('admin.common.delete')}
@@ -338,14 +359,15 @@ export default function AdminTeam() {
             </TableBody>
           </Table>
           </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Form Dialog */}
       <Dialog open={dialogOpen} onOpenChange={open => { if (!open) setDialogOpen(false); }}>
-        <DialogContent className="max-w-2xl bg-white border-[hsl(0_0%_90%)]">
+        <DialogContent className="max-w-2xl bg-card border-border">
           <DialogHeader>
-            <DialogTitle className="text-[hsl(0_0%_15%)]">
+            <DialogTitle className="text-foreground">
               {editingMember ? t('admin.team.editTitle') : t('admin.team.newTitle')}
             </DialogTitle>
           </DialogHeader>
@@ -355,17 +377,17 @@ export default function AdminTeam() {
               <Label className={labelClass}>{t('admin.team.fields.photo')}</Label>
               {photoPreview ? (
                 <div className="flex items-center gap-3">
-                  <img src={photoPreview} alt="" className="h-16 w-16 rounded-full object-cover border border-[hsl(0_0%_90%)]" />
-                  <Button variant="outline" size="sm" onClick={() => photoInputRef.current?.click()} className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)]">
+                  <img src={photoPreview} alt="" className="h-16 w-16 rounded-full object-cover border border-border" />
+                  <Button variant="outline" size="sm" onClick={() => photoInputRef.current?.click()} className="border-border text-muted-foreground">
                     {t('admin.team.fields.change')}
                   </Button>
                 </div>
               ) : (
                 <div
-                  className="border-2 border-dashed border-[hsl(0_0%_85%)] rounded-lg p-4 text-center hover:border-[hsl(43_50%_54%)] transition-colors cursor-pointer"
+                  className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary transition-colors cursor-pointer"
                   onClick={() => editingMember && photoInputRef.current?.click()}
                 >
-                  <p className="text-sm text-[hsl(0_0%_50%)]">
+                  <p className="text-sm text-muted-foreground">
                     {editingMember ? t('admin.team.fields.uploadPhoto') : t('admin.team.fields.saveFirst')}
                   </p>
                 </div>
@@ -393,7 +415,7 @@ export default function AdminTeam() {
               <Label className={labelClass}>{t('admin.team.fields.spokenLanguages')}</Label>
               <div className="flex flex-wrap gap-3">
                 {allLanguages.map(l => (
-                  <label key={l.value} className="flex items-center gap-1.5 text-sm text-[hsl(0_0%_30%)]">
+                  <label key={l.value} className="flex items-center gap-1.5 text-sm text-foreground">
                     <Checkbox checked={selectedLangs.includes(l.value)} onCheckedChange={() => toggleLang(l.value)} />
                     {t(l.labelKey)}
                   </label>
@@ -402,8 +424,8 @@ export default function AdminTeam() {
             </div>
 
             {/* Translation tabs */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-[hsl(0_0%_92%)]">
-              <p className="text-xs text-[hsl(0_0%_45%)]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-border">
+              <p className="text-xs text-muted-foreground">
                 {t('admin.team.translateHint', 'Write the role and bio in Estonian, then translate them to the other languages with one click. The name is copied as-is. You can edit afterwards.')}
               </p>
               <TranslateButton
@@ -425,9 +447,9 @@ export default function AdminTeam() {
               />
             </div>
             <Tabs defaultValue="et">
-              <TabsList className="bg-[hsl(0_0%_96%)] border border-[hsl(0_0%_90%)]">
+              <TabsList className="bg-muted border border-border">
                 {langs.map(l => (
-                  <TabsTrigger key={l} value={l} className="uppercase text-xs data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">{l}</TabsTrigger>
+                  <TabsTrigger key={l} value={l} className="uppercase text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{l}</TabsTrigger>
                 ))}
               </TabsList>
               {langs.map(lang => (
@@ -436,14 +458,14 @@ export default function AdminTeam() {
                     <div className="flex items-center justify-between gap-2">
                       <Label className={labelClass}>
                         {t('admin.team.fields.name')}
-                        {lang === 'et' && <span className="text-red-500 ml-0.5">*</span>}
+                        {lang === 'et' && <span className="text-destructive ml-0.5">*</span>}
                       </Label>
                       {lang !== 'et' && (
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          className="h-auto py-0.5 px-2 text-xs text-[hsl(43_50%_44%)] hover:text-[hsl(43_50%_38%)] hover:bg-transparent"
+                          className="h-auto py-0.5 px-2 text-xs text-primary hover:text-primary hover:bg-transparent"
                           onClick={() => updateTrans(lang, 'name', translations.et?.name ?? '')}
                         >
                           {t('admin.team.fields.copyFromEstonian', 'Copy from Estonian')}
@@ -452,7 +474,7 @@ export default function AdminTeam() {
                     </div>
                     <Input value={translations[lang]?.name || ''} onChange={e => updateTrans(lang, 'name', e.target.value)} className={inputClass} />
                     {lang === 'et' && (
-                      <p className="text-xs text-[hsl(0_0%_55%)]">{t('admin.team.fields.estonianRequired', 'The Estonian name is required.')}</p>
+                      <p className="text-xs text-muted-foreground">{t('admin.team.fields.estonianRequired', 'The Estonian name is required.')}</p>
                     )}
                   </div>
                   <div className="space-y-2">
@@ -474,7 +496,7 @@ export default function AdminTeam() {
           </div>
 
           <div className="flex justify-end pt-2">
-            <Button onClick={handleSave} disabled={isSaving} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+            <Button onClick={handleSave} disabled={isSaving}>
               {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {t('admin.team.saveMember')}
             </Button>
@@ -506,16 +528,16 @@ export default function AdminTeam() {
 
       {/* Hide a member who still holds properties — force a reassignment first. */}
       <Dialog open={!!transferMember} onOpenChange={(o) => { if (!o) setTransferMember(null); }}>
-        <DialogContent className="max-w-md bg-white border-[hsl(0_0%_90%)]">
+        <DialogContent className="max-w-md bg-card border-border">
           <DialogHeader>
-            <DialogTitle className="text-[hsl(0_0%_15%)]">
+            <DialogTitle className="text-foreground">
               {transferMember
                 ? t('admin.team.transfer.title', 'Hide {{name}}?', { name: transferMember.name })
                 : ''}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <p className="text-sm text-[hsl(0_0%_45%)]">
+            <p className="text-sm text-muted-foreground">
               {transferMember
                 ? t('admin.team.transfer.body', '{{name}} has {{count}} properties. Choose an agent to receive them:', { name: transferMember.name, count: transferMember.propertyCount })
                 : ''}
@@ -540,14 +562,13 @@ export default function AdminTeam() {
             <Button
               variant="outline"
               onClick={() => setTransferMember(null)}
-              className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)]"
+              className="border-border text-muted-foreground"
             >
               {t('admin.common.cancel')}
             </Button>
             <Button
               onClick={handleHideTransfer}
               disabled={!transferTo || setActive.isPending}
-              className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]"
             >
               {setActive.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {t('admin.team.transfer.confirm', 'Hide & transfer')}

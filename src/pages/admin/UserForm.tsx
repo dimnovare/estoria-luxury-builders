@@ -130,17 +130,17 @@ export default function UserForm() {
   };
 
   const isSaving = createUser.isPending || updateUser.isPending;
-  const inputClass = "border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)] focus:border-[hsl(43_50%_54%)] focus:ring-[hsl(43_50%_54%)]";
-  const labelClass = "text-sm text-[hsl(0_0%_40%)] font-medium";
+  const inputClass = "border-border bg-card text-foreground focus:border-primary focus:ring-primary";
+  const labelClass = "text-sm text-muted-foreground font-medium";
 
   // Visual-only asterisk for required fields. aria-hidden so screen readers
   // rely on the input's own `required` attribute instead of reading the "*".
-  const RequiredMark = () => <span aria-hidden="true" className="text-red-500 ml-0.5">*</span>;
+  const RequiredMark = () => <span aria-hidden="true" className="text-destructive ml-0.5">*</span>;
 
   if (isEdit && loadingUser) {
     return (
       <div className="flex items-center justify-center py-24">
-        <Loader2 className="h-6 w-6 animate-spin text-[hsl(43_50%_54%)]" />
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
       </div>
     );
   }
@@ -148,13 +148,13 @@ export default function UserForm() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/users')} className="text-[hsl(0_0%_50%)]" aria-label={t('admin.common.back')} title={t('admin.common.back')}>
+        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/users')} className="text-muted-foreground" aria-label={t('admin.common.back')} title={t('admin.common.back')}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{isEdit ? t('admin.users.editTitle') : t('admin.users.newTitle')}</h1>
+        <h1 className="text-2xl font-semibold text-foreground">{isEdit ? t('admin.users.editTitle') : t('admin.users.newTitle')}</h1>
       </div>
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
+      <Card className="bg-card border-border shadow-sm">
         <CardContent className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -179,9 +179,9 @@ export default function UserForm() {
             <Label className={labelClass}>{t('admin.users.fields.photo', 'Photo')}</Label>
             <div className="flex items-center gap-3">
               {photoUrl ? (
-                <img src={photoUrl} alt="" className="h-16 w-16 rounded-full object-cover border border-[hsl(0_0%_90%)]" />
+                <img src={photoUrl} alt="" className="h-16 w-16 rounded-full object-cover border border-border" />
               ) : (
-                <div className="h-16 w-16 rounded-full border border-dashed border-[hsl(0_0%_80%)] bg-[hsl(0_0%_96%)] flex items-center justify-center text-[hsl(0_0%_60%)]">
+                <div className="h-16 w-16 rounded-full border border-dashed border-border bg-muted flex items-center justify-center text-muted-foreground">
                   <ImagePlus className="h-5 w-5" />
                 </div>
               )}
@@ -192,7 +192,7 @@ export default function UserForm() {
                   size="sm"
                   onClick={() => photoInputRef.current?.click()}
                   disabled={uploadingPhoto}
-                  className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)]"
+                  className="border-border text-muted-foreground"
                 >
                   {uploadingPhoto && <Loader2 className="h-3.5 w-3.5 mr-2 animate-spin" />}
                   {photoUrl
@@ -205,7 +205,7 @@ export default function UserForm() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setPhotoUrl('')}
-                    className="text-[hsl(0_0%_50%)] hover:text-red-500"
+                    className="text-muted-foreground hover:text-destructive"
                   >
                     <X className="h-3.5 w-3.5 mr-1" />
                     {t('admin.users.fields.removePhoto', 'Remove')}
@@ -213,7 +213,7 @@ export default function UserForm() {
                 )}
               </div>
             </div>
-            <p className="text-xs text-[hsl(0_0%_55%)]">
+            <p className="text-xs text-muted-foreground">
               {t('admin.users.fields.photoHint', 'Upload a profile picture (JPG or PNG). It appears next to this user across the admin.')}
             </p>
             <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
@@ -229,7 +229,7 @@ export default function UserForm() {
                   variant="outline"
                   className={`cursor-pointer text-xs ${languages.includes(lang)
                     ? 'bg-primary/20 text-primary border-primary/30'
-                    : 'bg-[hsl(0_0%_96%)] text-[hsl(0_0%_50%)] border-[hsl(0_0%_85%)]'
+                    : 'bg-muted text-muted-foreground border-border'
                   }`}
                   onClick={() => toggleItem(languages, lang, setLanguages)}
                 >
@@ -250,7 +250,7 @@ export default function UserForm() {
                   variant="outline"
                   className={`cursor-pointer text-xs ${roles.includes(role)
                     ? 'bg-primary/20 text-primary border-primary/30'
-                    : 'bg-[hsl(0_0%_96%)] text-[hsl(0_0%_50%)] border-[hsl(0_0%_85%)]'
+                    : 'bg-muted text-muted-foreground border-border'
                   }`}
                   onClick={() => toggleItem(roles, role, setRoles)}
                 >
@@ -299,7 +299,6 @@ export default function UserForm() {
         <Button
           onClick={handleSave}
           disabled={isSaving || uploadingPhoto}
-          className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]"
         >
           {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           {t('admin.users.saveUser')}

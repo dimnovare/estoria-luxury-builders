@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pencil, Loader2 } from 'lucide-react';
+import { Pencil, Loader2, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -12,6 +12,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAdminPages, useUpdatePage, type AdminPage, toBeLang } from '@/hooks/api/useAdmin';
 import TranslateButton from '@/components/admin/TranslateButton';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
+import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
+import { TableSkeleton } from '@/components/admin/TableSkeleton';
 import { toast } from 'sonner';
 
 const langs = ['et', 'en', 'ru'] as const;
@@ -43,7 +46,7 @@ const PAGES_WITH_VIDEO = ['homepage.hero'];
 
 export default function AdminPages() {
   const { t } = useTranslation();
-  const { data: pages, isLoading } = useAdminPages();
+  const { data: pages, isLoading, isError, refetch } = useAdminPages();
   const updatePage = useUpdatePage();
 
   // Friendly, translated title for a CMS block (falls back to a humanised
@@ -129,8 +132,8 @@ const sortedPages = useMemo(() => {
     }
   };
 
-  const inputClass = "border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)] focus:border-[hsl(43_50%_54%)] focus:ring-[hsl(43_50%_54%)]";
-  const labelClass = "text-sm text-[hsl(0_0%_40%)] font-medium";
+  const inputClass = "border-border bg-card text-foreground focus:border-primary focus:ring-primary";
+  const labelClass = "text-sm text-muted-foreground font-medium";
 
   return (
     <div className="space-y-6">
@@ -139,32 +142,51 @@ const sortedPages = useMemo(() => {
         subtitle={t('admin.pages.subtitle', 'Manage the text blocks shown on the public website. Each entry controls a specific section — edit the title, body, and images for each language (ET / EN / RU).')}
       />
 
-      <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm overflow-hidden">
+      {isError ? (
+        <ErrorState
+          description={t('admin.pages.error', 'We couldn’t load the page content. Please try again.')}
+          onRetry={() => refetch()}
+        />
+      ) : (
+      <Card className="bg-card border-border shadow-sm overflow-hidden">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-[hsl(0_0%_93%)]">
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs hidden sm:table-cell">{t('admin.pages.table.key')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs">{t('admin.pages.table.label')}</TableHead>
-                <TableHead className="text-[hsl(0_0%_50%)] text-xs w-20">{t('admin.common.actions')}</TableHead>
+              <TableRow className="border-border">
+                <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.pages.table.key')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs">{t('admin.pages.table.label')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs w-20">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center py-12 text-[hsl(0_0%_50%)] text-sm">{t('admin.common.loading')}</TableCell>
+                  <TableCell colSpan={3} className="p-4">
+                    <TableSkeleton rows={6} cols={3} />
+                  </TableCell>
+                </TableRow>
+              )}
+              {!isLoading && sortedPages.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={3}>
+                    <EmptyState
+                      icon={FileText}
+                      title={t('admin.pages.empty.title', 'No content blocks yet')}
+                      description={t('admin.pages.empty.description', 'Page content blocks will appear here once they are added.')}
+                    />
+                  </TableCell>
                 </TableRow>
               )}
               {!isLoading && sortedPages.map(p => (
-                <TableRow key={p.id} className="border-[hsl(0_0%_93%)]">
-                  <TableCell className="text-sm text-[hsl(0_0%_40%)] font-mono hidden sm:table-cell">{p.pageKey}</TableCell>
+                <TableRow key={p.id} className="border-border">
+                  <TableCell className="text-sm text-muted-foreground font-mono hidden sm:table-cell">{p.pageKey}</TableCell>
                   <TableCell>
-                    <div className="text-sm text-[hsl(0_0%_15%)] font-medium">{pageLabel(p.pageKey)}</div>
-                    <div className="text-xs text-[hsl(0_0%_50%)] mt-0.5">{pageDescription(p.pageKey)}</div>
+                    <div className="text-sm text-foreground font-medium">{pageLabel(p.pageKey)}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{pageDescription(p.pageKey)}</div>
                   </TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_15%)]" onClick={() => openEdit(p)} aria-label={t('admin.common.edit')} title={t('admin.common.edit')}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={() => openEdit(p)} aria-label={t('admin.common.edit')} title={t('admin.common.edit')}>
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
                   </TableCell>
@@ -175,18 +197,19 @@ const sortedPages = useMemo(() => {
           </div>
         </CardContent>
       </Card>
+      )}
 
       <Dialog open={dialogOpen} onOpenChange={open => { if (!open) setDialogOpen(false); }}>
-        <DialogContent className="max-w-2xl bg-white border-[hsl(0_0%_90%)]">
+        <DialogContent className="max-w-2xl bg-card border-border">
           <DialogHeader>
-            <DialogTitle className="text-[hsl(0_0%_15%)]">
+            <DialogTitle className="text-foreground">
               {editingPage ? pageLabel(editingPage.pageKey) : ''}
             </DialogTitle>
           </DialogHeader>
           {editingPage && (
             <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[hsl(0_0%_92%)]">
-                <p className="text-xs text-[hsl(0_0%_45%)]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border">
+                <p className="text-xs text-muted-foreground">
                   {t('admin.pages.translateHint', 'Write the content in Estonian, then translate the title and body to the other languages with one click. You can edit afterwards.')}
                 </p>
                 <TranslateButton
@@ -208,9 +231,9 @@ const sortedPages = useMemo(() => {
                 />
               </div>
               <Tabs defaultValue="et">
-                <TabsList className="bg-[hsl(0_0%_96%)] border border-[hsl(0_0%_90%)]">
+                <TabsList className="bg-muted border border-border">
                   {langs.map(l => (
-                    <TabsTrigger key={l} value={l} className="uppercase text-xs data-[state=active]:bg-[hsl(43_50%_54%)] data-[state=active]:text-[hsl(0_0%_4%)]">{l}</TabsTrigger>
+                    <TabsTrigger key={l} value={l} className="uppercase text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{l}</TabsTrigger>
                   ))}
                 </TabsList>
                 {langs.map(lang => (
@@ -219,10 +242,10 @@ const sortedPages = useMemo(() => {
                       <Label className={labelClass}>{t('admin.pages.fields.title')}</Label>
                       <Input value={translations[lang]?.title || ''} onChange={e => updateTrans(lang, 'title', e.target.value)} className={inputClass} />
                       {editingPage?.pageKey.startsWith('homepage.') && (
-                        <p className="text-xs text-[hsl(0_0%_50%)] mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           {t('admin.pages.fields.titleAccentHint', 'Wrap the accent word in asterisks to make it gold and italic.')}{' '}
                           {t('admin.common.example', 'Example:')}{' '}
-                          <code className="bg-[hsl(0_0%_94%)] px-1 rounded text-[hsl(43_50%_45%)]">
+                          <code className="bg-muted px-1 rounded text-primary">
                             Where Your *Future* Lives
                           </code>
                         </p>
@@ -241,7 +264,7 @@ const sortedPages = useMemo(() => {
                       <div className="space-y-2">
                         <Label className={labelClass}>{t('admin.pages.fields.imageUrl')}</Label>
                         <Input value={translations[lang]?.imageUrl || ''} onChange={e => updateTrans(lang, 'imageUrl', e.target.value)} className={inputClass} />
-                        <p className="text-xs text-[hsl(0_0%_50%)] mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           {t('admin.pages.fields.imageUrlHint', 'Paste the full web address of the image (starting with https://).')}
                         </p>
                       </div>
@@ -250,7 +273,7 @@ const sortedPages = useMemo(() => {
                       <div className="space-y-2">
                         <Label className={labelClass}>{t('admin.pages.fields.videoUrl')}</Label>
                         <Input value={translations[lang]?.videoUrl || ''} onChange={e => updateTrans(lang, 'videoUrl', e.target.value)} className={inputClass} />
-                        <p className="text-xs text-[hsl(0_0%_50%)] mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           {t('admin.pages.fields.videoUrlHint')}
                         </p>
                       </div>
@@ -261,7 +284,7 @@ const sortedPages = useMemo(() => {
             </div>
           )}
           <div className="flex justify-end pt-2">
-            <Button onClick={handleSave} disabled={updatePage.isPending} className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]">
+            <Button onClick={handleSave} disabled={updatePage.isPending} className="bg-primary hover:bg-primary/90 text-primary-foreground">
               {updatePage.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {t('admin.pages.savePage')}
             </Button>

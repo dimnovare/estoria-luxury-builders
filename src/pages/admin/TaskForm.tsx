@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import EntityLinkPicker from '@/components/admin/EntityLinkPicker';
 import { useTask, useCreateTask, useUpdateTask, type TaskPriority, type TaskRecurrence, type CreateTaskDto } from '@/hooks/api/useTasks';
 import { useContactSearch, useAgents } from '@/hooks/api/useCrm';
 import { useAuth } from '@/hooks/useAuth';
@@ -114,36 +115,36 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
 
   return (
     <Dialog open={open} onOpenChange={() => onClose()}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-white text-[hsl(0_0%_15%)]">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-card text-foreground">
         <DialogHeader>
           <DialogTitle>{isEdit ? t('admin.tasks.editTitle') : t('admin.tasks.newTitle')}</DialogTitle>
         </DialogHeader>
 
         {isEdit && loadingTask ? (
-          <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-[hsl(43_50%_54%)]" /></div>
+          <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-primary" /></div>
         ) : (
           <div className="space-y-4">
             {/* Title */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.common.title')} *</Label>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1 bg-white border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_55%)]" />
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.title')} *</Label>
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground" />
             </div>
 
             {/* Description */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.description')}</Label>
-              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} className="mt-1 bg-white border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_55%)]" rows={3} />
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.description')}</Label>
+              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground" rows={3} />
             </div>
 
             {/* Due At */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.dueAt')} *</Label>
-              <Input type="datetime-local" value={dueAt} onChange={(e) => setDueAt(e.target.value)} className="mt-1 bg-white border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_55%)]" />
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.dueAt')} *</Label>
+              <Input type="datetime-local" value={dueAt} onChange={(e) => setDueAt(e.target.value)} className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground" />
             </div>
 
             {/* Priority segmented */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.priority')}</Label>
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.priority')}</Label>
               <div className="flex gap-1 mt-1">
                 {PRIORITIES.map(p => (
                   <Button
@@ -151,7 +152,7 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
                     type="button"
                     variant={priority === p ? 'default' : 'outline'}
                     size="sm"
-                    className={priority === p ? 'bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]' : 'bg-white border-[hsl(0_0%_88%)] text-[hsl(0_0%_30%)] hover:bg-[hsl(0_0%_96%)] hover:text-[hsl(0_0%_15%)]'}
+                    className={priority === p ? 'bg-primary text-primary-foreground' : 'bg-card border-border text-foreground hover:bg-muted hover:text-foreground'}
                     onClick={() => setPriority(p)}
                   >
                     {t(`admin.tasks.priority.${p}`)}
@@ -162,9 +163,9 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
 
             {/* Assigned To */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.assignedTo')}</Label>
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.assignedTo')}</Label>
               <Select value={assignedToId} onValueChange={setAssignedToId}>
-                <SelectTrigger className="mt-1 bg-white border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_55%)]"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {(agents ?? []).map(a => (
                     <SelectItem key={a.id} value={a.id}>{a.fullName}</SelectItem>
@@ -175,9 +176,9 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
 
             {/* Linked to */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.linkedTo')}</Label>
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.linkedTo')}</Label>
               <Tabs value={linkType} onValueChange={(v) => setLinkType(v as typeof linkType)} className="mt-1">
-                <TabsList className="bg-[hsl(0_0%_95%)]">
+                <TabsList className="bg-muted">
                   <TabsTrigger value="contact">{t('admin.tasks.link.contact')}</TabsTrigger>
                   <TabsTrigger value="deal">{t('admin.tasks.link.deal')}</TabsTrigger>
                   <TabsTrigger value="property">{t('admin.tasks.link.property')}</TabsTrigger>
@@ -188,15 +189,15 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
                       value={contactSearch}
                       onChange={(e) => { setContactSearch(e.target.value); setContactId(''); }}
                       placeholder={t('admin.deals.fields.searchContact')}
-                      className="bg-white border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_55%)]"
+                      className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                     />
                     {contactResults && contactResults.length > 0 && !contactId && (
-                      <div className="absolute z-10 top-full mt-1 w-full bg-white border border-[hsl(0_0%_90%)] rounded-md shadow-lg max-h-40 overflow-y-auto">
+                      <div className="absolute z-10 top-full mt-1 w-full bg-card border border-border rounded-md shadow-lg max-h-40 overflow-y-auto">
                         {contactResults.map(c => (
                           <button
                             key={c.id}
                             type="button"
-                            className="w-full px-3 py-2 text-left text-sm hover:bg-[hsl(0_0%_96%)]"
+                            className="w-full px-3 py-2 text-left text-sm hover:bg-muted"
                             onClick={() => { setContactId(c.id); setContactSearch(c.fullName); }}
                           >
                             {c.fullName} {c.email ? `· ${c.email}` : ''}
@@ -207,25 +208,25 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
                   </div>
                 </TabsContent>
                 <TabsContent value="deal" className="mt-2">
-                  <Input
-                    value={dealId}
-                    onChange={(e) => setDealId(e.target.value)}
+                  <EntityLinkPicker
+                    type="deal"
+                    value={dealId || null}
+                    onChange={(id) => setDealId(id ?? '')}
                     placeholder={t('admin.tasks.link.dealIdPlaceholder')}
-                    className="bg-white border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_55%)]"
                   />
-                  <p className="text-xs text-[hsl(0_0%_55%)] mt-1.5">
-                    {t('admin.tasks.link.dealIdHelp', 'Optional. Paste the ID from the deal’s web address (the part after /deals/). Leave blank if this task isn’t about a specific deal.')}
+                  <p className="text-xs text-muted-foreground mt-1.5">
+                    {t('admin.tasks.link.dealPickerHelp', 'Optional. Search and select the deal this task relates to, or leave blank if it isn’t about a specific deal.')}
                   </p>
                 </TabsContent>
                 <TabsContent value="property" className="mt-2">
-                  <Input
-                    value={propertyId}
-                    onChange={(e) => setPropertyId(e.target.value)}
+                  <EntityLinkPicker
+                    type="property"
+                    value={propertyId || null}
+                    onChange={(id) => setPropertyId(id ?? '')}
                     placeholder={t('admin.tasks.link.propertyIdPlaceholder')}
-                    className="bg-white border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_55%)]"
                   />
-                  <p className="text-xs text-[hsl(0_0%_55%)] mt-1.5">
-                    {t('admin.tasks.link.propertyIdHelp', 'Optional. Paste the ID from the property’s web address (the part after /properties/). Leave blank if this task isn’t about a specific property.')}
+                  <p className="text-xs text-muted-foreground mt-1.5">
+                    {t('admin.tasks.link.propertyPickerHelp', 'Optional. Search and select the property this task relates to, or leave blank if it isn’t about a specific property.')}
                   </p>
                 </TabsContent>
               </Tabs>
@@ -233,16 +234,16 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
 
             {/* Reminder */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.reminderAt')}</Label>
-              <Input type="datetime-local" value={reminderAt} onChange={(e) => setReminderAt(e.target.value)} className="mt-1 bg-white border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_55%)]" />
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.reminderAt')}</Label>
+              <Input type="datetime-local" value={reminderAt} onChange={(e) => setReminderAt(e.target.value)} className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground" />
             </div>
 
             {/* Recurrence */}
             <div>
               {/* TODO: P2.6 recurrence engine — currently UI-only, backend ignores */}
-              <Label className="font-nav text-xs uppercase tracking-wider text-[hsl(0_0%_50%)]">{t('admin.tasks.fields.recurrence')}</Label>
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.recurrence')}</Label>
               <Select value={recurrence} onValueChange={(v) => setRecurrence(v as TaskRecurrence)}>
-                <SelectTrigger className="mt-1 bg-white border-[hsl(0_0%_88%)] text-[hsl(0_0%_15%)] placeholder:text-[hsl(0_0%_55%)]"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {RECURRENCES.map(r => (
                     <SelectItem key={r} value={r}>{t(`admin.tasks.recurrence.${r}`)}</SelectItem>
@@ -254,9 +255,9 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
         )}
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} className="border-[hsl(0_0%_88%)] text-[hsl(0_0%_30%)] bg-white hover:bg-[hsl(0_0%_96%)]">{t('admin.common.cancel')}</Button>
+          <Button variant="outline" onClick={onClose} className="border-border text-foreground bg-card hover:bg-muted">{t('admin.common.cancel')}</Button>
           <Button
-            className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]"
+            className="bg-primary text-primary-foreground"
             onClick={handleSubmit}
             disabled={isPending}
           >
