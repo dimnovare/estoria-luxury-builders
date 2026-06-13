@@ -386,7 +386,7 @@ export default function ContactForm() {
                   name="consentToMarketing"
                   render={({ field }) => (
                     <div className="flex items-center gap-3">
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch checked={field.value} onCheckedChange={field.onChange} aria-label={t('admin.contacts.fields.consentToMarketing')} />
                       <span className="text-sm text-foreground">{t('admin.contacts.fields.consentToMarketing')}</span>
                       {existing?.consentToMarketingAt && (
                         <span className="text-xs text-muted-foreground">
@@ -401,6 +401,7 @@ export default function ContactForm() {
                 {isEdit && existing?.email && (
                   <div className="flex items-center gap-3 pt-3 border-t border-border">
                     <Switch
+                      aria-label={t('admin.contacts.fields.newsletterSubscriber')}
                       checked={isNewsletterSubscriber}
                       disabled={isNewsletterSubscriber || subscribeContact.isPending}
                       onCheckedChange={async (checked) => {

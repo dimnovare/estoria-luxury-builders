@@ -255,7 +255,7 @@ export default function AdminCareers() {
           </DialogHeader>
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <Switch checked={active} onCheckedChange={setActive} />
+              <Switch checked={active} onCheckedChange={setActive} aria-label={t('admin.careers.fields.active')} />
               <Label className={labelClass}>{t('admin.careers.fields.active')}</Label>
             </div>
 

@@ -145,6 +145,7 @@ function SettingRow({ setting, field }: { setting: SiteSettingDto | undefined; f
           {saved && <Check className="h-3.5 w-3.5 text-success" />}
         </div>
         <Switch
+          aria-label={t(field.labelKey)}
           checked={checked}
           onCheckedChange={(c) => {
             const nv = c ? 'true' : 'false';

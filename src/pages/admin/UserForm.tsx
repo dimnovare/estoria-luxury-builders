@@ -280,7 +280,7 @@ export default function UserForm() {
           {/* Active toggle */}
           {isEdit && (
             <div className="flex items-center gap-3">
-              <Switch checked={isActive} onCheckedChange={setIsActive} />
+              <Switch checked={isActive} onCheckedChange={setIsActive} aria-label={t('admin.users.fields.active')} />
               <Label className={labelClass}>{t('admin.users.fields.active')}</Label>
             </div>
           )}

@@ -605,7 +605,7 @@ export default function PropertyForm() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Switch checked={isFeatured} onCheckedChange={setIsFeatured} />
+                  <Switch checked={isFeatured} onCheckedChange={setIsFeatured} aria-label={t('admin.properties.fields.featured')} />
                   <div>
                     <Label className={labelClass}>{t('admin.properties.fields.featured')}</Label>
                     <p className={helpClass}>{t('admin.properties.help.featured', 'Featured properties appear on the homepage.')}</p>

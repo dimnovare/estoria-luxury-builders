@@ -235,6 +235,7 @@ export default function AdminBirthdays() {
               <p className="text-xs text-muted-foreground mt-1">{t('admin.birthday.autoSendDescription')}</p>
             </div>
             <Switch
+              aria-label={t('admin.birthday.autoSend')}
               checked={autoSendEnabled ?? false}
               onCheckedChange={(checked) => {
                 setAutoSend.mutate(checked, {
