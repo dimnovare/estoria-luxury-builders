@@ -1,4 +1,4 @@
-import { useState, useMemo, Suspense } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -75,6 +75,15 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const { logout, email, hasAnyRole } = useAuth();
   const crumbs = useMemo(() => getBreadcrumbs(pathname, t), [pathname, t]);
+
+  // Radix Dialog/Select/Popover/Dropdown portal to <body>, OUTSIDE the
+  // .admin-theme wrapper, so they would inherit the dark :root tokens and render
+  // near-black on the white admin. Tagging <body> with admin-theme while the admin
+  // is mounted makes every portaled surface use the light admin tokens.
+  useEffect(() => {
+    document.body.classList.add('admin-theme');
+    return () => document.body.classList.remove('admin-theme');
+  }, []);
 
   // Filter nav by role. Items without `roles` are visible to any authenticated user.
   const visibleNavItems = useMemo(
