@@ -12,6 +12,7 @@ import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import TranslateButton from '@/components/admin/TranslateButton';
 import {
   useAdminCareers,
   useCreateCareer,
@@ -203,6 +204,24 @@ export default function AdminCareers() {
               <Label className={labelClass}>{t('admin.careers.fields.active')}</Label>
             </div>
 
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-[hsl(0_0%_92%)]">
+              <p className="text-xs text-[hsl(0_0%_45%)]">
+                {t('admin.careers.translateHint', 'Write the posting in Estonian, then translate the title, location and description to the other languages with one click. You can edit afterwards.')}
+              </p>
+              <TranslateButton
+                to={['en', 'ru']}
+                fields={{
+                  title: translations.et?.title || '',
+                  location: translations.et?.location || '',
+                  description: translations.et?.description || '',
+                }}
+                onTranslated={(lang, f) => setTranslations(prev => ({
+                  ...prev,
+                  [lang]: { ...prev[lang], ...f },
+                }))}
+              />
+            </div>
+
             <Tabs defaultValue="et">
               <TabsList className="bg-[hsl(0_0%_96%)] border border-[hsl(0_0%_90%)]">
                 {langs.map(l => (
@@ -212,7 +231,10 @@ export default function AdminCareers() {
               {langs.map(lang => (
                 <TabsContent key={lang} value={lang} className="mt-3 space-y-3">
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.careers.fields.title')}</Label>
+                    <Label className={labelClass}>
+                      {t('admin.careers.fields.title')}
+                      {lang === 'et' && <span className="text-red-500 ml-0.5">*</span>}
+                    </Label>
                     <Input value={translations[lang]?.title || ''} onChange={e => updateTrans(lang, 'title', e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">

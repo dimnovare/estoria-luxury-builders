@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Pencil, GripVertical, Trash2, Loader2 } from 'lucide-react';
+import { Plus, Pencil, GripVertical, Trash2, Loader2, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import TranslateButton from '@/components/admin/TranslateButton';
 import {
   useAdminServices,
   useAdminService,
@@ -97,6 +98,12 @@ export default function AdminServices() {
   };
 
   const handleSave = async () => {
+    // Estonian is the primary authoring language — require the Estonian name.
+    if (!translations.et?.name?.trim()) {
+      toast.error(t('admin.services.validation.nameRequired', 'Eestikeelne nimi on kohustuslik.'));
+      return;
+    }
+
     const dto = {
       iconName: iconName || null,
       sortOrder: parseInt(sortOrder) || 0,
@@ -240,6 +247,28 @@ export default function AdminServices() {
               </div>
             </div>
 
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-[hsl(0_0%_92%)]">
+              <p className="text-xs text-[hsl(0_0%_45%)]">
+                {t('admin.services.translateHint', 'Write the service in Estonian, then translate the name and description to the other languages with one click. You can edit afterwards.')}
+              </p>
+              <TranslateButton
+                to={['en', 'ru']}
+                fields={{
+                  name: translations.et?.name || '',
+                  description: translations.et?.description || '',
+                }}
+                onTranslated={(lang, f) => setTranslations(prev => ({
+                  ...prev,
+                  [lang]: {
+                    ...prev[lang],
+                    ...f,
+                    // Prices/currency aren't localised — copy priceInfo verbatim from Estonian.
+                    priceInfo: prev.et?.priceInfo ?? prev[lang]?.priceInfo ?? '',
+                  },
+                }))}
+              />
+            </div>
+
             <Tabs defaultValue="et">
               <TabsList className="bg-[hsl(0_0%_96%)] border border-[hsl(0_0%_90%)]">
                 {langs.map(l => (
@@ -248,8 +277,29 @@ export default function AdminServices() {
               </TabsList>
               {langs.map(lang => (
                 <TabsContent key={lang} value={lang} className="mt-3 space-y-3">
+                  {lang !== 'et' && (
+                    <div className="flex justify-end">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-xs text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_20%)]"
+                        onClick={() => setTranslations(prev => ({
+                          ...prev,
+                          [lang]: {
+                            ...prev[lang],
+                            name: prev.et?.name ?? '',
+                            description: prev.et?.description ?? '',
+                            priceInfo: prev.et?.priceInfo ?? '',
+                          },
+                        }))}
+                      >
+                        <Copy className="h-3.5 w-3.5 mr-1" /> {t('admin.services.copyFromEt', 'Copy from Estonian')}
+                      </Button>
+                    </div>
+                  )}
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.services.fields.name')}</Label>
+                    <Label className={labelClass}>{t('admin.services.fields.name')} {lang === 'et' && <span className="text-[hsl(43_50%_45%)]" title={t('admin.common.required', 'Required')}>*</span>}</Label>
                     <Input value={translations[lang]?.name || ''} onChange={e => updateTrans(lang, 'name', e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">

@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import TranslateButton from '@/components/admin/TranslateButton';
 import {
   useAdminBlogPost,
   useCreateBlogPost,
@@ -90,8 +91,8 @@ export default function BlogForm() {
   // Status lives on a separate endpoint, so we save the content first, then set
   // the status on the resulting post id.
   const handleSave = async (publish: boolean) => {
-    if (!translations.en.title.trim()) {
-      toast.error(t('admin.blog.validation.titleRequired', 'An English title is required to save.'));
+    if (!translations.et.title.trim()) {
+      toast.error(t('admin.blog.validation.titleRequired', 'An Estonian title is required to save.'));
       return;
     }
 
@@ -217,6 +218,22 @@ export default function BlogForm() {
       {/* Translation tabs */}
       <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
         <CardContent className="p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-[hsl(0_0%_92%)]">
+            <p className="text-xs text-[hsl(0_0%_45%)]">
+              {t('admin.blog.translateHint', 'Write the post in Estonian, then translate it to the other languages with one click. You can edit afterwards.')}
+            </p>
+            <TranslateButton
+              to={['en', 'ru']}
+              fields={{
+                title: translations.et?.title || '',
+                excerpt: translations.et?.excerpt || '',
+                content: translations.et?.content || '',
+                metaTitle: translations.et?.metaTitle || '',
+                metaDescription: translations.et?.metaDescription || '',
+              }}
+              onTranslated={(lang, f) => setTranslations(prev => ({ ...prev, [lang]: { ...prev[lang], ...f } }))}
+            />
+          </div>
           <Tabs defaultValue="et">
             <TabsList className="bg-[hsl(0_0%_96%)] border border-[hsl(0_0%_90%)]">
               {langs.map(l => (
@@ -226,7 +243,10 @@ export default function BlogForm() {
             {langs.map(lang => (
               <TabsContent key={lang} value={lang} className="mt-4 space-y-4">
                 <div className="space-y-2">
-                  <Label className={labelClass}>{t('admin.blog.fields.title')}</Label>
+                  <Label className={labelClass}>
+                    {t('admin.blog.fields.title')}
+                    {lang === 'et' && <span className="text-[hsl(0_72%_51%)] ml-1" aria-hidden="true">*</span>}
+                  </Label>
                   <Input value={translations[lang]?.title || ''} onChange={e => updateT(lang, 'title', e.target.value)} className={inputClass} />
                 </div>
                 <div className="space-y-2">

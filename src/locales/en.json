@@ -360,7 +360,8 @@
       "page": "Page {{page}} of {{totalPages}}",
       "close": "Close menu",
       "next": "Next page",
-      "previous": "Previous page"
+      "previous": "Previous page",
+      "required": "Required"
     },
     "layout": {
       "adminBadge": "Admin",
@@ -528,13 +529,16 @@
         "imageRemoved": "Image removed",
         "imageRemoveFailed": "Failed to remove image",
         "copiedFromEn": "Copied English — now translate it.",
-        "statusFailed": "Failed to update status"
+        "statusFailed": "Failed to update status",
+        "copiedFromEt": "Copied Estonian — now translate it."
       },
       "validation": {
-        "titleRequired": "English title is required",
+        "titleRequired": "An Estonian title is required",
         "agentRequired": "Please select an agent in the Visibility & agent section"
       },
-      "confirmDeleteDesc": "Delete \"{{title}}\"? This can't be undone."
+      "confirmDeleteDesc": "Delete \"{{title}}\"? This can't be undone.",
+      "translateHint": "Write the listing in Estonian, then translate the title and description to the other languages with one click. You can edit afterwards.",
+      "copyFromEt": "Copy from Estonian"
     },
     "blog": {
       "title": "Blog Posts",
@@ -582,7 +586,8 @@
       "validation": {
         "authorRequired": "Please select an author.",
         "titleRequired": "An English title is required to save."
-      }
+      },
+      "translateHint": "Write the post in Estonian, then translate it to the other languages with one click. You can edit afterwards."
     },
     "team": {
       "title": "Team Members",
@@ -606,7 +611,9 @@
         "spokenLanguages": "Spoken Languages",
         "name": "Name",
         "role": "Role",
-        "bio": "Bio"
+        "bio": "Bio",
+        "copyFromEstonian": "Copy from Estonian",
+        "estonianRequired": "Required"
       },
       "languages": {
         "estonian": "Estonian",
@@ -627,7 +634,11 @@
         "removed": "Member removed",
         "removeFailed": "Failed to remove member"
       },
-      "confirmDeleteDesc": "Remove \"{{name}}\" from the team? This action can't be undone."
+      "confirmDeleteDesc": "Remove \"{{name}}\" from the team? This action can't be undone.",
+      "translateHint": "Write the role and bio in Estonian, then translate them to the other languages with one click. The name is copied as-is. You can edit afterwards.",
+      "validation": {
+        "nameRequired": "Estonian name is required."
+      }
     },
     "services": {
       "title": "Services",
@@ -655,7 +666,12 @@
         "deleteFailed": "Failed to delete service"
       },
       "confirmDeleteDesc": "Delete the \"{{name}}\" service? This action can't be undone.",
-      "dragToReorder": "Drag to reorder"
+      "dragToReorder": "Drag to reorder",
+      "translateHint": "Write the service in Estonian, then translate the name and description to the other languages with one click. You can edit afterwards.",
+      "copyFromEt": "Copy from Estonian",
+      "validation": {
+        "nameRequired": "Estonian name is required."
+      }
     },
     "pages": {
       "title": "Pages",
@@ -674,7 +690,8 @@
       "toast": {
         "saved": "Page content saved",
         "saveFailed": "Failed to save page content"
-      }
+      },
+      "translateHint": "Write the content in Estonian, then translate the title and body to the other languages with one click. You can edit afterwards."
     },
     "careers": {
       "title": "Careers",
@@ -702,7 +719,8 @@
         "deleteFailed": "Failed to delete position"
       },
       "deleteTitle": "Delete this job posting?",
-      "deleteDesc": "This will permanently remove the posting and all its translations. This action can't be undone."
+      "deleteDesc": "This will permanently remove the posting and all its translations. This action can't be undone.",
+      "translateHint": "Write the posting in Estonian, then translate the title, location and description to the other languages with one click. You can edit afterwards."
     },
     "messages": {
       "title": "Messages",

@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAdminPages, useUpdatePage, type AdminPage, toBeLang } from '@/hooks/api/useAdmin';
+import TranslateButton from '@/components/admin/TranslateButton';
 import { toast } from 'sonner';
 
 const langs = ['et', 'en', 'ru'] as const;
@@ -169,6 +170,28 @@ const sortedPages = useMemo(() => {
           </DialogHeader>
           {editingPage && (
             <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[hsl(0_0%_92%)]">
+                <p className="text-xs text-[hsl(0_0%_45%)]">
+                  {t('admin.pages.translateHint', 'Write the content in Estonian, then translate the title and body to the other languages with one click. You can edit afterwards.')}
+                </p>
+                <TranslateButton
+                  to={['en', 'ru']}
+                  fields={{
+                    title: translations.et?.title || '',
+                    body: translations.et?.body || '',
+                  }}
+                  onTranslated={(lang, f) => setTranslations(prev => ({
+                    ...prev,
+                    [lang]: {
+                      ...prev[lang],
+                      ...f,
+                      // Media URLs are not localised — copy them verbatim from Estonian.
+                      imageUrl: prev.et?.imageUrl ?? prev[lang]?.imageUrl ?? '',
+                      videoUrl: prev.et?.videoUrl ?? prev[lang]?.videoUrl ?? '',
+                    },
+                  }))}
+                />
+              </div>
               <Tabs defaultValue="et">
                 <TabsList className="bg-[hsl(0_0%_96%)] border border-[hsl(0_0%_90%)]">
                   {langs.map(l => (

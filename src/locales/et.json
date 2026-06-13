@@ -360,7 +360,8 @@
       "page": "Lehekülg {{page}} / {{totalPages}}",
       "close": "Sulge menüü",
       "next": "Järgmine leht",
-      "previous": "Eelmine leht"
+      "previous": "Eelmine leht",
+      "required": "Kohustuslik"
     },
     "layout": {
       "adminBadge": "Admin",
@@ -528,13 +529,16 @@
         "geocodeBulkOk": "Geokodeeritud {{count}} objekti",
         "geocodeBulkPartial": "Geokodeeritud {{ok}}, {{failed}} ei õnnestunud leida — lisa või paranda nende aadress",
         "copiedFromEn": "Inglise keel kopeeritud — nüüd tõlgi see.",
-        "statusFailed": "Oleku uuendamine ebaõnnestus"
+        "statusFailed": "Oleku uuendamine ebaõnnestus",
+        "copiedFromEt": "Eestikeelne tekst kopeeritud — nüüd tõlgi see."
       },
       "validation": {
-        "titleRequired": "Ingliskeelne pealkiri on kohustuslik",
+        "titleRequired": "Eestikeelne pealkiri on kohustuslik",
         "agentRequired": "Palun vali maakler jaotises „Nähtavus ja maakler\""
       },
-      "confirmDeleteDesc": "Kustutada \"{{title}}\"? Seda ei saa tagasi võtta."
+      "confirmDeleteDesc": "Kustutada \"{{title}}\"? Seda ei saa tagasi võtta.",
+      "translateHint": "Kirjuta kuulutus eesti keeles, seejärel tõlgi pealkiri ja kirjeldus ühe klikiga teistesse keeltesse. Saad seejärel muuta.",
+      "copyFromEt": "Kopeeri eesti keelest"
     },
     "blog": {
       "title": "Blogipostitused",
@@ -582,7 +586,8 @@
       "validation": {
         "authorRequired": "Palun vali autor.",
         "titleRequired": "Salvestamiseks on vajalik ingliskeelne pealkiri."
-      }
+      },
+      "translateHint": "Kirjuta postitus eesti keeles, seejärel tõlgi see ühe klikiga teistesse keeltesse. Saad seejärel muuta."
     },
     "team": {
       "title": "Meeskonnaliikmed",
@@ -606,7 +611,9 @@
         "spokenLanguages": "Räägitavad keeled",
         "name": "Nimi",
         "role": "Roll",
-        "bio": "Tutvustus"
+        "bio": "Tutvustus",
+        "copyFromEstonian": "Kopeeri eesti keelest",
+        "estonianRequired": "Kohustuslik"
       },
       "languages": {
         "estonian": "Eesti",
@@ -627,7 +634,11 @@
         "removed": "Liige eemaldatud",
         "removeFailed": "Liikme eemaldamine ebaõnnestus"
       },
-      "confirmDeleteDesc": "Eemaldada \"{{name}}\" meeskonnast? Seda toimingut ei saa tagasi võtta."
+      "confirmDeleteDesc": "Eemaldada \"{{name}}\" meeskonnast? Seda toimingut ei saa tagasi võtta.",
+      "translateHint": "Kirjuta ametinimetus ja tutvustus eesti keeles, seejärel tõlgi need ühe klikiga teistesse keeltesse. Nimi kopeeritakse muutmata kujul. Saad seejärel muuta.",
+      "validation": {
+        "nameRequired": "Eesti nimi on kohustuslik."
+      }
     },
     "services": {
       "title": "Teenused",
@@ -655,7 +666,12 @@
         "deleteFailed": "Teenuse kustutamine ebaõnnestus"
       },
       "confirmDeleteDesc": "Kustutada teenus \"{{name}}\"? Seda toimingut ei saa tagasi võtta.",
-      "dragToReorder": "Lohista ümberjärjestamiseks"
+      "dragToReorder": "Lohista ümberjärjestamiseks",
+      "translateHint": "Kirjuta teenus eesti keeles, seejärel tõlgi nimi ja kirjeldus ühe klikiga teistesse keeltesse. Saad seejärel muuta.",
+      "copyFromEt": "Kopeeri eesti keelest",
+      "validation": {
+        "nameRequired": "Eestikeelne nimi on kohustuslik."
+      }
     },
     "pages": {
       "title": "Lehed",
@@ -674,7 +690,8 @@
       "toast": {
         "saved": "Lehe sisu salvestatud",
         "saveFailed": "Lehe sisu salvestamine ebaõnnestus"
-      }
+      },
+      "translateHint": "Kirjuta sisu eesti keeles, seejärel tõlgi pealkiri ja sisu ühe klikiga teistesse keeltesse. Saad seejärel muuta."
     },
     "careers": {
       "title": "Karjäär",
@@ -702,7 +719,8 @@
         "deleteFailed": "Positsiooni kustutamine ebaõnnestus"
       },
       "deleteTitle": "Kustutada see tööpakkumine?",
-      "deleteDesc": "See eemaldab pakkumise ja kõik selle tõlked jäädavalt. Seda toimingut ei saa tagasi võtta."
+      "deleteDesc": "See eemaldab pakkumise ja kõik selle tõlked jäädavalt. Seda toimingut ei saa tagasi võtta.",
+      "translateHint": "Kirjuta kuulutus eesti keeles, seejärel tõlgi pealkiri, asukoht ja kirjeldus ühe klikiga teistesse keeltesse. Saad seejärel muuta."
     },
     "messages": {
       "title": "Sõnumid",

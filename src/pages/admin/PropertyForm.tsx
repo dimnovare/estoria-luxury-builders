@@ -195,11 +195,11 @@ export default function PropertyForm() {
     setTranslations(prev => ({ ...prev, [lang]: { ...prev[lang], [field]: value } }));
   };
 
-  // Copy the whole English translation into another language as a starting
-  // point, so the user can translate in place instead of retyping field labels.
-  const copyTranslationFromEn = (lang: string) => {
-    setTranslations(prev => ({ ...prev, [lang]: { ...prev.en } }));
-    toast.success(t('admin.properties.toast.copiedFromEn', 'Copied English — now translate it.'));
+  // Copy the whole Estonian translation into another language as a starting
+  // point (Estonian is the primary authoring language).
+  const copyTranslationFromEt = (lang: string) => {
+    setTranslations(prev => ({ ...prev, [lang]: { ...prev.et } }));
+    toast.success(t('admin.properties.toast.copiedFromEt', 'Copied Estonian — now translate it.'));
   };
 
   const addFeature = () => {
@@ -220,7 +220,7 @@ export default function PropertyForm() {
   };
 
   const handleSave = async (asDraft: boolean) => {
-    if (!translations.en.title.trim()) {
+    if (!translations.et.title.trim()) {
       toast.error(t('admin.properties.validation.titleRequired'));
       return;
     }
@@ -409,7 +409,7 @@ export default function PropertyForm() {
                   </div>
                 </div>
                 <p className="text-xs text-[hsl(0_0%_55%)]">
-                  The listing title and description are set per language in the <strong>Translations</strong> tab — at least the English title is required to save.
+                  The listing title and description are set per language in the <strong>Translations</strong> tab — at least the Estonian title is required to save.
                 </p>
               </AccordionContent>
             </AccordionItem>
@@ -607,21 +607,21 @@ export default function PropertyForm() {
                 </TabsList>
                 {langs.map(lang => (
                   <TabsContent key={lang} value={lang} className="mt-4 space-y-4">
-                    {lang !== 'en' && (
+                    {lang !== 'et' && (
                       <div className="flex justify-end">
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          onClick={() => copyTranslationFromEn(lang)}
+                          onClick={() => copyTranslationFromEt(lang)}
                           className="text-xs text-[hsl(0_0%_50%)] hover:text-[hsl(43_50%_45%)]"
                         >
-                          <Copy className="h-3.5 w-3.5 mr-1" /> Copy from English
+                          <Copy className="h-3.5 w-3.5 mr-1" /> {t('admin.properties.copyFromEt', 'Copy from Estonian')}
                         </Button>
                       </div>
                     )}
                     <div className="space-y-2">
-                      <Label className={labelClass}>{t('admin.properties.fields.title')} {lang === 'en' && requiredMark}</Label>
+                      <Label className={labelClass}>{t('admin.properties.fields.title')} {lang === 'et' && requiredMark}</Label>
                       <Input value={translations[lang]?.title || ''} onChange={e => updateTranslation(lang, 'title', e.target.value)} className={inputClass} />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -12,6 +12,7 @@ import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import TranslateButton from '@/components/admin/TranslateButton';
 import {
   useAdminTeam,
   useAdminTeamMember,
@@ -140,6 +141,12 @@ export default function AdminTeam() {
   };
 
   const handleSave = async () => {
+    // Estonian is the primary authoring language — the Estonian name is required.
+    if (!translations.et?.name?.trim()) {
+      toast.error(t('admin.team.validation.nameRequired', 'Eesti nimi on kohustuslik.'));
+      return;
+    }
+
     const dto = {
       photoUrl: photoPreview || null,
       phone,
@@ -316,6 +323,28 @@ export default function AdminTeam() {
             </div>
 
             {/* Translation tabs */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-[hsl(0_0%_92%)]">
+              <p className="text-xs text-[hsl(0_0%_45%)]">
+                {t('admin.team.translateHint', 'Write the role and bio in Estonian, then translate them to the other languages with one click. The name is copied as-is. You can edit afterwards.')}
+              </p>
+              <TranslateButton
+                to={['en', 'ru']}
+                fields={{
+                  role: translations.et?.role || '',
+                  bio: translations.et?.bio || '',
+                }}
+                onTranslated={(lang, f) => setTranslations(prev => ({
+                  ...prev,
+                  [lang]: {
+                    ...prev[lang],
+                    ...f,
+                    // A team member's name is a person's name — identical across
+                    // languages — so copy it verbatim from Estonian, don't translate.
+                    name: prev.et?.name ?? prev[lang]?.name ?? '',
+                  },
+                }))}
+              />
+            </div>
             <Tabs defaultValue="et">
               <TabsList className="bg-[hsl(0_0%_96%)] border border-[hsl(0_0%_90%)]">
                 {langs.map(l => (
@@ -325,8 +354,27 @@ export default function AdminTeam() {
               {langs.map(lang => (
                 <TabsContent key={lang} value={lang} className="mt-3 space-y-3">
                   <div className="space-y-2">
-                    <Label className={labelClass}>{t('admin.team.fields.name')}</Label>
+                    <div className="flex items-center justify-between gap-2">
+                      <Label className={labelClass}>
+                        {t('admin.team.fields.name')}
+                        {lang === 'et' && <span className="text-red-500 ml-0.5">*</span>}
+                      </Label>
+                      {lang !== 'et' && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="h-auto py-0.5 px-2 text-xs text-[hsl(43_50%_44%)] hover:text-[hsl(43_50%_38%)] hover:bg-transparent"
+                          onClick={() => updateTrans(lang, 'name', translations.et?.name ?? '')}
+                        >
+                          {t('admin.team.fields.copyFromEstonian', 'Copy from Estonian')}
+                        </Button>
+                      )}
+                    </div>
                     <Input value={translations[lang]?.name || ''} onChange={e => updateTrans(lang, 'name', e.target.value)} className={inputClass} />
+                    {lang === 'et' && (
+                      <p className="text-xs text-[hsl(0_0%_55%)]">{t('admin.team.fields.estonianRequired', 'Estonian')}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.team.fields.role')}</Label>
