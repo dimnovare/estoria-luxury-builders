@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { BlogPost } from '@/hooks/api/useContent';
+import { formatDate } from '@/lib/formatDate';
 
 interface Props {
   post: BlogPost;
@@ -8,13 +9,7 @@ interface Props {
 }
 
 export default function BlogCard({ post, index = 0 }: Props) {
-  const formattedDate = post.publishedAt
-    ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
-    : '';
+  const formattedDate = formatDate(post.publishedAt);
 
   return (
     <motion.div

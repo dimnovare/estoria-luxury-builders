@@ -8,6 +8,7 @@ import BlogCard from '@/components/BlogCard';
 import Seo from '@/components/Seo';
 import { useState } from 'react';
 import { useBlogPost, useBlogPosts } from '@/hooks/api/useContent';
+import { formatDate } from '@/lib/formatDate';
 
 export default function BlogPost() {
   const { slug } = useParams();
@@ -74,13 +75,7 @@ export default function BlogPost() {
     );
   }
 
-  const formattedDate = post.publishedAt
-    ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
-    : '';
+  const formattedDate = formatDate(post.publishedAt);
 
   // Prefer the nested author object (detail response) over flat fields
   const authorName = post.author?.name ?? post.authorName;

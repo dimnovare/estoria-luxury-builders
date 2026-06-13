@@ -481,6 +481,8 @@
         "dragHint": "Lohista pilte järjekorra muutmiseks. Esimest pilti kasutatakse kaanepildina.",
         "reordered": "Piltide järjekord salvestatud.",
         "reorderFailed": "Uue järjekorra salvestamine ebaõnnestus.",
+        "moveLeft": "Liiguta vasakule",
+        "moveRight": "Liiguta paremale",
         "processingStuck": "Töötlemine kestab tavalisest kauem",
         "processingFailed": "Töötlemine ebaõnnestus",
         "retry": "Proovi uuesti",

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Plus, X, GripVertical, Image as ImageIcon, Loader2, AlertTriangle, RefreshCw, MapPin, Copy } from 'lucide-react';
+import { ArrowLeft, Plus, X, GripVertical, ChevronLeft, ChevronRight, Image as ImageIcon, Loader2, AlertTriangle, RefreshCw, MapPin, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -91,6 +91,19 @@ export default function PropertyForm() {
       const next = [...prev];
       const [moved] = next.splice(from, 1);
       next.splice(target, 0, moved);
+      persistOrder(next);
+      return next;
+    });
+  };
+
+  // Touch-friendly reorder fallback (drag-and-drop is hard on phones): move a
+  // photo one position left/right. The first photo is the cover.
+  const moveImage = (from: number, to: number) => {
+    if (to < 0 || to >= orderedImages.length) return;
+    setOrderedImages(prev => {
+      const next = [...prev];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
       persistOrder(next);
       return next;
     });
@@ -782,16 +795,37 @@ export default function PropertyForm() {
                           </div>
                         )}
 
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                          <GripVertical className="h-4 w-4 text-white cursor-grab" />
+                        {/* Always visible on touch; hover-reveal on desktop. Move
+                            buttons are the touch reorder fallback (drag also works on desktop). */}
+                        <div className="absolute inset-0 bg-black/45 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
                           <button
                             type="button"
-                            className="text-white hover:text-red-400"
+                            disabled={idx === 0}
+                            className="text-white disabled:opacity-30 h-9 w-9 flex items-center justify-center hover:text-[hsl(43_60%_72%)]"
+                            onClick={() => moveImage(idx, idx - 1)}
+                            aria-label={t('admin.properties.images.moveLeft', 'Move left')}
+                            title={t('admin.properties.images.moveLeft', 'Move left')}
+                          >
+                            <ChevronLeft className="h-5 w-5" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx === orderedImages.length - 1}
+                            className="text-white disabled:opacity-30 h-9 w-9 flex items-center justify-center hover:text-[hsl(43_60%_72%)]"
+                            onClick={() => moveImage(idx, idx + 1)}
+                            aria-label={t('admin.properties.images.moveRight', 'Move right')}
+                            title={t('admin.properties.images.moveRight', 'Move right')}
+                          >
+                            <ChevronRight className="h-5 w-5" />
+                          </button>
+                          <button
+                            type="button"
+                            className="text-white hover:text-red-400 h-9 w-9 flex items-center justify-center"
                             onClick={() => setPendingImageDelete(img.id)}
                             aria-label={t('admin.common.delete')}
                             title={t('admin.common.delete')}
                           >
-                            <X className="h-4 w-4" />
+                            <X className="h-5 w-5" />
                           </button>
                         </div>
                         {img.isCover && (

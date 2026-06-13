@@ -481,6 +481,8 @@
         "dragHint": "Drag images to reorder. The first image is used as the cover.",
         "reordered": "Image order saved.",
         "reorderFailed": "Couldn't save the new order.",
+        "moveLeft": "Move left",
+        "moveRight": "Move right",
         "processingStuck": "Still processing — taking longer than usual",
         "processingFailed": "Processing failed",
         "retry": "Retry processing",

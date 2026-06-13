@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import BlogCard from '@/components/BlogCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBlogPosts } from '@/hooks/api/useContent';
+import { formatDate } from '@/lib/formatDate';
 import Seo from '@/components/Seo';
 
 const PAGE_SIZE = 9;
@@ -140,11 +141,7 @@ export default function Blog() {
                         <>
                           <span className="text-muted-foreground/50">·</span>
                           <span className="text-sm text-muted-foreground/70 font-body">
-                            {new Date(featured.publishedAt).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })}
+                            {formatDate(featured.publishedAt)}
                           </span>
                         </>
                       )}
