@@ -33,6 +33,10 @@ import NotFound from "@/pages/NotFound";
 import Login from "@/pages/admin/Login";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
+// Print-only brochure renders outside MainLayout (no dark chrome) and is lazy
+// so the print CSS/markup stays out of the public marketing bundle.
+const PropertyBrochure    = lazy(() => import("@/pages/PropertyBrochure"));
+
 const AdminDashboard      = lazy(() => import("@/pages/admin/Dashboard"));
 const AdminProperties     = lazy(() => import("@/pages/admin/AdminProperties"));
 const PropertyForm        = lazy(() => import("@/pages/admin/PropertyForm"));
@@ -110,6 +114,14 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
           </Route>
+          <Route
+            path="/properties/:slug/print"
+            element={
+              <Suspense fallback={null}>
+                <PropertyBrochure />
+              </Suspense>
+            }
+          />
           <Route path="/admin/login" element={<Login />} />
           <Route
             path="/admin"

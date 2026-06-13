@@ -195,9 +195,28 @@
     "allPositions": "← Kõik positsioonid",
     "backLink": "Kõik positsioonid"
   },
+  "mortgage": {
+    "title": "Laenukalkulaator",
+    "downPayment": "Sissemakse",
+    "interest": "Intressimäär",
+    "years": "Aastad",
+    "monthly": "Kuumakse",
+    "loanAmount": "Laenusumma",
+    "disclaimer": "Ainult hinnanguline — ei ole laenupakkumine."
+  },
+  "property": {
+    "brochure": "Laadi alla brošüür"
+  },
+  "brochure": {
+    "print": "Prindi / Salvesta PDF-ina",
+    "preparedBy": "Koostas"
+  },
   "contact": {
     "headerLead": "Meil on hea meel Teilt kuulda. Võtke ühendust ja alustame vestlust.",
     "followUs": "Jälgi meid",
+    "call": "Helista",
+    "whatsapp": "WhatsApp",
+    "email": "E-post",
     "inquiry": {
       "about": "Päring objekti kohta:",
       "subject": "Päring: {{title}}",
@@ -486,6 +505,9 @@
       "addNew": "Lisa objekt",
       "editTitle": "Muuda objekti",
       "newTitle": "Uus objekt",
+      "aiDescribe": "Kirjuta kirjeldus (AI)",
+      "aiDescribeDone": "Mustand valmis — vaata üle ja muuda.",
+      "aiDescribeFailed": "Kirjelduse koostamine ebaõnnestus. Proovi uuesti.",
       "filters": {
         "status": "Staatus",
         "type": "Tüüp",

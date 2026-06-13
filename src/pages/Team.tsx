@@ -2,9 +2,9 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { normalizeLanguages, languageLabel } from '@/lib/languages';
 import { motion } from 'framer-motion';
-import { Phone, Mail } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTeam, usePageContent } from '@/hooks/api/useContent';
+import ContactActions from '@/components/ContactActions';
 import Seo from '@/components/Seo';
 
 const reveal = {
@@ -112,34 +112,16 @@ export default function Team() {
                           ))}
                         </div>
                       )}
-
-                      {/* Contact icons */}
-                      <div className="flex items-center gap-3 mt-3">
-                        {member.phone && (
-                          <a
-                            href={`tel:${member.phone}`}
-                            onClick={(e) => e.stopPropagation()}
-                            aria-label={t('team.callMember', { name: member.name, defaultValue: `Call ${member.name}` })}
-                            title={t('team.call', 'Call')}
-                            className="text-muted-foreground hover:text-primary transition-colors"
-                          >
-                            <Phone size={14} />
-                          </a>
-                        )}
-                        {member.email && (
-                          <a
-                            href={`mailto:${member.email}`}
-                            onClick={(e) => e.stopPropagation()}
-                            aria-label={t('team.emailMember', { name: member.name, defaultValue: `Email ${member.name}` })}
-                            title={t('team.email', 'Email')}
-                            className="text-muted-foreground hover:text-primary transition-colors"
-                          >
-                            <Mail size={14} />
-                          </a>
-                        )}
-                      </div>
                     </div>
                   </Link>
+
+                  {/* Quick-action contact buttons (outside the card link to avoid nested anchors) */}
+                  <ContactActions
+                    phone={member.phone}
+                    email={member.email}
+                    variant="outline"
+                    className="mt-2"
+                  />
                 </motion.div>
               ))}
             </div>

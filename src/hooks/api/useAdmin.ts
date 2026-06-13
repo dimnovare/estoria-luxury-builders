@@ -225,6 +225,14 @@ export function useTranslateContent() {
   });
 }
 
+/** Draft a listing description from property facts (default Estonian). */
+export function useGenerateDescription() {
+  return useMutation({
+    mutationFn: (req: { facts: Record<string, string>; lang?: string }) =>
+      api.post<{ description: string }>('/admin/ai/describe', req).then(r => r.data.description),
+  });
+}
+
 export function useAdminProperties(page = 1) {
   return useQuery<{ items: AdminProperty[]; totalCount: number }>({
     queryKey: ['admin', 'properties', page],

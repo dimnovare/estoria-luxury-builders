@@ -5,11 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin, Phone, Mail, Share2, X, ChevronLeft, ChevronRight,
   Maximize2, DoorOpen, BedDouble, Bath, Building, Layers, Calendar, Zap,
-  Check, Loader2,
+  Check, Loader2, FileText,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import PropertyCard from '@/components/PropertyCard';
 import PropertyHistory from '@/components/PropertyHistory';
+import ContactActions from '@/components/ContactActions';
 import { useProperty, useProperties } from '@/hooks/api/useProperties';
 import { propertyTypeLabel } from '@/lib/enumLabels';
 import api from '@/lib/api';
@@ -19,6 +20,120 @@ import MobilePropertyGallery, { type GalleryImage } from '@/components/MobilePro
 import { getPropertySocialImage } from '@/lib/propertyPageMetadata';
 
 const PropertyMap = lazy(() => import('@/components/PropertyMap'));
+
+/** Strip HTML tags + collapse whitespace for plain-text use (JSON-LD descriptions). */
+function stripHtml(html: string): string {
+  return html
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+const eur = (value: number) =>
+  new Intl.NumberFormat('et-EE', {
+    style: 'currency',
+    currency: 'EUR',
+    maximumFractionDigits: 0,
+  }).format(Math.round(value));
+
+/**
+ * Self-contained mortgage estimator. Standard amortised payment:
+ * M = P·r / (1 − (1 + r)^−n), where P = loan, r = monthly rate, n = months.
+ */
+function MortgageCalculator({ price }: { price: number }) {
+  const { t } = useTranslation();
+  const [downPct, setDownPct] = useState(20);
+  const [interest, setInterest] = useState(4.5);
+  const [years, setYears] = useState(30);
+
+  const { loan, monthly } = useMemo(() => {
+    const safePct = Math.min(Math.max(downPct, 0), 100);
+    const loanAmount = price * (1 - safePct / 100);
+    const n = Math.max(years, 1) * 12;
+    const r = interest / 100 / 12;
+    const payment =
+      r === 0 ? loanAmount / n : (loanAmount * r) / (1 - Math.pow(1 + r, -n));
+    return { loan: loanAmount, monthly: Number.isFinite(payment) ? payment : 0 };
+  }, [price, downPct, interest, years]);
+
+  const fieldCls =
+    'w-full bg-secondary border border-border text-foreground text-sm font-body px-3 py-2 rounded-sm outline-none focus:border-primary transition-colors';
+
+  return (
+    <div className="bg-card border border-border rounded-sm overflow-hidden">
+      <div className="h-1 gold-gradient" />
+      <div className="p-6">
+        <h3 className="font-heading text-xl text-foreground mb-5">
+          {t('mortgage.title', 'Mortgage calculator')}
+        </h3>
+        <div className="grid grid-cols-2 gap-4">
+          <label className="block">
+            <span className="text-muted-foreground text-xs font-body mb-1 block">
+              {t('mortgage.downPayment', 'Down payment')} (%)
+            </span>
+            <input
+              type="number"
+              min={0}
+              max={100}
+              value={downPct}
+              onChange={(e) => setDownPct(Number(e.target.value))}
+              className={fieldCls}
+            />
+          </label>
+          <label className="block">
+            <span className="text-muted-foreground text-xs font-body mb-1 block">
+              {t('mortgage.interest', 'Interest rate')} (%)
+            </span>
+            <input
+              type="number"
+              min={0}
+              step={0.1}
+              value={interest}
+              onChange={(e) => setInterest(Number(e.target.value))}
+              className={fieldCls}
+            />
+          </label>
+          <label className="block col-span-2">
+            <span className="text-muted-foreground text-xs font-body mb-1 block">
+              {t('mortgage.years', 'Years')}
+            </span>
+            <input
+              type="number"
+              min={1}
+              max={40}
+              value={years}
+              onChange={(e) => setYears(Number(e.target.value))}
+              className={fieldCls}
+            />
+          </label>
+        </div>
+
+        <div className="mt-5 pt-5 border-t border-border">
+          <div className="flex items-end justify-between">
+            <span className="text-muted-foreground text-xs font-body">
+              {t('mortgage.monthly', 'Monthly payment')}
+            </span>
+            <span className="font-heading text-3xl text-primary font-medium">
+              {eur(monthly)}
+            </span>
+          </div>
+          <p className="text-muted-foreground text-xs font-body mt-1">
+            {t('mortgage.loanAmount', 'Loan amount')}: {eur(loan)}
+          </p>
+        </div>
+
+        <p className="text-[11px] text-muted-foreground font-body mt-4">
+          {t('mortgage.disclaimer', 'Estimate only — not a loan offer.')}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export default function PropertyDetail() {
   const { slug } = useParams();
@@ -202,25 +317,40 @@ export default function PropertyDetail() {
     }
   };
 
-  const propertyLd = {
+  // schema.org rich-results object. Sub-fields are only included when the
+  // backing data exists so we never fabricate values for crawlers.
+  const ldAddress: Record<string, unknown> = { '@type': 'PostalAddress', addressCountry: 'EE' };
+  if (property.address) ldAddress.streetAddress = property.address;
+  if (property.city) ldAddress.addressLocality = property.city;
+  if (property.district) ldAddress.addressRegion = property.district;
+
+  const propertyLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
-    '@type': 'Apartment',
+    '@type': property.propertyType === 'apartment' ? 'Apartment' : 'Residence',
     name: property.title,
-    description: property.description ?? property.title,
-    image: getPropertySocialImage(property),
     url: `https://estoria.estate/properties/${property.slug}`,
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: property.address,
-      addressLocality: property.city,
-      addressCountry: 'EE',
-    },
-    offers: {
+    image: [getPropertySocialImage(property)],
+    address: ldAddress,
+  };
+  if (property.description) propertyLd.description = stripHtml(property.description);
+  if (property.size) {
+    propertyLd.floorSize = { '@type': 'QuantitativeValue', value: property.size, unitCode: 'MTK' };
+  }
+  if (property.rooms) propertyLd.numberOfRooms = property.rooms;
+  if (property.price) {
+    propertyLd.offers = {
       '@type': 'Offer',
       price: property.price,
       priceCurrency: property.currency || 'EUR',
-    },
-  };
+      availability: 'https://schema.org/InStock',
+    };
+  }
+
+  // Prefilled inquiry message reused for the agent quick-action channels.
+  const inquiryMessage = t('contact.inquiry.message', {
+    title: property.title,
+    address: property.address,
+  });
 
   const seoDescription = `${property.title} · ${property.address} · ${formatPrice(property.price, property.transactionType)}`;
 
@@ -452,6 +582,15 @@ export default function PropertyDetail() {
                 </div>
               </motion.div>
 
+              {/* Mortgage estimator */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25 }}
+              >
+                <MortgageCalculator price={property.price} />
+              </motion.div>
+
               {/* Agent card */}
               {property.agent && (
                 <motion.div
@@ -492,6 +631,15 @@ export default function PropertyDetail() {
                       <Mail size={14} /> {property.agent.email}
                     </a>
                   </div>
+
+                  {/* Quick-action contact channels (call / WhatsApp / email) */}
+                  <ContactActions
+                    phone={property.agent.phone}
+                    email={property.agent.email}
+                    message={inquiryMessage}
+                    variant="solid"
+                    className="mb-5"
+                  />
 
                   {property.agent.languages && property.agent.languages.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-5">
@@ -597,6 +745,16 @@ export default function PropertyDetail() {
                   </>
                 )}
               </button>
+
+              {/* Brochure / print view (opened in a new tab) */}
+              <a
+                href={`/properties/${property.slug}/print`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 border border-border text-muted-foreground hover:text-primary hover:border-primary py-3 rounded-sm font-nav text-xs uppercase tracking-wider transition-colors"
+              >
+                <FileText size={14} /> {t('property.brochure', 'Download brochure')}
+              </a>
             </div>
           </div>
         </div>

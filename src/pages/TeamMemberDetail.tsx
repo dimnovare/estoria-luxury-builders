@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { normalizeLanguages, languageLabel } from '@/lib/languages';
 import { motion } from 'framer-motion';
 import { SafeHtml } from '@/components/SafeHtml';
-import { Phone, Mail, ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import PropertyCard from '@/components/PropertyCard';
+import ContactActions from '@/components/ContactActions';
 import Seo from '@/components/Seo';
 import { useTeamMember } from '@/hooks/api/useContent';
 
@@ -99,23 +100,12 @@ export default function TeamMemberDetail() {
             )}
 
             {/* Contact */}
-            <div className="space-y-3 mb-6">
-              {member.phone && (
-                <a
-                  href={`tel:${member.phone}`}
-                  className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary font-body transition-colors"
-                >
-                  <Phone size={16} className="text-primary" /> {member.phone}
-                </a>
-              )}
-              {member.email && (
-                <a
-                  href={`mailto:${member.email}`}
-                  className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary font-body transition-colors"
-                >
-                  <Mail size={16} className="text-primary" /> {member.email}
-                </a>
-              )}
+            <div className="mb-6">
+              <ContactActions
+                phone={member.phone}
+                email={member.email}
+                variant="solid"
+              />
             </div>
 
             {/* Languages */}

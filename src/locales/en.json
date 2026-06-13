@@ -195,9 +195,28 @@
     "allPositions": "← All Positions",
     "backLink": "All Positions"
   },
+  "mortgage": {
+    "title": "Mortgage calculator",
+    "downPayment": "Down payment",
+    "interest": "Interest rate",
+    "years": "Years",
+    "monthly": "Monthly payment",
+    "loanAmount": "Loan amount",
+    "disclaimer": "Estimate only — not a loan offer."
+  },
+  "property": {
+    "brochure": "Download brochure"
+  },
+  "brochure": {
+    "print": "Print / Save as PDF",
+    "preparedBy": "Prepared by"
+  },
   "contact": {
     "headerLead": "We'd love to hear from you. Reach out and let's start a conversation.",
     "followUs": "Follow Us",
+    "call": "Call",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
     "inquiry": {
       "about": "Inquiry about:",
       "subject": "Inquiry: {{title}}",
@@ -486,6 +505,9 @@
       "addNew": "Add Property",
       "editTitle": "Edit Property",
       "newTitle": "New Property",
+      "aiDescribe": "Write description (AI)",
+      "aiDescribeDone": "Draft written — review and edit.",
+      "aiDescribeFailed": "Couldn't write a description. Try again.",
       "filters": {
         "status": "Status",
         "type": "Type",

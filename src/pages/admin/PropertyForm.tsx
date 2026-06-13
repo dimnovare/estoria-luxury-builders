@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Plus, X, GripVertical, ChevronLeft, ChevronRight, Image as ImageIcon, Loader2, AlertTriangle, RefreshCw, MapPin, Copy } from 'lucide-react';
+import { ArrowLeft, Plus, X, GripVertical, ChevronLeft, ChevronRight, Image as ImageIcon, Loader2, AlertTriangle, RefreshCw, MapPin, Copy, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -24,6 +24,7 @@ import {
   useAdminTeam,
   useSetPropertyStatus,
   usePropertyExportPortals,
+  useGenerateDescription,
   toBeLang,
 } from '@/hooks/api/useAdmin';
 import { useGeocodeProperty } from '@/hooks/api/usePropertyGeocode';
@@ -57,6 +58,7 @@ export default function PropertyForm() {
   const reprocessImage = useReprocessPropertyImage();
   const setStatus = useSetPropertyStatus();
   const geocode = useGeocodeProperty();
+  const generateDescription = useGenerateDescription();
   const { data: exportPortals = [] } = usePropertyExportPortals();
 
   // Local copy of the image order so drag-to-reorder feels instant; synced from
@@ -206,6 +208,49 @@ export default function PropertyForm() {
 
   const updateTranslation = (lang: string, field: string, value: string) => {
     setTranslations(prev => ({ ...prev, [lang]: { ...prev[lang], [field]: value } }));
+  };
+
+  // Draft the Estonian listing description from the property's facts so the
+  // owner doesn't start from a blank box. They edit it, then use the existing
+  // "Translate from Estonian" button to fill EN/RU. Works even with sparse
+  // info — the backend copes with whatever facts we send.
+  const handleGenerateDescription = () => {
+    if (generateDescription.isPending) return;
+
+    const facts: Record<string, string> = {};
+    const add = (key: string, value: string | undefined | null) => {
+      const v = (value ?? '').toString().trim();
+      if (v) facts[key] = v;
+    };
+
+    add('propertyType', propertyType ? propertyTypeLabel(propertyType, t) : '');
+    add('transactionType', transactionType ? transactionTypeLabel(transactionType, t) : '');
+    if (price.trim()) add('price', `${price.trim()} EUR`);
+    if (size.trim()) add('size', `${size.trim()} m²`);
+    add('rooms', rooms);
+    add('bedrooms', bedrooms);
+    add('bathrooms', bathrooms);
+    add('floor', floor);
+    add('totalFloors', totalFloors);
+    add('yearBuilt', yearBuilt);
+    add('energyClass', energyClass);
+    add('city', translations.et?.city);
+    add('district', translations.et?.district);
+    add('address', translations.et?.address);
+
+    const featureList = features.map(f => f.et).filter(v => v && v.trim());
+    if (featureList.length) add('features', featureList.join(', '));
+
+    generateDescription.mutate(
+      { facts, lang: 'et' },
+      {
+        onSuccess: (result) => {
+          updateTranslation('et', 'description', result);
+          toast.success(t('admin.properties.aiDescribeDone', 'Draft written — review and edit.'));
+        },
+        onError: () => toast.error(t('admin.properties.aiDescribeFailed', "Couldn't write a description. Try again.")),
+      }
+    );
   };
 
   // Copy the whole Estonian translation into another language as a starting
@@ -651,7 +696,24 @@ export default function PropertyForm() {
                       <Input value={translations[lang]?.district || ''} onChange={e => updateTranslation(lang, 'district', e.target.value)} className={inputClass} />
                     </div>
                     <div className="space-y-2">
-                      <Label className={labelClass}>{t('admin.properties.fields.description')}</Label>
+                      <div className="flex items-center justify-between gap-3">
+                        <Label className={labelClass}>{t('admin.properties.fields.description')}</Label>
+                        {lang === 'et' && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleGenerateDescription}
+                            disabled={generateDescription.isPending}
+                            className="text-xs text-[hsl(0_0%_50%)] hover:text-[hsl(43_50%_45%)]"
+                          >
+                            {generateDescription.isPending
+                              ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                              : <Sparkles className="h-3.5 w-3.5 mr-1" />}
+                            {t('admin.properties.aiDescribe', 'Write description (AI)')}
+                          </Button>
+                        )}
+                      </div>
                       <RichTextEditor
                         value={translations[lang]?.description ?? ''}
                         onChange={(html) => updateTranslation(lang, 'description', html)}
