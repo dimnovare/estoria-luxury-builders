@@ -41,31 +41,37 @@ easy for non-technical Estonian/Russian owners, good on phones.
   button (backend `/api/admin/ai/describe`, 0c57f6f); website enquiries
   auto-captured as CRM contacts (0c57f6f).
 
-## Remaining (priority order)
-**P0**
-- DealDetail/AdminDeals stage & participant modals: drop `bg-secondary/border-border`
-  near-black inputs; delete TaskForm `bg-white` patch (portal fix makes them moot).
-- PropertyForm mobile: image delete/reorder are hover-only → add `opacity-100 sm:opacity-0
-  sm:group-hover` + move-left/right buttons (touch reorder + set-cover); feature-row 5-col
-  grid + TabsList overflow at 375px.
-- i18n: PrivacyPolicy is 100% hardcoded English → `privacy.*` (et/en/ru); `formatDate(date,lang)`
-  helper to replace `toLocaleDateString('en-US')` (BlogCard, Blog, BlogPost); wrap admin
-  subtitles + PropertyForm section headers/help; strip jargon (IsActive, Lucide names, R2).
-- Non-technical: EntityLinkPicker (no GUID paste); UserForm required marks + validation toast
-  (not silently-disabled save) + photo upload; AdminTasks header "New task"; AdminCareers
-  hydrate all 3 language tabs on edit.
-- Faint: Login labels/subtitle + raw hex → tokens.
+## Shipped 2026-06-13 — full admin sweep (2845819, 518dd7b; backend 7a9feaf)
+**P0 — all done**
+- ✅ DealDetail/AdminDeals modal inputs → readable light tokens (portal fix).
+- ✅ PropertyForm mobile image controls: always-visible on touch, 44px move-left/right
+  + delete + set-cover, drag kept on desktop, flex-wrap tabs at 375px.
+- ✅ PrivacyPolicy fully i18n; `formatDate()` replaces `toLocaleDateString` across 7 files.
+- ✅ EntityLinkPicker (search-autocomplete, no GUID paste) wired into DealForm/TaskForm/AdminInbox.
+- ✅ UserForm required marks + validation toast (no more silently-disabled save).
+- ✅ Login label/subtitle contrast.
+- ✅ AdminCareers edit hydrates all 3 language tabs — required a BACKEND fix:
+  new `AdminCareerDetailDto` + `GetByIdAdminAsync` (GET /admin/careers/{id} now returns the
+  per-language Translations map; admin GET-by-id previously returned the flat list DTO so
+  EN/RU never reached the client) + `useAdminCareer(id)` hook.
 
-**P1**
-- ~~`<AdminPageHeader>` + roll out to every admin page~~ ✅ done (0020632).
-- Adopt `<EmptyState>` on the 8 admin lists + public Team/Services/Blog/Careers (+ empty i18n keys).
-- `<TableSkeleton>`/`<ErrorState>`; Dashboard loading/error.
-- Token migration: literals → tokens; inline gold → `<Button>`; raw green/red/amber → `text-success/destructive/warning`. Add ESLint ban on `[hsl(` in className.
-- Form pattern: full-page forms = stacked Cards; inline = Dialogs w/ sticky footer; one RequiredMark; AdminTeam checkbox-group multi-select.
-- Public: one PropertyCard grid gap (gap-6); shared PageHeader; PropertyDetail single gold submit; nav breakpoint → lg; shared `<LanguageSwitcher>`.
+**P1 — mostly done**
+- ✅ `<AdminPageHeader>` across all 18 admin pages (0020632).
+- ✅ `<EmptyState>` / `<ErrorState>` / `<TableSkeleton>` (+StatCardSkeleton) created & adopted on admin lists.
+- ✅ Token migration: admin 785→0 raw `[hsl()]` literals; gold→`primary`/`<Button>`, green→`success`,
+  red→`destructive`; amber left (no warning token); multi-colour status schemes left intact.
+  ESLint `warn` rule bans `[hsl(` in admin className (scoped to src/pages/admin + components/admin).
 
-**P2** — StageBadge/statusColors helper; safe-area on PropertyDetail fixed bar; DOMPurify on AdminInbox iframe; non-drag reorder fallback for Services/Team; SEO helper under BlogForm meta.
+## Remaining (lower priority, deliberately deferred)
+**P1** — Form-pattern unification (stacked Cards vs Dialogs, one RequiredMark, AdminTeam
+checkbox multi-select). Public polish: PropertyCard grid gap, shared PageHeader,
+PropertyDetail single gold submit, shared `<LanguageSwitcher>`. (Nav breakpoint was already
+`xl` — fine; not lowered.)
+**P2** — StageBadge/statusColors helper; safe-area on PropertyDetail fixed bar; non-drag
+reorder fallback for Services/Team; SEO helper under BlogForm meta.
+(✅ DOMPurify on AdminInbox iframe — done: sanitize + `sandbox=""`.)
 
 ## Still open (separate tasks)
+- Visual smoke pass of the admin after the colour sweep (Vercel preview or local stack).
 - E2E desktop + mobile (Playwright 375px) for admin + public.
-- Feature proposals doc.
+- kv.ee export adapter — blocked on owner obtaining the kv.ee partner XML spec.
