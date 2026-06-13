@@ -719,14 +719,30 @@
         "added": "Member added",
         "saveFailed": "Failed to save member",
         "removed": "Member removed",
-        "removeFailed": "Failed to remove member"
+        "removeFailed": "Failed to remove member",
+        "shown": "Member is now visible.",
+        "hidden": "Member hidden.",
+        "hiddenTransferred": "Member hidden; properties transferred.",
+        "visibilityFailed": "Could not update visibility."
       },
       "confirmDeleteDesc": "Remove \"{{name}}\" from the team? This action can't be undone.",
       "translateHint": "Write the role and bio in Estonian, then translate them to the other languages with one click. The name is copied as-is. You can edit afterwards.",
       "validation": {
         "nameRequired": "Estonian name is required."
       },
-      "subtitle": "Manage team member profiles shown on the About page. Drag to reorder."
+      "subtitle": "Manage team member profiles shown on the About page. Drag to reorder.",
+      "hidden": "Hidden",
+      "hide": "Hide",
+      "show": "Show",
+      "confirmHideTitle": "Hide {{name}}?",
+      "confirmHideDesc": "They will no longer appear on the site.",
+      "transfer": {
+        "title": "Hide {{name}}?",
+        "body": "{{name}} has {{count}} properties. Choose an agent to receive them:",
+        "agent": "Receiving agent",
+        "selectAgent": "Select an agent…",
+        "confirm": "Hide & transfer"
+      }
     },
     "services": {
       "title": "Services",

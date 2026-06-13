@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import TranslateButton from '@/components/admin/TranslateButton';
 import { normalizeLanguages, languageLabel } from '@/lib/languages';
@@ -21,6 +22,7 @@ import {
   useUpdateTeamMember,
   useDeleteTeamMember,
   useUploadTeamPhoto,
+  useSetTeamMemberActive,
   type AdminTeamMember,
   toBeLang,
 } from '@/hooks/api/useAdmin';
@@ -47,9 +49,14 @@ export default function AdminTeam() {
   const updateMember = useUpdateTeamMember();
   const deleteMember = useDeleteTeamMember();
   const uploadPhoto = useUploadTeamPhoto();
+  const setActive = useSetTeamMemberActive();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+  // Hide-with-no-properties confirm + hide-with-transfer dialog state.
+  const [pendingHide, setPendingHide] = useState<AdminTeamMember | null>(null);
+  const [transferMember, setTransferMember] = useState<AdminTeamMember | null>(null);
+  const [transferTo, setTransferTo] = useState('');
   const [editingMember, setEditingMember] = useState<AdminTeamMember | null>(null);
   // Detail fetch only fires when an id is set — null/undefined skips the call.
   const { data: editingDetail } = useAdminTeamMember(editingMember?.id);
@@ -182,6 +189,46 @@ export default function AdminTeam() {
     }
   };
 
+  const handleShow = async (id: string) => {
+    try {
+      await setActive.mutateAsync({ id, isActive: true });
+      toast.success(t('admin.team.toast.shown', 'Member is now visible.'));
+    } catch {
+      toast.error(t('admin.team.toast.visibilityFailed', 'Could not update visibility.'));
+    }
+  };
+
+  // Hide is a two-step flow: a member holding properties must reassign them
+  // first (transfer dialog), otherwise a plain confirm is enough.
+  const handleHideClick = (m: AdminTeamMember) => {
+    if (m.propertyCount > 0) {
+      setTransferTo('');
+      setTransferMember(m);
+    } else {
+      setPendingHide(m);
+    }
+  };
+
+  const handleHideNoProps = async (id: string) => {
+    try {
+      await setActive.mutateAsync({ id, isActive: false });
+      toast.success(t('admin.team.toast.hidden', 'Member hidden.'));
+    } catch {
+      toast.error(t('admin.team.toast.visibilityFailed', 'Could not update visibility.'));
+    }
+  };
+
+  const handleHideTransfer = async () => {
+    if (!transferMember || !transferTo) return;
+    try {
+      await setActive.mutateAsync({ id: transferMember.id, isActive: false, reassignToAgentId: transferTo });
+      toast.success(t('admin.team.toast.hiddenTransferred', 'Member hidden; properties transferred.'));
+      setTransferMember(null);
+    } catch {
+      toast.error(t('admin.team.toast.visibilityFailed', 'Could not update visibility.'));
+    }
+  };
+
   const isSaving = createMember.isPending || updateMember.isPending;
   const pendingName = (team ?? []).find(m => m.id === pendingDelete)?.name;
 
@@ -221,12 +268,19 @@ export default function AdminTeam() {
                 </TableRow>
               )}
               {!isLoading && (team ?? []).map(m => (
-                <TableRow key={m.id} className="border-[hsl(0_0%_93%)]">
+                <TableRow key={m.id} className={`border-[hsl(0_0%_93%)] ${m.isActive ? '' : 'opacity-60'}`}>
                   <TableCell className="hidden sm:table-cell">
                     <img src={m.photoUrl || '/placeholder.jpg'} alt="" className="h-9 w-9 rounded-full object-cover" />
                   </TableCell>
                   <TableCell className="text-sm text-[hsl(0_0%_20%)] font-medium">
-                    <div>{m.name}</div>
+                    <div className="flex items-center gap-2">
+                      <span>{m.name}</span>
+                      {!m.isActive && (
+                        <Badge variant="secondary" className="text-[10px] bg-[hsl(0_0%_90%)] text-[hsl(0_0%_45%)]">
+                          {t('admin.team.hidden', 'Hidden')}
+                        </Badge>
+                      )}
+                    </div>
                     <div className="text-xs text-[hsl(0_0%_50%)] sm:hidden">{m.role}</div>
                   </TableCell>
                   <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{m.role}</TableCell>
@@ -243,6 +297,29 @@ export default function AdminTeam() {
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_20%)]" onClick={() => openEdit(m)} title={t('admin.common.edit')} aria-label={t('admin.common.edit')}>
                         <Pencil className="h-3.5 w-3.5" />
                       </Button>
+                      {m.isActive ? (
+                        <Button
+                          variant="ghost" size="icon"
+                          className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_20%)]"
+                          onClick={() => handleHideClick(m)}
+                          disabled={setActive.isPending}
+                          title={t('admin.team.hide', 'Hide')}
+                          aria-label={t('admin.team.hide', 'Hide')}
+                        >
+                          <EyeOff className="h-3.5 w-3.5" />
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="ghost" size="icon"
+                          className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_20%)]"
+                          onClick={() => handleShow(m.id)}
+                          disabled={setActive.isPending}
+                          title={t('admin.team.show', 'Show')}
+                          aria-label={t('admin.team.show', 'Show')}
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
                       <Button
                         variant="ghost" size="icon"
                         className="h-8 w-8 text-[hsl(0_0%_45%)] hover:text-red-500"
@@ -412,6 +489,71 @@ export default function AdminTeam() {
           ? t('admin.team.confirmDeleteDesc', 'Remove "{{name}}" from the team? This action can\'t be undone.', { name: pendingName })
           : undefined}
       />
+
+      {/* Hide a member who has no properties — a plain confirm is enough. */}
+      <ConfirmDialog
+        open={!!pendingHide}
+        onOpenChange={(o) => !o && setPendingHide(null)}
+        onConfirm={() => { if (pendingHide) handleHideNoProps(pendingHide.id); setPendingHide(null); }}
+        destructive={false}
+        confirmLabel={t('admin.team.hide', 'Hide')}
+        title={pendingHide
+          ? t('admin.team.confirmHideTitle', 'Hide {{name}}?', { name: pendingHide.name })
+          : undefined}
+        description={t('admin.team.confirmHideDesc', 'They will no longer appear on the site.')}
+      />
+
+      {/* Hide a member who still holds properties — force a reassignment first. */}
+      <Dialog open={!!transferMember} onOpenChange={(o) => { if (!o) setTransferMember(null); }}>
+        <DialogContent className="max-w-md bg-white border-[hsl(0_0%_90%)]">
+          <DialogHeader>
+            <DialogTitle className="text-[hsl(0_0%_15%)]">
+              {transferMember
+                ? t('admin.team.transfer.title', 'Hide {{name}}?', { name: transferMember.name })
+                : ''}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-[hsl(0_0%_45%)]">
+              {transferMember
+                ? t('admin.team.transfer.body', '{{name}} has {{count}} properties. Choose an agent to receive them:', { name: transferMember.name, count: transferMember.propertyCount })
+                : ''}
+            </p>
+            <div className="space-y-2">
+              <Label className={labelClass}>{t('admin.team.transfer.agent', 'Receiving agent')}</Label>
+              <Select value={transferTo} onValueChange={setTransferTo}>
+                <SelectTrigger className={inputClass}>
+                  <SelectValue placeholder={t('admin.team.transfer.selectAgent', 'Select an agent…')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {(team ?? [])
+                    .filter(m => m.isActive && m.id !== transferMember?.id)
+                    .map(m => (
+                      <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button
+              variant="outline"
+              onClick={() => setTransferMember(null)}
+              className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)]"
+            >
+              {t('admin.common.cancel')}
+            </Button>
+            <Button
+              onClick={handleHideTransfer}
+              disabled={!transferTo || setActive.isPending}
+              className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]"
+            >
+              {setActive.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+              {t('admin.team.transfer.confirm', 'Hide & transfer')}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

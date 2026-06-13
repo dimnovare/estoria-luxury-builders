@@ -719,14 +719,30 @@
         "added": "Liige lisatud",
         "saveFailed": "Liikme salvestamine ebaõnnestus",
         "removed": "Liige eemaldatud",
-        "removeFailed": "Liikme eemaldamine ebaõnnestus"
+        "removeFailed": "Liikme eemaldamine ebaõnnestus",
+        "shown": "Liige on nüüd nähtav.",
+        "hidden": "Liige peidetud.",
+        "hiddenTransferred": "Liige peidetud; objektid üle antud.",
+        "visibilityFailed": "Nähtavuse muutmine ebaõnnestus."
       },
       "confirmDeleteDesc": "Eemaldada \"{{name}}\" meeskonnast? Seda toimingut ei saa tagasi võtta.",
       "translateHint": "Kirjuta ametinimetus ja tutvustus eesti keeles, seejärel tõlgi need ühe klikiga teistesse keeltesse. Nimi kopeeritakse muutmata kujul. Saad seejärel muuta.",
       "validation": {
         "nameRequired": "Eesti nimi on kohustuslik."
       },
-      "subtitle": "Halda Meist-lehel kuvatavaid meeskonnaliikmete profiile. Lohista ümberjärjestamiseks."
+      "subtitle": "Halda Meist-lehel kuvatavaid meeskonnaliikmete profiile. Lohista ümberjärjestamiseks.",
+      "hidden": "Peidetud",
+      "hide": "Peida",
+      "show": "Näita",
+      "confirmHideTitle": "Kas peita {{name}}?",
+      "confirmHideDesc": "Teda ei kuvata enam veebilehel.",
+      "transfer": {
+        "title": "Kas peita {{name}}?",
+        "body": "{{name}} hallata on {{count}} objekti. Vali maakler, kellele need üle anda:",
+        "agent": "Vastuvõttev maakler",
+        "selectAgent": "Vali maakler…",
+        "confirm": "Peida ja anna üle"
+      }
     },
     "services": {
       "title": "Teenused",

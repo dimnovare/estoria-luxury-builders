@@ -97,6 +97,8 @@ export interface AdminTeamMember {
   phone: string;
   email: string;
   languages: string[];
+  isActive: boolean;
+  propertyCount: number;
 }
 
 /// Full admin-edit shape returned by GET /admin/team/{id}. Translations are
@@ -524,6 +526,15 @@ export function useUploadTeamPhoto() {
       qc.invalidateQueries({ queryKey: ['admin', 'team'] });
       qc.invalidateQueries({ queryKey: ['team'] });
     },
+  });
+}
+
+export function useSetTeamMemberActive() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, isActive, reassignToAgentId }: { id: string; isActive: boolean; reassignToAgentId?: string }) =>
+      api.patch(`/admin/team/${id}/active`, { isActive, reassignToAgentId }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin','team'] }); qc.invalidateQueries({ queryKey: ['team'] }); },
   });
 }
 
