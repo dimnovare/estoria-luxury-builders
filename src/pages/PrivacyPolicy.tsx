@@ -1,8 +1,13 @@
+// ET/RU privacy translations are machine-generated and should be reviewed by the owner/legal.
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useSiteSettings } from '@/hooks/api/useSiteSettings';
+import { formatDate } from '@/lib/formatDate';
 import Seo from '@/components/Seo';
+
+// Fixed policy date so the "last updated" line doesn't change daily.
+const POLICY_DATE = '2026-06-03';
 
 export default function PrivacyPolicy() {
   const { t } = useTranslation();
@@ -11,6 +16,10 @@ export default function PrivacyPolicy() {
   const companyName    = settings?.['legal.company_name']    || 'ESTORIA CAPITAL GROUP OÜ';
   const registryCode   = settings?.['legal.registry_code']   || '17477775';
   const contactAddress = settings?.['contact.address']       || 'Katusepapi 6, Tallinn 11412, Estonia';
+
+  const collectItems = t('privacy.sections.dataWeCollect.items', { returnObjects: true }) as string[];
+  const useItems     = t('privacy.sections.howWeUse.items', { returnObjects: true }) as string[];
+  const rightsItems  = t('privacy.sections.rights.items', { returnObjects: true }) as string[];
 
   return (
     <>
@@ -45,102 +54,98 @@ export default function PrivacyPolicy() {
           className="container mx-auto max-w-3xl prose prose-invert prose-headings:font-heading prose-headings:font-light prose-p:font-body prose-p:text-muted-foreground prose-a:text-primary"
         >
           <p className="text-sm text-muted-foreground font-body mb-8">
-            Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            {t('privacy.lastUpdated')} {formatDate(POLICY_DATE)}
           </p>
 
           <div className="space-y-10 font-body text-muted-foreground leading-relaxed">
 
             <div>
-              <h2 className="font-heading text-2xl text-foreground font-light mb-4">1. Who We Are</h2>
+              <h2 className="font-heading text-2xl text-foreground font-light mb-4">
+                {t('privacy.sections.whoWeAre.heading')}
+              </h2>
               <p>
-                {companyName} (registry code: <strong className="text-foreground">{registryCode}</strong>),
-                registered address <strong className="text-foreground">{contactAddress}</strong>,
-                is the data controller responsible for the personal data collected through this website
-                (estoria.estate).
+                {t('privacy.sections.whoWeAre.intro', {
+                  companyName,
+                  registryCode,
+                  contactAddress,
+                })}
               </p>
               <p className="mt-2">
-                Contact: <a href="mailto:info@estoria.estate" className="text-primary hover:underline">info@estoria.estate</a>
+                {t('privacy.sections.whoWeAre.contactLabel')}{' '}
+                <a href="mailto:info@estoria.estate" className="text-primary hover:underline">info@estoria.estate</a>
               </p>
             </div>
 
             <div>
-              <h2 className="font-heading text-2xl text-foreground font-light mb-4">2. Data We Collect</h2>
-              <p>We collect personal data in the following situations:</p>
+              <h2 className="font-heading text-2xl text-foreground font-light mb-4">
+                {t('privacy.sections.dataWeCollect.heading')}
+              </h2>
+              <p>{t('privacy.sections.dataWeCollect.intro')}</p>
               <ul className="mt-3 space-y-2 list-disc list-inside">
-                <li>
-                  <strong className="text-foreground">Contact form</strong> — name, email address,
-                  phone number (optional), and your message. Lawful basis: your consent / legitimate
-                  interest in responding to your inquiry.
-                </li>
-                <li>
-                  <strong className="text-foreground">Property inquiry</strong> — same as contact form,
-                  plus a reference to the property you are enquiring about.
-                </li>
-                <li>
-                  <strong className="text-foreground">Newsletter subscription</strong> — email address
-                  and preferred language. Lawful basis: your explicit consent.
-                </li>
+                {collectItems.map((item, i) => (
+                  <li key={i}>{item}</li>
+                ))}
               </ul>
               <p className="mt-3">
-                We do not collect sensitive personal data (health, financial, or identity documents)
-                through this website.
+                {t('privacy.sections.dataWeCollect.note')}
               </p>
             </div>
 
             <div>
-              <h2 className="font-heading text-2xl text-foreground font-light mb-4">3. How We Use Your Data</h2>
+              <h2 className="font-heading text-2xl text-foreground font-light mb-4">
+                {t('privacy.sections.howWeUse.heading')}
+              </h2>
               <ul className="space-y-2 list-disc list-inside">
-                <li>Responding to your contact or property enquiry</li>
-                <li>Sending newsletter emails you have subscribed to</li>
-                <li>Improving our services based on the enquiries we receive</li>
+                {useItems.map((item, i) => (
+                  <li key={i}>{item}</li>
+                ))}
               </ul>
               <p className="mt-3">
-                We do not sell, rent, or share your personal data with third parties for their own
-                marketing purposes.
+                {t('privacy.sections.howWeUse.note')}
               </p>
             </div>
 
             <div>
-              <h2 className="font-heading text-2xl text-foreground font-light mb-4">4. Data Retention</h2>
+              <h2 className="font-heading text-2xl text-foreground font-light mb-4">
+                {t('privacy.sections.retention.heading')}
+              </h2>
               <p>
-                Contact and inquiry messages are retained for up to <strong className="text-foreground">3 years</strong> from
-                the date of submission, after which they are deleted.
-                Newsletter subscriptions are retained until you unsubscribe.
+                {t('privacy.sections.retention.body')}
               </p>
             </div>
 
             <div>
-              <h2 className="font-heading text-2xl text-foreground font-light mb-4">5. Your Rights Under GDPR</h2>
-              <p>As a data subject you have the right to:</p>
+              <h2 className="font-heading text-2xl text-foreground font-light mb-4">
+                {t('privacy.sections.rights.heading')}
+              </h2>
+              <p>{t('privacy.sections.rights.intro')}</p>
               <ul className="mt-3 space-y-2 list-disc list-inside">
-                <li><strong className="text-foreground">Access</strong> — request a copy of the personal data we hold about you</li>
-                <li><strong className="text-foreground">Rectification</strong> — correct inaccurate or incomplete data</li>
-                <li><strong className="text-foreground">Erasure</strong> — request deletion of your data</li>
-                <li><strong className="text-foreground">Restriction</strong> — ask us to pause processing your data</li>
-                <li><strong className="text-foreground">Portability</strong> — receive your data in a machine-readable format</li>
-                <li><strong className="text-foreground">Objection</strong> — object to processing based on legitimate interest</li>
-                <li><strong className="text-foreground">Withdraw consent</strong> — unsubscribe from the newsletter at any time</li>
+                {rightsItems.map((item, i) => (
+                  <li key={i}>{item}</li>
+                ))}
               </ul>
               <p className="mt-3">
-                To exercise any of these rights, email us at{' '}
-                <a href={`mailto:${contactEmail}`} className="text-primary hover:underline">{contactEmail}</a>.
-                We will respond within 30 days.
+                {t('privacy.sections.rights.contactBefore')}
+                <a href={`mailto:${contactEmail}`} className="text-primary hover:underline">{contactEmail}</a>
+                {t('privacy.sections.rights.contactAfter')}
               </p>
             </div>
 
             <div>
-              <h2 className="font-heading text-2xl text-foreground font-light mb-4">6. Cookies</h2>
+              <h2 className="font-heading text-2xl text-foreground font-light mb-4">
+                {t('privacy.sections.cookies.heading')}
+              </h2>
               <p>
-                This website uses only technically necessary cookies required for basic functionality
-                (e.g. language preference). We do not use advertising or tracking cookies.
+                {t('privacy.sections.cookies.body')}
               </p>
             </div>
 
             <div>
-              <h2 className="font-heading text-2xl text-foreground font-light mb-4">7. Complaints</h2>
+              <h2 className="font-heading text-2xl text-foreground font-light mb-4">
+                {t('privacy.sections.complaints.heading')}
+              </h2>
               <p>
-                You have the right to lodge a complaint with the Estonian Data Protection Inspectorate
-                (Andmekaitse Inspektsioon) at{' '}
+                {t('privacy.sections.complaints.before')}
                 <a
                   href="https://www.aki.ee"
                   target="_blank"
@@ -148,8 +153,8 @@ export default function PrivacyPolicy() {
                   className="text-primary hover:underline"
                 >
                   www.aki.ee
-                </a>{' '}
-                if you believe we are processing your data unlawfully.
+                </a>
+                {t('privacy.sections.complaints.after')}
               </p>
             </div>
 

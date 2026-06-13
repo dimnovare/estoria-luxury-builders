@@ -165,6 +165,12 @@ export default function AdminTasks() {
           <h1 className="text-2xl font-semibold text-[hsl(0_0%_15%)]">{t('admin.tasks.title')}</h1>
           <p className="text-sm text-[hsl(0_0%_45%)] mt-1">Manage to-do items for yourself and team members. Set due dates and reminders.</p>
         </div>
+        <Button
+          onClick={() => { setEditTaskId(undefined); setShowForm(true); }}
+          className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] shrink-0"
+        >
+          <Plus className="h-4 w-4 mr-2" />{t('admin.tasks.addNew', 'New Task')}
+        </Button>
       </div>
 
       {/* Tabs */}

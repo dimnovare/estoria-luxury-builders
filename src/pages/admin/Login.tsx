@@ -38,41 +38,41 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
+    <div className="min-h-screen flex items-center justify-center bg-[hsl(0_0%_4%)]">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md bg-[#111] border border-[#222] p-10 space-y-8"
+        className="w-full max-w-md bg-[hsl(0_0%_7%)] border border-[hsl(0_0%_13%)] p-10 space-y-8"
       >
         <div className="text-center space-y-2">
           <h1 className="font-heading text-3xl tracking-[0.3em] text-[hsl(43_50%_54%)]">
             ESTORIA
           </h1>
-          <p className="text-sm tracking-widest uppercase text-[#888]">
+          <p className="text-sm tracking-widest uppercase text-[hsl(0_0%_65%)]">
             {t('admin.login.portalTitle')}
           </p>
         </div>
 
         <div className="space-y-5">
           <div>
-            <Label className="text-[#aaa] text-xs tracking-wider uppercase">{t('admin.login.emailLabel')}</Label>
+            <Label className="text-[hsl(40_33%_95%)] text-xs tracking-wider uppercase">{t('admin.login.emailLabel')}</Label>
             <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="mt-2 bg-[#1a1a1a] border-[#333] text-[#f5f0e8]"
+              className="mt-2 bg-[hsl(0_0%_10%)] border-[hsl(0_0%_20%)] text-[hsl(40_33%_95%)]"
               autoFocus
             />
           </div>
 
           <div>
-            <Label className="text-[#aaa] text-xs tracking-wider uppercase">{t('admin.login.passwordLabel')}</Label>
+            <Label className="text-[hsl(40_33%_95%)] text-xs tracking-wider uppercase">{t('admin.login.passwordLabel')}</Label>
             <Input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="mt-2 bg-[#1a1a1a] border-[#333] text-[#f5f0e8]"
+              className="mt-2 bg-[hsl(0_0%_10%)] border-[hsl(0_0%_20%)] text-[hsl(40_33%_95%)]"
             />
           </div>
 
@@ -83,7 +83,7 @@ export default function Login() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-[hsl(43_50%_54%)] to-[hsl(43_40%_45%)] text-[#0a0a0a] font-semibold tracking-wider uppercase hover:opacity-90"
+            className="w-full bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)] font-semibold tracking-wider uppercase"
           >
             {loading ? t('admin.login.signingIn') : t('admin.login.signIn')}
           </Button>

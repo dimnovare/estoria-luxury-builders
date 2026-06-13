@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Loader2, X } from 'lucide-react';
+import { ArrowLeft, Loader2, X, ImagePlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAdminUser, useCreateUser, useUpdateUser } from '@/hooks/api/useAdminUsers';
-import { useAdminTeam } from '@/hooks/api/useAdmin';
+import { useAdminTeam, useUploadFile } from '@/hooks/api/useAdmin';
 import { toast } from 'sonner';
 import type { AxiosError } from 'axios';
 
@@ -27,6 +27,7 @@ export default function UserForm() {
   const { data: teamData } = useAdminTeam();
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
+  const uploadFile = useUploadFile();
 
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
@@ -37,6 +38,14 @@ export default function UserForm() {
   const [teamMemberId, setTeamMemberId] = useState('none');
   const [isActive, setIsActive] = useState(true);
   const [password, setPassword] = useState('');
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  // Refs used to focus/scroll to the first missing required field when the
+  // user presses Save with the form incomplete (Save is always clickable now).
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const fullNameRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (existing) {
@@ -55,9 +64,40 @@ export default function UserForm() {
     setter(arr.includes(item) ? arr.filter(x => x !== item) : [...arr, item]);
   };
 
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingPhoto(true);
+    try {
+      const result = await uploadFile.mutateAsync({ file, folder: 'users' });
+      setPhotoUrl(result.url);
+    } catch {
+      toast.error(t('admin.users.fields.uploadFailed', 'Photo upload failed. Please try again.'));
+    } finally {
+      setUploadingPhoto(false);
+      // Reset so re-selecting the same file fires the change event again.
+      if (photoInputRef.current) photoInputRef.current.value = '';
+    }
+  };
+
   const handleSave = async () => {
-    if (!email || !fullName) return;
-    if (!isEdit && !password) return;
+    // Save is always clickable: instead of a silently-disabled button, show a
+    // clear toast and jump to the first missing required field so a
+    // non-technical user understands what to fill in.
+    const firstInvalid = !email.trim()
+      ? emailRef
+      : !fullName.trim()
+        ? fullNameRef
+        : (!isEdit && !password)
+          ? passwordRef
+          : null;
+
+    if (firstInvalid) {
+      toast.error(t('admin.users.validation.required', 'Please fill in all required fields marked with *.'));
+      firstInvalid.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      firstInvalid.current?.focus();
+      return;
+    }
 
     // The "—" option uses the sentinel value 'none' (Radix Select can't use an
     // empty-string value). Normalize it (and any empty value) to undefined so
@@ -93,6 +133,10 @@ export default function UserForm() {
   const inputClass = "border-[hsl(0_0%_85%)] bg-white text-[hsl(0_0%_15%)] focus:border-[hsl(43_50%_54%)] focus:ring-[hsl(43_50%_54%)]";
   const labelClass = "text-sm text-[hsl(0_0%_40%)] font-medium";
 
+  // Visual-only asterisk for required fields. aria-hidden so screen readers
+  // rely on the input's own `required` attribute instead of reading the "*".
+  const RequiredMark = () => <span aria-hidden="true" className="text-red-500 ml-0.5">*</span>;
+
   if (isEdit && loadingUser) {
     return (
       <div className="flex items-center justify-center py-24">
@@ -114,12 +158,12 @@ export default function UserForm() {
         <CardContent className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className={labelClass}>{t('admin.users.fields.email')}</Label>
-              <Input type="email" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} disabled={isEdit} />
+              <Label className={labelClass}>{t('admin.users.fields.email')}{!isEdit && <RequiredMark />}</Label>
+              <Input ref={emailRef} type="email" required={!isEdit} aria-required={!isEdit} value={email} onChange={e => setEmail(e.target.value)} className={inputClass} disabled={isEdit} />
             </div>
             <div className="space-y-2">
-              <Label className={labelClass}>{t('admin.users.fields.fullName')}</Label>
-              <Input value={fullName} onChange={e => setFullName(e.target.value)} className={inputClass} />
+              <Label className={labelClass}>{t('admin.users.fields.fullName')}<RequiredMark /></Label>
+              <Input ref={fullNameRef} required aria-required value={fullName} onChange={e => setFullName(e.target.value)} className={inputClass} />
             </div>
           </div>
 
@@ -128,10 +172,51 @@ export default function UserForm() {
               <Label className={labelClass}>{t('admin.users.fields.phone')}</Label>
               <Input value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} />
             </div>
-            <div className="space-y-2">
-              <Label className={labelClass}>{t('admin.users.fields.photoUrl')}</Label>
-              <Input value={photoUrl} onChange={e => setPhotoUrl(e.target.value)} className={inputClass} />
+          </div>
+
+          {/* Photo — upload with preview (replaces the old raw URL text input) */}
+          <div className="space-y-2">
+            <Label className={labelClass}>{t('admin.users.fields.photo', 'Photo')}</Label>
+            <div className="flex items-center gap-3">
+              {photoUrl ? (
+                <img src={photoUrl} alt="" className="h-16 w-16 rounded-full object-cover border border-[hsl(0_0%_90%)]" />
+              ) : (
+                <div className="h-16 w-16 rounded-full border border-dashed border-[hsl(0_0%_80%)] bg-[hsl(0_0%_96%)] flex items-center justify-center text-[hsl(0_0%_60%)]">
+                  <ImagePlus className="h-5 w-5" />
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => photoInputRef.current?.click()}
+                  disabled={uploadingPhoto}
+                  className="border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)]"
+                >
+                  {uploadingPhoto && <Loader2 className="h-3.5 w-3.5 mr-2 animate-spin" />}
+                  {photoUrl
+                    ? t('admin.users.fields.changePhoto', 'Change photo')
+                    : t('admin.users.fields.uploadPhoto', 'Upload photo')}
+                </Button>
+                {photoUrl && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setPhotoUrl('')}
+                    className="text-[hsl(0_0%_50%)] hover:text-red-500"
+                  >
+                    <X className="h-3.5 w-3.5 mr-1" />
+                    {t('admin.users.fields.removePhoto', 'Remove')}
+                  </Button>
+                )}
+              </div>
             </div>
+            <p className="text-xs text-[hsl(0_0%_55%)]">
+              {t('admin.users.fields.photoHint', 'Upload a profile picture (JPG or PNG). It appears next to this user across the admin.')}
+            </p>
+            <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
           </div>
 
           {/* Languages */}
@@ -203,8 +288,8 @@ export default function UserForm() {
           {/* Password (create only) */}
           {!isEdit && (
             <div className="space-y-2">
-              <Label className={labelClass}>{t('admin.users.fields.password')}</Label>
-              <Input type="password" value={password} onChange={e => setPassword(e.target.value)} className={inputClass} autoComplete="new-password" />
+              <Label className={labelClass}>{t('admin.users.fields.password')}<RequiredMark /></Label>
+              <Input ref={passwordRef} type="password" required aria-required value={password} onChange={e => setPassword(e.target.value)} className={inputClass} autoComplete="new-password" />
             </div>
           )}
         </CardContent>
@@ -213,9 +298,10 @@ export default function UserForm() {
       <div className="flex justify-end">
         <Button
           onClick={handleSave}
-          disabled={isSaving || !email || !fullName || (!isEdit && !password)}
+          disabled={isSaving || uploadingPhoto}
           className="bg-[hsl(43_50%_54%)] hover:bg-[hsl(43_50%_48%)] text-[hsl(0_0%_4%)]"
         >
+          {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           {t('admin.users.saveUser')}
         </Button>
       </div>

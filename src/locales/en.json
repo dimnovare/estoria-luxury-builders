@@ -253,6 +253,63 @@
       "investment": "Investment Advisory"
     }
   },
+  "privacy": {
+    "lastUpdated": "Last updated:",
+    "sections": {
+      "whoWeAre": {
+        "heading": "1. Who We Are",
+        "intro": "{{companyName}} (registry code: {{registryCode}}), registered address {{contactAddress}}, is the data controller responsible for the personal data collected through this website (estoria.estate).",
+        "contactLabel": "Contact:"
+      },
+      "dataWeCollect": {
+        "heading": "2. Data We Collect",
+        "intro": "We collect personal data in the following situations:",
+        "items": [
+          "Contact form — name, email address, phone number (optional), and your message. Lawful basis: your consent / legitimate interest in responding to your inquiry.",
+          "Property inquiry — same as contact form, plus a reference to the property you are enquiring about.",
+          "Newsletter subscription — email address and preferred language. Lawful basis: your explicit consent."
+        ],
+        "note": "We do not collect sensitive personal data (health, financial, or identity documents) through this website."
+      },
+      "howWeUse": {
+        "heading": "3. How We Use Your Data",
+        "items": [
+          "Responding to your contact or property enquiry",
+          "Sending newsletter emails you have subscribed to",
+          "Improving our services based on the enquiries we receive"
+        ],
+        "note": "We do not sell, rent, or share your personal data with third parties for their own marketing purposes."
+      },
+      "retention": {
+        "heading": "4. Data Retention",
+        "body": "Contact and inquiry messages are retained for up to 3 years from the date of submission, after which they are deleted. Newsletter subscriptions are retained until you unsubscribe."
+      },
+      "rights": {
+        "heading": "5. Your Rights Under GDPR",
+        "intro": "As a data subject you have the right to:",
+        "items": [
+          "Access — request a copy of the personal data we hold about you",
+          "Rectification — correct inaccurate or incomplete data",
+          "Erasure — request deletion of your data",
+          "Restriction — ask us to pause processing your data",
+          "Portability — receive your data in a machine-readable format",
+          "Objection — object to processing based on legitimate interest",
+          "Withdraw consent — unsubscribe from the newsletter at any time"
+        ],
+        "contactBefore": "To exercise any of these rights, email us at ",
+        "contactAfter": ". We will respond within 30 days."
+      },
+      "cookies": {
+        "heading": "6. Cookies",
+        "body": "This website uses only technically necessary cookies required for basic functionality (e.g. language preference). We do not use advertising or tracking cookies."
+      },
+      "complaints": {
+        "heading": "7. Complaints",
+        "before": "You have the right to lodge a complaint with the Estonian Data Protection Inspectorate (Andmekaitse Inspektsioon) at ",
+        "after": " if you believe we are processing your data unlawfully."
+      }
+    }
+  },
   "common": {
     "loading": "Loading…",
     "error": "Something went wrong",
@@ -837,7 +894,16 @@
         "roles": "Roles",
         "teamMember": "Team Member",
         "active": "Active",
-        "password": "Password"
+        "password": "Password",
+        "photo": "Photo",
+        "uploadPhoto": "Upload photo",
+        "changePhoto": "Change photo",
+        "removePhoto": "Remove",
+        "photoHint": "Upload a profile picture (JPG or PNG). It appears next to this user across the admin.",
+        "uploadFailed": "Photo upload failed. Please try again."
+      },
+      "validation": {
+        "required": "Please fill in all required fields marked with *."
       },
       "actions": {
         "resetPassword": "Reset Password",

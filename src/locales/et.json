@@ -253,6 +253,63 @@
       "investment": "Investeerimisnõustamine"
     }
   },
+  "privacy": {
+    "lastUpdated": "Viimati uuendatud:",
+    "sections": {
+      "whoWeAre": {
+        "heading": "1. Kes me oleme",
+        "intro": "{{companyName}} (registrikood: {{registryCode}}), registreeritud aadress {{contactAddress}}, on vastutav töötleja selle veebisaidi (estoria.estate) kaudu kogutud isikuandmete eest.",
+        "contactLabel": "Kontakt:"
+      },
+      "dataWeCollect": {
+        "heading": "2. Milliseid andmeid me kogume",
+        "intro": "Kogume isikuandmeid järgmistes olukordades:",
+        "items": [
+          "Kontaktivorm — nimi, e-posti aadress, telefoninumber (valikuline) ja teie sõnum. Õiguslik alus: teie nõusolek / õigustatud huvi teie päringule vastamiseks.",
+          "Kinnisvarapäring — sama mis kontaktivormil, lisaks viide kinnisvaraobjektile, mille kohta päringu esitate.",
+          "Uudiskirja tellimus — e-posti aadress ja eelistatud keel. Õiguslik alus: teie selgesõnaline nõusolek."
+        ],
+        "note": "Me ei kogu selle veebisaidi kaudu tundlikke isikuandmeid (terviseandmed, finantsandmed ega isikut tõendavad dokumendid)."
+      },
+      "howWeUse": {
+        "heading": "3. Kuidas me teie andmeid kasutame",
+        "items": [
+          "Teie kontakti- või kinnisvarapäringule vastamine",
+          "Teie tellitud uudiskirjade saatmine",
+          "Oma teenuste parandamine saadud päringute põhjal"
+        ],
+        "note": "Me ei müü, rendi ega jaga teie isikuandmeid kolmandate isikutega nende endi turunduslikel eesmärkidel."
+      },
+      "retention": {
+        "heading": "4. Andmete säilitamine",
+        "body": "Kontakti- ja päringusõnumeid säilitatakse kuni 3 aastat alates esitamise kuupäevast, misjärel need kustutatakse. Uudiskirja tellimusi säilitatakse kuni tellimusest loobumiseni."
+      },
+      "rights": {
+        "heading": "5. Teie õigused GDPR-i alusel",
+        "intro": "Andmesubjektina on teil õigus:",
+        "items": [
+          "Juurdepääs — taotleda koopiat teie kohta hoitavatest isikuandmetest",
+          "Parandamine — parandada ebatäpsed või puudulikud andmed",
+          "Kustutamine — taotleda oma andmete kustutamist",
+          "Piiramine — paluda meil oma andmete töötlemine peatada",
+          "Ülekantavus — saada oma andmed masinloetavas vormingus",
+          "Vastuväide — esitada vastuväide õigustatud huvil põhinevale töötlemisele",
+          "Nõusoleku tagasivõtmine — loobuda uudiskirjast igal ajal"
+        ],
+        "contactBefore": "Nende õiguste kasutamiseks kirjutage meile aadressil ",
+        "contactAfter": ". Vastame 30 päeva jooksul."
+      },
+      "cookies": {
+        "heading": "6. Küpsised",
+        "body": "See veebisait kasutab ainult tehniliselt vajalikke küpsiseid, mis on vajalikud põhifunktsioonide jaoks (nt keele-eelistus). Me ei kasuta reklaami- ega jälgimisküpsiseid."
+      },
+      "complaints": {
+        "heading": "7. Kaebused",
+        "before": "Teil on õigus esitada kaebus Eesti Andmekaitse Inspektsioonile aadressil ",
+        "after": ", kui leiate, et töötleme teie andmeid ebaseaduslikult."
+      }
+    }
+  },
   "common": {
     "loading": "Laadimine…",
     "error": "Midagi läks valesti",
@@ -837,7 +894,16 @@
         "roles": "Rollid",
         "teamMember": "Meeskonnaliige",
         "active": "Aktiivne",
-        "password": "Parool"
+        "password": "Parool",
+        "photo": "Foto",
+        "uploadPhoto": "Laadi foto üles",
+        "changePhoto": "Muuda fotot",
+        "removePhoto": "Eemalda",
+        "photoHint": "Laadi üles profiilipilt (JPG või PNG). See kuvatakse selle kasutaja kõrval kogu administraatoriliideses.",
+        "uploadFailed": "Foto üleslaadimine ebaõnnestus. Palun proovi uuesti."
+      },
+      "validation": {
+        "required": "Palun täida kõik tärniga (*) tähistatud kohustuslikud väljad."
       },
       "actions": {
         "resetPassword": "Lähtesta parool",
