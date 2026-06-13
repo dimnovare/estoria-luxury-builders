@@ -18,6 +18,7 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
 import {
   useDeal, useActivities, useCreateActivity, useChangeStage,
   useAddParticipant, useRemoveParticipant, useContactSearch,
@@ -49,7 +50,7 @@ export default function DealDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data: deal, isLoading } = useDeal(id);
+  const { data: deal, isLoading, isError, refetch } = useDeal(id);
   const { data: activitiesData } = useActivities({ dealId: id, pageSize: 50 });
   const createActivity = useCreateActivity();
   const changeStage = useChangeStage();
@@ -73,10 +74,21 @@ export default function DealDetail() {
   const [pendingParticipantRemove, setPendingParticipantRemove] = useState<string | null>(null);
   const { data: participantResults } = useContactSearch(participantSearch);
 
-  if (isLoading || !deal) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center py-24">
         <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (isError || !deal) {
+    return (
+      <div className="py-12">
+        <ErrorState
+          description={t('admin.deals.loadError', 'Could not load this deal.')}
+          onRetry={() => refetch()}
+        />
       </div>
     );
   }
@@ -159,19 +171,19 @@ export default function DealDetail() {
                 {deal.expectedValue && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('admin.deals.fields.expectedValue')}</span>
-                    <span className="text-foreground font-medium">€{deal.expectedValue.toLocaleString()}</span>
+                    <span className="text-foreground font-medium tabular-nums">€{deal.expectedValue.toLocaleString()}</span>
                   </div>
                 )}
                 {deal.actualValue && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('admin.deals.fields.actualValue')}</span>
-                    <span className="text-foreground font-medium">€{deal.actualValue.toLocaleString()}</span>
+                    <span className="text-foreground font-medium tabular-nums">€{deal.actualValue.toLocaleString()}</span>
                   </div>
                 )}
                 {deal.expectedCloseDate && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('admin.deals.fields.expectedCloseDate')}</span>
-                    <span className="text-foreground">{formatDate(deal.expectedCloseDate)}</span>
+                    <span className="text-foreground tabular-nums">{formatDate(deal.expectedCloseDate)}</span>
                   </div>
                 )}
               </div>
@@ -273,7 +285,7 @@ export default function DealDetail() {
                       <p className="text-xs text-muted-foreground">{p.role}</p>
                     </div>
                     {PARTICIPANTS_WRITE_ENABLED && (
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                      <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive"
                         onClick={() => setPendingParticipantRemove(p.id)}
                         aria-label={t('admin.deals.removeParticipant', 'Remove participant')}
                         title={t('admin.deals.removeParticipant', 'Remove participant')}

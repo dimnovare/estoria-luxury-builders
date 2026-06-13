@@ -130,6 +130,20 @@ export default function DealForm() {
     }
   };
 
+  // Save stays clickable; if zod validation blocks submit we surface a clear
+  // toast so a non-technical user on mobile (where the failing field may be
+  // off-screen) understands something is missing. Inline field errors still
+  // render as before — this only adds the toast.
+  const onInvalid = () => {
+    toast.error(t('admin.deals.validation.required', 'Please fill in all required fields marked with *.'));
+  };
+
+  const isSaving = createDeal.isPending || updateDeal.isPending;
+
+  // Visual-only asterisk for required fields. aria-hidden so screen readers
+  // rely on the field's own required semantics rather than reading the "*".
+  const RequiredMark = () => <span aria-hidden="true" className="text-destructive ml-0.5">*</span>;
+
   if (isEdit && isLoading) {
     return (
       <div className="flex items-center justify-center py-24">
@@ -149,18 +163,18 @@ export default function DealForm() {
         </h1>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
         <Card className="bg-card border-border shadow-sm">
           <CardContent className="p-6 space-y-6">
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.title')} *</Label>
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.title')}<RequiredMark /></Label>
               <Input {...register('title')} className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
               {errors.title && <p className="text-xs text-destructive mt-1">{t(errors.title.message ?? '')}</p>}
             </div>
 
             {/* Contact autocomplete */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.primaryContact')} *</Label>
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.primaryContact')}<RequiredMark /></Label>
               <div className="relative mt-1">
                 <Input
                   value={selectedContactName || contactSearch}
@@ -215,7 +229,7 @@ export default function DealForm() {
 
             {/* Agent — disabled for non-Admin */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.assignedAgent')}</Label>
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.assignedAgent')}<RequiredMark /></Label>
               <Controller
                 control={control}
                 name="assignedAgentId"
@@ -230,6 +244,7 @@ export default function DealForm() {
                   </Select>
                 )}
               />
+              {errors.assignedAgentId && <p className="text-xs text-destructive mt-1">{t(errors.assignedAgentId.message ?? '')}</p>}
               {!isAdmin && <p className="text-xs text-muted-foreground mt-1">{t('admin.deals.agentLocked', 'This deal is locked to your account. Ask an administrator to reassign it.')}</p>}
             </div>
 
@@ -271,7 +286,7 @@ export default function DealForm() {
             <div className="grid gap-6 sm:grid-cols-3">
               <div>
                 <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.expectedValue')}</Label>
-                <Input {...register('expectedValue')} type="number" className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
+                <Input {...register('expectedValue')} type="number" inputMode="numeric" className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
                 {errors.expectedValue && <p className="text-xs text-destructive mt-1">{t(errors.expectedValue.message ?? '')}</p>}
               </div>
               <div>
@@ -280,7 +295,7 @@ export default function DealForm() {
               </div>
               <div>
                 <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.deals.fields.commissionPercent')}</Label>
-                <Input {...register('commissionPercent')} type="number" step="0.1" className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
+                <Input {...register('commissionPercent')} type="number" step="0.1" inputMode="decimal" className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground" />
               </div>
             </div>
 
@@ -313,7 +328,8 @@ export default function DealForm() {
 
         <div className="flex justify-end gap-3 mt-6">
           <Button type="button" variant="outline" onClick={() => navigate('/admin/deals')}>{t('admin.common.cancel')}</Button>
-          <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground" disabled={createDeal.isPending || updateDeal.isPending}>
+          <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground" disabled={isSaving}>
+            {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
             {t('admin.deals.saveDeal')}
           </Button>
         </div>

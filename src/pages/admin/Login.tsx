@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +13,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -54,26 +56,47 @@ export default function Login() {
 
         <div className="space-y-5">
           <div>
-            <Label className="text-foreground text-xs tracking-wider uppercase">{t('admin.login.emailLabel')}</Label>
+            <Label className="text-foreground text-xs tracking-wider uppercase">
+              {t('admin.login.emailLabel')}
+              <span className="text-destructive"> *</span>
+            </Label>
             <Input
               type="email"
+              inputMode="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="mt-2 bg-background border-input text-foreground"
+              className="mt-2 h-11 bg-background border-input text-foreground"
               autoFocus
             />
           </div>
 
           <div>
-            <Label className="text-foreground text-xs tracking-wider uppercase">{t('admin.login.passwordLabel')}</Label>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="mt-2 bg-background border-input text-foreground"
-            />
+            <Label className="text-foreground text-xs tracking-wider uppercase">
+              {t('admin.login.passwordLabel')}
+              <span className="text-destructive"> *</span>
+            </Label>
+            <div className="relative">
+              <Input
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="mt-2 h-11 bg-background border-input text-foreground pr-11"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? t('admin.login.hidePassword', 'Hide password') : t('admin.login.showPassword', 'Show password')}
+                className="absolute right-1 top-1/2 -translate-y-1/2 mt-1 h-9 w-9 text-muted-foreground hover:text-foreground"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </Button>
+            </div>
           </div>
 
           {error && (
@@ -83,8 +106,9 @@ export default function Login() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold tracking-wider uppercase"
+            className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold tracking-wider uppercase"
           >
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {loading ? t('admin.login.signingIn') : t('admin.login.signIn')}
           </Button>
         </div>

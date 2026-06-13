@@ -204,7 +204,10 @@ export default function BlogForm() {
           </div>
 
           <div className="space-y-2">
-            <Label className={labelClass}>{t('admin.blog.fields.author')}</Label>
+            <Label className={labelClass}>
+              {t('admin.blog.fields.author')}
+              <span className="text-destructive ml-1" aria-hidden="true">*</span>
+            </Label>
             <Select value={authorId} onValueChange={setAuthorId}>
               <SelectTrigger className={inputClass}><SelectValue placeholder={t('admin.blog.fields.selectAuthor')} /></SelectTrigger>
               <SelectContent>

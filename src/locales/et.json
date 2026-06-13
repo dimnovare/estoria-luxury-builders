@@ -483,7 +483,9 @@
       "passwordLabel": "Parool",
       "signIn": "Logi sisse",
       "signingIn": "Sisselogimine…",
-      "invalidCredentials": "Vale e-post või parool"
+      "invalidCredentials": "Vale e-post või parool",
+      "showPassword": "Näita parooli",
+      "hidePassword": "Peida parool"
     },
     "dashboard": {
       "title": "Töölaud",
@@ -500,7 +502,8 @@
       "noMessages": "Sõnumeid pole veel.",
       "quickActions": "Kiirtoimingud",
       "addProperty": "Lisa objekt",
-      "newBlogPost": "Uus blogipostitus"
+      "newBlogPost": "Uus blogipostitus",
+      "statsError": "Töölaua statistika laadimine ebaõnnestus. Palun proovige uuesti."
     },
     "properties": {
       "title": "Kinnisvara",
@@ -1167,7 +1170,9 @@
       "pinNote": "Kinnita märkus",
       "unpinNote": "Vabasta märkus",
       "removeTag": "Eemalda silt",
-      "loadError": "Kontaktide laadimine ebaõnnestus. Palun proovige uuesti."
+      "loadError": "Kontaktide laadimine ebaõnnestus. Palun proovige uuesti.",
+      "addNote": "Lisa märkus",
+      "loadDetailError": "Selle kontakti laadimine ebaõnnestus. Palun proovige uuesti."
     },
     "deals": {
       "title": "Tehingud",
@@ -1266,7 +1271,10 @@
       "subtitle": "Jälgi tehinguid etappide kaupa müügivihjest sõlmimiseni. Seo tehingud kontaktide, kinnisvara ja e-kirjavestlustega.",
       "confirmRemoveParticipant": "Eemaldada see osaleja?",
       "removeParticipant": "Eemalda osaleja",
-      "loadError": "Tehingute laadimine ebaõnnestus. Palun proovige uuesti."
+      "loadError": "Tehingute laadimine ebaõnnestus. Palun proovige uuesti.",
+      "validation": {
+        "required": "Palun täitke kõik tärniga (*) tähistatud kohustuslikud väljad."
+      }
     },
     "activities": {
       "title": "Tegevused",
@@ -1566,7 +1574,8 @@
         "noMatches": "Vasteid pole",
         "searchContacts": "Otsi kontakte...",
         "searchDeals": "Otsi tehinguid..."
-      }
+      },
+      "loadError": "Sõnumite laadimine ebaõnnestus. Palun proovige uuesti."
     },
     "entityPicker": {
       "search": "Otsi…",

@@ -276,7 +276,7 @@ export default function AdminTasks() {
                       </span>
                     </div>
                     {ctx && (
-                      <Link to={ctx.to} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary mt-0.5">
+                      <Link to={ctx.to} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer mt-0.5">
                         <ctx.icon className="h-3 w-3" />
                         {ctx.label}
                       </Link>
@@ -284,12 +284,12 @@ export default function AdminTasks() {
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <Badge className={`text-[10px] ${priorityStyles[task.priority]}`}>{t(`admin.tasks.priority.${task.priority}`)}</Badge>
-                    <span className={`text-xs whitespace-nowrap ${due.isLate ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
+                    <span className={`text-xs tabular-nums whitespace-nowrap ${due.isLate ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
                       {due.label}
                     </span>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" aria-label={t('admin.tasks.taskActions', 'Task actions')} title={t('admin.tasks.taskActions', 'Task actions')}>
+                        <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground" aria-label={t('admin.tasks.taskActions', 'Task actions')} title={t('admin.tasks.taskActions', 'Task actions')}>
                           <MoreVertical className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>

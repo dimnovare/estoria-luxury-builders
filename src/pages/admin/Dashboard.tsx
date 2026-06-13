@@ -9,6 +9,8 @@ import { useAdminStats, useAdminContacts } from '@/hooks/api/useAdmin';
 import { contactStatusLabel } from '@/lib/enumLabels';
 import { formatDate } from '@/lib/formatDate';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
+import { StatCardSkeleton } from '@/components/admin/TableSkeleton';
+import { ErrorState } from '@/components/admin/ErrorState';
 
 const statusColor: Record<string, string> = {
   New: 'bg-primary/20 text-primary border-primary/30',
@@ -18,7 +20,7 @@ const statusColor: Record<string, string> = {
 
 export default function AdminDashboard() {
   const { t } = useTranslation();
-  const { data: stats } = useAdminStats();
+  const { data: stats, isLoading: statsLoading, isError: statsError, refetch: refetchStats } = useAdminStats();
   const { data: contactsData } = useAdminContacts();
 
   const statCards = [
@@ -36,22 +38,31 @@ export default function AdminDashboard() {
       <AdminPageHeader title={t('admin.dashboard.title')} />
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-        {statCards.map(s => (
-          <Link key={s.labelKey} to={s.href}>
-            <Card className="bg-card border-border hover:border-border transition-colors shadow-sm">
-              <CardContent className="p-3 sm:p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <s.icon className={`h-5 w-5 ${s.highlight && s.value > 0 ? 'text-primary' : 'text-muted-foreground'}`} />
-                  {s.highlight && s.value > 0 && <div className="h-2 w-2 rounded-full bg-primary" />}
-                </div>
-                <p className={`text-2xl font-semibold ${s.highlight && s.value > 0 ? 'text-primary' : 'text-foreground'}`}>{s.value}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{t(s.labelKey)}</p>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
+      {statsError ? (
+        <ErrorState
+          description={t('admin.dashboard.statsError', 'We could not load your dashboard stats. Please try again.')}
+          onRetry={() => refetchStats()}
+        />
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+          {statsLoading
+            ? statCards.map(s => <StatCardSkeleton key={s.labelKey} />)
+            : statCards.map(s => (
+              <Link key={s.labelKey} to={s.href}>
+                <Card className="bg-card border-border hover:border-border transition-colors shadow-sm">
+                  <CardContent className="p-3 sm:p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <s.icon className={`h-5 w-5 ${s.highlight && s.value > 0 ? 'text-primary' : 'text-muted-foreground'}`} />
+                      {s.highlight && s.value > 0 && <div className="h-2 w-2 rounded-full bg-primary" />}
+                    </div>
+                    <p className={`text-2xl font-semibold tabular-nums ${s.highlight && s.value > 0 ? 'text-primary' : 'text-foreground'}`}>{s.value}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t(s.labelKey)}</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Recent Messages */}

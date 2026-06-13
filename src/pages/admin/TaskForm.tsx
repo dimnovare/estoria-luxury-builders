@@ -113,6 +113,10 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
 
   const isPending = createMutation.isPending || updateMutation.isPending;
 
+  // Visual-only asterisk for required fields. aria-hidden so screen readers
+  // rely on the input's own state instead of reading the "*".
+  const RequiredMark = () => <span aria-hidden="true" className="text-destructive ml-0.5">*</span>;
+
   return (
     <Dialog open={open} onOpenChange={() => onClose()}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-card text-foreground">
@@ -126,8 +130,8 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
           <div className="space-y-4">
             {/* Title */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.title')} *</Label>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground" />
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.title')}<RequiredMark /></Label>
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} autoComplete="off" className="mt-1 h-11 bg-card border-border text-foreground placeholder:text-muted-foreground" />
             </div>
 
             {/* Description */}
@@ -138,8 +142,8 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
 
             {/* Due At */}
             <div>
-              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.dueAt')} *</Label>
-              <Input type="datetime-local" value={dueAt} onChange={(e) => setDueAt(e.target.value)} className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground" />
+              <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.dueAt')}<RequiredMark /></Label>
+              <Input type="datetime-local" value={dueAt} onChange={(e) => setDueAt(e.target.value)} className="mt-1 h-11 bg-card border-border text-foreground placeholder:text-muted-foreground" />
             </div>
 
             {/* Priority segmented */}
@@ -189,7 +193,7 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
                       value={contactSearch}
                       onChange={(e) => { setContactSearch(e.target.value); setContactId(''); }}
                       placeholder={t('admin.deals.fields.searchContact')}
-                      className="bg-card border-border text-foreground placeholder:text-muted-foreground"
+                      className="h-11 bg-card border-border text-foreground placeholder:text-muted-foreground"
                     />
                     {contactResults && contactResults.length > 0 && !contactId && (
                       <div className="absolute z-10 top-full mt-1 w-full bg-card border border-border rounded-md shadow-lg max-h-40 overflow-y-auto">
@@ -235,7 +239,7 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
             {/* Reminder */}
             <div>
               <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.tasks.fields.reminderAt')}</Label>
-              <Input type="datetime-local" value={reminderAt} onChange={(e) => setReminderAt(e.target.value)} className="mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground" />
+              <Input type="datetime-local" value={reminderAt} onChange={(e) => setReminderAt(e.target.value)} className="mt-1 h-11 bg-card border-border text-foreground placeholder:text-muted-foreground" />
             </div>
 
             {/* Recurrence */}

@@ -140,7 +140,7 @@ export default function AdminCareers() {
 
   const isSaving = createCareer.isPending || updateCareer.isPending;
 
-  const inputClass = "border-border bg-card text-foreground focus:border-primary focus:ring-primary";
+  const inputClass = "h-11 border-border bg-card text-foreground focus:border-primary focus:ring-primary";
   const labelClass = "text-sm text-muted-foreground font-medium";
 
   return (
@@ -218,7 +218,7 @@ export default function AdminCareers() {
                     <div className="flex items-center gap-1">
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        className="h-9 w-9 text-muted-foreground hover:text-foreground transition-colors"
                         onClick={() => openEdit(c)}
                         aria-label={t('admin.common.edit')}
                         title={t('admin.common.edit')}
@@ -227,7 +227,7 @@ export default function AdminCareers() {
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        className="h-9 w-9 text-muted-foreground hover:text-destructive transition-colors"
                         onClick={() => setPendingDelete(c.id)}
                         disabled={deleteCareer.isPending}
                         aria-label={t('admin.common.delete')}

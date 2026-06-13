@@ -483,7 +483,9 @@
       "passwordLabel": "Password",
       "signIn": "Sign In",
       "signingIn": "Signing in…",
-      "invalidCredentials": "Invalid email or password"
+      "invalidCredentials": "Invalid email or password",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -500,7 +502,8 @@
       "noMessages": "No messages yet.",
       "quickActions": "Quick Actions",
       "addProperty": "Add Property",
-      "newBlogPost": "New Blog Post"
+      "newBlogPost": "New Blog Post",
+      "statsError": "We could not load your dashboard stats. Please try again."
     },
     "properties": {
       "title": "Properties",
@@ -1167,7 +1170,9 @@
       "pinNote": "Pin note",
       "unpinNote": "Unpin note",
       "removeTag": "Remove tag",
-      "loadError": "Could not load contacts. Please try again."
+      "loadError": "Could not load contacts. Please try again.",
+      "addNote": "Add note",
+      "loadDetailError": "Could not load this contact. Please try again."
     },
     "deals": {
       "title": "Deals",
@@ -1266,7 +1271,10 @@
       "subtitle": "Track deals through stages from lead to close. Link deals to contacts, properties, and email threads.",
       "confirmRemoveParticipant": "Remove this participant?",
       "removeParticipant": "Remove participant",
-      "loadError": "Could not load deals. Please try again."
+      "loadError": "Could not load deals. Please try again.",
+      "validation": {
+        "required": "Please fill in all required fields marked with *."
+      }
     },
     "activities": {
       "title": "Activities",
@@ -1566,7 +1574,8 @@
         "noMatches": "No matches",
         "searchContacts": "Search contacts...",
         "searchDeals": "Search deals..."
-      }
+      },
+      "loadError": "We could not load your messages. Please try again."
     },
     "entityPicker": {
       "search": "Search…",

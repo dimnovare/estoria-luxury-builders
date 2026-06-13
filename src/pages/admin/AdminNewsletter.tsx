@@ -286,21 +286,21 @@ function CampaignsTab() {
             </TableHeader>
             <TableBody>
               {campaigns.map(c => (
-                <TableRow key={c.id} className="border-border hover:bg-muted">
+                <TableRow key={c.id} className="border-border hover:bg-muted transition-colors">
                   <TableCell className="text-sm font-medium text-foreground cursor-pointer" onClick={() => setDetailId(c.id)}>
                     <div>{c.subject}</div>
-                    <div className="text-xs text-muted-foreground sm:hidden">{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy') : '—'}</div>
+                    <div className="text-xs text-muted-foreground sm:hidden tabular-nums">{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy') : '—'}</div>
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy HH:mm') : '—'}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell cursor-pointer tabular-nums" onClick={() => setDetailId(c.id)}>{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy HH:mm') : '—'}</TableCell>
                   <TableCell className="text-sm text-muted-foreground uppercase hidden lg:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.language ?? t('admin.newsletter.compose.langAll')}</TableCell>
-                  <TableCell className="text-sm text-muted-foreground hidden md:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.recipientsCount}</TableCell>
-                  <TableCell className="text-sm text-success hidden md:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.successCount}</TableCell>
-                  <TableCell className="text-sm text-destructive hidden md:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.failureCount}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground hidden md:table-cell cursor-pointer tabular-nums" onClick={() => setDetailId(c.id)}>{c.recipientsCount}</TableCell>
+                  <TableCell className="text-sm text-success hidden md:table-cell cursor-pointer tabular-nums" onClick={() => setDetailId(c.id)}>{c.successCount}</TableCell>
+                  <TableCell className="text-sm text-destructive hidden md:table-cell cursor-pointer tabular-nums" onClick={() => setDetailId(c.id)}>{c.failureCount}</TableCell>
                   <TableCell className="cursor-pointer" onClick={() => setDetailId(c.id)}><StatusPill status={c.status} /></TableCell>
                   <TableCell>
                     <Button
                       variant="ghost" size="icon"
-                      className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                      className="h-9 w-9 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                       disabled={deleteCampaign.isPending}
                       aria-label={t('admin.common.delete')}
                       title={t('admin.common.delete')}
@@ -428,7 +428,7 @@ function SubscribersTab() {
                 <TableRow key={s.id} className="border-border">
                   <TableCell className="text-sm text-foreground font-medium break-all">{s.email}</TableCell>
                   <TableCell className="text-sm text-muted-foreground uppercase hidden sm:table-cell">{s.language}</TableCell>
-                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell">
+                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell tabular-nums">
                     {s.subscribedAt ? formatDate(s.subscribedAt) : '—'}
                   </TableCell>
                   <TableCell>
@@ -442,7 +442,7 @@ function SubscribersTab() {
                   <TableCell>
                     <Button
                       variant="ghost" size="icon"
-                      className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                      className="h-9 w-9 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                       onClick={() => setPendingUnsub(s.id)}
                       disabled={unsubscribe.isPending || !s.isActive}
                       aria-label={t('admin.newsletter.unsubscribe', 'Unsubscribe')}

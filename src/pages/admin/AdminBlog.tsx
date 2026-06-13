@@ -113,14 +113,14 @@ export default function AdminBlog() {
                       {blogStatusLabel(p.status, t)}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell">
+                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell tabular-nums">
                     {p.publishedAt ? formatDate(p.publishedAt) : p.createdAt ? formatDate(p.createdAt) : '—'}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <Button
                         variant="ghost" size="icon"
-                        className={`h-8 w-8 ${p.status === 'Published' ? 'text-success hover:text-amber-600' : 'text-muted-foreground hover:text-success'}`}
+                        className={`h-8 w-8 transition-colors ${p.status === 'Published' ? 'text-success hover:text-amber-600' : 'text-muted-foreground hover:text-success'}`}
                         onClick={() => handleToggleStatus(p.id, p.status)}
                         disabled={setStatus.isPending}
                         title={p.status === 'Published' ? t('admin.blog.unpublish') : t('admin.blog.publish')}
@@ -130,12 +130,12 @@ export default function AdminBlog() {
                           ? <EyeOff className="h-3.5 w-3.5" />
                           : <Globe className="h-3.5 w-3.5" />}
                       </Button>
-                      <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                      <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors">
                         <Link to={`/admin/blog/${p.id}/edit`} title={t('admin.common.edit')} aria-label={t('admin.common.edit')}><Pencil className="h-3.5 w-3.5" /></Link>
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive transition-colors"
                         onClick={() => setPendingDelete(p.id)}
                         disabled={deleteBlogPost.isPending}
                         title={t('admin.common.delete')}

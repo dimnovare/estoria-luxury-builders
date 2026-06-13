@@ -136,10 +136,10 @@ export default function AdminSavedSearches() {
                       {r.isActive ? t('admin.savedSearches.active') : t('admin.savedSearches.inactive')}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-xs text-muted-foreground hidden lg:table-cell whitespace-nowrap">
+                  <TableCell className="text-xs text-muted-foreground hidden lg:table-cell whitespace-nowrap tabular-nums">
                     {r.lastSentAt ? format(new Date(r.lastSentAt), 'dd.MM.yyyy HH:mm') : '—'}
                   </TableCell>
-                  <TableCell className="text-xs text-muted-foreground hidden lg:table-cell">{r.lastResultsCount}</TableCell>
+                  <TableCell className="text-xs text-muted-foreground hidden lg:table-cell tabular-nums">{r.lastResultsCount}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
                       <Button
@@ -147,7 +147,7 @@ export default function AdminSavedSearches() {
                         variant="outline"
                         onClick={() => handleForceSend(r.id)}
                         disabled={forceSend.isPending}
-                        className="h-7"
+                        className="h-9"
                         aria-label={t('admin.savedSearches.actions.forceSend')}
                         title={t('admin.savedSearches.actions.forceSend')}
                       >
@@ -158,7 +158,7 @@ export default function AdminSavedSearches() {
                         size="sm"
                         variant="ghost"
                         onClick={() => setDeleteId(r.id)}
-                        className="h-7 text-destructive hover:text-destructive"
+                        className="h-9 w-9 text-destructive hover:text-destructive"
                         aria-label={t('admin.common.delete')}
                         title={t('admin.common.delete')}
                       >

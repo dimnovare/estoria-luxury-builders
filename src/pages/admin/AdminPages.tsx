@@ -186,8 +186,8 @@ const sortedPages = useMemo(() => {
                     <div className="text-xs text-muted-foreground mt-0.5">{pageDescription(p.pageKey)}</div>
                   </TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={() => openEdit(p)} aria-label={t('admin.common.edit')} title={t('admin.common.edit')}>
-                      <Pencil className="h-3.5 w-3.5" />
+                    <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-foreground" onClick={() => openEdit(p)} aria-label={t('admin.common.edit')} title={t('admin.common.edit')}>
+                      <Pencil className="h-4 w-4" />
                     </Button>
                   </TableCell>
                 </TableRow>

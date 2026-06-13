@@ -130,7 +130,7 @@ export default function UserForm() {
   };
 
   const isSaving = createUser.isPending || updateUser.isPending;
-  const inputClass = "border-border bg-card text-foreground focus:border-primary focus:ring-primary";
+  const inputClass = "h-11 border-border bg-card text-foreground focus:border-primary focus:ring-primary";
   const labelClass = "text-sm text-muted-foreground font-medium";
 
   // Visual-only asterisk for required fields. aria-hidden so screen readers
@@ -159,18 +159,18 @@ export default function UserForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label className={labelClass}>{t('admin.users.fields.email')}{!isEdit && <RequiredMark />}</Label>
-              <Input ref={emailRef} type="email" required={!isEdit} aria-required={!isEdit} value={email} onChange={e => setEmail(e.target.value)} className={inputClass} disabled={isEdit} />
+              <Input ref={emailRef} type="email" autoComplete="email" required={!isEdit} aria-required={!isEdit} value={email} onChange={e => setEmail(e.target.value)} className={inputClass} disabled={isEdit} />
             </div>
             <div className="space-y-2">
               <Label className={labelClass}>{t('admin.users.fields.fullName')}<RequiredMark /></Label>
-              <Input ref={fullNameRef} required aria-required value={fullName} onChange={e => setFullName(e.target.value)} className={inputClass} />
+              <Input ref={fullNameRef} autoComplete="name" required aria-required value={fullName} onChange={e => setFullName(e.target.value)} className={inputClass} />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label className={labelClass}>{t('admin.users.fields.phone')}</Label>
-              <Input value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} />
+              <Input type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} />
             </div>
           </div>
 

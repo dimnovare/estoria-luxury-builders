@@ -379,7 +379,7 @@ export default function PropertyForm() {
 
   const isSaving = createProperty.isPending || updateProperty.isPending;
 
-  const inputClass = "border-border bg-card text-foreground focus:border-primary focus:ring-primary";
+  const inputClass = "h-11 border-border bg-card text-foreground focus:border-primary focus:ring-primary";
   const labelClass = "text-sm text-muted-foreground font-medium";
   const helpClass = "text-xs text-muted-foreground";
   const requiredMark = <span className="text-primary" title={t('admin.common.required', 'Required')}>*</span>;
@@ -453,17 +453,17 @@ export default function PropertyForm() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.properties.fields.price')} {requiredMark}</Label>
-                    <Input type="number" value={price} onChange={e => setPrice(e.target.value)} className={inputClass} />
+                    <Input type="number" inputMode="numeric" value={price} onChange={e => setPrice(e.target.value)} className={inputClass} />
                     <p className={helpClass}>{t('admin.properties.help.price', 'In euros (€). For rentals, the monthly rent.')}</p>
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.properties.fields.size')} {requiredMark}</Label>
-                    <Input type="number" value={size} onChange={e => setSize(e.target.value)} className={inputClass} />
+                    <Input type="number" inputMode="numeric" value={size} onChange={e => setSize(e.target.value)} className={inputClass} />
                     <p className={helpClass}>{t('admin.properties.help.size', 'Floor area in m².')}</p>
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.properties.fields.rooms')}</Label>
-                    <Input type="number" value={rooms} onChange={e => setRooms(e.target.value)} className={inputClass} />
+                    <Input type="number" inputMode="numeric" value={rooms} onChange={e => setRooms(e.target.value)} className={inputClass} />
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground">
@@ -481,26 +481,26 @@ export default function PropertyForm() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.properties.fields.bedrooms')}</Label>
-                    <Input type="number" value={bedrooms} onChange={e => setBedrooms(e.target.value)} className={inputClass} />
+                    <Input type="number" inputMode="numeric" value={bedrooms} onChange={e => setBedrooms(e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.properties.fields.bathrooms')}</Label>
-                    <Input type="number" value={bathrooms} onChange={e => setBathrooms(e.target.value)} className={inputClass} />
+                    <Input type="number" inputMode="numeric" value={bathrooms} onChange={e => setBathrooms(e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.properties.fields.floor')}</Label>
-                    <Input type="number" value={floor} onChange={e => setFloor(e.target.value)} className={inputClass} />
+                    <Input type="number" inputMode="numeric" value={floor} onChange={e => setFloor(e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.properties.fields.totalFloors')}</Label>
-                    <Input type="number" value={totalFloors} onChange={e => setTotalFloors(e.target.value)} className={inputClass} />
+                    <Input type="number" inputMode="numeric" value={totalFloors} onChange={e => setTotalFloors(e.target.value)} className={inputClass} />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.properties.fields.yearBuilt')}</Label>
-                    <Input type="number" value={yearBuilt} onChange={e => setYearBuilt(e.target.value)} className={inputClass} />
+                    <Input type="number" inputMode="numeric" value={yearBuilt} onChange={e => setYearBuilt(e.target.value)} className={inputClass} />
                   </div>
                   <div className="space-y-2">
                     <Label className={labelClass}>{t('admin.properties.fields.energyClass')}</Label>

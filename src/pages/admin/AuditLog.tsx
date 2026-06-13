@@ -206,7 +206,7 @@ export default function AuditLog() {
                           {entry.entityId && (
                             <button
                               onClick={() => copyToClipboard(entry.entityId!)}
-                              className="text-muted-foreground hover:text-foreground"
+                              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                               title={t('admin.audit.copyId', 'Copy ID')}
                               aria-label={t('admin.audit.copyId', 'Copy ID')}
                             >
@@ -221,7 +221,7 @@ export default function AuditLog() {
                       {details && (
                         <Button
                           variant="ghost" size="icon"
-                          className="h-7 w-7 text-muted-foreground"
+                          className="h-9 w-9 text-muted-foreground"
                           onClick={() => setExpandedId(isExpanded ? null : entry.id)}
                           aria-label={isExpanded ? t('admin.audit.hideDetails', 'Hide details') : t('admin.audit.showDetails', 'Show details')}
                           title={isExpanded ? t('admin.audit.hideDetails', 'Hide details') : t('admin.audit.showDetails', 'Show details')}
@@ -264,7 +264,7 @@ export default function AuditLog() {
           <Button variant="outline" size="icon" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="h-8 w-8 border-border" aria-label={t('admin.common.previous', 'Previous page')} title={t('admin.common.previous', 'Previous page')}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span className="text-sm text-muted-foreground">{page} / {totalPages}</span>
+          <span className="text-sm text-muted-foreground tabular-nums">{page} / {totalPages}</span>
           <Button variant="outline" size="icon" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} className="h-8 w-8 border-border" aria-label={t('admin.common.next', 'Next page')} title={t('admin.common.next', 'Next page')}>
             <ChevronRight className="h-4 w-4" />
           </Button>

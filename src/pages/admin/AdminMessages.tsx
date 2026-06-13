@@ -99,7 +99,7 @@ export default function AdminMessages() {
                 {messages.map(m => (
                   <TableRow
                     key={m.id}
-                    className="border-border cursor-pointer hover:bg-muted"
+                    className="border-border cursor-pointer hover:bg-muted transition-colors"
                     onClick={() => setSelected(m)}
                   >
                     <TableCell className="text-sm text-foreground font-medium">
@@ -108,7 +108,7 @@ export default function AdminMessages() {
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground hidden sm:table-cell">{m.email}</TableCell>
                     <TableCell className="text-sm text-foreground hidden md:table-cell truncate max-w-[200px]">{m.subject}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground hidden sm:table-cell whitespace-nowrap">
+                    <TableCell className="text-sm text-muted-foreground hidden sm:table-cell whitespace-nowrap tabular-nums">
                       {m.createdAt ? formatDate(m.createdAt) : '—'}
                     </TableCell>
                     <TableCell>
@@ -119,7 +119,7 @@ export default function AdminMessages() {
                     <TableCell onClick={e => e.stopPropagation()}>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                        className="h-9 w-9 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                         disabled={deleteMsg.isPending}
                         onClick={() => setPendingDelete(m.id)}
                         aria-label={t('admin.common.delete')}

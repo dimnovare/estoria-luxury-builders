@@ -31,6 +31,8 @@ import {
 import InboxComposer, { type ComposerPrefill } from './InboxComposer';
 import SenderActionsPanel from '@/components/admin/SenderActionsPanel';
 import EntityLinkPicker from '@/components/admin/EntityLinkPicker';
+import { ErrorState } from '@/components/admin/ErrorState';
+import { EmptyState } from '@/components/admin/EmptyState';
 import { cn } from '@/lib/utils';
 
 // ── Folder config ──────────────────────────────────────────────────────────────
@@ -339,7 +341,7 @@ function MessageDetail({
           )}
           <Popover>
             <PopoverTrigger asChild>
-              <button className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+              <button className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors">
                 <LinkIcon className="h-3 w-3" />
                 {t('admin.inbox.link.edit')}
               </button>
@@ -441,7 +443,7 @@ export default function AdminInbox() {
   );
 
   const { data: counts } = useInboxCounts();
-  const { data: messagesPage, isLoading } = useInboxMessages(folder, filterParams);
+  const { data: messagesPage, isLoading, isError, refetch } = useInboxMessages(folder, filterParams);
   const messages = messagesPage?.items ?? [];
   const { data: selectedMessage } = useInboxMessage(selectedId);
   const markRead = useMarkRead();
@@ -560,7 +562,7 @@ export default function AdminInbox() {
                 <div className="flex items-center gap-2 px-3 py-2 border-b border-border bg-muted/10">
                   <button
                     onClick={() => setMobileStep(1)}
-                    className="text-muted-foreground hover:text-foreground"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
                     aria-label={t('admin.common.back')}
                     title={t('admin.common.back')}
                   >
@@ -575,8 +577,14 @@ export default function AdminInbox() {
               <div className="flex-1 overflow-auto">
                 {isLoading ? (
                   <div className="p-6 text-center text-sm text-muted-foreground">{t('admin.inbox.loading')}</div>
+                ) : isError ? (
+                  <ErrorState
+                    className="m-3"
+                    description={t('admin.inbox.loadError', 'We could not load your messages. Please try again.')}
+                    onRetry={() => refetch()}
+                  />
                 ) : messages.length === 0 ? (
-                  <div className="p-6 text-center text-sm text-muted-foreground">{t('admin.inbox.empty')}</div>
+                  <EmptyState compact icon={Inbox} title={t('admin.inbox.empty')} />
                 ) : (
                   messages.map((msg) => (
                     <MessageRow

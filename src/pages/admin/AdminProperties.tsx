@@ -177,7 +177,7 @@ export default function AdminProperties() {
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground hidden md:table-cell">{propertyTypeLabel(p.propertyType, t)}</TableCell>
                   <TableCell className="text-sm text-muted-foreground hidden md:table-cell">{transactionTypeLabel(p.transactionType, t)}</TableCell>
-                  <TableCell className="text-sm text-foreground font-medium hidden sm:table-cell">
+                  <TableCell className="text-sm text-foreground font-medium tabular-nums hidden sm:table-cell">
                     €{p.price.toLocaleString()}
                   </TableCell>
                   <TableCell>
@@ -192,7 +192,7 @@ export default function AdminProperties() {
                     <div className="flex items-center gap-1">
                       <Button
                         variant="ghost" size="icon"
-                        className={`h-8 w-8 ${p.status === 'Active' ? 'text-success hover:text-amber-600' : 'text-muted-foreground hover:text-success'}`}
+                        className={`h-9 w-9 ${p.status === 'Active' ? 'text-success hover:text-amber-600' : 'text-muted-foreground hover:text-success'}`}
                         onClick={() => handleToggleStatus(p.id, p.status)}
                         disabled={setStatus.isPending}
                         aria-label={p.status === 'Active' ? t('admin.properties.unpublish') : t('admin.properties.publish')}
@@ -203,7 +203,7 @@ export default function AdminProperties() {
                       <Button
                         variant="ghost" size="icon"
                         asChild
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        className="h-9 w-9 text-muted-foreground hover:text-foreground"
                       >
                         <Link
                           to={`/admin/properties/${p.id}/edit`}
@@ -215,7 +215,7 @@ export default function AdminProperties() {
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        className="h-9 w-9 text-muted-foreground hover:text-destructive"
                         onClick={() => setPendingDelete(p.id)}
                         disabled={deleteProperty.isPending}
                         aria-label={t('admin.common.delete')}

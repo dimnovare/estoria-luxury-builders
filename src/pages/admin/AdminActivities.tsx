@@ -153,10 +153,10 @@ export default function AdminActivities() {
                 const Icon = activityIcons[a.type] ?? StickyNote;
                 return (
                   <TableRow key={a.id} className="border-border">
-                    <TableCell className="text-xs text-muted-foreground">
+                    <TableCell className="text-xs text-muted-foreground tabular-nums">
                       <Tooltip>
                         <TooltipTrigger>{formatDistanceToNow(new Date(a.occurredAt), { addSuffix: true })}</TooltipTrigger>
-                        <TooltipContent>{format(new Date(a.occurredAt), 'dd.MM.yyyy HH:mm')}</TooltipContent>
+                        <TooltipContent className="tabular-nums">{format(new Date(a.occurredAt), 'dd.MM.yyyy HH:mm')}</TooltipContent>
                       </Tooltip>
                     </TableCell>
                     <TableCell>
@@ -170,14 +170,14 @@ export default function AdminActivities() {
                       <div className="flex flex-wrap gap-1">
                         {a.contactId && (
                           <Link to={`/admin/contacts/${a.contactId}`}>
-                            <Badge variant="outline" className="text-[10px] hover:bg-muted">
+                            <Badge variant="outline" className="text-[10px] cursor-pointer transition-colors hover:bg-muted">
                               {t('admin.activities.linked.contact')}
                             </Badge>
                           </Link>
                         )}
                         {a.dealId && (
                           <Link to={`/admin/deals/${a.dealId}`}>
-                            <Badge variant="outline" className="text-[10px] hover:bg-muted">
+                            <Badge variant="outline" className="text-[10px] cursor-pointer transition-colors hover:bg-muted">
                               {t('admin.activities.linked.deal')}
                             </Badge>
                           </Link>

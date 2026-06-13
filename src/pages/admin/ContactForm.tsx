@@ -197,22 +197,22 @@ export default function ContactForm() {
             <AccordionContent className="px-6 pb-6">
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="sm:col-span-2">
-                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.fullName')} *</Label>
-                  <Input {...register('fullName')} className="mt-1 bg-secondary border-border text-foreground" />
+                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.fullName')}<span aria-hidden="true" className="text-destructive ml-0.5">*</span></Label>
+                  <Input {...register('fullName')} required aria-required autoComplete="name" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                   {errors.fullName && <p className="text-xs text-destructive mt-1">{t(errors.fullName.message ?? '')}</p>}
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.email')}</Label>
-                  <Input {...register('email')} type="email" className="mt-1 bg-secondary border-border text-foreground" />
+                  <Input {...register('email')} type="email" inputMode="email" autoComplete="email" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                   {errors.email && <p className="text-xs text-destructive mt-1">{t(errors.email.message ?? '')}</p>}
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.phone')}</Label>
-                  <Input {...register('phone')} className="mt-1 bg-secondary border-border text-foreground" />
+                  <Input {...register('phone')} type="tel" inputMode="tel" autoComplete="tel" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.secondaryPhone')}</Label>
-                  <Input {...register('secondaryPhone')} className="mt-1 bg-secondary border-border text-foreground" />
+                  <Input {...register('secondaryPhone')} type="tel" inputMode="tel" autoComplete="tel" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.preferredLang')}</Label>
@@ -233,7 +233,7 @@ export default function ContactForm() {
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.dateOfBirth')}</Label>
-                  <Input {...register('dateOfBirth')} type="date" className="mt-1 bg-secondary border-border text-foreground" />
+                  <Input {...register('dateOfBirth')} type="date" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                   {errors.dateOfBirth && <p className="text-xs text-destructive mt-1">{t(errors.dateOfBirth.message ?? '')}</p>}
                 </div>
               </div>
@@ -249,15 +249,15 @@ export default function ContactForm() {
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.address')}</Label>
-                  <Input {...register('address')} className="mt-1 bg-secondary border-border text-foreground" />
+                  <Input {...register('address')} autoComplete="street-address" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.company')}</Label>
-                  <Input {...register('company')} className="mt-1 bg-secondary border-border text-foreground" />
+                  <Input {...register('company')} autoComplete="organization" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                 </div>
                 <div>
                   <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.position')}</Label>
-                  <Input {...register('position')} className="mt-1 bg-secondary border-border text-foreground" />
+                  <Input {...register('position')} autoComplete="organization-title" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                 </div>
               </div>
             </AccordionContent>
@@ -313,7 +313,7 @@ export default function ContactForm() {
                   </div>
                   <div>
                     <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.sourceDetail')}</Label>
-                    <Input {...register('sourceDetail')} className="mt-1 bg-secondary border-border text-foreground" />
+                    <Input {...register('sourceDetail')} className="mt-1 h-11 bg-secondary border-border text-foreground" />
                   </div>
                 </div>
                 <div>
@@ -332,9 +332,9 @@ export default function ContactForm() {
                       onChange={(e) => setNewTag(e.target.value)}
                       onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } }}
                       placeholder={t('admin.contacts.fields.addTag')}
-                      className="bg-secondary border-border text-foreground flex-1"
+                      className="h-11 bg-secondary border-border text-foreground flex-1"
                     />
-                    <Button type="button" variant="outline" size="icon" onClick={addTag} aria-label={t('admin.contacts.fields.addTag')} title={t('admin.contacts.fields.addTag')}><Plus className="h-4 w-4" /></Button>
+                    <Button type="button" variant="outline" size="icon" onClick={addTag} aria-label={t('admin.contacts.fields.addTag')} title={t('admin.contacts.fields.addTag')} className="h-11 w-11 shrink-0"><Plus className="h-4 w-4" /></Button>
                   </div>
                 </div>
               </div>
@@ -441,6 +441,7 @@ export default function ContactForm() {
         <div className="flex justify-end gap-3 mt-6">
           <Button type="button" variant="outline" onClick={() => navigate('/admin/contacts')}>{t('admin.common.cancel')}</Button>
           <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground" disabled={createContact.isPending || updateContact.isPending}>
+            {(createContact.isPending || updateContact.isPending) && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
             {t('admin.contacts.saveContact')}
           </Button>
         </div>

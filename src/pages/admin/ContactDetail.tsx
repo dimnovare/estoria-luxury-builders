@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { ErrorState } from '@/components/admin/ErrorState';
 import {
   useContact, useDeleteContact, useActivities, useCreateActivity,
   useContactNotes, useCreateNote, useToggleNotePin, useDeleteNote, handleCrmError,
@@ -38,7 +39,7 @@ export default function ContactDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data: contact, isLoading } = useContact(id);
+  const { data: contact, isLoading, isError, refetch } = useContact(id);
   const deleteMutation = useDeleteContact();
   const { data: activitiesData } = useActivities({ contactId: id, pageSize: 50 });
   const { data: notes } = useContactNotes(id);
@@ -58,11 +59,21 @@ export default function ContactDetail() {
   const [activityDuration, setActivityDuration] = useState('');
   const [noteBody, setNoteBody] = useState('');
 
-  if (isLoading || !contact) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center py-24">
         <Loader2 className="h-6 w-6 animate-spin text-primary" />
       </div>
+    );
+  }
+
+  if (isError || !contact) {
+    return (
+      <ErrorState
+        description={t('admin.contacts.loadDetailError', 'Could not load this contact. Please try again.')}
+        onRetry={() => refetch()}
+        className="mt-6"
+      />
     );
   }
 
@@ -138,7 +149,7 @@ export default function ContactDetail() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/contacts')} className="text-muted-foreground">
+        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/contacts')} className="text-muted-foreground" aria-label={t('admin.common.back', 'Back')}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <h1 className="text-2xl font-semibold text-foreground">{contact.fullName}</h1>
@@ -269,7 +280,7 @@ export default function ContactDetail() {
                           <div className="flex items-baseline gap-2">
                             <span className="text-sm font-medium text-foreground">{a.title}</span>
                             <span className="text-xs text-muted-foreground">{a.userName}</span>
-                            <span className="text-xs text-muted-foreground ml-auto shrink-0">
+                            <span className="text-xs text-muted-foreground ml-auto shrink-0 tabular-nums">
                               {formatDistanceToNow(new Date(a.createdAt), { addSuffix: true })}
                             </span>
                           </div>
@@ -320,7 +331,7 @@ export default function ContactDetail() {
                   className="bg-background border-border"
                   rows={2}
                 />
-                <Button className="self-end" onClick={handleAddNote}>
+                <Button className="self-end" onClick={handleAddNote} aria-label={t('admin.contacts.addNote', 'Add note')} title={t('admin.contacts.addNote', 'Add note')}>
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
@@ -335,7 +346,7 @@ export default function ContactDetail() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7"
+                          className="h-10 w-10"
                           onClick={() => togglePin.mutate({ contactId: id!, noteId: n.id, isPinned: !n.isPinned })}
                           aria-label={n.isPinned ? t('admin.contacts.unpinNote', 'Unpin note') : t('admin.contacts.pinNote', 'Pin note')}
                           title={n.isPinned ? t('admin.contacts.unpinNote', 'Unpin note') : t('admin.contacts.pinNote', 'Pin note')}
@@ -345,7 +356,7 @@ export default function ContactDetail() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                          className="h-10 w-10 text-muted-foreground hover:text-destructive"
                           onClick={() => setPendingNoteDelete(n.id)}
                           aria-label={t('admin.common.delete')}
                           title={t('admin.common.delete')}
@@ -354,7 +365,7 @@ export default function ContactDetail() {
                         </Button>
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-2">{n.userName} · {format(new Date(n.createdAt), 'dd.MM.yyyy HH:mm')}</p>
+                    <p className="text-xs text-muted-foreground mt-2">{n.userName} · <span className="tabular-nums">{format(new Date(n.createdAt), 'dd.MM.yyyy HH:mm')}</span></p>
                   </CardContent>
                 </Card>
               ))}

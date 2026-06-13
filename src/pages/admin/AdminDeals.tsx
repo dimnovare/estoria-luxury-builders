@@ -138,11 +138,11 @@ export default function AdminDeals() {
             </Badge>
           )}
           <div className="flex items-start justify-between gap-2">
-            <Link to={`/admin/deals/${deal.id}`} className="text-sm font-medium text-foreground hover:text-primary line-clamp-2" onClick={(e) => e.stopPropagation()}>
+            <Link to={`/admin/deals/${deal.id}`} className="text-sm font-medium text-foreground hover:text-primary transition-colors line-clamp-2" onClick={(e) => e.stopPropagation()}>
               {deal.title}
             </Link>
           </div>
-          <Link to={`/admin/contacts/${deal.primaryContactId}`} className="text-xs text-muted-foreground hover:text-primary block truncate" onClick={(e) => e.stopPropagation()}>
+          <Link to={`/admin/contacts/${deal.primaryContactId}`} className="text-xs text-muted-foreground hover:text-primary transition-colors block truncate" onClick={(e) => e.stopPropagation()}>
             {deal.primaryContactName}
           </Link>
           {deal.propertyThumbUrl && (
@@ -150,10 +150,10 @@ export default function AdminDeals() {
           )}
           <div className="flex items-center justify-between text-xs gap-2">
             {deal.expectedValue != null && (
-              <span className="text-foreground font-medium">€{deal.expectedValue.toLocaleString()}</span>
+              <span className="text-foreground font-medium tabular-nums">€{deal.expectedValue.toLocaleString()}</span>
             )}
             {deal.expectedCloseDate && (
-              <span className="text-muted-foreground flex items-center gap-1 shrink-0">
+              <span className="text-muted-foreground flex items-center gap-1 shrink-0 tabular-nums">
                 <Calendar className="h-3 w-3" />
                 {formatDate(deal.expectedCloseDate)}
               </span>
@@ -162,7 +162,7 @@ export default function AdminDeals() {
           <div className="flex items-center justify-between">
             <span className="text-[10px] text-muted-foreground truncate">{deal.assignedAgentName}</span>
             {daysInStage > 0 && (
-              <Badge variant="outline" className={`text-[10px] shrink-0 ${
+              <Badge variant="outline" className={`text-[10px] shrink-0 tabular-nums ${
                 daysInStage > 30 ? 'bg-destructive/10 text-destructive border-destructive/30'
                   : daysInStage > 14 ? 'bg-primary/10 text-primary border-primary/30'
                   : 'text-muted-foreground'
@@ -271,12 +271,12 @@ export default function AdminDeals() {
                           </span>
                           <Badge
                             variant="outline"
-                            className="text-[10px] h-5 min-w-[24px] px-2 justify-center text-foreground bg-card"
+                            className="text-[10px] h-5 min-w-[24px] px-2 justify-center text-foreground bg-card tabular-nums"
                           >
                             {deals.length}
                           </Badge>
                           {totalValue > 0 && (
-                            <span className="text-xs text-muted-foreground ml-auto mr-2">€{totalValue.toLocaleString()}</span>
+                            <span className="text-xs text-muted-foreground ml-auto mr-2 tabular-nums">€{totalValue.toLocaleString()}</span>
                           )}
                         </div>
                       </AccordionTrigger>
@@ -306,10 +306,10 @@ export default function AdminDeals() {
                       <span className="text-xs font-nav uppercase tracking-wider text-foreground">
                         {t(`admin.deals.groups.${group.id}`)}
                       </span>
-                      <Badge variant="outline" className="text-[10px] text-foreground">{deals.length}</Badge>
+                      <Badge variant="outline" className="text-[10px] text-foreground tabular-nums">{deals.length}</Badge>
                     </div>
                     {totalValue > 0 && (
-                      <p className="text-xs text-muted-foreground mt-0.5">€{totalValue.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5 tabular-nums">€{totalValue.toLocaleString()}</p>
                     )}
                   </div>
                   <div className="bg-card border border-t-0 border-border rounded-b-lg p-2 space-y-2 min-h-[120px] max-h-[70vh] overflow-y-auto">

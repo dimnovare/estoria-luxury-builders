@@ -130,7 +130,7 @@ export default function AdminBirthdays() {
             <div className="space-y-6">
               {grouped.map(week => (
                 <div key={week.label}>
-                  <h3 className="text-xs font-nav uppercase tracking-wider text-muted-foreground mb-2">{week.label}</h3>
+                  <h3 className="text-xs font-nav uppercase tracking-wider text-muted-foreground mb-2 tabular-nums">{week.label}</h3>
                   <div className="space-y-2">
                     {week.items.map(b => {
                       const daysUntil = b.daysUntil;
@@ -141,10 +141,10 @@ export default function AdminBirthdays() {
                               <Cake className="h-4 w-4 text-primary" />
                             </div>
                             <div>
-                              <Link to={`/admin/contacts/${b.contactId}`} className="text-sm font-medium text-foreground hover:text-primary">
+                              <Link to={`/admin/contacts/${b.contactId}`} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                                 {b.fullName}
                               </Link>
-                              <p className="text-xs text-muted-foreground">
+                              <p className="text-xs text-muted-foreground tabular-nums">
                                 {t('admin.birthday.turningAge', { age: b.turningAge })} · {format(parseISO(b.nextBirthday), 'dd.MM')}
                               </p>
                             </div>

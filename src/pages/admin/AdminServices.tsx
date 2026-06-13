@@ -232,12 +232,12 @@ export default function AdminServices() {
                   <TableCell className="text-sm text-muted-foreground hidden sm:table-cell">{s.priceInfo || '—'}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={() => openEdit(s)} title={t('admin.common.edit')} aria-label={t('admin.common.edit')}>
+                      <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-foreground" onClick={() => openEdit(s)} title={t('admin.common.edit')} aria-label={t('admin.common.edit')}>
                         <Pencil className="h-3.5 w-3.5" />
                       </Button>
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        className="h-9 w-9 text-muted-foreground hover:text-destructive"
                         onClick={() => setPendingDelete(s.id)}
                         disabled={deleteService.isPending}
                         title={t('admin.common.delete')}
@@ -270,7 +270,7 @@ export default function AdminServices() {
               </div>
               <div className="space-y-2">
                 <Label className={labelClass}>{t('admin.services.fields.sortOrder')}</Label>
-                <Input type="number" value={sortOrder} onChange={e => setSortOrder(e.target.value)} className={inputClass} />
+                <Input type="number" inputMode="numeric" value={sortOrder} onChange={e => setSortOrder(e.target.value)} className={inputClass} />
               </div>
             </div>
 

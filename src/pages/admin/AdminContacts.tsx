@@ -203,15 +203,15 @@ export default function AdminContacts() {
                     <div className="flex gap-1 text-muted-foreground">{roleIcons(c)}</div>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground hidden xl:table-cell">{c.assignedAgentName || '—'}</TableCell>
-                  <TableCell className="text-xs text-muted-foreground hidden xl:table-cell">
+                  <TableCell className="text-xs text-muted-foreground hidden xl:table-cell tabular-nums">
                     {c.lastActivityAt ? formatDistanceToNow(new Date(c.lastActivityAt), { addSuffix: true }) : '—'}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                      <Button variant="ghost" size="icon" asChild className="h-9 w-9 text-muted-foreground hover:text-foreground">
                         <Link to={`/admin/contacts/${c.id}/edit`} aria-label={t('admin.common.edit')} title={t('admin.common.edit')}><Pencil className="h-3.5 w-3.5" /></Link>
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => setDeleteId(c.id)} aria-label={t('admin.common.delete')} title={t('admin.common.delete')}>
+                      <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-destructive" onClick={() => setDeleteId(c.id)} aria-label={t('admin.common.delete')} title={t('admin.common.delete')}>
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </div>
@@ -249,7 +249,7 @@ export default function AdminContacts() {
             <button
               key={p}
               onClick={() => setPage(p)}
-              className={`h-8 w-8 rounded text-sm ${
+              className={`h-9 w-9 rounded text-sm tabular-nums cursor-pointer transition-colors ${
                 p === page
                   ? 'bg-primary text-primary-foreground'
                   : 'text-muted-foreground hover:bg-muted'

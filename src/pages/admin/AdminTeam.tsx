@@ -236,7 +236,7 @@ export default function AdminTeam() {
   const isSaving = createMember.isPending || updateMember.isPending;
   const pendingName = (team ?? []).find(m => m.id === pendingDelete)?.name;
 
-  const inputClass = "border-border bg-card text-foreground focus:border-primary focus:ring-primary";
+  const inputClass = "h-11 border-border bg-card text-foreground focus:border-primary focus:ring-primary";
   const labelClass = "text-sm text-muted-foreground font-medium";
 
   return (
@@ -285,7 +285,7 @@ export default function AdminTeam() {
                 <TableHead className="text-muted-foreground text-xs hidden sm:table-cell">{t('admin.team.table.role')}</TableHead>
                 <TableHead className="text-muted-foreground text-xs hidden md:table-cell">{t('admin.team.table.languages')}</TableHead>
                 <TableHead className="text-muted-foreground text-xs hidden lg:table-cell">{t('admin.team.table.contact')}</TableHead>
-                <TableHead className="text-muted-foreground text-xs w-24">{t('admin.common.actions')}</TableHead>
+                <TableHead className="text-muted-foreground text-xs w-28">{t('admin.common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -316,13 +316,13 @@ export default function AdminTeam() {
                   <TableCell className="text-xs text-muted-foreground hidden lg:table-cell">{m.email}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={() => openEdit(m)} title={t('admin.common.edit')} aria-label={t('admin.common.edit')}>
+                      <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-foreground transition-colors" onClick={() => openEdit(m)} title={t('admin.common.edit')} aria-label={t('admin.common.edit')}>
                         <Pencil className="h-3.5 w-3.5" />
                       </Button>
                       {m.isActive ? (
                         <Button
                           variant="ghost" size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                          className="h-9 w-9 text-muted-foreground hover:text-foreground transition-colors"
                           onClick={() => handleHideClick(m)}
                           disabled={setActive.isPending}
                           title={t('admin.team.hide', 'Hide')}
@@ -333,7 +333,7 @@ export default function AdminTeam() {
                       ) : (
                         <Button
                           variant="ghost" size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                          className="h-9 w-9 text-muted-foreground hover:text-foreground transition-colors"
                           onClick={() => handleShow(m.id)}
                           disabled={setActive.isPending}
                           title={t('admin.team.show', 'Show')}
@@ -344,7 +344,7 @@ export default function AdminTeam() {
                       )}
                       <Button
                         variant="ghost" size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        className="h-9 w-9 text-muted-foreground hover:text-destructive transition-colors"
                         onClick={() => setPendingDelete(m.id)}
                         disabled={deleteMember.isPending}
                         title={t('admin.common.delete')}
@@ -398,17 +398,17 @@ export default function AdminTeam() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className={labelClass}>{t('admin.team.fields.phone')}</Label>
-                <Input value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} />
+                <Input type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} />
               </div>
               <div className="space-y-2">
                 <Label className={labelClass}>{t('admin.team.fields.email')}</Label>
-                <Input value={email} onChange={e => setEmail(e.target.value)} className={inputClass} />
+                <Input type="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} />
               </div>
             </div>
 
             <div className="space-y-2">
               <Label className={labelClass}>{t('admin.team.fields.sortOrder')}</Label>
-              <Input type="number" value={sortOrder} onChange={e => setSortOrder(e.target.value)} className={`w-32 ${inputClass}`} />
+              <Input type="number" inputMode="numeric" value={sortOrder} onChange={e => setSortOrder(e.target.value)} className={`w-32 ${inputClass}`} />
             </div>
 
             <div className="space-y-2">
