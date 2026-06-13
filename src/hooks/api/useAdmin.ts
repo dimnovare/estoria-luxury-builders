@@ -31,6 +31,17 @@ export interface AdminPropertyImage {
   isCover: boolean;
 }
 
+export interface PropertyExportPortal {
+  key: string;
+  displayName: string;
+  feedUrl: string;
+}
+
+export interface PropertyPortalPublicationState {
+  isEnabled: boolean;
+  validationErrors: string[];
+}
+
 export interface AdminProperty {
   id: string;
   slug: string;
@@ -56,6 +67,7 @@ export interface AdminProperty {
   translations: Record<string, AdminPropertyTranslation>;
   images: AdminPropertyImage[];
   features: string[];
+  portalPublications: Record<string, PropertyPortalPublicationState>;
 }
 
 export interface AdminBlogPost {
@@ -178,6 +190,16 @@ export interface Subscriber {
 }
 
 // ── Properties ─────────────────────────────────────────────────────────────────
+
+export function usePropertyExportPortals() {
+  return useQuery({
+    queryKey: ['admin', 'property-export-portals'],
+    queryFn: () =>
+      api.get<PropertyExportPortal[]>('/admin/property-export-portals')
+        .then(r => r.data),
+    staleTime: 5 * 60_000,
+  });
+}
 
 export function useAdminProperties(page = 1) {
   return useQuery<{ items: AdminProperty[]; totalCount: number }>({
