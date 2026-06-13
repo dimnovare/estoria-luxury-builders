@@ -23,4 +23,19 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-vars": "off",
     },
   },
+  {
+    // Admin surfaces must use semantic design tokens, never raw hsl() literals
+    // baked into Tailwind arbitrary-value classNames (e.g. text-[hsl(0_0%_95%)]).
+    files: ["src/pages/admin/**/*.{ts,tsx}", "src/components/admin/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-syntax": [
+        "warn",
+        {
+          selector: "JSXAttribute[name.name='className'] Literal[value=/\\[hsl\\(/]",
+          message:
+            "Use a semantic design token, not a raw hsl() literal, in admin className",
+        },
+      ],
+    },
+  },
 );

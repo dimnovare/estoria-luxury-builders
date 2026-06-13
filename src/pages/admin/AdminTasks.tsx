@@ -27,7 +27,7 @@ import TaskForm from './TaskForm';
 
 const priorityStyles: Record<TaskPriority, string> = {
   Low: 'bg-muted text-muted-foreground',
-  Normal: 'bg-[hsl(0_0%_20%)] text-[hsl(0_0%_95%)]',
+  Normal: 'bg-secondary text-secondary-foreground',
   High: 'bg-primary/20 text-primary',
 };
 

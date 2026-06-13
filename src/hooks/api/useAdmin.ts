@@ -150,6 +150,20 @@ export interface AdminCareer {
   isActive: boolean;
 }
 
+/// Full admin-edit shape returned by GET /admin/careers/{id}. Translations are
+/// keyed PascalCase ('Et' | 'En' | 'Ru') so each language tab can pre-populate;
+/// only languages that have a row are present.
+export interface AdminCareerDetail {
+  id: string;
+  slug: string;
+  isActive: boolean;
+  translations: Record<string, {
+    title: string;
+    description: string;
+    location?: string | null;
+  }>;
+}
+
 export interface AdminPage {
   id: string;
   pageKey: string;
@@ -644,6 +658,16 @@ export function useAdminCareers() {
   return useQuery<AdminCareer[]>({
     queryKey: ['admin', 'careers'],
     queryFn: () => api.get('/admin/careers').then(r => r.data),
+  });
+}
+
+/// Detail hook for the career edit-form modal — returns the full translations
+/// dict so each language tab (et/en/ru) can pre-populate.
+export function useAdminCareer(id?: string) {
+  return useQuery<AdminCareerDetail>({
+    queryKey: ['admin', 'career', id],
+    queryFn: () => api.get(`/admin/careers/${id}`).then(r => r.data),
+    enabled: !!id,
   });
 }
 

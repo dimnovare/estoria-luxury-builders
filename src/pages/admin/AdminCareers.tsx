@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Pencil, Trash2, Loader2, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,6 +19,7 @@ import { ErrorState } from '@/components/admin/ErrorState';
 import { TableSkeleton } from '@/components/admin/TableSkeleton';
 import {
   useAdminCareers,
+  useAdminCareer,
   useCreateCareer,
   useUpdateCareer,
   useDeleteCareer,
@@ -49,6 +50,24 @@ export default function AdminCareers() {
     ru: { ...emptyTrans },
   });
 
+  // The edit dialog opens before the detail request resolves; fetch the full
+  // translations dict by id so all three language tabs can hydrate.
+  const { data: editingDetail, isLoading: loadingDetail } = useAdminCareer(editingCareer?.id);
+
+  // Hydrate all three tabs (et/en/ru) from the server detail once it arrives.
+  // New postings keep their blank state (editingCareer is null, no fetch).
+  useEffect(() => {
+    if (!editingCareer || !editingDetail) return;
+    const fromTrans = (key: string): TransFields => {
+      const tr = editingDetail.translations[key];
+      return tr
+        ? { title: tr.title ?? '', location: tr.location ?? '', description: tr.description ?? '' }
+        : { ...emptyTrans };
+    };
+    setActive(editingDetail.isActive);
+    setTranslations({ et: fromTrans('Et'), en: fromTrans('En'), ru: fromTrans('Ru') });
+  }, [editingCareer, editingDetail]);
+
   const openNew = () => {
     setEditingCareer(null);
     setActive(true);
@@ -58,6 +77,8 @@ export default function AdminCareers() {
 
   const openEdit = (c: AdminCareer) => {
     setEditingCareer(c);
+    // Seed from the list row so the dialog isn't empty while the detail loads;
+    // the effect above replaces this with the full et/en/ru data once it resolves.
     setActive(c.isActive);
     setTranslations({
       et: { ...emptyTrans },
@@ -72,9 +93,10 @@ export default function AdminCareers() {
   };
 
   const handleSave = async () => {
-    // DATA-LOSS GUARD: only send languages whose title was actually filled in.
-    // The list endpoint can't hydrate ET/RU tabs, so sending blank translations
-    // for the untouched languages would overwrite (wipe) existing rows on edit.
+    // All three tabs now hydrate from GET /admin/careers/{id}, so editing an
+    // EN/RU translation persists. We still skip a language whose title is empty
+    // so a truly-blank tab won't create an empty row — and require at least one
+    // titled language so we never submit an entirely empty posting.
     const translationEntries = langs
       .filter(l => translations[l].title.trim() !== '')
       .map(l => [toBeLang(l), {
@@ -82,6 +104,12 @@ export default function AdminCareers() {
         description: translations[l].description,
         location: translations[l].location || null,
       }]);
+
+    if (translationEntries.length === 0) {
+      toast.error(t('admin.careers.validation.titleRequired', 'A title is required in at least one language to save.'));
+      return;
+    }
+
     const dto = {
       isActive: active,
       translations: Object.fromEntries(translationEntries),
@@ -230,6 +258,13 @@ export default function AdminCareers() {
               <Switch checked={active} onCheckedChange={setActive} />
               <Label className={labelClass}>{t('admin.careers.fields.active')}</Label>
             </div>
+
+            {editingCareer && loadingDetail && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                {t('admin.careers.loadingTranslations', 'Loading translations…')}
+              </div>
+            )}
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-border">
               <p className="text-xs text-muted-foreground">

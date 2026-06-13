@@ -881,6 +881,10 @@
       "empty": {
         "title": "Tööpakkumisi pole veel",
         "description": "Loo oma esimene tööpakkumine, et see kuvataks karjäärilehel."
+      },
+      "loadingTranslations": "Tõlgete laadimine…",
+      "validation": {
+        "titleRequired": "Salvestamiseks peab vähemalt ühel keelel olema pealkiri."
       }
     },
     "messages": {

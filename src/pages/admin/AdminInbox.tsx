@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 import {
   Inbox, Send as SendIcon, Archive, Mail, Paperclip,
   ArrowLeft, Reply, ReplyAll, Forward, Download, LinkIcon, ExternalLink,
@@ -270,6 +271,14 @@ function MessageDetail({
   const archiveMut = useArchiveMessage();
   const downloadMut = useDownloadAttachment();
 
+  // Untrusted email HTML — sanitize with DOMPurify (strips <script>, event
+  // handlers, javascript:/data: URLs) BEFORE handing it to the iframe srcDoc.
+  // The sandboxed iframe below is the primary boundary; this is defense-in-depth.
+  const safeBodyHtml = useMemo(
+    () => DOMPurify.sanitize(message.bodyHtml ?? ''),
+    [message.bodyHtml],
+  );
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
@@ -340,11 +349,12 @@ function MessageDetail({
         </div>
       </div>
 
-      {/* Body — rendered in sandboxed iframe (no DOMPurify available) */}
+      {/* Body — untrusted email HTML rendered safely: DOMPurify-sanitized
+          markup inside a fully sandboxed iframe (sandbox="" → no scripts run,
+          no same-origin access, no forms/popups/top-navigation). */}
       <div className="flex-1 overflow-auto p-4">
-        {/* TODO: Add DOMPurify dependency for safer HTML rendering */}
         <iframe
-          srcDoc={message.bodyHtml}
+          srcDoc={safeBodyHtml}
           sandbox=""
           title={t('admin.inbox.detail.bodyFrameTitle', 'Email body')}
           className="w-full min-h-[300px] h-full border-0 bg-white rounded"

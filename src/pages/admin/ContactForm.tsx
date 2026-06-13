@@ -223,7 +223,7 @@ export default function ContactForm() {
                       <div className="flex gap-4 mt-2">
                         {['et', 'en', 'ru'].map(lang => (
                           <label key={lang} className="flex items-center gap-1.5 text-sm text-foreground">
-                            <input type="radio" value={lang} checked={field.value === lang} onChange={() => field.onChange(lang)} className="accent-[hsl(43_50%_54%)]" />
+                            <input type="radio" value={lang} checked={field.value === lang} onChange={() => field.onChange(lang)} className="accent-primary" />
                             {lang.toUpperCase()}
                           </label>
                         ))}

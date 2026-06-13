@@ -881,6 +881,10 @@
       "empty": {
         "title": "No job postings yet",
         "description": "Create your first job posting to show it on the careers page."
+      },
+      "loadingTranslations": "Loading translations…",
+      "validation": {
+        "titleRequired": "A title is required in at least one language to save."
       }
     },
     "messages": {
