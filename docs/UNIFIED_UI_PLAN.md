@@ -32,6 +32,14 @@ easy for non-technical Estonian/Russian owners, good on phones.
 - Global `:focus-visible` gold ring (keyboard focus restored site-wide).
 - `Input` tokenized; `TabsList` `overflow-x-auto`; `EmptyState` → tokens.
 - Admin main area defaults to dark text (faint-text root fix, f26c5e1).
+- **`<AdminPageHeader>` shipped + rolled across all 18 admin pages** (0020632) —
+  tokenized title/subtitle/action, no raw hsl literals in headers.
+- **Public feature batch (43cb362):** PropertyDetail JSON-LD (schema.org
+  Residence/Apartment + Offer), `<ContactActions>` (Call/WhatsApp/Email, 44px) on
+  PropertyDetail + Team + TeamMemberDetail, mortgage calculator, one-click PDF
+  brochure (`/properties/:slug/print`); PropertyForm "Write description (AI)"
+  button (backend `/api/admin/ai/describe`, 0c57f6f); website enquiries
+  auto-captured as CRM contacts (0c57f6f).
 
 ## Remaining (priority order)
 **P0**
@@ -49,7 +57,7 @@ easy for non-technical Estonian/Russian owners, good on phones.
 - Faint: Login labels/subtitle + raw hex → tokens.
 
 **P1**
-- `<AdminPageHeader>` + roll out to every admin page (i18n subtitles).
+- ~~`<AdminPageHeader>` + roll out to every admin page~~ ✅ done (0020632).
 - Adopt `<EmptyState>` on the 8 admin lists + public Team/Services/Blog/Careers (+ empty i18n keys).
 - `<TableSkeleton>`/`<ErrorState>`; Dashboard loading/error.
 - Token migration: literals → tokens; inline gold → `<Button>`; raw green/red/amber → `text-success/destructive/warning`. Add ESLint ban on `[hsl(` in className.
