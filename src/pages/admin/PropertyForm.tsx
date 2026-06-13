@@ -23,10 +23,13 @@ import {
   useReprocessPropertyImage,
   useAdminTeam,
   useSetPropertyStatus,
+  usePropertyExportPortals,
   toBeLang,
 } from '@/hooks/api/useAdmin';
 import { useGeocodeProperty } from '@/hooks/api/usePropertyGeocode';
 import { propertyTypeLabel, transactionTypeLabel } from '@/lib/enumLabels';
+import PropertyPortalControls from '@/components/admin/PropertyPortalControls';
+import { initializePortalPublications } from '@/lib/propertyPortalPublications';
 import { toast } from 'sonner';
 
 const langs = ['et', 'en', 'ru'] as const;
@@ -53,6 +56,7 @@ export default function PropertyForm() {
   const reprocessImage = useReprocessPropertyImage();
   const setStatus = useSetPropertyStatus();
   const geocode = useGeocodeProperty();
+  const { data: exportPortals = [] } = usePropertyExportPortals();
 
   // Local copy of the image order so drag-to-reorder feels instant; synced from
   // the server list and persisted via the reorder endpoint on drop.
@@ -126,6 +130,7 @@ export default function PropertyForm() {
   const [lng, setLng] = useState('');
   const [agentId, setAgentId] = useState('');
   const [isFeatured, setIsFeatured] = useState(false);
+  const [portalPublications, setPortalPublications] = useState<Record<string, boolean>>({});
 
   const [translations, setTranslations] = useState<Record<string, TransFields>>({
     et: { ...emptyTrans },
@@ -175,6 +180,15 @@ export default function PropertyForm() {
       });
     }
   }, [existing]);
+
+  // Build a complete portal map from the registered portals + any saved state, so
+  // the form always submits every portal (off by default) and can't leave stale rows.
+  useEffect(() => {
+    if (exportPortals.length === 0) return;
+    setPortalPublications(
+      initializePortalPublications(exportPortals, existing?.portalPublications),
+    );
+  }, [exportPortals, existing?.portalPublications]);
 
   const updateTranslation = (lang: string, field: string, value: string) => {
     setTranslations(prev => ({ ...prev, [lang]: { ...prev[lang], [field]: value } }));
@@ -249,6 +263,9 @@ export default function PropertyForm() {
           },
         ])
       ),
+      // Complete portal map; draft status (not this map) is what keeps a listing
+      // out of the feed, so selections are preserved even when saving as draft.
+      portalPublications,
     };
 
     try {
@@ -532,6 +549,19 @@ export default function PropertyForm() {
                     <p className={helpClass}>Featured properties appear on the homepage.</p>
                   </div>
                 </div>
+
+                {exportPortals.length > 0 && (
+                  <div className="pt-2 border-t border-[hsl(0_0%_92%)]">
+                    <PropertyPortalControls
+                      portals={exportPortals}
+                      values={portalPublications}
+                      states={existing?.portalPublications ?? {}}
+                      onChange={(key, enabled) =>
+                        setPortalPublications(current => ({ ...current, [key]: enabled }))
+                      }
+                    />
+                  </div>
+                )}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
