@@ -29,6 +29,7 @@ import {
 import { useGeocodeProperty } from '@/hooks/api/usePropertyGeocode';
 import { propertyTypeLabel, transactionTypeLabel } from '@/lib/enumLabels';
 import PropertyPortalControls from '@/components/admin/PropertyPortalControls';
+import TranslateButton from '@/components/admin/TranslateButton';
 import { initializePortalPublications } from '@/lib/propertyPortalPublications';
 import { toast } from 'sonner';
 
@@ -574,6 +575,30 @@ export default function PropertyForm() {
         <TabsContent value="translations" className="mt-4">
           <Card className="bg-white border-[hsl(0_0%_90%)] shadow-sm">
             <CardContent className="p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-[hsl(0_0%_92%)]">
+                <p className="text-xs text-[hsl(0_0%_45%)]">
+                  {t('admin.properties.translateHint', 'Write the listing in Estonian, then translate the title and description to the other languages with one click. You can edit afterwards.')}
+                </p>
+                <TranslateButton
+                  to={['en', 'ru']}
+                  fields={{
+                    title: translations.et?.title || '',
+                    description: translations.et?.description || '',
+                  }}
+                  onTranslated={(lang, f) => setTranslations(prev => ({
+                    ...prev,
+                    [lang]: {
+                      ...prev[lang],
+                      ...f,
+                      // Address fields are not localised — copy them verbatim from
+                      // Estonian so the listing has them and the location mapping stays intact.
+                      address: prev.et?.address ?? prev[lang]?.address ?? '',
+                      city: prev.et?.city ?? prev[lang]?.city ?? '',
+                      district: prev.et?.district ?? prev[lang]?.district ?? '',
+                    },
+                  }))}
+                />
+              </div>
               <Tabs defaultValue="et">
                 <TabsList className="bg-[hsl(0_0%_96%)] border border-[hsl(0_0%_90%)]">
                   {langs.map(l => (

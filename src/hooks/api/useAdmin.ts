@@ -201,6 +201,28 @@ export function usePropertyExportPortals() {
   });
 }
 
+// ── AI translation ───────────────────────────────────────────────────────────
+
+export interface TranslateContentRequest {
+  from: string;
+  to: string[];
+  fields: Record<string, string>;
+}
+
+/** { "en": { "title": "...", ... }, "ru": { ... } } */
+export type TranslateContentResult = Record<string, Record<string, string>>;
+
+/**
+ * Translate CMS content fields from one language to others via the backend
+ * OpenAI endpoint. Used by the "translate" button on every content form.
+ */
+export function useTranslateContent() {
+  return useMutation({
+    mutationFn: (req: TranslateContentRequest) =>
+      api.post<TranslateContentResult>('/admin/ai/translate', req).then(r => r.data),
+  });
+}
+
 export function useAdminProperties(page = 1) {
   return useQuery<{ items: AdminProperty[]; totalCount: number }>({
     queryKey: ['admin', 'properties', page],
