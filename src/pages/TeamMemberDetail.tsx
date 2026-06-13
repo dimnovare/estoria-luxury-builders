@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { normalizeLanguages, languageLabel } from '@/lib/languages';
 import { motion } from 'framer-motion';
 import { SafeHtml } from '@/components/SafeHtml';
 import { Phone, Mail, ArrowLeft, Loader2 } from 'lucide-react';
@@ -118,14 +119,14 @@ export default function TeamMemberDetail() {
             </div>
 
             {/* Languages */}
-            {member.languages && member.languages.length > 0 && (
+            {normalizeLanguages(member.languages).length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {member.languages.map((lang) => (
+                {normalizeLanguages(member.languages).map((lang) => (
                   <span
                     key={lang}
                     className="text-[10px] font-nav uppercase tracking-wider bg-secondary text-muted-foreground px-3 py-1.5 rounded-sm"
                   >
-                    {lang}
+                    {languageLabel(lang, t)}
                   </span>
                 ))}
               </div>

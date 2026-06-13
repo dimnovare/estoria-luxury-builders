@@ -13,6 +13,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import TranslateButton from '@/components/admin/TranslateButton';
+import { normalizeLanguages, languageLabel } from '@/lib/languages';
 import {
   useAdminTeam,
   useAdminTeamMember,
@@ -84,7 +85,7 @@ export default function AdminTeam() {
     setPhone(m.phone);
     setEmail(m.email);
     setSortOrder('0');
-    setSelectedLangs(m.languages ?? []);
+    setSelectedLangs(normalizeLanguages(m.languages));
     setPhotoPreview(m.photoUrl ?? '');
     setTranslations({ et: { ...emptyTrans }, en: { ...emptyTrans }, ru: { ...emptyTrans } });
     setDialogOpen(true);
@@ -99,7 +100,7 @@ export default function AdminTeam() {
     setPhone(editingDetail.phone ?? '');
     setEmail(editingDetail.email ?? '');
     setSortOrder(String(editingDetail.sortOrder ?? 0));
-    setSelectedLangs(editingDetail.languages ?? []);
+    setSelectedLangs(normalizeLanguages(editingDetail.languages));
     setPhotoPreview(editingDetail.photoUrl ?? '');
 
     const next: Record<string, TransFields> = {
@@ -231,8 +232,8 @@ export default function AdminTeam() {
                   <TableCell className="text-sm text-[hsl(0_0%_40%)] hidden sm:table-cell">{m.role}</TableCell>
                   <TableCell className="hidden md:table-cell">
                     <div className="flex flex-wrap gap-1">
-                      {(m.languages ?? []).map(l => (
-                        <Badge key={l} variant="secondary" className="text-[10px] bg-[hsl(0_0%_93%)] text-[hsl(0_0%_40%)]">{l}</Badge>
+                      {normalizeLanguages(m.languages).map(l => (
+                        <Badge key={l} variant="secondary" className="text-[10px] bg-[hsl(0_0%_93%)] text-[hsl(0_0%_40%)]">{languageLabel(l, t)}</Badge>
                       ))}
                     </div>
                   </TableCell>
