@@ -104,22 +104,22 @@ export default function Contact() {
   return (
     <>
       <Seo
-        title="Contact Estoria — Tallinn Real Estate Office"
-        description="Reach Estoria in Tallinn for sales, rentals, and investment enquiries. Visit our office or message our brokers directly."
+        title={t('seo.contact.title', 'Contact Estoria — Tallinn Real Estate Office')}
+        description={t('seo.contact.description', 'Reach Estoria in Tallinn for sales, rentals, and investment enquiries. Visit our office or message our brokers directly.')}
         path="/contact"
       />
       {/* Header */}
       <section className="pt-20 pb-12 bg-gradient-to-b from-secondary/80 to-background">
         <div className="container mx-auto px-6 pt-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-6">
+            <nav className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-body mb-6">
               <Link to="/" className="hover:text-primary transition-colors">
                 {t('nav.home')}
               </Link>
               <span>/</span>
               <span className="text-foreground">{t('nav.contact')}</span>
             </nav>
-            <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground mb-3">
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-6xl font-light text-foreground mb-3 break-words">
               {t('nav.contact')}
             </h1>
             <p className="text-muted-foreground font-body text-lg max-w-xl">
@@ -167,7 +167,7 @@ export default function Contact() {
                   className="text-center py-20"
                 >
                   <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-success/10 flex items-center justify-center">
-                    <Check className="text-success" size={28} />
+                    <Check className="text-success" size={28} aria-hidden="true" />
                   </div>
                   <h2 className="font-heading text-3xl text-foreground mb-3">{t('contact.success.title')}</h2>
                   <p className="text-muted-foreground font-body">
@@ -231,7 +231,7 @@ export default function Contact() {
                     disabled={status === 'loading'}
                     className="w-full gold-gradient text-primary-foreground py-4 rounded-sm font-nav text-xs uppercase tracking-[0.15em] hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2"
                   >
-                    {status === 'loading' && <Loader2 size={14} className="animate-spin" />}
+                    {status === 'loading' && <Loader2 size={14} className="animate-spin" aria-hidden="true" />}
                     {t('contact.form.send')}
                   </button>
                   {status === 'error' && (
@@ -254,7 +254,7 @@ export default function Contact() {
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-sm bg-card border border-border flex items-center justify-center flex-shrink-0">
-                    <MapPin size={18} className="text-primary" />
+                    <MapPin size={18} className="text-primary" aria-hidden="true" />
                   </div>
                   <div>
                     <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">
@@ -268,7 +268,7 @@ export default function Contact() {
 
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-sm bg-card border border-border flex items-center justify-center flex-shrink-0">
-                    <Phone size={18} className="text-primary" />
+                    <Phone size={18} className="text-primary" aria-hidden="true" />
                   </div>
                   <div>
                     <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">
@@ -285,7 +285,7 @@ export default function Contact() {
 
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-sm bg-card border border-border flex items-center justify-center flex-shrink-0">
-                    <Mail size={18} className="text-primary" />
+                    <Mail size={18} className="text-primary" aria-hidden="true" />
                   </div>
                   <div>
                     <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">
@@ -302,7 +302,7 @@ export default function Contact() {
 
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-sm bg-card border border-border flex items-center justify-center flex-shrink-0">
-                    <Clock size={18} className="text-primary" />
+                    <Clock size={18} className="text-primary" aria-hidden="true" />
                   </div>
                   <div>
                     <h3 className="font-nav text-xs uppercase tracking-wider text-foreground mb-1">
@@ -339,7 +339,7 @@ export default function Contact() {
                 return (
                   <div className="rounded-sm overflow-hidden border border-border">
                     <iframe
-                      title="ESTORIA Office Location"
+                      title={t('contact.mapTitle', 'ESTORIA Office Location')}
                       src={`https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${marker}`}
                       className="w-full h-[280px] border-0 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
                       loading="lazy"
@@ -362,9 +362,9 @@ export default function Contact() {
                         aria-label={label}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-10 h-10 rounded-sm bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-300"
+                        className="w-10 h-10 min-h-[44px] min-w-[44px] rounded-sm bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-300"
                       >
-                        <Icon size={18} />
+                        <Icon size={18} aria-hidden="true" />
                       </a>
                     ))}
                   </div>

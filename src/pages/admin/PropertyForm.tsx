@@ -617,6 +617,7 @@ export default function PropertyForm() {
                   <div className="pt-2 border-t border-border">
                     <PropertyPortalControls
                       portals={exportPortals}
+                      propertyId={id}
                       values={portalPublications}
                       states={existing?.portalPublications ?? {}}
                       onChange={(key, enabled) =>

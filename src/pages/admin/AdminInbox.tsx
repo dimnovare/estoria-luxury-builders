@@ -430,8 +430,11 @@ export default function AdminInbox() {
   const [filters, setFilters] = useState<Set<FilterChip>>(new Set());
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [composer, setComposer] = useState<ComposerPrefill | null>(null);
-  // Mobile navigation step: 1=folders, 2=list, 3=detail
-  const [mobileStep, setMobileStep] = useState<MobileStep>(1);
+  // Mobile navigation step: 1=folders, 2=list, 3=detail.
+  // Default to the message list (step 2) so the phone opens straight to the Inbox
+  // emails — landing on the folder list made owners think "there is no mailbox".
+  // The list pane has a back control to reach folders (step 1).
+  const [mobileStep, setMobileStep] = useState<MobileStep>(2);
 
   const filterParams = useMemo(
     () => ({

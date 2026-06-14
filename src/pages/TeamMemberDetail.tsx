@@ -17,7 +17,12 @@ export default function TeamMemberDetail() {
   if (isLoading) {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-primary" size={32} />
+        <Loader2
+          className="animate-spin text-primary"
+          size={32}
+          role="status"
+          aria-label={t('common.loading', 'Loading')}
+        />
       </div>
     );
   }
@@ -26,7 +31,7 @@ export default function TeamMemberDetail() {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="font-heading text-5xl text-foreground mb-4">{t('common.notFound')}</h1>
+          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-4 break-words">{t('common.notFound')}</h1>
           <Link
             to="/team"
             className="text-primary font-nav text-xs uppercase tracking-wider hover:underline"
@@ -41,13 +46,23 @@ export default function TeamMemberDetail() {
   return (
     <>
       <Seo
-        title={`${member.name} — ${member.role || 'Broker'} at Estoria`}
-        description={`${member.name}, ${member.role || 'real-estate advisor'} at Estoria in Tallinn. Get in touch for premium real-estate guidance.`}
+        title={t('seo.teamMember.title', '{{name}} — {{role}} at Estoria', {
+          name: member.name,
+          role: member.role || t('team.defaultRole', 'Broker'),
+        })}
+        description={t(
+          'seo.teamMember.description',
+          '{{name}}, {{role}} at Estoria in Tallinn. Get in touch for premium real-estate guidance.',
+          {
+            name: member.name,
+            role: member.role || t('team.defaultRoleLong', 'real-estate advisor'),
+          }
+        )}
         path={`/team/${member.slug}`}
         image={member.photoUrl}
       />
       <div className="pt-24 pb-4 container mx-auto px-6">
-        <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body">
+        <nav className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-body">
           <Link to="/" className="hover:text-primary transition-colors">
             {t('nav.home')}
           </Link>
@@ -85,7 +100,7 @@ export default function TeamMemberDetail() {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="lg:col-span-3"
           >
-            <h1 className="font-heading text-4xl md:text-5xl text-foreground font-light mb-2">
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground font-light mb-2 break-words">
               {member.name}
             </h1>
             <p className="text-primary font-nav text-xs uppercase tracking-[0.15em] mb-6">

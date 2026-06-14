@@ -27,7 +27,8 @@
     "hero": {
       "titleStart": "Where Your",
       "titleAccent": "Future",
-      "titleEnd": "Lives"
+      "titleEnd": "Lives",
+      "subtitle": "Curated luxury properties across Estonia's most sought-after locations."
     },
     "discover": "Discover",
     "curatedSelection": "Curated Selection",
@@ -39,6 +40,16 @@
       "experience": "Experience",
       "satisfaction": "Satisfaction",
       "languages": "Languages"
+    },
+    "featured": {
+      "title": "Featured Properties"
+    },
+    "services": {
+      "title": "Our Services"
+    },
+    "about": {
+      "imageAlt": "About Estoria",
+      "body": "With over 8 years serving Estonia's most discerning clients, we've built our reputation on integrity, deep market knowledge, and a genuine passion for connecting people with exceptional homes."
     }
   },
   "properties": {
@@ -154,6 +165,11 @@
       "title": "Ready to Find Your Future?",
       "subtitle": "Let our team guide you to the perfect property. We'd love to hear from you.",
       "button": "Get in Touch"
+    },
+    "heroImageAlt": "About Estoria",
+    "officeImageAlt": "ESTORIA office",
+    "story": {
+      "title": "Our Story"
     }
   },
   "team": {
@@ -167,7 +183,9 @@
     "call": "Call",
     "email": "Email",
     "callMember": "Call {{name}}",
-    "emailMember": "Email {{name}}"
+    "emailMember": "Email {{name}}",
+    "defaultRole": "Broker",
+    "defaultRoleLong": "real-estate advisor"
   },
   "blog": {
     "title": "Insights & News",
@@ -243,7 +261,8 @@
       "hoursWeekday": "Mon – Fri: 9:00 – 18:00",
       "hoursSaturday": "Sat: 10:00 – 14:00 (by appointment)",
       "hoursSunday": "Sun: Closed"
-    }
+    },
+    "mapTitle": "ESTORIA Office Location"
   },
   "newsletter": {
     "title": "Stay Updated",
@@ -375,7 +394,8 @@
     "message": "We use cookies to improve your experience",
     "accept": "Accept",
     "privacy": "Privacy Policy",
-    "decline": "Decline"
+    "decline": "Decline",
+    "ariaLabel": "Cookie consent"
   },
   "enums": {
     "propertyType": {
@@ -441,6 +461,21 @@
       "example": "Example:",
       "errorTitle": "Something went wrong",
       "retry": "Try again"
+    },
+    "export": {
+      "willAppear": "This listing will appear on {{portal}}.",
+      "wontAppear": "This listing will NOT appear on {{portal}} until:",
+      "needActive": "Set the property status to Active.",
+      "problem": {
+        "price": "Add a price greater than 0.",
+        "size": "Add the area (m²).",
+        "agentEmail": "Assign an agent who has a valid email address.",
+        "title": "Add a title in at least one language.",
+        "description": "Add a description in at least one language.",
+        "propertyType": "This property type is not accepted by the portal.",
+        "transactionType": "This transaction type is not accepted by the portal.",
+        "location": "Set the city to Tallinn — the portal currently accepts only Tallinn."
+      }
     },
     "layout": {
       "adminBadge": "Admin",
@@ -1588,5 +1623,57 @@
   "pagination": {
     "previous": "Previous page",
     "next": "Next page"
+  },
+  "seo": {
+    "home": {
+      "title": "Estoria — Premium Real Estate in Tallinn, Estonia",
+      "description": "Estoria — premium real estate in Tallinn. Apartments, houses, and commercial properties for sale, rent, and investment."
+    },
+    "properties": {
+      "title": "Properties for Sale & Rent in Tallinn | Estoria",
+      "description": "Browse premium apartments, houses, and commercial real estate for sale and rent in Tallinn and across Estonia with Estoria."
+    },
+    "team": {
+      "title": "Our Team — Estoria Brokers & Advisors in Tallinn",
+      "description": "Meet the Estoria brokers and advisors helping clients buy, sell, and rent premium real estate across Tallinn and Estonia."
+    },
+    "teamMember": {
+      "title": "{{name}} — {{role}} at Estoria",
+      "description": "{{name}}, {{role}} at Estoria in Tallinn. Get in touch for premium real-estate guidance."
+    },
+    "blog": {
+      "title": "Blog — Estonia Real Estate Insights | Estoria",
+      "description": "Market insights, neighbourhood guides, and buying tips for Tallinn and Estonia from the Estoria editorial team."
+    },
+    "blogPost": {
+      "suffix": "Estoria Blog"
+    },
+    "careers": {
+      "title": "Careers — Join the Estoria Team in Tallinn",
+      "description": "Explore career opportunities at Estoria. Join our team of premium real-estate brokers and advisors in Tallinn, Estonia."
+    },
+    "careerDetail": {
+      "title": "{{title}} — Careers at Estoria",
+      "description": "{{title}} — career opportunity at Estoria in {{location}}, Tallinn."
+    },
+    "contact": {
+      "title": "Contact Estoria — Tallinn Real Estate Office",
+      "description": "Reach Estoria in Tallinn for sales, rentals, and investment enquiries. Visit our office or message our brokers directly."
+    },
+    "services": {
+      "title": "Services — Sales, Rentals, Valuation & Investment | Estoria",
+      "description": "Full-service real estate in Estonia: brokerage for sales and rentals, property valuation, and investment advisory tailored to private clients."
+    },
+    "about": {
+      "title": "About Estoria — Tallinn Real Estate Brokerage",
+      "description": "Meet Estoria: a Tallinn-based brokerage delivering discreet, expert service for premium apartments, houses, and commercial property in Estonia."
+    },
+    "privacy": {
+      "title": "Privacy Policy — Estoria",
+      "description": "How Estoria collects, uses, and protects your personal data, and your rights under GDPR."
+    }
+  },
+  "propertyMap": {
+    "ariaLabel": "Map showing the property location"
   }
 }

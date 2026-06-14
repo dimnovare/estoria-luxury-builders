@@ -28,12 +28,17 @@ export default function BlogPost() {
 
   const handleShare = async () => {
     const url = window.location.href;
-    if (navigator.share) {
-      await navigator.share({ title: post?.title, url });
-    } else {
-      await navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: post?.title, url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    } catch {
+      // User cancelled the share sheet, or clipboard is unavailable
+      // (non-secure context) — fail silently rather than throwing.
     }
   };
 
@@ -63,7 +68,7 @@ export default function BlogPost() {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="font-heading text-5xl text-foreground mb-4">{t('common.notFound')}</h1>
+          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-4 break-words">{t('common.notFound')}</h1>
           <Link
             to="/blog"
             className="text-primary font-nav text-xs uppercase tracking-wider hover:underline"
@@ -103,7 +108,7 @@ export default function BlogPost() {
   return (
     <>
       <Seo
-        title={`${post.title} — Estoria Blog`}
+        title={`${post.title} — ${t('seo.blogPost.suffix', 'Estoria Blog')}`}
         description={post.excerpt}
         path={`/blog/${post.slug}`}
         image={post.coverImageUrl}
@@ -124,7 +129,7 @@ export default function BlogPost() {
       <article className="container mx-auto px-6 max-w-3xl -mt-24 relative z-10 pb-24">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-8">
+          <nav className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-body mb-8">
             <Link to="/" className="hover:text-primary transition-colors">
               {t('nav.home')}
             </Link>
@@ -144,7 +149,7 @@ export default function BlogPost() {
           )}
 
           {/* Title */}
-          <h1 className="font-heading text-4xl md:text-5xl text-foreground font-light mt-3 mb-6 leading-tight">
+          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground font-light mt-3 mb-6 leading-tight break-words">
             {post.title}
           </h1>
 
@@ -177,7 +182,7 @@ export default function BlogPost() {
           </div>
 
           {/* Gold divider */}
-          <div className="h-px gold-gradient mb-10" />
+          <div className="h-px gold-gradient mb-10" aria-hidden="true" />
 
           {/* Content */}
           {post.content && (
@@ -252,7 +257,7 @@ export default function BlogPost() {
       {relatedPosts.length > 0 && (
         <section className="py-16 px-6 bg-secondary/20">
           <div className="container mx-auto">
-            <div className="w-12 h-px gold-gradient mb-6" />
+            <div className="w-12 h-px gold-gradient mb-6" aria-hidden="true" />
             <h2 className="font-heading text-3xl text-foreground mb-10">{t('blog.relatedTitle')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {relatedPosts.map((p, i) => (

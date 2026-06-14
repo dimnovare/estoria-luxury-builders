@@ -24,8 +24,8 @@ export default function Team() {
   return (
     <>
       <Seo
-        title="Our Team — Estoria Brokers & Advisors in Tallinn"
-        description="Meet the Estoria brokers and advisors helping clients buy, sell, and rent premium real estate across Tallinn and Estonia."
+        title={t('seo.team.title', 'Our Team — Estoria Brokers & Advisors in Tallinn')}
+        description={t('seo.team.description', 'Meet the Estoria brokers and advisors helping clients buy, sell, and rent premium real estate across Tallinn and Estonia.')}
         path="/team"
       />
       {/* Header */}
@@ -39,7 +39,7 @@ export default function Team() {
               <span>/</span>
               <span className="text-foreground">{t('nav.team')}</span>
             </nav>
-            <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground mb-3">
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-6xl font-light text-foreground mb-3 break-words">
               {teamHero?.title || t('team.title')}
             </h1>
             <p className="text-muted-foreground font-body text-lg max-w-xl">

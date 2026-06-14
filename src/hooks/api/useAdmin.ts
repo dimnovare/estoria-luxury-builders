@@ -217,6 +217,33 @@ export function usePropertyExportPortals() {
   });
 }
 
+/**
+ * Per-portal export eligibility for a single property. Tells the editor whether
+ * each portal will actually publish this listing, and — when it won't — the
+ * concrete data/status reasons (`problems`, English strings) blocking it.
+ */
+export interface PortalEligibility {
+  portalKey: string;
+  displayName: string;
+  /** The portal publication toggle is on for this property. */
+  enabled: boolean;
+  /** The property status is Active. */
+  active: boolean;
+  /** The property data passes this portal's validation. */
+  eligible: boolean;
+  /** Data issues blocking eligibility (English; map to i18n for display). */
+  problems: string[];
+}
+
+export function useExportEligibility(propertyId?: string) {
+  return useQuery<PortalEligibility[]>({
+    queryKey: ['admin', 'exportEligibility', propertyId],
+    queryFn: () =>
+      api.get(`/admin/properties/${propertyId}/export-eligibility`).then(r => r.data),
+    enabled: !!propertyId,
+  });
+}
+
 // ── AI translation ───────────────────────────────────────────────────────────
 
 export interface TranslateContentRequest {

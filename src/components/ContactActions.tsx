@@ -42,7 +42,7 @@ export default function ContactActions({
     <div className={`flex flex-wrap gap-3 ${className}`}>
       {phone && (
         <a href={`tel:${phone}`} className={cls} aria-label={t('contact.call', 'Call')}>
-          <Phone className="h-4 w-4" /> {t('contact.call', 'Call')}
+          <Phone className="h-4 w-4" aria-hidden="true" /> {t('contact.call', 'Call')}
         </a>
       )}
       {phone && (
@@ -53,7 +53,7 @@ export default function ContactActions({
           className={variant === 'solid' ? `${base} ${outline}` : cls}
           aria-label={t('contact.whatsapp', 'WhatsApp')}
         >
-          <MessageCircle className="h-4 w-4" /> {t('contact.whatsapp', 'WhatsApp')}
+          <MessageCircle className="h-4 w-4" aria-hidden="true" /> {t('contact.whatsapp', 'WhatsApp')}
         </a>
       )}
       {email && (
@@ -62,7 +62,7 @@ export default function ContactActions({
           className={`${base} ${outline}`}
           aria-label={t('contact.email', 'Email')}
         >
-          <Mail className="h-4 w-4" /> {t('contact.email', 'Email')}
+          <Mail className="h-4 w-4" aria-hidden="true" /> {t('contact.email', 'Email')}
         </a>
       )}
     </div>

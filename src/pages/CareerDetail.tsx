@@ -14,7 +14,12 @@ export default function CareerDetail() {
   if (isLoading) {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-primary" size={32} />
+        <Loader2
+          className="animate-spin text-primary"
+          size={32}
+          role="status"
+          aria-label={t('common.loading', 'Loading')}
+        />
       </div>
     );
   }
@@ -23,7 +28,7 @@ export default function CareerDetail() {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="font-heading text-5xl text-foreground mb-4">{t('common.notFound')}</h1>
+          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-4 break-words">{t('common.notFound')}</h1>
           <Link
             to="/careers"
             className="text-primary font-nav text-xs uppercase tracking-wider hover:underline"
@@ -38,12 +43,14 @@ export default function CareerDetail() {
   return (
     <>
       <Seo
-        title={`${career.title} — Careers at Estoria`}
-        description={`${career.title} — career opportunity at Estoria${career.location ? ` in ${career.location}` : ''}, Tallinn.`}
+        title={t('seo.careerDetail.title', '{{title}} — Careers at Estoria').replace('{{title}}', career.title)}
+        description={t('seo.careerDetail.description', '{{title}} — career opportunity at Estoria in {{location}}, Tallinn.')
+          .replace('{{title}}', career.title)
+          .replace('{{location}}', career.location || 'Tallinn')}
         path={`/careers/${career.slug}`}
       />
       <div className="pt-24 pb-4 container mx-auto px-6">
-        <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body">
+        <nav className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-body">
           <Link to="/" className="hover:text-primary transition-colors">
             {t('nav.home')}
           </Link>
@@ -58,14 +65,14 @@ export default function CareerDetail() {
 
       <section className="container mx-auto px-6 py-12 max-w-4xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="font-heading text-4xl md:text-5xl text-foreground font-light mb-4">
+          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground font-light mb-4 break-words">
             {career.title}
           </h1>
 
           {career.location && (
             <div className="flex items-center gap-4 mb-8">
               <span className="flex items-center gap-1.5 text-sm text-muted-foreground font-body">
-                <MapPin size={14} className="text-primary" />
+                <MapPin size={14} className="text-primary" aria-hidden="true" />
                 {career.location}
               </span>
             </div>
@@ -95,7 +102,7 @@ export default function CareerDetail() {
           to="/careers"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary font-nav uppercase tracking-wider transition-colors"
         >
-          <ArrowLeft size={14} /> {t('careers.backLink')}
+          <ArrowLeft size={14} aria-hidden="true" /> {t('careers.backLink')}
         </Link>
       </div>
     </>

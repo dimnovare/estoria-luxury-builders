@@ -68,10 +68,10 @@ export default function SaveSearchModal({ open, onClose, filter }: Props) {
           <button
             type="button"
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground"
+            className="flex items-center justify-center min-h-[44px] min-w-[44px] -mr-2 text-muted-foreground hover:text-foreground"
             aria-label={t('common.close')}
           >
-            <X size={18} />
+            <X size={18} aria-hidden="true" />
           </button>
         </div>
         <p className="text-sm text-muted-foreground font-body mb-5">
@@ -80,10 +80,11 @@ export default function SaveSearchModal({ open, onClose, filter }: Props) {
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-nav uppercase tracking-wider text-muted-foreground mb-1.5">
+            <label htmlFor="save-search-email" className="block text-xs font-nav uppercase tracking-wider text-muted-foreground mb-1.5">
               {t('savedSearch.fields.email')} *
             </label>
             <input
+              id="save-search-email"
               type="email"
               required
               value={email}
@@ -94,10 +95,11 @@ export default function SaveSearchModal({ open, onClose, filter }: Props) {
           </div>
 
           <div>
-            <label className="block text-xs font-nav uppercase tracking-wider text-muted-foreground mb-1.5">
+            <label htmlFor="save-search-name" className="block text-xs font-nav uppercase tracking-wider text-muted-foreground mb-1.5">
               {t('savedSearch.fields.name')}
             </label>
             <input
+              id="save-search-name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -107,10 +109,11 @@ export default function SaveSearchModal({ open, onClose, filter }: Props) {
           </div>
 
           <div>
-            <label className="block text-xs font-nav uppercase tracking-wider text-muted-foreground mb-1.5">
+            <label htmlFor="save-search-frequency" className="block text-xs font-nav uppercase tracking-wider text-muted-foreground mb-1.5">
               {t('savedSearch.fields.frequency')}
             </label>
             <select
+              id="save-search-frequency"
               value={frequency}
               onChange={(e) => setFrequency(e.target.value as SavedSearchFrequency)}
               className="w-full bg-secondary border border-border rounded-sm px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
@@ -121,7 +124,7 @@ export default function SaveSearchModal({ open, onClose, filter }: Props) {
             </select>
           </div>
 
-          <p className="text-[11px] text-muted-foreground font-body">
+          <p className="text-sm sm:text-[11px] text-muted-foreground font-body">
             {t('savedSearch.privacyNote')}
           </p>
 

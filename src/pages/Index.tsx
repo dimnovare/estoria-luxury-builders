@@ -79,8 +79,8 @@ export default function Index() {
   return (
     <>
       <Seo
-        title="Estoria — Premium Real Estate in Tallinn, Estonia"
-        description="Estoria — premium real estate in Tallinn. Apartments, houses, and commercial properties for sale, rent, and investment."
+        title={t('seo.home.title', 'Estoria — Premium Real Estate in Tallinn, Estonia')}
+        description={t('seo.home.description', 'Estoria — premium real estate in Tallinn. Apartments, houses, and commercial properties for sale, rent, and investment.')}
         path="/"
       />
       {/* ===== HERO ===== */}
@@ -143,7 +143,7 @@ export default function Index() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="font-heading text-5xl md:text-7xl lg:text-[88px] font-light text-foreground leading-[1.05]"
+            className="font-heading text-4xl sm:text-5xl md:text-7xl lg:text-[88px] font-light text-foreground leading-[1.05] break-words"
           >
             {(() => {
               const raw = hero?.title ||
@@ -171,7 +171,7 @@ export default function Index() {
             {hero?.body ? (
               <SafeHtml as="span" html={hero.body} />
             ) : (
-              "Curated luxury properties across Estonia's most sought-after locations."
+              t('home.hero.subtitle', "Curated luxury properties across Estonia's most sought-after locations.")
             )}
           </motion.p>
 
@@ -302,7 +302,7 @@ export default function Index() {
             {t('home.discover')}
           </div>
           <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
-            <ChevronDown className="text-muted-foreground mx-auto" size={16} strokeWidth={1.5} />
+            <ChevronDown aria-hidden="true" className="text-muted-foreground mx-auto" size={16} strokeWidth={1.5} />
           </motion.div>
         </motion.div>
       </section>
@@ -322,8 +322,8 @@ export default function Index() {
               <div className="font-nav text-[10px] tracking-[0.3em] text-primary uppercase mb-3">
                 {t('home.curatedSelection')}
               </div>
-              <h2 className="font-heading text-4xl md:text-[48px] font-light text-foreground leading-[1.1]">
-                {featuredContent?.title || 'Featured Properties'}
+              <h2 className="font-heading text-3xl sm:text-4xl md:text-[48px] font-light text-foreground leading-[1.1] break-words">
+                {featuredContent?.title || t('home.featured.title', 'Featured Properties')}
               </h2>
             </div>
             <div className="mt-5 md:mt-0">
@@ -374,8 +374,8 @@ export default function Index() {
             <div className="font-nav text-[10px] tracking-[0.3em] text-primary uppercase mb-3">
               {t('home.whatWeOffer')}
             </div>
-            <h2 className="font-heading text-4xl md:text-[48px] font-light text-foreground">
-              {servicesContent?.title || 'Our Services'}
+            <h2 className="font-heading text-3xl sm:text-4xl md:text-[48px] font-light text-foreground break-words">
+              {servicesContent?.title || t('home.services.title', 'Our Services')}
             </h2>
           </motion.div>
 
@@ -437,7 +437,7 @@ export default function Index() {
                 aboutIntro?.imageUrl ||
                 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=75'
               }
-              alt="About Estoria"
+              alt={t('home.about.imageAlt', 'About Estoria')}
               className="w-full h-[260px] lg:h-full lg:min-h-[480px] object-cover"
             />
           </motion.div>
@@ -453,7 +453,7 @@ export default function Index() {
             <div className="font-nav text-[10px] tracking-[0.3em] text-primary uppercase mb-3.5">
               {t('home.ourStory')}
             </div>
-            <h2 className="font-heading text-4xl md:text-[44px] font-light text-foreground leading-[1.15] mb-5">
+            <h2 className="font-heading text-3xl sm:text-4xl md:text-[44px] font-light text-foreground leading-[1.15] mb-5 break-words">
               {aboutIntro?.title || (
                 <>
                   Built on Trust,<br />
@@ -468,9 +468,7 @@ export default function Index() {
               />
             ) : (
               <p className="text-muted-foreground font-body text-sm leading-[1.85] max-w-[380px] mb-8">
-                With over 8 years serving Estonia's most discerning clients, we've built our
-                reputation on integrity, deep market knowledge, and a genuine passion for
-                connecting people with exceptional homes.
+                {t('home.about.body', "With over 8 years serving Estonia's most discerning clients, we've built our reputation on integrity, deep market knowledge, and a genuine passion for connecting people with exceptional homes.")}
               </p>
             )}
             <div>

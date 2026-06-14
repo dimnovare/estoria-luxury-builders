@@ -126,9 +126,9 @@ export default function Footer() {
                     aria-label={label}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-9 h-9 rounded-sm bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-300"
+                    className="min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 w-11 h-11 sm:w-9 sm:h-9 rounded-sm bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-300"
                   >
-                    <Icon size={16} />
+                    <Icon size={16} aria-hidden="true" />
                   </a>
                 ))}
               </div>
@@ -163,7 +163,7 @@ export default function Footer() {
                   aria-label={t('nav.switchLanguage', { lang: lang.toUpperCase(), defaultValue: `Switch language to ${lang.toUpperCase()}` })}
                   title={lang.toUpperCase()}
                   aria-current={i18n.language === lang ? 'true' : undefined}
-                  className={`px-1 transition-colors ${
+                  className={`min-h-[44px] sm:min-h-0 px-2 sm:px-1 transition-colors ${
                     i18n.language === lang ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >

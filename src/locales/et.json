@@ -27,7 +27,8 @@
     "hero": {
       "titleStart": "Paik, kus elab sinu",
       "titleAccent": "tulevik",
-      "titleEnd": ""
+      "titleEnd": "",
+      "subtitle": "Valitud luksuskinnisvara Eesti ihaldatuimates asukohtades."
     },
     "discover": "Avasta",
     "curatedSelection": "Valitud pakkumised",
@@ -39,6 +40,16 @@
       "experience": "Kogemus",
       "satisfaction": "Rahulolu",
       "languages": "Keeled"
+    },
+    "featured": {
+      "title": "Esiletõstetud objektid"
+    },
+    "services": {
+      "title": "Meie teenused"
+    },
+    "about": {
+      "imageAlt": "Estoriast",
+      "body": "Üle 8 aasta Eesti kõige nõudlikumaid kliente teenindades oleme rajanud oma maine aususele, sügavale turutundmisele ja siirale kirele viia inimesed kokku erakordsete kodudega."
     }
   },
   "properties": {
@@ -154,6 +165,11 @@
       "title": "Valmis oma tulevikku leidma?",
       "subtitle": "Lase meie meeskonnal viia Teid õige kinnisvarani. Ootame Teiega ühendust.",
       "button": "Võta ühendust"
+    },
+    "heroImageAlt": "Estoriast",
+    "officeImageAlt": "ESTORIA büroo",
+    "story": {
+      "title": "Meie lugu"
     }
   },
   "team": {
@@ -167,7 +183,9 @@
     "call": "Helista",
     "email": "E-post",
     "callMember": "Helista {{name}}",
-    "emailMember": "Saada e-kiri {{name}}"
+    "emailMember": "Saada e-kiri {{name}}",
+    "defaultRole": "Maakler",
+    "defaultRoleLong": "kinnisvaranõustaja"
   },
   "blog": {
     "title": "Uudised ja artiklid",
@@ -243,7 +261,8 @@
       "hoursWeekday": "E–R: 9:00–18:00",
       "hoursSaturday": "L: 10:00–14:00 (kokkuleppel)",
       "hoursSunday": "P: Suletud"
-    }
+    },
+    "mapTitle": "ESTORIA büroo asukoht"
   },
   "newsletter": {
     "title": "Püsi kursis",
@@ -375,7 +394,8 @@
     "message": "Kasutame küpsiseid Teie kogemuse parandamiseks",
     "accept": "Nõustun",
     "privacy": "Privaatsuspoliitika",
-    "decline": "Keeldu"
+    "decline": "Keeldu",
+    "ariaLabel": "Küpsiste nõusolek"
   },
   "enums": {
     "propertyType": {
@@ -441,6 +461,21 @@
       "example": "Näide:",
       "errorTitle": "Midagi läks valesti",
       "retry": "Proovi uuesti"
+    },
+    "export": {
+      "willAppear": "See kuulutus ilmub portaali {{portal}}.",
+      "wontAppear": "See kuulutus EI ilmu portaali {{portal}}, kuni:",
+      "needActive": "Määra objekti staatuseks Aktiivne.",
+      "problem": {
+        "price": "Lisa hind, mis on suurem kui 0.",
+        "size": "Lisa pindala (m²).",
+        "agentEmail": "Määra maakler, kellel on kehtiv e-posti aadress.",
+        "title": "Lisa pealkiri vähemalt ühes keeles.",
+        "description": "Lisa kirjeldus vähemalt ühes keeles.",
+        "propertyType": "Portaal ei aktsepteeri seda objekti tüüpi.",
+        "transactionType": "Portaal ei aktsepteeri seda tehingu tüüpi.",
+        "location": "Määra linnaks Tallinn — portaal aktsepteerib praegu ainult Tallinna."
+      }
     },
     "layout": {
       "adminBadge": "Admin",
@@ -1588,5 +1623,57 @@
   "pagination": {
     "previous": "Eelmine leht",
     "next": "Järgmine leht"
+  },
+  "seo": {
+    "home": {
+      "title": "Estoria — kvaliteetne kinnisvara Tallinnas, Eestis",
+      "description": "Estoria — kvaliteetne kinnisvara Tallinnas. Korterid, majad ja äripinnad müügiks, üürile ja investeerimiseks."
+    },
+    "properties": {
+      "title": "Kinnisvara müügiks ja üürile Tallinnas | Estoria",
+      "description": "Sirvi Estoria kvaliteetseid kortereid, maju ja äripindu müügiks ja üürile Tallinnas ja üle Eesti."
+    },
+    "team": {
+      "title": "Meie meeskond — Estoria maaklerid ja nõustajad Tallinnas",
+      "description": "Tutvu Estoria maaklerite ja nõustajatega, kes aitavad klientidel osta, müüa ja üürida kvaliteetset kinnisvara Tallinnas ja üle Eesti."
+    },
+    "teamMember": {
+      "title": "{{name}} — {{role}} Estorias",
+      "description": "{{name}}, {{role}} Estorias Tallinnas. Võta ühendust kvaliteetse kinnisvara nõustamiseks."
+    },
+    "blog": {
+      "title": "Blogi — Eesti kinnisvaraülevaated | Estoria",
+      "description": "Turuülevaated, piirkonnajuhised ja ostunõuanded Tallinna ja Eesti kohta Estoria toimetuselt."
+    },
+    "blogPost": {
+      "suffix": "Estoria blogi"
+    },
+    "careers": {
+      "title": "Karjäär — liitu Estoria meeskonnaga Tallinnas",
+      "description": "Avasta karjäärivõimalusi Estorias. Liitu meie kvaliteetse kinnisvara maaklerite ja nõustajate meeskonnaga Tallinnas, Eestis."
+    },
+    "careerDetail": {
+      "title": "{{title}} — karjäär Estorias",
+      "description": "{{title}} — karjäärivõimalus Estorias asukohaga {{location}}, Tallinn."
+    },
+    "contact": {
+      "title": "Võta Estoriaga ühendust — kinnisvarabüroo Tallinnas",
+      "description": "Võta Estoriaga Tallinnas ühendust müügi-, üüri- ja investeerimisküsimustes. Külasta meie bürood või kirjuta otse meie maakleritele."
+    },
+    "services": {
+      "title": "Teenused — müük, üür, hindamine ja investeerimine | Estoria",
+      "description": "Terviklik kinnisvarateenus Eestis: vahendus müügi ja üüri puhul, kinnisvara hindamine ja investeerimisnõustamine eraklientidele."
+    },
+    "about": {
+      "title": "Estoriast — kinnisvarabüroo Tallinnas",
+      "description": "Tutvu Estoriaga: Tallinnas tegutsev kinnisvarabüroo, mis pakub diskreetset ja asjatundlikku teenust kvaliteetsete korterite, majade ja äripindade jaoks Eestis."
+    },
+    "privacy": {
+      "title": "Privaatsuspoliitika — Estoria",
+      "description": "Kuidas Estoria kogub, kasutab ja kaitseb teie isikuandmeid ning teie õigused GDPR-i alusel."
+    }
+  },
+  "propertyMap": {
+    "ariaLabel": "Kaart, mis näitab objekti asukohta"
   }
 }

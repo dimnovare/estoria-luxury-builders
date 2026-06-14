@@ -32,7 +32,12 @@ export default function PropertyBrochure() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <Loader2 className="animate-spin text-gray-400" size={28} />
+        <Loader2
+          className="animate-spin text-gray-400"
+          size={28}
+          role="status"
+          aria-label={t('common.loading', 'Loading')}
+        />
       </div>
     );
   }
@@ -86,7 +91,7 @@ export default function PropertyBrochure() {
       </div>
 
       {/* A4 sheet */}
-      <div className="mx-auto max-w-[800px] px-10 py-8 print:max-w-none print:px-0 print:py-0">
+      <div className="mx-auto max-w-[800px] px-5 sm:px-10 py-8 print:max-w-none print:px-0 print:py-0">
         {/* Header / wordmark */}
         <header className="flex items-center justify-between border-b-2 border-black pb-4 mb-6">
           <span className="text-2xl tracking-[0.3em] font-semibold">ESTORIA</span>
@@ -99,7 +104,7 @@ export default function PropertyBrochure() {
 
         {/* Title + price */}
         <div className="mb-4">
-          <h1 className="text-3xl font-light leading-tight mb-2">{property.title}</h1>
+          <h1 className="text-2xl sm:text-3xl font-light leading-tight mb-2 break-words">{property.title}</h1>
           {location && <p className="text-sm text-gray-600">{location}</p>}
           <p className="text-3xl font-medium mt-3">
             {formatPrice(property.price, property.transactionType)}
@@ -133,7 +138,7 @@ export default function PropertyBrochure() {
 
         {/* Specs */}
         {specs.length > 0 && (
-          <div className="grid grid-cols-3 gap-y-3 gap-x-6 border-y border-gray-200 py-4 mb-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 print:grid-cols-3 gap-y-3 gap-x-6 border-y border-gray-200 py-4 mb-6">
             {specs.map((s) => (
               <div key={s.label}>
                 <p className="text-[11px] uppercase tracking-wider text-gray-500">{s.label}</p>
@@ -186,9 +191,9 @@ export default function PropertyBrochure() {
         )}
 
         {/* Footer / public listing URL */}
-        <footer className="border-t border-gray-200 pt-4 text-xs text-gray-500 flex items-center justify-between">
+        <footer className="border-t border-gray-200 pt-4 text-xs text-gray-500 flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
           <span>estoria.estate</span>
-          <span>{listingUrl}</span>
+          <span className="break-all">{listingUrl}</span>
         </footer>
       </div>
     </div>

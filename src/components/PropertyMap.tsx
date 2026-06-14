@@ -1,4 +1,5 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useTranslation } from 'react-i18next';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
@@ -31,6 +32,7 @@ interface PropertyMapProps {
  * *.tile.openstreetmap.org, already permitted by the site CSP (img-src https:).
  */
 export default function PropertyMap({ lat, lng, address, className }: PropertyMapProps) {
+  const { t } = useTranslation();
   return (
     <MapContainer
       center={[lat, lng]}
@@ -38,6 +40,7 @@ export default function PropertyMap({ lat, lng, address, className }: PropertyMa
       scrollWheelZoom={false}
       className={className}
       style={{ height: '100%', width: '100%' }}
+      aria-label={t('propertyMap.ariaLabel', 'Map showing the property location')}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

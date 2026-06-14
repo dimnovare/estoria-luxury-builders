@@ -69,28 +69,28 @@ export default function PropertyCard({ property, index = 0 }: Props) {
 
         {/* Info */}
         <div className="mt-4 space-y-2">
-          <h3 className="font-heading text-xl text-foreground group-hover:text-primary transition-colors duration-300">
+          <h3 className="font-heading text-xl text-foreground group-hover:text-primary transition-colors duration-300 break-words">
             {property.title}
           </h3>
           <p className="text-xs text-muted-foreground font-body">{property.address}</p>
 
           {/* Specs */}
-          <div className="flex items-center gap-4 text-xs text-muted-foreground font-body pt-1">
+          <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground font-body pt-1">
             {property.size != null && property.size > 0 && (
               <span className="flex items-center gap-1.5">
-                <Maximize2 size={12} className="text-primary" />
+                <Maximize2 size={12} className="text-primary" aria-hidden="true" />
                 {property.size} m²
               </span>
             )}
             {property.rooms != null && (
               <span className="flex items-center gap-1.5">
-                <DoorOpen size={12} className="text-primary" />
+                <DoorOpen size={12} className="text-primary" aria-hidden="true" />
                 {property.rooms} {t('properties.rooms')}
               </span>
             )}
             {property.bedrooms != null && (
               <span className="flex items-center gap-1.5">
-                <BedDouble size={12} className="text-primary" />
+                <BedDouble size={12} className="text-primary" aria-hidden="true" />
                 {property.bedrooms} {t('properties.beds')}
               </span>
             )}

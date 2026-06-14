@@ -88,7 +88,7 @@ export default function Navbar() {
                   >
                     {lang.toUpperCase()}
                   </button>
-                  {i < languages.length - 1 && <span className="text-border">|</span>}
+                  {i < languages.length - 1 && <span className="text-border" aria-hidden="true">|</span>}
                 </span>
               ))}
             </div>
@@ -103,7 +103,7 @@ export default function Navbar() {
 
           {/* Hamburger — shown below xl (i.e. mobile + tablet) */}
           <button
-            className="xl:hidden text-foreground p-2 mr-2"
+            className="xl:hidden text-foreground p-2 mr-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? t('nav.closeMenu', 'Close menu') : t('nav.openMenu', 'Open menu')}
             title={mobileOpen ? t('nav.closeMenu', 'Close menu') : t('nav.openMenu', 'Open menu')}
@@ -158,11 +158,11 @@ export default function Navbar() {
                     aria-label={t('nav.switchLanguage', { lang: lang.toUpperCase(), defaultValue: `Switch language to ${lang.toUpperCase()}` })}
                     title={lang.toUpperCase()}
                     aria-current={i18n.language === lang ? 'true' : undefined}
-                    className={`uppercase px-2 py-1 ${
+                    className={`uppercase px-2 py-1 min-h-[44px] min-w-[44px] flex items-center justify-center ${
                       i18n.language === lang ? 'text-primary' : 'text-muted-foreground'
                     }`}
                   >
-                    {lang}
+                    {lang.toUpperCase()}
                   </button>
                 ))}
               </motion.div>

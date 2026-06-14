@@ -49,8 +49,8 @@ export default function PrivacyPolicy() {
   return (
     <>
       <Seo
-        title="Privacy Policy — Estoria"
-        description="How Estoria collects, uses, and protects your personal data, and your rights under GDPR."
+        title={t('seo.privacy.title', 'Privacy Policy — Estoria')}
+        description={t('seo.privacy.description', 'How Estoria collects, uses, and protects your personal data, and your rights under GDPR.')}
         path="/privacy"
       />
       <section className="pt-20 pb-12 bg-gradient-to-b from-secondary/80 to-background">
@@ -63,7 +63,7 @@ export default function PrivacyPolicy() {
               <span>/</span>
               <span className="text-foreground">{t('footer.privacy', 'Privacy Policy')}</span>
             </nav>
-            <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground">
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-6xl font-light text-foreground break-words">
               {t('footer.privacy', 'Privacy Policy')}
             </h1>
             <div className="w-16 h-px gold-gradient mt-4" />

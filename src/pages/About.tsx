@@ -41,8 +41,11 @@ export default function About() {
   return (
     <>
       <Seo
-        title="About Estoria — Tallinn Real Estate Brokerage"
-        description="Meet Estoria: a Tallinn-based brokerage delivering discreet, expert service for premium apartments, houses, and commercial property in Estonia."
+        title={t('seo.about.title', 'About Estoria — Tallinn Real Estate Brokerage')}
+        description={t(
+          'seo.about.description',
+          'Meet Estoria: a Tallinn-based brokerage delivering discreet, expert service for premium apartments, houses, and commercial property in Estonia.',
+        )}
         path="/about"
       />
       {/* Hero Banner */}
@@ -58,7 +61,7 @@ export default function About() {
               intro?.imageUrl ||
               'https://images.unsplash.com/photo-1590497008439-79bc09b46a83?w=600&q=75'
             }
-            alt="About Estoria"
+            alt={t('about.heroImageAlt', 'About Estoria')}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-background/70" />
@@ -72,7 +75,7 @@ export default function About() {
               <span>/</span>
               <span className="text-foreground">{t('nav.about')}</span>
             </nav>
-            <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground">
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-6xl font-light text-foreground break-words">
               {t('about.title')}
             </h1>
           </motion.div>
@@ -93,7 +96,7 @@ export default function About() {
               <div className="flex items-start gap-4">
                 <div className="w-1 h-16 gold-gradient rounded-full flex-shrink-0 mt-1" />
                 <div>
-                  <h2 className="font-heading text-4xl md:text-5xl font-light text-foreground mb-6">
+                  <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-light text-foreground mb-6 break-words">
                     {intro?.title || (
                       <>
                         Redefining Luxury Real Estate in{' '}
@@ -132,7 +135,7 @@ export default function About() {
               <div className="rounded-sm overflow-hidden">
                 <img
                   src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=500&q=75"
-                  alt="ESTORIA office"
+                  alt={t('about.officeImageAlt', 'ESTORIA office')}
                   className="w-full h-[400px] object-cover"
                 />
               </div>
@@ -150,8 +153,8 @@ export default function About() {
             viewport={{ once: true }}
           >
             <div className="w-12 h-px gold-gradient mx-auto mb-8" />
-            <h2 className="font-heading text-4xl md:text-5xl font-light text-foreground mb-8">
-              {story?.title || 'Our Story'}
+            <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-light text-foreground mb-8 break-words">
+              {story?.title || t('about.story.title', 'Our Story')}
             </h2>
             {story?.body ? (
               <SafeHtml className="prose-estoria text-center" html={story.body} />
@@ -190,7 +193,7 @@ export default function About() {
             className="text-center mb-16"
           >
             <div className="w-12 h-px gold-gradient mx-auto mb-6" />
-            <h2 className="font-heading text-4xl md:text-5xl font-light text-foreground">
+            <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-light text-foreground break-words">
               {t('about.ourValues')}
             </h2>
           </motion.div>
@@ -233,7 +236,7 @@ export default function About() {
             className="text-center mb-16"
           >
             <div className="w-12 h-px gold-gradient mx-auto mb-6" />
-            <h2 className="font-heading text-4xl md:text-5xl font-light text-foreground">
+            <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-light text-foreground break-words">
               {t('about.meetTeam')}
             </h2>
           </motion.div>
@@ -291,7 +294,7 @@ export default function About() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="font-heading text-4xl md:text-5xl font-light text-foreground mb-6">
+            <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-light text-foreground mb-6 break-words">
               {aboutCta?.title || t('about.cta.title')}
             </h2>
             <p className="text-muted-foreground font-body mb-10 max-w-lg mx-auto">

@@ -87,7 +87,7 @@ export default function MobilePropertyGallery({
       </div>
 
       {images.length > 1 && (
-        <div className="mt-4 flex justify-center gap-2">
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
           {images.map((_, index) => (
             <button
               type="button"
@@ -95,12 +95,17 @@ export default function MobilePropertyGallery({
               onClick={() => api?.scrollTo(index)}
               aria-label={getPhotoLabel(index)}
               aria-current={selectedIndex === index ? 'true' : undefined}
-              className={`h-2 w-2 rounded-full transition-colors ${
-                selectedIndex === index
-                  ? 'bg-primary'
-                  : 'bg-muted-foreground/40 hover:bg-primary'
-              }`}
-            />
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center"
+            >
+              <span
+                aria-hidden="true"
+                className={`h-2 w-2 rounded-full transition-colors ${
+                  selectedIndex === index
+                    ? 'bg-primary'
+                    : 'bg-muted-foreground/40 hover:bg-primary'
+                }`}
+              />
+            </button>
           ))}
         </div>
       )}

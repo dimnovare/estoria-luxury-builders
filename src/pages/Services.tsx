@@ -15,22 +15,22 @@ export default function Services() {
   return (
     <>
       <Seo
-        title="Services — Sales, Rentals, Valuation & Investment | Estoria"
-        description="Full-service real estate in Estonia: brokerage for sales and rentals, property valuation, and investment advisory tailored to private clients."
+        title={t('seo.services.title', 'Services — Sales, Rentals, Valuation & Investment | Estoria')}
+        description={t('seo.services.description', 'Full-service real estate in Estonia: brokerage for sales and rentals, property valuation, and investment advisory tailored to private clients.')}
         path="/services"
       />
       {/* Header */}
       <section className="pt-20 pb-12 bg-gradient-to-b from-secondary/80 to-background">
         <div className="container mx-auto px-6 pt-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body mb-6">
+            <nav className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-body mb-6">
               <Link to="/" className="hover:text-primary transition-colors">
                 {t('nav.home')}
               </Link>
               <span>/</span>
               <span className="text-foreground">{t('nav.services')}</span>
             </nav>
-            <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground mb-3">
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-6xl font-light text-foreground mb-3 break-words">
               {servicesHero?.title || t('services.title')}
             </h1>
             <p className="text-muted-foreground font-body text-lg max-w-xl">
@@ -94,12 +94,12 @@ export default function Services() {
 
                   {/* Icon */}
                   <div className="w-11 h-11 rounded-md flex-shrink-0 flex items-center justify-center bg-primary/[0.06] text-primary border border-primary/15 group-hover:border-primary/40 group-hover:bg-primary/[0.1] transition-all duration-500">
-                    <Icon size={20} strokeWidth={1.5} />
+                    <Icon size={20} strokeWidth={1.5} aria-hidden />
                   </div>
 
                   {/* Title + description */}
                   <div className="col-span-2 md:col-span-1 min-w-0">
-                    <h2 className="font-heading text-2xl md:text-3xl font-light text-foreground mb-2 leading-tight">
+                    <h2 className="font-heading text-2xl md:text-3xl font-light text-foreground mb-2 leading-tight break-words">
                       {service.name}
                     </h2>
                     {service.description && (

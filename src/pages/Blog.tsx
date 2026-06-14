@@ -49,8 +49,8 @@ export default function Blog() {
   return (
     <>
       <Seo
-        title="Blog — Estonia Real Estate Insights | Estoria"
-        description="Market insights, neighbourhood guides, and buying tips for Tallinn and Estonia from the Estoria editorial team."
+        title={t('seo.blog.title', 'Blog — Estonia Real Estate Insights | Estoria')}
+        description={t('seo.blog.description', 'Market insights, neighbourhood guides, and buying tips for Tallinn and Estonia from the Estoria editorial team.')}
         path="/blog"
       />
       {/* Header */}
@@ -64,7 +64,7 @@ export default function Blog() {
               <span>/</span>
               <span className="text-foreground">{t('nav.blog')}</span>
             </nav>
-            <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground">
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-6xl font-light text-foreground break-words">
               {t('blog.title')}
             </h1>
             <div className="w-16 h-px gold-gradient mt-4" />
@@ -117,7 +117,7 @@ export default function Blog() {
                           {featured.category}
                         </span>
                       )}
-                      <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl text-foreground font-light group-hover:text-primary transition-colors max-w-3xl">
+                      <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl text-foreground font-light group-hover:text-primary transition-colors max-w-3xl break-words">
                         {featured.title}
                       </h2>
                     </div>
@@ -167,7 +167,7 @@ export default function Blog() {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 mt-16">
+                <div className="flex flex-wrap items-center justify-center gap-2 mt-16">
                   <button
                     onClick={() => updatePage(page - 1)}
                     disabled={page <= 1}

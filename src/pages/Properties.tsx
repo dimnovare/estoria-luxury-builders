@@ -189,7 +189,7 @@ export default function Properties() {
       </div>
 
       {/* Price range */}
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
         <div className="relative">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
             €
@@ -200,7 +200,7 @@ export default function Properties() {
             aria-label={t('filters.minPrice', 'Minimum price')}
             value={minPrice}
             onChange={(e) => updateFilter('minPrice', e.target.value)}
-            className="bg-secondary text-foreground text-sm font-body pl-7 pr-3 py-2.5 rounded-sm border border-border outline-none w-28 focus:border-primary transition-colors"
+            className="bg-secondary text-foreground text-sm font-body pl-7 pr-3 py-2.5 rounded-sm border border-border outline-none w-full sm:w-28 focus:border-primary transition-colors"
           />
         </div>
         <span className="text-muted-foreground">–</span>
@@ -214,7 +214,7 @@ export default function Properties() {
             aria-label={t('filters.maxPrice', 'Maximum price')}
             value={maxPrice}
             onChange={(e) => updateFilter('maxPrice', e.target.value)}
-            className="bg-secondary text-foreground text-sm font-body pl-7 pr-3 py-2.5 rounded-sm border border-border outline-none w-28 focus:border-primary transition-colors"
+            className="bg-secondary text-foreground text-sm font-body pl-7 pr-3 py-2.5 rounded-sm border border-border outline-none w-full sm:w-28 focus:border-primary transition-colors"
           />
         </div>
       </div>
@@ -233,8 +233,8 @@ export default function Properties() {
   return (
     <>
       <Seo
-        title="Properties for Sale & Rent in Tallinn | Estoria"
-        description="Browse premium apartments, houses, and commercial real estate for sale and rent in Tallinn and across Estonia with Estoria."
+        title={t('seo.properties.title', 'Properties for Sale & Rent in Tallinn | Estoria')}
+        description={t('seo.properties.description', 'Browse premium apartments, houses, and commercial real estate for sale and rent in Tallinn and across Estonia with Estoria.')}
         path="/properties"
       />
       {/* Header */}
@@ -249,7 +249,7 @@ export default function Properties() {
               <span>/</span>
               <span className="text-foreground">{t('nav.properties')}</span>
             </nav>
-            <h1 className="font-heading text-5xl md:text-6xl font-light text-foreground">
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-6xl font-light text-foreground break-words">
               {t('nav.properties')}
             </h1>
           </motion.div>
@@ -292,7 +292,7 @@ export default function Properties() {
             <button
               type="button"
               onClick={() => setSaveSearchOpen(true)}
-              className="flex items-center gap-1.5 border border-primary/40 text-primary px-2.5 py-1.5 rounded-sm font-nav text-[11px] uppercase tracking-wider"
+              className="flex items-center justify-center gap-1.5 border border-primary/40 text-primary min-h-[44px] min-w-[44px] px-2.5 py-1.5 rounded-sm font-nav text-[11px] uppercase tracking-wider"
               aria-label={t('savedSearch.cta')}
             >
               <Bell size={12} />
@@ -340,7 +340,7 @@ export default function Properties() {
               <button
                 onClick={() => setMobileFiltersOpen(false)}
                 aria-label={t('common.close', 'Close')}
-                className="text-foreground"
+                className="flex items-center justify-center min-h-[44px] min-w-[44px] -mr-2 text-foreground"
               >
                 <X size={24} />
               </button>
@@ -381,8 +381,8 @@ export default function Properties() {
           <div className="flex items-center justify-between mb-8">
             <p className="text-sm text-muted-foreground font-body">
               {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 size={14} className="animate-spin" /> {t('common.loading')}
+                <span role="status" className="flex items-center gap-2">
+                  <Loader2 size={14} aria-hidden="true" className="animate-spin" /> {t('common.loading')}
                 </span>
               ) : (
                 <>
@@ -469,7 +469,7 @@ export default function Properties() {
                 onClick={() => updateFilter('page', String(page - 1))}
                 disabled={page <= 1}
                 aria-label={t('common.previousPage', 'Previous page')}
-                className="w-10 h-10 flex items-center justify-center rounded-sm border border-border text-muted-foreground hover:text-primary hover:border-primary transition-colors disabled:opacity-30 disabled:hover:text-muted-foreground disabled:hover:border-border"
+                className="w-11 h-11 sm:w-10 sm:h-10 flex items-center justify-center rounded-sm border border-border text-muted-foreground hover:text-primary hover:border-primary transition-colors disabled:opacity-30 disabled:hover:text-muted-foreground disabled:hover:border-border"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -485,7 +485,7 @@ export default function Properties() {
                     onClick={() => updateFilter('page', String(p))}
                     aria-label={t('common.goToPage', 'Go to page {{page}}', { page: p })}
                     aria-current={p === page ? 'page' : undefined}
-                    className={`w-10 h-10 flex items-center justify-center rounded-sm text-sm font-body transition-colors ${
+                    className={`w-11 h-11 sm:w-10 sm:h-10 flex items-center justify-center rounded-sm text-sm font-body transition-colors ${
                       p === page
                         ? 'border border-primary text-primary'
                         : 'border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30'
@@ -500,7 +500,7 @@ export default function Properties() {
                 onClick={() => updateFilter('page', String(page + 1))}
                 disabled={page >= totalPages}
                 aria-label={t('common.nextPage', 'Next page')}
-                className="w-10 h-10 flex items-center justify-center rounded-sm border border-border text-muted-foreground hover:text-primary hover:border-primary transition-colors disabled:opacity-30 disabled:hover:text-muted-foreground disabled:hover:border-border"
+                className="w-11 h-11 sm:w-10 sm:h-10 flex items-center justify-center rounded-sm border border-border text-muted-foreground hover:text-primary hover:border-primary transition-colors disabled:opacity-30 disabled:hover:text-muted-foreground disabled:hover:border-border"
               >
                 <ChevronRight size={16} />
               </button>

@@ -242,7 +242,7 @@ export default function PropertyDetail() {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="font-heading text-5xl text-foreground mb-4">{t('common.notFound')}</h1>
+          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-4 break-words">{t('common.notFound')}</h1>
           <Link
             to="/properties"
             className="text-primary font-nav text-xs uppercase tracking-wider hover:underline"
@@ -287,12 +287,16 @@ export default function PropertyDetail() {
 
   const handleShare = async () => {
     const url = window.location.href;
-    if (navigator.share) {
-      await navigator.share({ title: property.title, url });
-    } else {
-      await navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: property.title, url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    } catch {
+      // Share cancelled by the user or clipboard blocked (non-secure context) — no-op.
     }
   };
 
@@ -366,7 +370,7 @@ export default function PropertyDetail() {
       />
       {/* Breadcrumb */}
       <div className="pt-24 pb-4 container mx-auto px-4 sm:px-6">
-        <nav className="flex items-center gap-2 text-xs text-muted-foreground font-body">
+        <nav className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-body">
           <Link to="/" className="hover:text-primary transition-colors">
             {t('nav.home')}
           </Link>
@@ -456,7 +460,7 @@ export default function PropertyDetail() {
       </section>
 
       {/* Content */}
-      <section className="container mx-auto px-4 sm:px-6 pb-24">
+      <section className="container mx-auto px-4 sm:px-6 pb-28 lg:pb-24">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
           {/* Left column */}
           <div className="lg:col-span-3">

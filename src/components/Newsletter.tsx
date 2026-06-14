@@ -48,12 +48,13 @@ export default function Newsletter({ variant = 'section' }: Props) {
   if (status === 'success') {
     return (
       <motion.div
+        role="status"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className={`flex items-center justify-center gap-2 ${variant === 'section' ? 'py-4' : ''}`}
       >
         <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center">
-          <Check className="text-success" size={16} />
+          <Check className="text-success" size={16} aria-hidden="true" />
         </div>
         <span className="text-success font-body text-sm">{t('newsletter.welcomeAboard')}</span>
       </motion.div>
@@ -71,21 +72,21 @@ export default function Newsletter({ variant = 'section' }: Props) {
   if (variant === 'inline') {
     return (
       <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t('newsletter.placeholder')}
             required
-            className="flex-1 bg-secondary border border-border text-foreground text-sm font-body px-4 py-2.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
+            className="flex-1 min-h-[44px] bg-secondary border border-border text-foreground text-sm font-body px-4 py-2.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
           />
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="gold-gradient text-primary-foreground px-5 py-2.5 rounded-sm font-nav text-[10px] uppercase tracking-wider hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-2"
+            className="gold-gradient text-primary-foreground min-h-[44px] px-5 py-2.5 rounded-sm font-nav text-[10px] uppercase tracking-wider hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2"
           >
-            {status === 'loading' ? <Loader2 size={12} className="animate-spin" /> : null}
+            {status === 'loading' ? <Loader2 size={12} className="animate-spin" aria-hidden="true" /> : null}
             {t('newsletter.subscribe')}
           </button>
         </div>
@@ -103,14 +104,14 @@ export default function Newsletter({ variant = 'section' }: Props) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t('newsletter.placeholder')}
           required
-          className="flex-1 bg-secondary border border-border text-foreground text-sm font-body px-5 py-3.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
+          className="flex-1 min-h-[44px] bg-secondary border border-border text-foreground text-sm font-body px-5 py-3.5 rounded-sm outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
         />
         <button
           type="submit"
           disabled={status === 'loading'}
-          className="gold-gradient text-primary-foreground px-8 py-3.5 rounded-sm font-nav text-xs uppercase tracking-wider hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2"
+          className="gold-gradient text-primary-foreground min-h-[44px] px-8 py-3.5 rounded-sm font-nav text-xs uppercase tracking-wider hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2"
         >
-          {status === 'loading' ? <Loader2 size={14} className="animate-spin" /> : null}
+          {status === 'loading' ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : null}
           {t('newsletter.subscribe')}
         </button>
       </form>
