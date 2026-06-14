@@ -287,7 +287,7 @@ export function useGenerateDescription() {
 
 /**
  * Result of resolving an Estonian cadastral number (katastritunnus) against the
- * Land Board via GET /admin/cadastral-lookup. `found` is false when the number
+ * Land Board via GET /admin/properties/cadastral-lookup. `found` is false when the number
  * doesn't resolve; all other fields may be absent in that case.
  */
 export interface CadastralLookup {
@@ -315,7 +315,7 @@ export interface CadastralLookup {
 export function useCadastralLookup() {
   return useMutation({
     mutationFn: (tunnus: string) =>
-      api.get<CadastralLookup>('/admin/cadastral-lookup', { params: { tunnus } }).then(r => r.data),
+      api.get<CadastralLookup>('/admin/properties/cadastral-lookup', { params: { tunnus } }).then(r => r.data),
   });
 }
 
