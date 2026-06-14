@@ -31,6 +31,7 @@ export interface CrmContact {
   id: string;
   fullName: string;
   email?: string;
+  additionalEmails?: string[];
   phone?: string;
   secondaryPhone?: string;
   company?: string;
@@ -46,8 +47,8 @@ export interface CrmContact {
   source?: string;
   sourceDetail?: string;
   tags: string[];
-  consentToMarketing: boolean;
-  consentToMarketingAt?: string;
+  consentMarketing: boolean;
+  consentMarketingAt?: string;
   notes?: string;
   assignedAgentId?: string;
   assignedAgentName?: string;

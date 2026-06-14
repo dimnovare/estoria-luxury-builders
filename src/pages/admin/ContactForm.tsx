@@ -21,7 +21,9 @@ import { formatDate } from '@/lib/formatDate';
 import { toast } from 'sonner';
 import { useState } from 'react';
 
-const SOURCES = ['Website', 'Referral', 'SocialMedia', 'ColdCall', 'Event', 'Other'];
+// Must match the backend ContactSource enum exactly — an unknown value 400s the
+// whole save. (Old list had 'ColdCall'/'Event' which don't exist server-side.)
+const SOURCES = ['Manual', 'Website', 'Referral', 'SocialMedia', 'Phone', 'WalkIn', 'Newsletter', 'Portal', 'Other'];
 
 const contactSchema = z.object({
   fullName: z.string().trim().min(2, { message: 'admin.contacts.errors.fullNameMin' }).max(200),
@@ -45,7 +47,9 @@ const contactSchema = z.object({
   source: z.string().optional().or(z.literal('')),
   sourceDetail: z.string().max(500).optional().or(z.literal('')),
   assignedAgentId: z.string().optional().or(z.literal('')),
-  consentToMarketing: z.boolean(),
+  // Optional + default so a missing value (e.g. when an older payload omits it)
+  // never silently blocks handleSubmit the way a bare z.boolean() did.
+  consentMarketing: z.boolean().optional().default(false),
   notes: z.string().max(2000).optional().or(z.literal('')),
 });
 
@@ -69,6 +73,9 @@ export default function ContactForm() {
   const [isNewsletterSubscriber, setIsNewsletterSubscriber] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState('');
+  // Secondary emails — managed as local state (like tags) so the repeatable
+  // rows stay simple; blanks are dropped on submit.
+  const [additionalEmails, setAdditionalEmails] = useState<string[]>([]);
 
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
@@ -90,7 +97,7 @@ export default function ContactForm() {
       source: '',
       sourceDetail: '',
       assignedAgentId: '',
-      consentToMarketing: false,
+      consentMarketing: false,
       notes: '',
     },
   });
@@ -102,7 +109,9 @@ export default function ContactForm() {
         email: existing.email || '',
         phone: existing.phone || '',
         secondaryPhone: existing.secondaryPhone || '',
-        preferredLanguage: existing.preferredLanguage || 'et',
+        // Backend serializes the enum PascalCase ('Et'/'En'/'Ru'); the radios use
+        // lowercase, so normalize or no language appears selected on edit.
+        preferredLanguage: (existing.preferredLanguage || 'et').toLowerCase(),
         dateOfBirth: existing.dateOfBirth?.split('T')[0] || '',
         address: existing.address || '',
         company: existing.company || '',
@@ -115,12 +124,19 @@ export default function ContactForm() {
         source: existing.source || '',
         sourceDetail: existing.sourceDetail || '',
         assignedAgentId: existing.assignedAgentId || '',
-        consentToMarketing: existing.consentToMarketing,
+        consentMarketing: existing.consentMarketing ?? false,
         notes: existing.notes || '',
       });
       setTags(existing.tags ?? []);
+      setAdditionalEmails(existing.additionalEmails ?? []);
     }
   }, [existing, reset]);
+
+  const setEmailAt = (i: number, v: string) =>
+    setAdditionalEmails(prev => prev.map((e, idx) => (idx === i ? v : e)));
+  const addEmailRow = () => setAdditionalEmails(prev => [...prev, '']);
+  const removeEmailAt = (i: number) =>
+    setAdditionalEmails(prev => prev.filter((_, idx) => idx !== i));
 
   const addTag = () => {
     const trimmed = newTag.trim();
@@ -151,9 +167,11 @@ export default function ContactForm() {
       assignedAgentId: data.assignedAgentId || undefined,
       // Explicit booleans — spread alone would include these, but listing them
       // makes the intent clear and guards against future re-ordering of keys.
-      consentToMarketing: data.consentToMarketing ?? false,
+      consentMarketing: data.consentMarketing ?? false,
       notes: data.notes || undefined,
       tags,
+      // Trim + drop blank rows; the backend further lowercases/dedupes.
+      additionalEmails: additionalEmails.map(e => e.trim()).filter(Boolean),
     };
     try {
       if (isEdit) {
@@ -202,10 +220,37 @@ export default function ContactForm() {
                   <Input id={`${fieldId}-fullName`} {...register('fullName')} required aria-required autoComplete="name" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                   {errors.fullName && <p className="text-xs text-destructive mt-1">{t(errors.fullName.message ?? '')}</p>}
                 </div>
-                <div>
+                <div className="sm:col-span-2">
                   <Label htmlFor={`${fieldId}-email`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.email')}</Label>
                   <Input id={`${fieldId}-email`} {...register('email')} type="email" inputMode="email" autoComplete="email" className="mt-1 h-11 bg-secondary border-border text-foreground" />
                   {errors.email && <p className="text-xs text-destructive mt-1">{t(errors.email.message ?? '')}</p>}
+                </div>
+
+                {/* Additional emails — a person often has work + personal addresses */}
+                <div className="sm:col-span-2">
+                  <Label className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.contacts.fields.additionalEmails', 'Additional emails')}</Label>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t('admin.contacts.fields.additionalEmailsHelp', 'Other addresses this person uses. Mail from any of them links to this contact.')}</p>
+                  <div className="space-y-2 mt-2">
+                    {additionalEmails.map((em, i) => (
+                      <div key={i} className="flex gap-2">
+                        <Input
+                          type="email"
+                          inputMode="email"
+                          value={em}
+                          onChange={(e) => setEmailAt(i, e.target.value)}
+                          placeholder={t('admin.common.email')}
+                          aria-label={t('admin.contacts.fields.additionalEmails', 'Additional emails')}
+                          className="h-11 bg-secondary border-border text-foreground flex-1"
+                        />
+                        <Button type="button" variant="outline" size="icon" onClick={() => removeEmailAt(i)} aria-label={t('admin.common.remove', 'Remove')} title={t('admin.common.remove', 'Remove')} className="h-11 w-11 shrink-0">
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                    <Button type="button" variant="outline" size="sm" onClick={addEmailRow} className="gap-1">
+                      <Plus className="h-4 w-4" />{t('admin.contacts.fields.addEmail', 'Add email')}
+                    </Button>
+                  </div>
                 </div>
                 <div>
                   <Label htmlFor={`${fieldId}-phone`} className="font-nav text-xs uppercase tracking-wider text-muted-foreground">{t('admin.common.phone')}</Label>
@@ -224,7 +269,7 @@ export default function ContactForm() {
                       <div className="flex gap-4 mt-2">
                         {['et', 'en', 'ru'].map(lang => (
                           <label key={lang} className="flex items-center gap-1.5 text-sm text-foreground">
-                            <input type="radio" value={lang} checked={field.value === lang} onChange={() => field.onChange(lang)} className="accent-primary" />
+                            <input type="radio" value={lang} checked={field.value?.toLowerCase() === lang} onChange={() => field.onChange(lang)} className="accent-primary" />
                             {lang.toUpperCase()}
                           </label>
                         ))}
@@ -271,6 +316,7 @@ export default function ContactForm() {
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
               <div className="space-y-6">
+                <p className="text-xs text-muted-foreground -mt-2">{t('admin.contacts.classificationHelp', 'Optional roles a contact can play — tick any that apply (one person can be both a buyer and a seller).')}</p>
                 <div className="flex flex-wrap gap-6">
                   {(['isBuyer', 'isSeller', 'isTenant', 'isLandlord', 'isPartner'] as const).map(field => (
                     <Controller
@@ -306,7 +352,7 @@ export default function ContactForm() {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="any">{t('admin.common.all')}</SelectItem>
-                            {SOURCES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                            {SOURCES.map(s => <SelectItem key={s} value={s}>{t(`admin.contacts.sources.${s}`, s)}</SelectItem>)}
                           </SelectContent>
                         </Select>
                       )}
@@ -385,14 +431,14 @@ export default function ContactForm() {
               <div className="space-y-4">
                 <Controller
                   control={control}
-                  name="consentToMarketing"
+                  name="consentMarketing"
                   render={({ field }) => (
                     <div className="flex items-center gap-3">
                       <Switch checked={field.value} onCheckedChange={field.onChange} aria-label={t('admin.contacts.fields.consentToMarketing')} />
                       <span className="text-sm text-foreground">{t('admin.contacts.fields.consentToMarketing')}</span>
-                      {existing?.consentToMarketingAt && (
+                      {existing?.consentMarketingAt && (
                         <span className="text-xs text-muted-foreground">
-                          ({formatDate(existing.consentToMarketingAt)})
+                          ({formatDate(existing.consentMarketingAt)})
                         </span>
                       )}
                     </div>

@@ -460,7 +460,8 @@
       "required": "Kohustuslik",
       "example": "Näide:",
       "errorTitle": "Midagi läks valesti",
-      "retry": "Proovi uuesti"
+      "retry": "Proovi uuesti",
+      "remove": "Eemalda"
     },
     "export": {
       "willAppear": "See kuulutus ilmub portaali {{portal}}.",
@@ -1240,6 +1241,9 @@
         "address": "Aadress",
         "company": "Ettevõte",
         "position": "Ametikoht",
+        "additionalEmails": "Lisameilid",
+        "additionalEmailsHelp": "Muud e-posti aadressid, mida see inimene kasutab. Kiri ükskõik milliselt neist seotakse selle kontaktiga.",
+        "addEmail": "Lisa e-post",
         "isBuyer": "Ostja",
         "isSeller": "Müüja",
         "isTenant": "Üürnik",
@@ -1256,6 +1260,18 @@
         "notesPlaceholder": "Sisemised märkmed kontakti kohta…",
         "newsletterSubscriber": "Uudiskirja tellija",
         "subscribedNow": "Liitunud"
+      },
+      "classificationHelp": "Valikulised rollid, mida kontakt võib täita — märgi kõik sobivad (üks inimene võib olla nii ostja kui ka müüja).",
+      "sources": {
+        "Manual": "Käsitsi lisatud",
+        "Website": "Veebileht",
+        "Referral": "Soovitus",
+        "SocialMedia": "Sotsiaalmeedia",
+        "Phone": "Telefon",
+        "WalkIn": "Kohapeal",
+        "Newsletter": "Uudiskiri",
+        "Portal": "Portaal",
+        "Other": "Muu"
       },
       "tabs": {
         "timeline": "Ajajoon",

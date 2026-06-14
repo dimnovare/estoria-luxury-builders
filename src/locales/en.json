@@ -460,7 +460,8 @@
       "required": "Required",
       "example": "Example:",
       "errorTitle": "Something went wrong",
-      "retry": "Try again"
+      "retry": "Try again",
+      "remove": "Remove"
     },
     "export": {
       "willAppear": "This listing will appear on {{portal}}.",
@@ -1240,6 +1241,9 @@
         "address": "Address",
         "company": "Company",
         "position": "Position",
+        "additionalEmails": "Additional emails",
+        "additionalEmailsHelp": "Other addresses this person uses. Mail from any of them links to this contact.",
+        "addEmail": "Add email",
         "isBuyer": "Buyer",
         "isSeller": "Seller",
         "isTenant": "Tenant",
@@ -1256,6 +1260,18 @@
         "notesPlaceholder": "Internal notes about this contact…",
         "newsletterSubscriber": "Newsletter subscriber",
         "subscribedNow": "Subscribed"
+      },
+      "classificationHelp": "Optional roles a contact can play — tick any that apply (one person can be both a buyer and a seller).",
+      "sources": {
+        "Manual": "Manual",
+        "Website": "Website",
+        "Referral": "Referral",
+        "SocialMedia": "Social media",
+        "Phone": "Phone",
+        "WalkIn": "Walk-in",
+        "Newsletter": "Newsletter",
+        "Portal": "Portal",
+        "Other": "Other"
       },
       "tabs": {
         "timeline": "Timeline",
