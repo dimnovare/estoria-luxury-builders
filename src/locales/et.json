@@ -712,7 +712,8 @@
         "empty": "Eripärasid pole veel lisatud.",
         "copyEnToAll": "Kopeeri EN kõikidesse keeltesse",
         "add": "Lisa eripära",
-        "help": "Sisesta iga eripära kõigis kolmes keeles. Kasuta kopeerimisnuppu, et peegeldada EN väärtus ET-sse ja RU-sse."
+        "placeholder": "nt Saun",
+        "help": "Lisa iga eripära lühikese märksõnana (nt Saun, Parkimine). Neid kasutatakse filtreerimisel ja otsingul sellisena, seega neid eri keeltesse ei tõlgita."
       },
       "saveDraft": "Salvesta mustandina",
       "savePublish": "Salvesta ja avalda",
@@ -1359,8 +1360,9 @@
         "Rent": "Üür"
       },
       "sides": {
-        "BuySide": "Ostja pool",
-        "SellSide": "Müüja pool"
+        "BuyerSide": "Ostja pool",
+        "SellerSide": "Müüja pool",
+        "BothSides": "Mõlemad pooled"
       },
       "fields": {
         "title": "Pealkiri",

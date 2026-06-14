@@ -6,12 +6,12 @@ export interface CampaignDto {
   id: string;
   subject: string;
   bodyHtml: string;
-  language?: string | null;
+  languageFilter?: string | null;
   recipientsCount: number;
   successCount: number;
   failureCount: number;
   status: string; // "Sent" | "Sending" | "Failed" | "Draft"
-  sentAt?: string;
+  completedAt?: string;
   createdAt: string;
 }
 

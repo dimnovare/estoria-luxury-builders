@@ -712,7 +712,8 @@
         "empty": "No features added yet.",
         "copyEnToAll": "Copy EN to all languages",
         "add": "Add feature",
-        "help": "Enter each feature in all three languages. Use the copy button to mirror the EN value into ET and RU."
+        "placeholder": "e.g. Sauna",
+        "help": "Add each feature as a short tag (e.g. Sauna, Parking). These are used as-is for filtering and search, so they are not translated per language."
       },
       "saveDraft": "Save as Draft",
       "savePublish": "Save & Publish",
@@ -1359,8 +1360,9 @@
         "Rent": "Rent"
       },
       "sides": {
-        "BuySide": "Buy Side",
-        "SellSide": "Sell Side"
+        "BuyerSide": "Buy Side",
+        "SellerSide": "Sell Side",
+        "BothSides": "Both Sides"
       },
       "fields": {
         "title": "Title",

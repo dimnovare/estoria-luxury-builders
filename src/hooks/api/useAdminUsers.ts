@@ -81,7 +81,7 @@ export function useUpdateUser() {
 export function useResetPassword() {
   return useMutation<void, AxiosError, { id: string; password: string }>({
     mutationFn: ({ id, password }) =>
-      api.put(`/admin/users/${id}/password`, { password }),
+      api.put(`/admin/users/${id}/password`, { newPassword: password }),
   });
 }
 

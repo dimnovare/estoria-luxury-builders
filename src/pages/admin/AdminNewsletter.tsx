@@ -289,10 +289,10 @@ function CampaignsTab() {
                 <TableRow key={c.id} className="border-border hover:bg-muted transition-colors">
                   <TableCell className="text-sm font-medium text-foreground cursor-pointer" onClick={() => setDetailId(c.id)}>
                     <div>{c.subject}</div>
-                    <div className="text-xs text-muted-foreground sm:hidden tabular-nums">{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy') : '—'}</div>
+                    <div className="text-xs text-muted-foreground sm:hidden tabular-nums">{c.completedAt ? format(new Date(c.completedAt), 'dd.MM.yyyy') : '—'}</div>
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell cursor-pointer tabular-nums" onClick={() => setDetailId(c.id)}>{c.sentAt ? format(new Date(c.sentAt), 'dd.MM.yyyy HH:mm') : '—'}</TableCell>
-                  <TableCell className="text-sm text-muted-foreground uppercase hidden lg:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.language ?? t('admin.newsletter.compose.langAll')}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground hidden sm:table-cell cursor-pointer tabular-nums" onClick={() => setDetailId(c.id)}>{c.completedAt ? format(new Date(c.completedAt), 'dd.MM.yyyy HH:mm') : '—'}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground uppercase hidden lg:table-cell cursor-pointer" onClick={() => setDetailId(c.id)}>{c.languageFilter ?? t('admin.newsletter.compose.langAll')}</TableCell>
                   <TableCell className="text-sm text-muted-foreground hidden md:table-cell cursor-pointer tabular-nums" onClick={() => setDetailId(c.id)}>{c.recipientsCount}</TableCell>
                   <TableCell className="text-sm text-success hidden md:table-cell cursor-pointer tabular-nums" onClick={() => setDetailId(c.id)}>{c.successCount}</TableCell>
                   <TableCell className="text-sm text-destructive hidden md:table-cell cursor-pointer tabular-nums" onClick={() => setDetailId(c.id)}>{c.failureCount}</TableCell>
@@ -328,7 +328,7 @@ function CampaignsTab() {
           <DialogHeader>
             <DialogTitle>{detailCampaign?.subject}</DialogTitle>
             <DialogDescription>
-              {detailCampaign?.sentAt ? format(new Date(detailCampaign.sentAt), 'dd.MM.yyyy HH:mm') : ''} · <StatusPill status={detailCampaign?.status ?? ''} />
+              {detailCampaign?.completedAt ? format(new Date(detailCampaign.completedAt), 'dd.MM.yyyy HH:mm') : ''} · <StatusPill status={detailCampaign?.status ?? ''} />
             </DialogDescription>
           </DialogHeader>
           {detailCampaign?.bodyHtml && (

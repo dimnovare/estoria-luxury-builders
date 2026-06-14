@@ -217,8 +217,9 @@ export default function AdminDeals() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t('admin.common.all')}</SelectItem>
-              <SelectItem value="BuySide">{t('admin.deals.sides.BuySide')}</SelectItem>
-              <SelectItem value="SellSide">{t('admin.deals.sides.SellSide')}</SelectItem>
+              <SelectItem value="BuyerSide">{t('admin.deals.sides.BuyerSide')}</SelectItem>
+              <SelectItem value="SellerSide">{t('admin.deals.sides.SellerSide')}</SelectItem>
+              <SelectItem value="BothSides">{t('admin.deals.sides.BothSides')}</SelectItem>
             </SelectContent>
           </Select>
           <button

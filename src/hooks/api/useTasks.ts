@@ -5,7 +5,7 @@ import { handleCrmError } from './useCrm';
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 export type TaskPriority = 'Low' | 'Normal' | 'High';
-export type TaskStatus = 'Pending' | 'Done';
+export type TaskStatus = 'Pending' | 'Done' | 'Cancelled';
 export type TaskRecurrence = 'None' | 'Daily' | 'Weekly' | 'Monthly'; // TODO: P2.6 recurrence engine
 
 export interface TaskDto {
@@ -16,8 +16,7 @@ export interface TaskDto {
   reminderAt?: string;
   priority: TaskPriority;
   status: TaskStatus;
-  assignedToId: string;
-  assignedToName: string;
+  assignedToUserId: string;
   contactId?: string;
   contactName?: string;
   dealId?: string;
@@ -50,7 +49,7 @@ export interface CreateTaskDto {
   dueAt: string;
   reminderAt?: string;
   priority: TaskPriority;
-  assignedToId: string;
+  assignedToUserId: string;
   contactId?: string;
   dealId?: string;
   propertyId?: string;

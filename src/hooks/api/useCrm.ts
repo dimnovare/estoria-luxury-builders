@@ -67,7 +67,7 @@ export const DEAL_STAGES: DealStage[] = [
 ];
 
 export type DealType = 'Sale' | 'Rent';
-export type DealSide = 'BuySide' | 'SellSide';
+export type DealSide = 'BuyerSide' | 'SellerSide' | 'BothSides';
 
 export interface DealListDto {
   id: string;

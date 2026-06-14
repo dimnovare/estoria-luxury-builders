@@ -168,9 +168,9 @@ export default function PropertyForm() {
     ru: { ...emptyTrans },
   });
 
-  type FeatureRow = { et: string; en: string; ru: string };
-  const emptyFeature: FeatureRow = { et: '', en: '', ru: '' };
-  const [features, setFeatures] = useState<FeatureRow[]>([]);
+  // Features are canonical, non-localized tags (saved searches filter on the
+  // exact string), so they're a single list — not per-language.
+  const [features, setFeatures] = useState<string[]>([]);
 
   // Pre-fill form when existing property loads
   useEffect(() => {
@@ -218,11 +218,7 @@ export default function PropertyForm() {
         videoUrl: existing.videoUrl ?? null,
         virtualTourUrl: existing.virtualTourUrl ?? null,
       });
-      // Backend stores features as a flat string[] (currently the active
-      // language's value). Hydrate ET = EN = RU = same value so the editor
-      // can show 3-column rows; the user can refine per language and we
-      // mirror back into translations.{lang}.features on save.
-      setFeatures((existing.features ?? []).map(v => ({ et: v, en: v, ru: v })));
+      setFeatures(existing.features ?? []);
       setTranslations({
         et: existing.translations['Et']
           ? { ...emptyTrans, ...existing.translations['Et'], district: existing.translations['Et'].district ?? '' }
@@ -305,7 +301,7 @@ export default function PropertyForm() {
     add('district', translations.et?.district);
     add('address', translations.et?.address);
 
-    const featureList = features.map(f => f.et).filter(v => v && v.trim());
+    const featureList = features.filter(v => v && v.trim());
     if (featureList.length) add('features', featureList.join(', '));
 
     generateDescription.mutate(
@@ -368,20 +364,15 @@ export default function PropertyForm() {
   };
 
   const addFeature = () => {
-    setFeatures([...features, { ...emptyFeature }]);
+    setFeatures([...features, '']);
   };
 
-  const updateFeature = (idx: number, lang: keyof FeatureRow, value: string) => {
-    setFeatures(features.map((f, i) => i === idx ? { ...f, [lang]: value } : f));
+  const updateFeature = (idx: number, value: string) => {
+    setFeatures(features.map((f, i) => i === idx ? value : f));
   };
 
   const removeFeature = (idx: number) => {
     setFeatures(features.filter((_, i) => i !== idx));
-  };
-
-  const copyFeatureToAllLanguages = (idx: number, value: string) => {
-    if (!value.trim()) return;
-    setFeatures(features.map((f, i) => i === idx ? { et: value, en: value, ru: value } : f));
   };
 
   const handleSave = async (asDraft: boolean) => {
@@ -414,20 +405,11 @@ export default function PropertyForm() {
       longitude: lng ? parseFloat(lng) : null,
       isFeatured: asDraft ? false : isFeatured,
       agentId,
-      // Flat features list (kept for backward compatibility) — picks the
-      // first non-empty value across languages so list pages still get a
-      // usable string. Per-language values live under translations.{lang}.features.
-      features: features
-        .map(f => f.en || f.et || f.ru)
-        .filter(v => v && v.trim()),
+      // Canonical, non-localized feature tags (saved-search filtering matches
+      // them by exact string), stored on the property — not per translation.
+      features: features.map(v => v.trim()).filter(Boolean),
       translations: Object.fromEntries(
-        langs.map(l => [
-          toBeLang(l),
-          {
-            ...translations[l],
-            features: features.map(f => f[l]).filter(v => v && v.trim()),
-          },
-        ])
+        langs.map(l => [toBeLang(l), { ...translations[l] }])
       ),
       // Complete portal map; draft status (not this map) is what keeps a listing
       // out of the feed, so selections are preserved even when saving as draft.
@@ -1090,39 +1072,16 @@ export default function PropertyForm() {
           <Card className="bg-card border-border shadow-sm">
             <CardContent className="p-6 space-y-3">
               <p className="text-xs text-muted-foreground">
-                {t('admin.properties.features.help', 'Enter each feature in all three languages. Use the copy button to mirror the EN value into ET and RU.')}
+                {t('admin.properties.features.help', 'Add each feature as a short tag (e.g. Sauna, Parking). These are used as-is for filtering and search, so they are not translated per language.')}
               </p>
               {features.map((f, idx) => (
-                <div key={idx} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto_auto] gap-2 items-center">
+                <div key={idx} className="flex gap-2 items-center">
                   <Input
-                    value={f.et}
-                    onChange={e => updateFeature(idx, 'et', e.target.value)}
-                    placeholder="ET"
-                    className={inputClass}
+                    value={f}
+                    onChange={e => updateFeature(idx, e.target.value)}
+                    placeholder={t('admin.properties.features.placeholder', 'e.g. Sauna')}
+                    className={`${inputClass} flex-1`}
                   />
-                  <Input
-                    value={f.en}
-                    onChange={e => updateFeature(idx, 'en', e.target.value)}
-                    placeholder="EN"
-                    className={inputClass}
-                  />
-                  <Input
-                    value={f.ru}
-                    onChange={e => updateFeature(idx, 'ru', e.target.value)}
-                    placeholder="RU"
-                    className={inputClass}
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    aria-label={t('admin.properties.features.copyEnToAll', 'Copy EN to all languages')}
-                    title={t('admin.properties.features.copyEnToAll', 'Copy EN to all languages')}
-                    onClick={() => copyFeatureToAllLanguages(idx, f.en)}
-                    className="h-9 w-9 text-muted-foreground hover:text-primary"
-                  >
-                    <Copy className="h-3.5 w-3.5" />
-                  </Button>
                   <Button
                     type="button"
                     variant="ghost"
@@ -1130,7 +1089,7 @@ export default function PropertyForm() {
                     onClick={() => removeFeature(idx)}
                     aria-label={t('admin.common.delete')}
                     title={t('admin.common.delete')}
-                    className="h-9 w-9 text-muted-foreground hover:text-destructive"
+                    className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
                   >
                     <X className="h-4 w-4" />
                   </Button>

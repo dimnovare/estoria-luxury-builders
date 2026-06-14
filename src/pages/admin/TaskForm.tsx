@@ -66,7 +66,7 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
       setDescription(existingTask.description ?? '');
       setDueAt(existingTask.dueAt?.slice(0, 16) ?? '');
       setPriority(existingTask.priority);
-      setAssignedToId(existingTask.assignedToId);
+      setAssignedToId(existingTask.assignedToUserId);
       setReminderAt(existingTask.reminderAt?.slice(0, 16) ?? '');
       setRecurrence(existingTask.recurrence ?? 'None');
       if (existingTask.contactId) { setLinkType('contact'); setContactId(existingTask.contactId); }
@@ -90,7 +90,7 @@ export default function TaskForm({ taskId, open, onClose, defaultContactId, defa
       description: description.trim() || undefined,
       dueAt: new Date(dueAt).toISOString(),
       priority,
-      assignedToId,
+      assignedToUserId: assignedToId,
       reminderAt: reminderAt ? new Date(reminderAt).toISOString() : undefined,
       recurrence: recurrence !== 'None' ? recurrence : undefined,
       contactId: linkType === 'contact' && contactId ? contactId : undefined,

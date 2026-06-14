@@ -26,7 +26,7 @@ const baseDealSchema = z.object({
   propertyId: z.string().optional().or(z.literal('')),
   assignedAgentId: z.string().min(1, { message: 'admin.deals.errors.agentRequired' }),
   dealType: z.enum(['Sale', 'Rent']),
-  side: z.enum(['BuySide', 'SellSide']),
+  side: z.enum(['BuyerSide', 'SellerSide', 'BothSides']),
   expectedCloseDate: z.string().optional().or(z.literal('')),
   expectedValue: z.string()
     .optional()
@@ -77,7 +77,7 @@ export default function DealForm() {
       propertyId: '',
       assignedAgentId: !isAdmin && user ? user.id : '',
       dealType: 'Sale',
-      side: 'BuySide',
+      side: 'BuyerSide',
       expectedCloseDate: '',
       expectedValue: '',
       currency: 'EUR',
@@ -276,8 +276,9 @@ export default function DealForm() {
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger id={`${fieldId}-side`} className="mt-1 bg-secondary border-border text-foreground placeholder:text-muted-foreground"><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="BuySide">{t('admin.deals.sides.BuySide')}</SelectItem>
-                        <SelectItem value="SellSide">{t('admin.deals.sides.SellSide')}</SelectItem>
+                        <SelectItem value="BuyerSide">{t('admin.deals.sides.BuyerSide')}</SelectItem>
+                        <SelectItem value="SellerSide">{t('admin.deals.sides.SellerSide')}</SelectItem>
+                        <SelectItem value="BothSides">{t('admin.deals.sides.BothSides')}</SelectItem>
                       </SelectContent>
                     </Select>
                   )}
