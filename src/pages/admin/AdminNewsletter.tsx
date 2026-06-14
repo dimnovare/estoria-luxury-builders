@@ -172,7 +172,7 @@ function ComposeTab() {
               </Badge>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button type="submit" disabled={sendMut.isPending}>
                 <Send className="h-4 w-4 mr-2" />{t('admin.newsletter.compose.sendNow')}
               </Button>

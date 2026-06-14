@@ -410,7 +410,7 @@ export default function PropertyForm() {
       </div>
 
       <Tabs defaultValue="general">
-        <TabsList className="flex flex-wrap h-auto bg-card border border-border">
+        <TabsList className="flex w-full justify-start overflow-x-auto bg-card border border-border">
           <TabsTrigger value="general"      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('admin.properties.tabs.general')}</TabsTrigger>
           <TabsTrigger value="translations" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('admin.properties.tabs.translations')}</TabsTrigger>
           <TabsTrigger value="images"       className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('admin.properties.tabs.images')}</TabsTrigger>

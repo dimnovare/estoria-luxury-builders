@@ -246,10 +246,10 @@ export default function AdminLayout() {
       {/* Main. text-foreground (dark under .admin-theme) is the default so any
           shadcn Label / plain text that doesn't set its own colour stays legible
           on the white admin surface instead of inheriting the dark-theme cream. */}
-      <div className={cn('flex-1 transition-all duration-300 text-foreground', collapsed ? 'lg:ml-16' : 'lg:ml-60')}>
+      <div className={cn('flex-1 min-w-0 transition-all duration-300 text-foreground', collapsed ? 'lg:ml-16' : 'lg:ml-60')}>
         {/* Top bar */}
-        <header className="h-16 bg-white border-b border-[hsl(0_0%_90%)] flex items-center justify-between px-4 lg:px-6 sticky top-0 z-30">
-          <div className="flex items-center gap-3">
+        <header className="h-16 bg-white border-b border-[hsl(0_0%_90%)] flex items-center justify-between gap-2 px-4 lg:px-6 sticky top-0 z-30">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
             <button
               onClick={() => setMobileOpen(true)}
               aria-label={t('admin.layout.openMenu', 'Open menu')}
@@ -258,20 +258,28 @@ export default function AdminLayout() {
             >
               <Menu className="h-5 w-5" />
             </button>
-            <div className="flex items-center gap-1.5 text-sm">
-              {crumbs.map((c, i) => (
-                <span key={c.path} className="flex items-center gap-1.5">
-                  {i > 0 && <span className="text-muted-foreground">/</span>}
-                  {i === crumbs.length - 1 ? (
-                    <span className="text-foreground font-medium">{c.label}</span>
-                  ) : (
-                    <Link to={c.path} className="text-muted-foreground hover:text-foreground">{c.label}</Link>
-                  )}
-                </span>
-              ))}
+            <div className="flex items-center gap-1.5 text-sm min-w-0 overflow-hidden">
+              {crumbs.map((c, i) => {
+                const isLast = i === crumbs.length - 1;
+                return (
+                  // Hide parent crumbs on phones (keep only the current page) so the
+                  // breadcrumb never pushes the language switcher off-screen.
+                  <span
+                    key={c.path}
+                    className={cn('items-center gap-1.5 min-w-0', isLast ? 'flex' : 'hidden sm:flex')}
+                  >
+                    {i > 0 && <span className="text-muted-foreground shrink-0">/</span>}
+                    {isLast ? (
+                      <span className="text-foreground font-medium truncate">{c.label}</span>
+                    ) : (
+                      <Link to={c.path} className="text-muted-foreground hover:text-foreground whitespace-nowrap">{c.label}</Link>
+                    )}
+                  </span>
+                );
+              })}
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             {/* Language switcher — always reachable from the topbar */}
             <div
               className="flex items-center gap-0.5 rounded-md border border-[hsl(0_0%_90%)] p-0.5"
