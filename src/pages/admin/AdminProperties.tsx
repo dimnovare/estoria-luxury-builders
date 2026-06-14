@@ -51,7 +51,7 @@ export default function AdminProperties() {
       } else {
         const failedTitles = (res.results ?? [])
           .filter(r => !r.resolved)
-          .map(r => properties.find(p => p.id === r.id)?.title || r.slug);
+          .map(r => r.title || properties.find(p => p.id === r.id)?.title || r.slug);
         toast.warning(
           t('admin.properties.toast.geocodeBulkPartial', { ok: res.geocoded, failed: res.failed }),
           {

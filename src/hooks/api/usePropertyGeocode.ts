@@ -24,7 +24,7 @@ export interface GeocodeMissingResult {
   total: number;
   geocoded: number;
   failed: number;
-  results: Array<{ id: string; slug: string; resolved: boolean; reason?: string }>;
+  results: Array<{ id: string; slug: string; title?: string; resolved: boolean; reason?: string }>;
 }
 
 /// Bulk-geocodes every non-archived property that has no coordinates yet and
