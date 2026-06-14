@@ -557,7 +557,11 @@
           "empty": "Vasteid ei leitud",
           "noArea": "Kindlat piirkonda ei ole",
           "loadError": "Asukohaandmete laadimine ebaõnnestus.",
-          "loading": "Laen asukohti…"
+          "loading": "Laen asukohti…",
+          "lookup": "Otsi",
+          "lookupDone": "Täidetud aadressilt {{address}}.",
+          "lookupFailed": "Selle katastritunnusega kinnistut ei leitud.",
+          "lookupHelp": "Klõpsa Otsi, et täita aadress, asukoht ja kaardipunkt Maa-ameti andmetest."
         },
         "section": {
           "condition": "Seisukord ja ehitus",

@@ -557,7 +557,11 @@
           "empty": "No matches",
           "noArea": "No specific area",
           "loadError": "Could not load location data.",
-          "loading": "Loading locations…"
+          "loading": "Loading locations…",
+          "lookup": "Look up",
+          "lookupDone": "Filled from {{address}}.",
+          "lookupFailed": "No property found for that cadastral number.",
+          "lookupHelp": "Click Look up to auto-fill the address, location, and map pin from the Land Board."
         },
         "section": {
           "condition": "Condition & build",

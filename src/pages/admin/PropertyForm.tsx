@@ -1,7 +1,7 @@
 import { useId, useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, ArrowRight, Plus, X, GripVertical, Image as ImageIcon, Loader2, AlertTriangle, RefreshCw, MapPin, Copy, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Plus, X, GripVertical, Image as ImageIcon, Loader2, AlertTriangle, RefreshCw, MapPin, Copy, Sparkles, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -25,6 +25,7 @@ import {
   useSetPropertyStatus,
   usePropertyExportPortals,
   useGenerateDescription,
+  useCadastralLookup,
   toBeLang,
 } from '@/hooks/api/useAdmin';
 import { useGeocodeProperty } from '@/hooks/api/usePropertyGeocode';
@@ -63,6 +64,7 @@ export default function PropertyForm() {
   const setStatus = useSetPropertyStatus();
   const geocode = useGeocodeProperty();
   const generateDescription = useGenerateDescription();
+  const cadastralLookup = useCadastralLookup();
   const { data: exportPortals = [] } = usePropertyExportPortals();
 
   // Local copy of the image order so drag-to-reorder feels instant; synced from
@@ -316,6 +318,46 @@ export default function PropertyForm() {
         onError: () => toast.error(t('admin.properties.aiDescribeFailed', "Couldn't write a description. Try again.")),
       }
     );
+  };
+
+  // Resolve the property's address, administrative location (EHAK) and map pin
+  // from its cadastral number via the Land Board. This is an explicit owner
+  // action, so it overwrites the Estonian address/city/district outright; EN/RU
+  // are left untouched (translate from ET when ready). The lat/lng it fills are
+  // the same map-pin state the geocode button uses.
+  const handleCadastralLookup = () => {
+    const tunnus = cadastralNumber.trim();
+    if (!tunnus || cadastralLookup.isPending) return;
+
+    cadastralLookup.mutate(tunnus, {
+      onSuccess: (data) => {
+        if (!data.found) {
+          toast.error(t('admin.properties.extra.location.lookupFailed', 'No property found for that cadastral number.'));
+          return;
+        }
+
+        setEhakCode(data.settlementEhak || data.municipalityEhak || null);
+
+        const address = `${data.street ?? ''} ${data.houseNumber ?? ''}`.trim();
+        setTranslations(prev => ({
+          ...prev,
+          et: {
+            ...prev.et,
+            ...(data.street ? { address } : {}),
+            city: data.municipality ?? prev.et?.city ?? '',
+            district: data.settlement ?? prev.et?.district ?? '',
+          },
+        }));
+
+        if (data.latitude != null && data.longitude != null) {
+          setLat(data.latitude.toString());
+          setLng(data.longitude.toString());
+        }
+
+        toast.success(t('admin.properties.extra.location.lookupDone', 'Filled from {{address}}.', { address: data.fullAddress ?? tunnus }));
+      },
+      onError: () => toast.error(t('admin.properties.extra.location.lookupFailed', 'No property found for that cadastral number.')),
+    });
   };
 
   // Copy the whole Estonian translation into another language as a starting
@@ -693,14 +735,31 @@ export default function PropertyForm() {
                     <Label htmlFor={`${fieldId}-cadastral`} className={labelClass}>
                       {t('admin.properties.extra.location.cadastral', 'Cadastral number (katastritunnus)')}
                     </Label>
-                    <Input
-                      id={`${fieldId}-cadastral`}
-                      value={cadastralNumber}
-                      onChange={e => setCadastralNumber(e.target.value)}
-                      className={inputClass}
-                    />
+                    <div className="flex items-end gap-2">
+                      <Input
+                        id={`${fieldId}-cadastral`}
+                        value={cadastralNumber}
+                        onChange={e => setCadastralNumber(e.target.value)}
+                        className={`${inputClass} flex-1`}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleCadastralLookup}
+                        disabled={!cadastralNumber.trim() || cadastralLookup.isPending}
+                        className="h-11 shrink-0 border-border text-foreground"
+                      >
+                        {cadastralLookup.isPending
+                          ? <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          : <Search className="h-4 w-4 mr-2" />}
+                        {t('admin.properties.extra.location.lookup', 'Look up')}
+                      </Button>
+                    </div>
                     <p className={helpClass}>
                       {t('admin.properties.extra.location.cadastralHelp', 'Optional. If set, Kinnisvara24 fills the address from the Land Board.')}
+                    </p>
+                    <p className={helpClass}>
+                      {t('admin.properties.extra.location.lookupHelp', 'Click Look up to auto-fill the Estonian address, administrative location, and map pin from the Land Board.')}
                     </p>
                   </div>
                 </div>

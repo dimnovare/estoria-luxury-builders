@@ -283,6 +283,42 @@ export function useGenerateDescription() {
   });
 }
 
+// ── Cadastral lookup ───────────────────────────────────────────────────────────
+
+/**
+ * Result of resolving an Estonian cadastral number (katastritunnus) against the
+ * Land Board via GET /admin/cadastral-lookup. `found` is false when the number
+ * doesn't resolve; all other fields may be absent in that case.
+ */
+export interface CadastralLookup {
+  found: boolean;
+  cadastralNumber?: string;
+  fullAddress?: string;
+  county?: string;
+  municipality?: string;
+  settlement?: string;
+  countyEhak?: string;
+  municipalityEhak?: string;
+  settlementEhak?: string;
+  street?: string;
+  houseNumber?: string;
+  postalCode?: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+/**
+ * Look up a property's address, administrative location (EHAK), and map
+ * coordinates from its cadastral number. Drives the "Look up" button in the
+ * property editor's location section.
+ */
+export function useCadastralLookup() {
+  return useMutation({
+    mutationFn: (tunnus: string) =>
+      api.get<CadastralLookup>('/admin/cadastral-lookup', { params: { tunnus } }).then(r => r.data),
+  });
+}
+
 export function useAdminProperties(page = 1) {
   return useQuery<{ items: AdminProperty[]; totalCount: number }>({
     queryKey: ['admin', 'properties', page],
