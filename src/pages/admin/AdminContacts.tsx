@@ -65,13 +65,21 @@ export default function AdminContacts() {
     return name.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2);
   };
 
-  const roleIcons = (c: typeof contacts[0]) => {
-    const icons = [];
-    if (c.isBuyer) icons.push(<span key="b" title={t('admin.contacts.roles.buyer')}><Eye className="h-3.5 w-3.5" /></span>);
-    if (c.isSeller) icons.push(<span key="s" title={t('admin.contacts.roles.seller')}><Home className="h-3.5 w-3.5" /></span>);
-    if (c.isTenant) icons.push(<span key="t" title={t('admin.contacts.roles.tenant')}><User className="h-3.5 w-3.5" /></span>);
-    if (c.isLandlord) icons.push(<span key="l" title={t('admin.contacts.roles.landlord')}><Home className="h-3.5 w-3.5 text-primary" /></span>);
-    return icons;
+  // All five roles as readable chips (the old icon-only version omitted Partner,
+  // so a partner-only contact showed an empty Roles column). Em dash when none.
+  const ROLE_KEYS = ['isBuyer', 'isSeller', 'isTenant', 'isLandlord', 'isPartner'] as const;
+  const renderRoles = (c: typeof contacts[0]) => {
+    const active = ROLE_KEYS.filter(k => c[k]);
+    if (active.length === 0) return <span className="text-muted-foreground">—</span>;
+    return (
+      <div className="flex flex-wrap gap-1">
+        {active.map(k => (
+          <Badge key={k} variant="outline" className="text-[10px] bg-primary/10 text-primary border-primary/30">
+            {t(`admin.contacts.fields.${k}`)}
+          </Badge>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -200,7 +208,7 @@ export default function AdminContacts() {
                     </div>
                   </TableCell>
                   <TableCell className="hidden sm:table-cell">
-                    <div className="flex gap-1 text-muted-foreground">{roleIcons(c)}</div>
+                    {renderRoles(c)}
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground hidden xl:table-cell">{c.assignedAgentName || '—'}</TableCell>
                   <TableCell className="text-xs text-muted-foreground hidden xl:table-cell tabular-nums">
