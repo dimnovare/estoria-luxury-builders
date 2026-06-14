@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient, type QueryKey } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { toast } from 'sonner';
+import type { PropertyExtraFields } from '@/lib/propertyExportOptions';
 
 // ── Language key helpers ───────────────────────────────────────────────────────
 // Frontend form uses 'et'/'en'/'ru'; backend uses 'Et'/'En'/'Ru'
@@ -42,7 +43,15 @@ export interface PropertyPortalPublicationState {
   validationErrors: string[];
 }
 
-export interface AdminProperty {
+/**
+ * Optional Kinnisvara24 "extra detail" fields, shared verbatim between the
+ * detail DTO returned by GET /admin/properties/{id} and the Create/Update
+ * payloads. They mirror the backend AdminPropertyDetailDto / Create+UpdatePropertyDto
+ * camelCase JSON contract; `PropertyExtraFields` is the single source of truth.
+ */
+export type AdminPropertyExtraFields = PropertyExtraFields;
+
+export interface AdminProperty extends AdminPropertyExtraFields {
   id: string;
   slug: string;
   price: number;
@@ -314,10 +323,18 @@ export function useReprocessPropertyImage() {
   });
 }
 
+/**
+ * Wire payload for create/update. The base content/visibility fields are loosely
+ * typed (`object` intersection) since PropertyForm builds them dynamically, but
+ * the optional Kinnisvara24 extra fields are spelled out via AdminPropertyExtraFields
+ * so they round-trip and TypeScript catches contract drift on the form side.
+ */
+export type CreateUpdatePropertyDto = object & Partial<AdminPropertyExtraFields>;
+
 export function useCreateProperty() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (dto: object) => api.post('/admin/properties', dto).then(r => r.data),
+    mutationFn: (dto: CreateUpdatePropertyDto) => api.post('/admin/properties', dto).then(r => r.data),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'properties'] }),
   });
 }
@@ -325,7 +342,7 @@ export function useCreateProperty() {
 export function useUpdateProperty() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, dto }: { id: string; dto: object }) =>
+    mutationFn: ({ id, dto }: { id: string; dto: CreateUpdatePropertyDto }) =>
       api.put(`/admin/properties/${id}`, dto),
     onSuccess: (_d, vars) => {
       qc.invalidateQueries({ queryKey: ['admin', 'properties'] });

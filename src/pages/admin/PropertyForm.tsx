@@ -31,6 +31,9 @@ import { useGeocodeProperty } from '@/hooks/api/usePropertyGeocode';
 import { propertyTypeLabel, transactionTypeLabel } from '@/lib/enumLabels';
 import PropertyPortalControls from '@/components/admin/PropertyPortalControls';
 import TranslateButton from '@/components/admin/TranslateButton';
+import EhakLocationPicker from '@/components/admin/EhakLocationPicker';
+import PropertyExtraDetails from '@/components/admin/PropertyExtraDetails';
+import type { PropertyExtraFields } from '@/lib/propertyExportOptions';
 import { initializePortalPublications } from '@/lib/propertyPortalPublications';
 import { toast } from 'sonner';
 
@@ -149,6 +152,14 @@ export default function PropertyForm() {
   const [isFeatured, setIsFeatured] = useState(false);
   const [portalPublications, setPortalPublications] = useState<Record<string, boolean>>({});
 
+  // ── Kinnisvara24 location + extra detail fields (all optional) ──────────────
+  // EHAK code + cadastral number drive the Land Board address fill on the portal;
+  // `extra` carries the remaining grouped detail fields (condition, heating,
+  // amenities, parking, rental, media) edited via <PropertyExtraDetails>.
+  const [ehakCode, setEhakCode] = useState<string | null>(null);
+  const [cadastralNumber, setCadastralNumber] = useState('');
+  const [extra, setExtra] = useState<PropertyExtraFields>({});
+
   const [translations, setTranslations] = useState<Record<string, TransFields>>({
     et: { ...emptyTrans },
     en: { ...emptyTrans },
@@ -179,6 +190,32 @@ export default function PropertyForm() {
       setLng(existing.longitude?.toString() ?? '');
       setAgentId(existing.agent?.id ?? '');
       setIsFeatured(existing.isFeatured);
+      // Kinnisvara24 location + extra detail fields — all optional/nullable.
+      setEhakCode(existing.ehakCode ?? null);
+      setCadastralNumber(existing.cadastralNumber ?? '');
+      setExtra({
+        condition: existing.condition ?? null,
+        buildingMaterial: existing.buildingMaterial ?? null,
+        heatingTypes: existing.heatingTypes ?? [],
+        parkingType: existing.parkingType ?? null,
+        hasSauna: existing.hasSauna ?? false,
+        hasStoreroom: existing.hasStoreroom ?? false,
+        hasBasement: existing.hasBasement ?? false,
+        hasGarage: existing.hasGarage ?? false,
+        hasBalcony: existing.hasBalcony ?? false,
+        hasTerrace: existing.hasTerrace ?? false,
+        hasElevator: existing.hasElevator ?? false,
+        isFurnished: existing.isFurnished ?? false,
+        hasAirConditioning: existing.hasAirConditioning ?? false,
+        hasFireplace: existing.hasFireplace ?? false,
+        kitchenArea: existing.kitchenArea ?? null,
+        deposit: existing.deposit ?? null,
+        utilityCostSummer: existing.utilityCostSummer ?? null,
+        utilityCostWinter: existing.utilityCostWinter ?? null,
+        petsAllowed: existing.petsAllowed ?? false,
+        videoUrl: existing.videoUrl ?? null,
+        virtualTourUrl: existing.virtualTourUrl ?? null,
+      });
       // Backend stores features as a flat string[] (currently the active
       // language's value). Hydrate ET = EN = RU = same value so the editor
       // can show 3-column rows; the user can refine per language and we
@@ -209,6 +246,33 @@ export default function PropertyForm() {
 
   const updateTranslation = (lang: string, field: string, value: string) => {
     setTranslations(prev => ({ ...prev, [lang]: { ...prev[lang], [field]: value } }));
+  };
+
+  // Merge a partial patch from <PropertyExtraDetails> back into the extra state.
+  const updateExtra = (patch: Partial<PropertyExtraFields>) => {
+    setExtra(prev => ({ ...prev, ...patch }));
+  };
+
+  // EHAK picker → store the resolved code (or null), and as a convenience prefill
+  // the Estonian City/District from the picked municipality/area — but ONLY when
+  // the owner hasn't already typed a city, so we never clobber their wording.
+  const handleEhakChange = (
+    sel: { ehakCode: string; municipality: string; area: string | null; county: string } | null,
+  ) => {
+    setEhakCode(sel?.ehakCode ?? null);
+    if (sel) {
+      setTranslations(prev => {
+        if (prev.et?.city?.trim()) return prev; // don't overwrite an existing city
+        return {
+          ...prev,
+          et: {
+            ...prev.et,
+            city: sel.municipality,
+            district: sel.area ?? prev.et?.district ?? '',
+          },
+        };
+      });
+    }
   };
 
   // Draft the Estonian listing description from the property's facts so the
@@ -326,6 +390,31 @@ export default function PropertyForm() {
       // Complete portal map; draft status (not this map) is what keeps a listing
       // out of the feed, so selections are preserved even when saving as draft.
       portalPublications,
+      // ── Kinnisvara24 location + extra detail fields (all optional) ──────────
+      // Empty strings normalise to null so the backend treats "unset" uniformly.
+      ehakCode: ehakCode || null,
+      cadastralNumber: cadastralNumber.trim() || null,
+      condition: extra.condition ?? null,
+      buildingMaterial: extra.buildingMaterial ?? null,
+      heatingTypes: extra.heatingTypes ?? [],
+      parkingType: extra.parkingType ?? null,
+      hasSauna: extra.hasSauna ?? false,
+      hasStoreroom: extra.hasStoreroom ?? false,
+      hasBasement: extra.hasBasement ?? false,
+      hasGarage: extra.hasGarage ?? false,
+      hasBalcony: extra.hasBalcony ?? false,
+      hasTerrace: extra.hasTerrace ?? false,
+      hasElevator: extra.hasElevator ?? false,
+      isFurnished: extra.isFurnished ?? false,
+      hasAirConditioning: extra.hasAirConditioning ?? false,
+      hasFireplace: extra.hasFireplace ?? false,
+      kitchenArea: extra.kitchenArea ?? null,
+      deposit: extra.deposit ?? null,
+      utilityCostSummer: extra.utilityCostSummer ?? null,
+      utilityCostWinter: extra.utilityCostWinter ?? null,
+      petsAllowed: extra.petsAllowed ?? false,
+      videoUrl: extra.videoUrl ?? null,
+      virtualTourUrl: extra.virtualTourUrl ?? null,
     };
 
     try {
@@ -582,6 +671,38 @@ export default function PropertyForm() {
                   {!id && (
                     <p className={`${helpClass} mt-2`}>{t('admin.properties.help.saveBeforeGeocode', 'Save the property first, then come back here to find it on the map.')}</p>
                   )}
+                </div>
+
+                {/* ── Kinnisvara24 administrative location (EHAK) + cadastral ──── */}
+                {/* For properties outside Tallinn (e.g. Viimsi), the portal maps
+                    the listing by EHAK code; the cadastral number lets it pull
+                    the address straight from the Land Board. */}
+                <div className="pt-4 border-t border-border space-y-4">
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-foreground">
+                      {t('admin.properties.extra.location.title', 'Administrative location (Kinnisvara24)')}
+                    </p>
+                    <p className={helpClass}>
+                      {t('admin.properties.extra.location.intro', 'Pick the municipality and (optionally) the area. This maps the listing for Kinnisvara24 — useful for properties outside Tallinn.')}
+                    </p>
+                  </div>
+
+                  <EhakLocationPicker ehakCode={ehakCode} onChange={handleEhakChange} />
+
+                  <div className="space-y-2 max-w-sm">
+                    <Label htmlFor={`${fieldId}-cadastral`} className={labelClass}>
+                      {t('admin.properties.extra.location.cadastral', 'Cadastral number (katastritunnus)')}
+                    </Label>
+                    <Input
+                      id={`${fieldId}-cadastral`}
+                      value={cadastralNumber}
+                      onChange={e => setCadastralNumber(e.target.value)}
+                      className={inputClass}
+                    />
+                    <p className={helpClass}>
+                      {t('admin.properties.extra.location.cadastralHelp', 'Optional. If set, Kinnisvara24 fills the address from the Land Board.')}
+                    </p>
+                  </div>
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -968,6 +1089,14 @@ export default function PropertyForm() {
                 <Plus className="h-4 w-4 mr-2" />
                 {t('admin.properties.features.add', 'Add feature')}
               </Button>
+
+              {/* ── Kinnisvara24 additional details (all optional) ───────────── */}
+              <div className="pt-6 mt-2 border-t border-border space-y-3">
+                <p className="text-sm font-medium text-foreground">
+                  {t('admin.properties.extra.title', 'Additional details (optional)')}
+                </p>
+                <PropertyExtraDetails value={extra} onChange={updateExtra} />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

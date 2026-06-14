@@ -541,6 +541,95 @@
       "statsError": "We could not load your dashboard stats. Please try again."
     },
     "properties": {
+      "extra": {
+        "title": "Additional details (optional)",
+        "location": {
+          "title": "Administrative location (Kinnisvara24)",
+          "intro": "Pick the municipality and (optionally) the area. This maps the listing for Kinnisvara24 — useful for properties outside Tallinn.",
+          "cadastral": "Cadastral number (katastritunnus)",
+          "cadastralHelp": "Optional. If set, Kinnisvara24 fills the address from the Land Board.",
+          "municipality": "Municipality",
+          "area": "Area / settlement",
+          "muniPlaceholder": "Select municipality…",
+          "areaPlaceholder": "Select area (optional)…",
+          "search": "Type to search…",
+          "typeToSearch": "Type at least 2 characters to search…",
+          "empty": "No matches",
+          "noArea": "No specific area",
+          "loadError": "Could not load location data.",
+          "loading": "Loading locations…"
+        },
+        "section": {
+          "condition": "Condition & build",
+          "heating": "Heating",
+          "amenities": "Amenities",
+          "parking": "Parking & kitchen",
+          "rental": "Rental",
+          "media": "Media"
+        },
+        "field": {
+          "condition": "Condition",
+          "buildingMaterial": "Building material",
+          "parkingType": "Parking",
+          "kitchenArea": "Kitchen area (m²)",
+          "deposit": "Deposit (€)",
+          "utilityCostSummer": "Utilities — summer (€)",
+          "utilityCostWinter": "Utilities — winter (€)",
+          "petsAllowed": "Pets allowed",
+          "videoUrl": "Video URL",
+          "virtualTourUrl": "Virtual tour URL"
+        },
+        "placeholder": {
+          "select": "Select…",
+          "none": "— None —"
+        },
+        "condition": {
+          "New": "New",
+          "Renovated": "Renovated",
+          "Good": "Good",
+          "Average": "Average",
+          "NeedsRefresh": "Needs refresh",
+          "NeedsCapitalRepair": "Needs capital repair",
+          "InProgress": "In progress"
+        },
+        "material": {
+          "Stone": "Stone",
+          "Wood": "Wood",
+          "Panel": "Panel",
+          "Log": "Log",
+          "Concrete": "Concrete",
+          "Brick": "Brick"
+        },
+        "heating": {
+          "Central": "Central heating",
+          "AirHeatPump": "Air heat pump",
+          "Electric": "Electric heating",
+          "Gas": "Gas heating",
+          "Geothermal": "Geothermal heating",
+          "Floor": "Underfloor heating",
+          "Furnace": "Furnace heating",
+          "SolidFuel": "Solid fuel",
+          "Combined": "Combined"
+        },
+        "parking": {
+          "Street": "Street",
+          "Underground": "Underground",
+          "Yard": "Yard",
+          "Garage": "Garage"
+        },
+        "amenity": {
+          "hasSauna": "Sauna",
+          "hasStoreroom": "Storeroom",
+          "hasBasement": "Basement",
+          "hasGarage": "Garage",
+          "hasBalcony": "Balcony",
+          "hasTerrace": "Terrace",
+          "hasElevator": "Elevator",
+          "isFurnished": "Furnished",
+          "hasAirConditioning": "Air conditioning",
+          "hasFireplace": "Fireplace"
+        }
+      },
       "title": "Properties",
       "addNew": "Add Property",
       "editTitle": "Edit Property",

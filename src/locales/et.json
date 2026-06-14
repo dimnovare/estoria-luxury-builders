@@ -541,6 +541,95 @@
       "statsError": "Töölaua statistika laadimine ebaõnnestus. Palun proovige uuesti."
     },
     "properties": {
+      "extra": {
+        "title": "Lisaandmed (valikuline)",
+        "location": {
+          "title": "Haldusüksuse asukoht (Kinnisvara24)",
+          "intro": "Vali omavalitsus ja (soovi korral) piirkond. See seob kuulutuse Kinnisvara24-ga — kasulik Tallinnast väljaspool asuvate objektide puhul.",
+          "cadastral": "Katastritunnus",
+          "cadastralHelp": "Valikuline. Kui see on määratud, täidab Kinnisvara24 aadressi Maa-ameti andmetest.",
+          "municipality": "Omavalitsus",
+          "area": "Piirkond / asula",
+          "muniPlaceholder": "Vali omavalitsus…",
+          "areaPlaceholder": "Vali piirkond (valikuline)…",
+          "search": "Otsimiseks alusta tippimist…",
+          "typeToSearch": "Otsimiseks sisesta vähemalt 2 tähemärki…",
+          "empty": "Vasteid ei leitud",
+          "noArea": "Kindlat piirkonda ei ole",
+          "loadError": "Asukohaandmete laadimine ebaõnnestus.",
+          "loading": "Laen asukohti…"
+        },
+        "section": {
+          "condition": "Seisukord ja ehitus",
+          "heating": "Küte",
+          "amenities": "Mugavused",
+          "parking": "Parkimine ja köök",
+          "rental": "Rendiandmed",
+          "media": "Meedia"
+        },
+        "field": {
+          "condition": "Seisukord",
+          "buildingMaterial": "Ehitusmaterjal",
+          "parkingType": "Parkimine",
+          "kitchenArea": "Köögi pindala (m²)",
+          "deposit": "Tagatisraha (€)",
+          "utilityCostSummer": "Kommunaalkulud — suvi (€)",
+          "utilityCostWinter": "Kommunaalkulud — talv (€)",
+          "petsAllowed": "Lemmikloomad lubatud",
+          "videoUrl": "Video URL",
+          "virtualTourUrl": "Virtuaaltuuri URL"
+        },
+        "placeholder": {
+          "select": "Vali…",
+          "none": "— Puudub —"
+        },
+        "condition": {
+          "New": "Uusarendus",
+          "Renovated": "Renoveeritud",
+          "Good": "Hea",
+          "Average": "Keskmine",
+          "NeedsRefresh": "Vajab värskendust",
+          "NeedsCapitalRepair": "Vajab kapitaalremonti",
+          "InProgress": "Pooleliolev"
+        },
+        "material": {
+          "Stone": "Kivi",
+          "Wood": "Puit",
+          "Panel": "Paneel",
+          "Log": "Palk",
+          "Concrete": "Monoliit",
+          "Brick": "Tellis"
+        },
+        "heating": {
+          "Central": "Keskküte",
+          "AirHeatPump": "Õhksoojuspump",
+          "Electric": "Elektriküte",
+          "Gas": "Gaasiküte",
+          "Geothermal": "Maaküte",
+          "Floor": "Põrandaküte",
+          "Furnace": "Ahiküte",
+          "SolidFuel": "Tahkeküte",
+          "Combined": "Kombineeritud"
+        },
+        "parking": {
+          "Street": "Tänaval",
+          "Underground": "Maa-alune",
+          "Yard": "Õuel",
+          "Garage": "Garaaž"
+        },
+        "amenity": {
+          "hasSauna": "Saun",
+          "hasStoreroom": "Panipaik",
+          "hasBasement": "Kelder",
+          "hasGarage": "Garaaž",
+          "hasBalcony": "Rõdu",
+          "hasTerrace": "Terrass",
+          "hasElevator": "Lift",
+          "isFurnished": "Möbleeritud",
+          "hasAirConditioning": "Konditsioneer",
+          "hasFireplace": "Kamin"
+        }
+      },
       "title": "Kinnisvara",
       "addNew": "Lisa objekt",
       "editTitle": "Muuda objekti",
