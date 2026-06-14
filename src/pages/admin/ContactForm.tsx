@@ -316,7 +316,7 @@ export default function ContactForm() {
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
               <div className="space-y-6">
-                <p className="text-xs text-muted-foreground -mt-2">{t('admin.contacts.classificationHelp', 'Optional roles a contact can play — tick any that apply (one person can be both a buyer and a seller).')}</p>
+                <p className="text-xs text-muted-foreground">{t('admin.contacts.classificationHelp', 'Optional roles a contact can play — tick any that apply (one person can be both a buyer and a seller).')}</p>
                 <div className="flex flex-wrap gap-6">
                   {(['isBuyer', 'isSeller', 'isTenant', 'isLandlord', 'isPartner'] as const).map(field => (
                     <Controller
