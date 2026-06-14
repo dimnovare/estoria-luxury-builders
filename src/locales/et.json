@@ -747,6 +747,7 @@
         "geocodeAllDone": "Kõigil objektidel on juba koordinaadid",
         "geocodeBulkOk": "Geokodeeritud {{count}} objekti",
         "geocodeBulkPartial": "Geokodeeritud {{ok}}, {{failed}} ei õnnestunud leida — lisa või paranda nende aadress",
+        "geocodeFailedList": "Ava need ja kontrolli aadressi: {{list}}",
         "copiedFromEn": "Inglise keel kopeeritud — nüüd tõlgi see.",
         "statusFailed": "Oleku uuendamine ebaõnnestus",
         "copiedFromEt": "Eestikeelne tekst kopeeritud — nüüd tõlgi see."
@@ -1635,6 +1636,7 @@
       "selectMessage": "Vali kiri lugemiseks",
       "showMessages": "Näita kirju",
       "filtersTitle": "Filtrid",
+      "foldersCustomTitle": "Kaustad",
       "folders": {
         "inbox": "Postkast",
         "sent": "Saadetud",

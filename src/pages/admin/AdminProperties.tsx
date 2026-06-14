@@ -49,7 +49,18 @@ export default function AdminProperties() {
       } else if (res.failed === 0) {
         toast.success(t('admin.properties.toast.geocodeBulkOk', { count: res.geocoded }));
       } else {
-        toast.warning(t('admin.properties.toast.geocodeBulkPartial', { ok: res.geocoded, failed: res.failed }));
+        const failedTitles = (res.results ?? [])
+          .filter(r => !r.resolved)
+          .map(r => properties.find(p => p.id === r.id)?.title || r.slug);
+        toast.warning(
+          t('admin.properties.toast.geocodeBulkPartial', { ok: res.geocoded, failed: res.failed }),
+          {
+            duration: 9000,
+            description: failedTitles.length
+              ? t('admin.properties.toast.geocodeFailedList', 'Open these and check the address: {{list}}', { list: failedTitles.join(', ') })
+              : undefined,
+          },
+        );
       }
     } catch {
       toast.error(t('admin.properties.toast.geocodeFailed'));

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, Suspense, lazy } from 'react';
+import { useState, useMemo, useEffect, useRef, Suspense, lazy } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,6 +13,7 @@ import PropertyHistory from '@/components/PropertyHistory';
 import ContactActions from '@/components/ContactActions';
 import { useProperty, useProperties } from '@/hooks/api/useProperties';
 import { propertyTypeLabel } from '@/lib/enumLabels';
+import { normalizeLanguages, languageLabel } from '@/lib/languages';
 import api from '@/lib/api';
 import Seo from '@/components/Seo';
 import { SafeHtml } from '@/components/SafeHtml';
@@ -141,6 +142,9 @@ export default function PropertyDetail() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [copied, setCopied] = useState(false);
+  // Swipe support inside the fullscreen lightbox (the embla carousel doesn't run
+  // there, so touch swipes were dead — only the arrows worked).
+  const touchStartX = useRef<number | null>(null);
   const [formSent, setFormSent] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState(false);
@@ -528,7 +532,7 @@ export default function PropertyDetail() {
 
               {/* Location map — Leaflet + OpenStreetMap, lazy-loaded so the
                   mapping libs stay out of the main bundle. */}
-              {property.lat && property.lng && (
+              {property.latitude != null && property.longitude != null && (
                 <div className="mb-12">
                   <h2 className="font-heading text-2xl text-foreground mb-6">{t('properties.detail.locationTitle')}</h2>
                   {property.address && (
@@ -539,7 +543,7 @@ export default function PropertyDetail() {
                   )}
                   <div className="aspect-[16/9] rounded-sm border border-border overflow-hidden">
                     <Suspense fallback={<div className="w-full h-full bg-secondary animate-pulse" />}>
-                      <PropertyMap lat={property.lat} lng={property.lng} address={property.address} />
+                      <PropertyMap lat={property.latitude} lng={property.longitude} address={property.address} />
                     </Suspense>
                   </div>
                 </div>
@@ -645,14 +649,14 @@ export default function PropertyDetail() {
                     className="mb-5"
                   />
 
-                  {property.agent.languages && property.agent.languages.length > 0 && (
+                  {normalizeLanguages(property.agent.languages).length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-5">
-                      {property.agent.languages.map((lang) => (
+                      {normalizeLanguages(property.agent.languages).map((lang) => (
                         <span
                           key={lang}
                           className="text-[10px] font-nav uppercase tracking-wider bg-secondary text-muted-foreground px-2.5 py-1 rounded-sm"
                         >
-                          {lang}
+                          {languageLabel(lang, t)}
                         </span>
                       ))}
                     </div>
@@ -786,6 +790,14 @@ export default function PropertyDetail() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-background/95 backdrop-blur-lg flex items-center justify-center"
             onClick={() => setLightboxOpen(false)}
+            onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => {
+              const start = touchStartX.current;
+              touchStartX.current = null;
+              if (start === null || images.length < 2) return;
+              const dx = e.changedTouches[0].clientX - start;
+              if (Math.abs(dx) > 50) (dx < 0 ? nextImage() : prevImage());
+            }}
             role="dialog"
             aria-modal="true"
             aria-label={t('properties.detail.galleryDialog', 'Photo gallery')}

@@ -7,6 +7,23 @@ import i18n from '@/i18n';
 
 export type InboxFolder = 'inbox' | 'sent' | 'archive' | 'all';
 
+/// A folder selection is either one of the four quick-tab keys above or an
+/// opaque Graph folder id (the owners' custom per-property folders).
+export type FolderSelection = InboxFolder | string;
+
+/// One mail folder from Graph — well-known system folders plus the owners'
+/// custom per-property folders. Matches backend MailboxFolderDto.
+export interface MailFolder {
+  id: string;
+  displayName: string;
+  total: number;
+  unread: number;
+  childCount: number;
+  parentId?: string | null;
+  parentName?: string | null;
+  wellKnown: boolean;
+}
+
 export interface InboxAttachment {
   id: string;
   name: string;
@@ -17,7 +34,7 @@ export interface InboxAttachment {
 
 export interface InboxMessageSummary {
   id: string;
-  folder: InboxFolder;
+  folder: FolderSelection;
   from: string;
   fromName: string;
   to: string[];
@@ -72,11 +89,25 @@ export interface MailboxPage<T> {
 // ── Hooks ──────────────────────────────────────────────────────────────────────
 
 const KEYS = {
-  messages: (folder: InboxFolder, filters?: Record<string, unknown>) =>
+  messages: (folder: FolderSelection, filters?: Record<string, unknown>) =>
     ['inbox', 'messages', folder, filters] as const,
   message: (id: string) => ['inbox', 'message', id] as const,
   counts: ['inbox', 'counts'] as const,
+  folders: ['inbox', 'folders'] as const,
 };
+
+/// Lists the mailbox's folders — the well-known ones plus the owners' custom
+/// per-property folders. Empty when Graph isn't configured (dev no-op).
+export function useMailFolders() {
+  return useQuery({
+    queryKey: KEYS.folders,
+    queryFn: async () => {
+      const { data } = await api.get<MailFolder[]>('/admin/inbox/folders');
+      return data;
+    },
+    staleTime: 60_000,
+  });
+}
 
 export function useInboxCounts() {
   return useQuery({
@@ -90,7 +121,7 @@ export function useInboxCounts() {
 }
 
 export function useInboxMessages(
-  folder: InboxFolder,
+  folder: FolderSelection,
   filters?: { unreadOnly?: boolean; hasAttachments?: boolean; linkedToDeal?: boolean },
 ) {
   return useQuery({

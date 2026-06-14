@@ -5,7 +5,7 @@ import DOMPurify from 'dompurify';
 import {
   Inbox, Send as SendIcon, Archive, Mail, Paperclip,
   ArrowLeft, Reply, ReplyAll, Forward, Download, LinkIcon, ExternalLink,
-  CircleDot, Pencil,
+  CircleDot, Pencil, Folder,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -19,11 +19,14 @@ import {
   useInboxMessages,
   useInboxMessage,
   useInboxCounts,
+  useMailFolders,
   useMarkRead,
   useArchiveMessage,
   useLinkMessage,
   useDownloadAttachment,
   type InboxFolder,
+  type FolderSelection,
+  type MailFolder,
   type InboxMessageSummary,
   type InboxMessageDetail,
   type LinkMessagePayload,
@@ -77,7 +80,7 @@ function FolderList({
   onSelect,
   counts,
 }: {
-  activeFolder: InboxFolder;
+  activeFolder: FolderSelection;
   onSelect: (f: InboxFolder) => void;
   // Inbox shows UNREAD count (primary badge). Archive shows total (grey
   // secondary badge). Sent and All don't get badges.
@@ -118,6 +121,61 @@ function FolderList({
           </button>
         );
       })}
+    </div>
+  );
+}
+
+/// The owners create one mail folder per property (in Outlook) to gather that
+/// listing's enquiries. We surface those here so they're reachable from the
+/// admin without leaving for Outlook. Well-known system folders are excluded —
+/// they're already the quick tabs above.
+function CustomFolderList({
+  folders,
+  activeFolder,
+  onSelect,
+}: {
+  folders: MailFolder[];
+  activeFolder: FolderSelection;
+  onSelect: (id: string) => void;
+}) {
+  const { t } = useTranslation();
+  const custom = folders
+    .filter((f) => !f.wellKnown && f.id)
+    .sort((a, b) => b.unread - a.unread || a.displayName.localeCompare(b.displayName));
+
+  if (custom.length === 0) return null;
+
+  return (
+    <div className="space-y-2">
+      <Separator />
+      <div>
+        <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2 px-1">
+          {t('admin.inbox.foldersCustomTitle', 'Folders')}
+        </p>
+        <div className="space-y-0.5">
+          {custom.map((f) => (
+            <button
+              key={f.id}
+              onClick={() => onSelect(f.id)}
+              title={f.parentName ? `${f.parentName} / ${f.displayName}` : f.displayName}
+              className={cn(
+                'w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors',
+                activeFolder === f.id
+                  ? 'bg-primary/10 text-primary font-medium'
+                  : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground',
+              )}
+            >
+              <Folder className="h-4 w-4 shrink-0" />
+              <span className="flex-1 text-left truncate">{f.displayName}</span>
+              {f.unread > 0 && (
+                <Badge className="text-[10px] px-1.5 py-0 h-5 min-w-[20px] justify-center">
+                  {f.unread}
+                </Badge>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -426,7 +484,7 @@ export default function AdminInbox() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
 
-  const [folder, setFolder] = useState<InboxFolder>('inbox');
+  const [folder, setFolder] = useState<FolderSelection>('inbox');
   const [filters, setFilters] = useState<Set<FilterChip>>(new Set());
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [composer, setComposer] = useState<ComposerPrefill | null>(null);
@@ -446,6 +504,7 @@ export default function AdminInbox() {
   );
 
   const { data: counts } = useInboxCounts();
+  const { data: folders } = useMailFolders();
   const { data: messagesPage, isLoading, isError, refetch } = useInboxMessages(folder, filterParams);
   const messages = messagesPage?.items ?? [];
   const { data: selectedMessage } = useInboxMessage(selectedId);
@@ -460,7 +519,7 @@ export default function AdminInbox() {
     });
   };
 
-  const handleSelectFolder = (f: InboxFolder) => {
+  const handleSelectFolder = (f: FolderSelection) => {
     setFolder(f);
     setSelectedId(null);
     if (isMobile) setMobileStep(2);
@@ -501,8 +560,18 @@ export default function AdminInbox() {
   const showListPane    = !isMobile || mobileStep === 2;
   const showDetailPane  = !isMobile || mobileStep === 3;
 
-  // ── Mobile: back-from-list header label ───────────────────────────────────
-  const folderLabel = t(`admin.inbox.folders.${folder}`);
+  // ── Mobile: back-from-list header label + current-folder unread ───────────
+  // A known quick-tab key resolves via i18n; a custom folder id resolves to its
+  // Graph display name (and its own unread count).
+  const isQuickTab = folder === 'inbox' || folder === 'sent' || folder === 'archive' || folder === 'all';
+  const folderLabel = isQuickTab
+    ? t(`admin.inbox.folders.${folder}`)
+    : folders?.find((f) => f.id === folder)?.displayName ?? t('admin.inbox.folders.inbox');
+  const currentUnread =
+    folder === 'inbox'   ? counts?.unread ?? 0 :
+    folder === 'archive' ? counts?.archive ?? 0 :
+    isQuickTab           ? 0 :
+    folders?.find((f) => f.id === folder)?.unread ?? 0;
 
   return (
     <div className="space-y-4">
@@ -550,6 +619,11 @@ export default function AdminInbox() {
                   </p>
                   <FilterChips active={filters} onToggle={toggleFilter} />
                 </div>
+                <CustomFolderList
+                  folders={folders ?? []}
+                  activeFolder={folder}
+                  onSelect={handleSelectFolder}
+                />
               </div>
             </div>
           )}
@@ -572,8 +646,8 @@ export default function AdminInbox() {
                     <ArrowLeft className="h-4 w-4" />
                   </button>
                   <span className="text-sm font-medium flex-1">{folderLabel}</span>
-                  {(counts?.[folder] ?? 0) > 0 && (
-                    <Badge variant="secondary" className="text-[10px] h-4 px-1">{counts?.[folder]}</Badge>
+                  {currentUnread > 0 && (
+                    <Badge variant="secondary" className="text-[10px] h-4 px-1">{currentUnread}</Badge>
                   )}
                 </div>
               )}

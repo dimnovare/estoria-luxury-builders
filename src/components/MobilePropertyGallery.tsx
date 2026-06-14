@@ -87,26 +87,35 @@ export default function MobilePropertyGallery({
       </div>
 
       {images.length > 1 && (
-        <div className="mt-4 flex flex-wrap justify-center gap-2">
-          {images.map((_, index) => (
-            <button
-              type="button"
-              key={index}
-              onClick={() => api?.scrollTo(index)}
-              aria-label={getPhotoLabel(index)}
-              aria-current={selectedIndex === index ? 'true' : undefined}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center"
-            >
-              <span
-                aria-hidden="true"
-                className={`h-2 w-2 rounded-full transition-colors ${
-                  selectedIndex === index
-                    ? 'bg-primary'
-                    : 'bg-muted-foreground/40 hover:bg-primary'
-                }`}
-              />
-            </button>
-          ))}
+        <div className="mt-3 flex items-center justify-center gap-2">
+          {/* Subtle single-row dots for a handful of photos; the active one is a
+              short pill. For many photos, dots are impractical (and look like a
+              grid), so we show a simple counter instead. Swipe is the primary nav. */}
+          {images.length <= 8 ? (
+            images.map((_, index) => (
+              <button
+                type="button"
+                key={index}
+                onClick={() => api?.scrollTo(index)}
+                aria-label={getPhotoLabel(index)}
+                aria-current={selectedIndex === index ? 'true' : undefined}
+                className="py-2 -my-2 px-0.5"
+              >
+                <span
+                  aria-hidden="true"
+                  className={`block h-1.5 rounded-full transition-all ${
+                    selectedIndex === index
+                      ? 'w-5 bg-primary'
+                      : 'w-1.5 bg-muted-foreground/40'
+                  }`}
+                />
+              </button>
+            ))
+          ) : (
+            <span className="font-nav text-xs uppercase tracking-wider text-muted-foreground tabular-nums">
+              {selectedIndex + 1} / {images.length}
+            </span>
+          )}
         </div>
       )}
     </div>

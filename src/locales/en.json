@@ -744,6 +744,7 @@
         "geocodeAllDone": "All properties already have coordinates",
         "geocodeBulkOk": "Geocoded {{count}} property(ies)",
         "geocodeBulkPartial": "Geocoded {{ok}}, {{failed}} couldn't be located — add or fix their address",
+        "geocodeFailedList": "Open these and check the address: {{list}}",
         "imageUploadFailed": "Failed to upload images",
         "imageRemoved": "Image removed",
         "imageRemoveFailed": "Failed to remove image",
@@ -1635,6 +1636,7 @@
       "selectMessage": "Select a message to read",
       "showMessages": "Show messages",
       "filtersTitle": "Filters",
+      "foldersCustomTitle": "Folders",
       "folders": {
         "inbox": "Inbox",
         "sent": "Sent",

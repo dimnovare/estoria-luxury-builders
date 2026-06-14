@@ -47,8 +47,8 @@ export interface Property {
   images?: PropertyImage[];
   description?: string;
   features?: string[];
-  lat?: number;
-  lng?: number;
+  latitude?: number;
+  longitude?: number;
   isFeatured?: boolean;
   coverThumbUrl?: string;
   coverMediumUrl?: string;
