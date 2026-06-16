@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 import {
   ArrowLeft, Pencil, Trash2, Phone as PhoneIcon, Mail, Eye, Home, User,
   StickyNote, Clock, Users, FileSignature, ArrowRightLeft, Settings, Plus,
-  Briefcase, Loader2, ListTodo,
+  Briefcase, Loader2, ListTodo, Building2, ExternalLink, ArrowRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TaskListInline from '@/components/admin/TaskListInline';
+import EntityLinkPicker from '@/components/admin/EntityLinkPicker';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -23,6 +24,10 @@ import {
   useContactNotes, useCreateNote, useToggleNotePin, useDeleteNote, handleCrmError,
   type Activity, type ActivityType,
 } from '@/hooks/api/useCrm';
+import {
+  useContactConnections, useAddContactCompany, useRemoveContactCompany,
+  CONTACT_COMPANY_ROLES, type ContactCompanyRole,
+} from '@/hooks/api/useRelationships';
 import { toast } from 'sonner';
 import { formatDistanceToNow, format } from 'date-fns';
 
@@ -48,8 +53,15 @@ export default function ContactDetail() {
   const togglePin = useToggleNotePin();
   const deleteNote = useDeleteNote();
 
+  const { data: connections } = useContactConnections(id);
+  const addCompany = useAddContactCompany();
+  const removeCompany = useRemoveContactCompany();
+
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [pendingNoteDelete, setPendingNoteDelete] = useState<string | null>(null);
+  const [pendingCompanyUnlink, setPendingCompanyUnlink] = useState<string | null>(null);
+  const [linkCompanyId, setLinkCompanyId] = useState<string | null>(null);
+  const [linkCompanyRole, setLinkCompanyRole] = useState<ContactCompanyRole>('Owner');
   const [quickNote, setQuickNote] = useState('');
   const [showActivityForm, setShowActivityForm] = useState(false);
   const [activityType, setActivityType] = useState<ActivityType>('Note');
@@ -138,7 +150,44 @@ export default function ContactDetail() {
     );
   };
 
+  const handleLinkCompany = () => {
+    if (!linkCompanyId) return;
+    addCompany.mutate(
+      { contactId: id!, companyId: linkCompanyId, role: linkCompanyRole, isPrimary: false },
+      {
+        onSuccess: () => {
+          toast.success(t('admin.relations.toast.linked', 'Company linked'));
+          setLinkCompanyId(null);
+          setLinkCompanyRole('Owner');
+        },
+        onError: (err) => handleCrmError(err, t('admin.crm.toast.saveFailed')),
+      },
+    );
+  };
+
+  const handleUnlinkCompany = (linkId: string) => {
+    removeCompany.mutate(
+      { id: linkId, contactId: id! },
+      {
+        onSuccess: () => toast.success(t('admin.relations.toast.unlinked', 'Connection removed')),
+        onError: (err) => handleCrmError(err, t('admin.relations.confirmRemove')),
+      },
+    );
+  };
+
   const getInitials = (name: string) => name.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2);
+
+  const fmtPrice = (value: number, currency: string) => {
+    try {
+      return new Intl.NumberFormat(undefined, { style: 'currency', currency, maximumFractionDigits: 0 }).format(value);
+    } catch {
+      return `${value.toLocaleString()} ${currency}`;
+    }
+  };
+
+  const linkedCompanies = connections?.companies ?? [];
+  const linkedProperties = connections?.properties ?? [];
+  const linkedTransactions = connections?.transactions ?? [];
 
   const activities = activitiesData?.items ?? [];
   const sortedNotes = [...(notes ?? [])].sort((a, b) => {
@@ -214,12 +263,13 @@ export default function ContactDetail() {
         {/* RIGHT — Workspace */}
         <div className="lg:col-span-2">
           <Tabs defaultValue="timeline">
-            <TabsList className="bg-muted">
+            <TabsList className="bg-muted flex-wrap h-auto">
               <TabsTrigger value="timeline">{t('admin.contacts.tabs.timeline')}</TabsTrigger>
-              <TabsTrigger value="deals">{t('admin.contacts.tabs.deals')}</TabsTrigger>
+              <TabsTrigger value="companies">{t('admin.contacts.tabs.companies')}</TabsTrigger>
+              <TabsTrigger value="properties">{t('admin.contacts.tabs.properties')}</TabsTrigger>
+              <TabsTrigger value="transactions">{t('admin.contacts.tabs.transactions')}</TabsTrigger>
               <TabsTrigger value="notes">{t('admin.contacts.tabs.notes')}</TabsTrigger>
               <TabsTrigger value="tasks">{t('admin.contacts.tabs.tasks')}</TabsTrigger>
-              <TabsTrigger value="properties">{t('admin.contacts.tabs.properties')}</TabsTrigger>
             </TabsList>
 
             {/* Timeline */}
@@ -301,24 +351,123 @@ export default function ContactDetail() {
               </div>
             </TabsContent>
 
-            {/* Deals */}
-            <TabsContent value="deals" className="mt-4">
-              <div className="flex justify-end mb-4">
-                <Button asChild variant="outline" className="border-primary text-primary">
-                  <Link to={`/admin/deals/new?contactId=${id}`}><Plus className="h-4 w-4 mr-1" />{t('admin.deals.addNew')}</Link>
-                </Button>
-              </div>
-              {/* TODO: fetch deals by contactId and render cards */}
-              <EmptyState
-                icon={Briefcase}
-                title={t('admin.contacts.noDeals')}
-                description={t('admin.contacts.noDealsDescription')}
-                action={
-                  <Button asChild variant="outline" className="border-primary text-primary">
-                    <Link to={`/admin/deals/new?contactId=${id}`}><Plus className="h-4 w-4 mr-1" />{t('admin.deals.addNew')}</Link>
-                  </Button>
-                }
-              />
+            {/* Companies */}
+            <TabsContent value="companies" className="space-y-4 mt-4">
+              {/* Quick link a company */}
+              <Card className="bg-card border-border shadow-sm">
+                <CardContent className="p-4 space-y-3">
+                  <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+                    <EntityLinkPicker
+                      type="company"
+                      value={linkCompanyId}
+                      onChange={(id) => setLinkCompanyId(id)}
+                      placeholder={t('admin.relations.addCompany')}
+                    />
+                    <Select value={linkCompanyRole} onValueChange={(v) => setLinkCompanyRole(v as ContactCompanyRole)}>
+                      <SelectTrigger className="h-11 bg-secondary border-border sm:w-44">
+                        <SelectValue placeholder={t('admin.relations.role')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CONTACT_COMPANY_ROLES.map((r) => (
+                          <SelectItem key={r} value={r}>{t(`admin.relations.roles.contactCompany.${r}`)}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex justify-end">
+                    <Button onClick={handleLinkCompany} disabled={!linkCompanyId || addCompany.isPending} className="h-11">
+                      {addCompany.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Plus className="h-4 w-4 mr-2" />}
+                      {t('admin.relations.addCompany')}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {linkedCompanies.length === 0 ? (
+                <EmptyState
+                  icon={Building2}
+                  title={t('admin.relations.connectedCompanies')}
+                  description={t('admin.companies.emptyDescription')}
+                />
+              ) : (
+                <div className="space-y-2">
+                  {linkedCompanies.map((c) => (
+                    <Card key={c.linkId} className="bg-card border-border shadow-sm">
+                      <CardContent className="p-3 flex items-center gap-3">
+                        <div className="h-9 w-9 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
+                          <Building2 className="h-4 w-4 text-primary" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <Link to={`/admin/companies/${c.companyId}`} className="text-sm font-medium text-foreground hover:text-primary inline-flex items-center gap-1">
+                            <span className="truncate">{c.companyName}</span>
+                            <ExternalLink className="h-3 w-3 shrink-0 opacity-60" />
+                          </Link>
+                          <div className="flex flex-wrap gap-1.5 mt-1">
+                            <Badge variant="outline" className="text-[10px] bg-primary/10 text-gold-dark border-primary/30">
+                              {t(`admin.relations.roles.contactCompany.${c.role}`)}
+                            </Badge>
+                            {c.title && (
+                              <Badge variant="outline" className="text-[10px] text-muted-foreground border-border">{c.title}</Badge>
+                            )}
+                            {c.ownershipPercent != null && (
+                              <Badge variant="outline" className="text-[10px] text-muted-foreground border-border tabular-nums">{c.ownershipPercent}%</Badge>
+                            )}
+                            {c.isPrimary && (
+                              <Badge variant="outline" className="text-[10px] bg-primary/10 text-gold-dark border-primary/30">{t('admin.relations.primary', 'Primary')}</Badge>
+                            )}
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-10 w-10 shrink-0 text-muted-foreground hover:text-destructive"
+                          onClick={() => setPendingCompanyUnlink(c.linkId)}
+                          aria-label={t('admin.relations.removeLink')}
+                          title={t('admin.relations.removeLink')}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Transactions (read-only) */}
+            <TabsContent value="transactions" className="space-y-4 mt-4">
+              {linkedTransactions.length === 0 ? (
+                <EmptyState
+                  icon={Briefcase}
+                  title={t('admin.relations.transactions')}
+                  description={t('admin.contacts.noDealsDescription')}
+                />
+              ) : (
+                <div className="space-y-2">
+                  {linkedTransactions.map((tx) => (
+                    <Card key={tx.id} className="bg-card border-border shadow-sm">
+                      <CardContent className="p-3 flex items-center gap-3">
+                        <div className="h-9 w-9 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
+                          <Briefcase className="h-4 w-4 text-primary" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <span className="text-sm font-medium text-foreground truncate block">{tx.title}</span>
+                          <div className="flex flex-wrap gap-1.5 mt-1">
+                            <Badge variant="outline" className="text-[10px] text-muted-foreground border-border">{tx.stage}</Badge>
+                            <Badge variant="outline" className="text-[10px] text-muted-foreground border-border">{tx.dealType}</Badge>
+                            <Badge variant="outline" className="text-[10px] text-muted-foreground border-border">{tx.side}</Badge>
+                          </div>
+                        </div>
+                        {(tx.soldPrice != null || tx.listingPrice != null) && (
+                          <span className="text-sm font-medium text-foreground tabular-nums shrink-0">
+                            {fmtPrice((tx.soldPrice ?? tx.listingPrice)!, tx.currency)}
+                          </span>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </TabsContent>
 
             {/* Notes */}
@@ -383,13 +532,42 @@ export default function ContactDetail() {
               <TaskListInline contactId={id} />
             </TabsContent>
 
-            {/* Properties of interest */}
-            <TabsContent value="properties" className="mt-4">
-              {/* TODO: P3 — properties of interest linked to this contact */}
-              <EmptyState
-                icon={Home}
-                title={t('admin.contacts.propertiesPlaceholder')}
-              />
+            {/* Linked properties */}
+            <TabsContent value="properties" className="space-y-4 mt-4">
+              {linkedProperties.length === 0 ? (
+                <EmptyState
+                  icon={Home}
+                  title={t('admin.relations.connectedProperties')}
+                  description={t('admin.contacts.propertiesPlaceholder')}
+                />
+              ) : (
+                <div className="space-y-2">
+                  {linkedProperties.map((p) => (
+                    <Card key={p.linkId} className="bg-card border-border shadow-sm">
+                      <CardContent className="p-3 flex items-center gap-3">
+                        <div className="h-9 w-9 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
+                          <Home className="h-4 w-4 text-primary" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <Link to={`/admin/properties/${p.propertyId}/edit`} className="text-sm font-medium text-foreground hover:text-primary inline-flex items-center gap-1">
+                            <span className="truncate">{p.title}</span>
+                            <ArrowRight className="h-3 w-3 shrink-0 opacity-60" />
+                          </Link>
+                          <div className="flex flex-wrap gap-1.5 mt-1">
+                            <Badge variant="outline" className="text-[10px] bg-primary/10 text-gold-dark border-primary/30">
+                              {t(`admin.relations.roles.propertyContact.${p.role}`)}
+                            </Badge>
+                            {p.city && (
+                              <Badge variant="outline" className="text-[10px] text-muted-foreground border-border">{p.city}</Badge>
+                            )}
+                            <Badge variant="outline" className="text-[10px] text-muted-foreground border-border">{p.status}</Badge>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </TabsContent>
           </Tabs>
         </div>
@@ -416,6 +594,17 @@ export default function ContactDetail() {
           setPendingNoteDelete(null);
         }}
         title={t('admin.contacts.confirmDeleteNote', 'Delete this note?')}
+      />
+
+      {/* Company unlink confirmation */}
+      <ConfirmDialog
+        open={!!pendingCompanyUnlink}
+        onOpenChange={(o) => !o && setPendingCompanyUnlink(null)}
+        onConfirm={() => {
+          if (pendingCompanyUnlink) handleUnlinkCompany(pendingCompanyUnlink);
+          setPendingCompanyUnlink(null);
+        }}
+        title={t('admin.relations.confirmRemove')}
       />
     </div>
   );

@@ -21,8 +21,9 @@ import {
 import { useContacts, useDeals, type CrmContact, type DealListDto } from '@/hooks/api/useCrm';
 import { useProperties, type Property } from '@/hooks/api/useProperties';
 import { useAdminUsers, type AdminUser } from '@/hooks/api/useAdminUsers';
+import { useCompanies, type CompanyListDto } from '@/hooks/api/useRelationships';
 
-export type EntityLinkType = 'contact' | 'property' | 'deal' | 'user';
+export type EntityLinkType = 'contact' | 'property' | 'deal' | 'user' | 'company';
 
 interface EntityLinkPickerProps {
   type: EntityLinkType;
@@ -68,6 +69,8 @@ function useEntityOptions(type: EntityLinkType): {
   const deals = useDeals(type === 'deal' ? {} : undefined);
   // Users — { items, totalCount }, human field = fullName.
   const users = useAdminUsers(1, '');
+  // Companies — { items, totalCount, … }, human field = name.
+  const companies = useCompanies(type === 'company' ? { pageSize: 100 } : undefined);
 
   return useMemo(() => {
     switch (type) {
@@ -117,11 +120,22 @@ function useEntityOptions(type: EntityLinkType): {
           })),
         };
       }
+      case 'company': {
+        const items = (companies.data?.items ?? []) as CompanyListDto[];
+        return {
+          isLoading: companies.isLoading,
+          options: items.map((c) => ({
+            id: c.id,
+            label: c.name,
+            sublabel: c.registryCode || c.email,
+          })),
+        };
+      }
       default:
         // Unsupported type — no hook available. Signal the plain-input fallback.
         return { options: undefined, isLoading: false };
     }
-  }, [type, contacts.data, contacts.isLoading, properties.data, properties.isLoading, deals.data, deals.isLoading, users.data, users.isLoading]);
+  }, [type, contacts.data, contacts.isLoading, properties.data, properties.isLoading, deals.data, deals.isLoading, users.data, users.isLoading, companies.data, companies.isLoading]);
 }
 
 /**

@@ -508,6 +508,7 @@
       "activities": "Tegevused",
       "settings": "Seaded",
       "inbox": "Postkast",
+      "companies": "Ettevõtted",
       "sections": {
         "crm": "CRM",
         "system": "Süsteem"
@@ -660,7 +661,9 @@
         "general": "Üldine",
         "translations": "Tõlked",
         "images": "Pildid",
-        "features": "Eripärad"
+        "features": "Eripärad",
+        "connections": "Seosed",
+        "documents": "Dokumendid"
       },
       "fields": {
         "propertyType": "Objekti tüüp",
@@ -1276,6 +1279,8 @@
       },
       "tabs": {
         "timeline": "Ajajoon",
+        "companies": "Ettevõtted",
+        "transactions": "Tehingud",
         "deals": "Tehingud",
         "notes": "Märkmed",
         "tasks": "Ülesanded",
@@ -1731,6 +1736,153 @@
       "loading": "Laadimine…",
       "unknown": "Valitud (pole loendis)",
       "clear": "Tühjenda valik"
+    },
+    "companies": {
+      "title": "Ettevõtted",
+      "subtitle": "Juriidilised isikud, kellega koostööd teete — omanikud, arendajad ja haldusettevõtted.",
+      "addNew": "Lisa ettevõte",
+      "newTitle": "Uus ettevõte",
+      "editTitle": "Muuda ettevõtet",
+      "save": "Salvesta ettevõte",
+      "searchPlaceholder": "Otsi nime, registrikoodi või e-posti järgi…",
+      "empty": "Ettevõtteid veel pole",
+      "emptyDescription": "Lisa esimene ettevõte, et siduda see inimeste ja objektidega.",
+      "noMatches": "Otsingule ei vasta ükski ettevõte",
+      "loadError": "Ettevõtete laadimine ebaõnnestus. Palun proovi uuesti.",
+      "confirmDelete": "Kustutada see ettevõte?",
+      "confirmDeleteDesc": "See eemaldab ettevõtte ning selle seosed inimeste ja objektidega. Seda toimingut ei saa tagasi võtta.",
+      "table": {
+        "name": "Nimi",
+        "registryCode": "Registrikood",
+        "people": "Inimesed",
+        "properties": "Objektid"
+      },
+      "fields": {
+        "name": "Nimi",
+        "registryCode": "Registrikood",
+        "email": "E-post",
+        "phone": "Telefon",
+        "website": "Veebileht",
+        "address": "Aadress",
+        "notes": "Märkmed",
+        "assignedAgent": "Määratud maakler",
+        "namePlaceholder": "nt Estoria Capital Group OÜ",
+        "registryCodePlaceholder": "nt 17477775",
+        "websitePlaceholder": "https://…",
+        "notesPlaceholder": "Sisemised märkmed selle ettevõtte kohta",
+        "assignedAgentHelp": "Selle suhte eest vastutav maakler."
+      },
+      "sections": {
+        "identity": "Ettevõtte andmed",
+        "contact": "Kontaktandmed",
+        "assignment": "Määramine",
+        "notes": "Märkmed"
+      },
+      "errors": {
+        "nameRequired": "Ettevõtte nimi on kohustuslik",
+        "emailInvalid": "Sisesta kehtiv e-posti aadress"
+      },
+      "toast": {
+        "created": "Ettevõte loodud",
+        "updated": "Ettevõte uuendatud",
+        "deleted": "Ettevõte kustutatud",
+        "saveFailed": "Ettevõtte salvestamine ebaõnnestus",
+        "deleteFailed": "Ettevõtte kustutamine ebaõnnestus"
+      },
+      "confirmDelete": "Kas kustutada see ettevõte?",
+      "confirmDeleteDesc": "See eemaldab ettevõtte ja selle seosed. Inimesi ja objekte ei kustutata.",
+      "loadDetailError": "Ettevõtet ei õnnestunud laadida. Palun proovi uuesti."
+    },
+    "relations": {
+      "connectedPeople": "Seotud inimesed",
+      "connectedCompanies": "Seotud ettevõtted",
+      "connectedProperties": "Seotud objektid",
+      "transactions": "Tehingud",
+      "listingPrice": "Pakkumishind",
+      "soldPrice": "Müügihind",
+      "addPerson": "Lisa inimene",
+      "addCompany": "Lisa ettevõte",
+      "linkProperty": "Seo objekt",
+      "role": "Roll",
+      "ownership": "Osalus",
+      "removeLink": "Eemalda seos",
+      "primary": "Peamine",
+      "confirmRemove": "Kas eemaldada see seos?",
+      "companyDetails": "Ettevõtte andmed",
+      "selectRole": "Vali roll",
+      "add": "Lisa",
+      "loadError": "Seoseid ei õnnestunud laadida.",
+      "noPeople": "Seotud inimesi pole",
+      "noPeopleDesc": "Seo selle ettevõttega omanik, juhatuse liige või esindaja.",
+      "noContacts": "Seotud inimesi pole",
+      "noContactsDesc": "Seo selle objektiga omanik, müüja, ostja või üürnik.",
+      "noCompanies": "Seotud ettevõtteid pole",
+      "noCompaniesDesc": "Seo selle objektiga omanik-, arendaja- või haldusettevõte.",
+      "noProperties": "Seotud objekte pole",
+      "noPropertiesDesc": "See ettevõte pole veel ühegi objektiga seotud.",
+      "noTransactions": "Tehinguid pole",
+      "noTransactionsDesc": "Selle kirjega seotud tehingud kuvatakse siin.",
+      "toast": {
+        "linked": "Seos lisatud",
+        "unlinked": "Seos eemaldatud"
+      },
+      "roles": {
+        "contactCompany": {
+          "Owner": "Omanik",
+          "BoardMember": "Juhatuse liige",
+          "Employee": "Töötaja",
+          "Representative": "Esindaja",
+          "Accountant": "Raamatupidaja",
+          "Other": "Muu"
+        },
+        "propertyContact": {
+          "Owner": "Omanik",
+          "CoOwner": "Kaasomanik",
+          "Seller": "Müüja",
+          "Buyer": "Ostja",
+          "Tenant": "Üürnik",
+          "Landlord": "Üürileandja",
+          "Representative": "Esindaja",
+          "InterestedParty": "Huviline",
+          "Other": "Muu"
+        },
+        "propertyCompany": {
+          "OwnerCompany": "Omanikettevõte",
+          "SellerCompany": "Müüjaettevõte",
+          "BuyerCompany": "Ostjaettevõte",
+          "ManagementCompany": "Haldusettevõte",
+          "Developer": "Arendaja",
+          "Agency": "Agentuur",
+          "Other": "Muu"
+        }
+      }
+    },
+    "documents": {
+      "title": "Dokumendid",
+      "upload": "Laadi dokument üles",
+      "uploading": "Üleslaadimine…",
+      "empty": "Dokumente veel pole",
+      "download": "Laadi alla",
+      "delete": "Kustuta",
+      "confirmDelete": "Kas kustutada see dokument?",
+      "category": "Kategooria",
+      "categories": {
+        "Contract": "Leping",
+        "Ownership": "Omandiõigus",
+        "Survey": "Ülevaatus",
+        "Floorplan": "Korruse plaan",
+        "EnergyCertificate": "Energiamärgis",
+        "Identity": "Isikut tõendav dokument",
+        "Financial": "Finantsdokument",
+        "Correspondence": "Kirjavahetus",
+        "Other": "Muu"
+      },
+      "dropHint": "Lohista fail siia või klõpsa valimiseks",
+      "notes": "Märkmed",
+      "toast": {
+        "uploaded": "Dokument üles laaditud",
+        "deleted": "Dokument kustutatud"
+      }
     }
   },
   "pagination": {

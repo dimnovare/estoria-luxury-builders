@@ -508,6 +508,7 @@
       "activities": "Действия",
       "settings": "Настройки",
       "inbox": "Входящие",
+      "companies": "Компании",
       "sections": {
         "crm": "CRM",
         "system": "Система"
@@ -660,7 +661,9 @@
         "general": "Общее",
         "translations": "Переводы",
         "images": "Изображения",
-        "features": "Особенности"
+        "features": "Особенности",
+        "connections": "Связи",
+        "documents": "Документы"
       },
       "fields": {
         "propertyType": "Тип объекта",
@@ -1276,6 +1279,8 @@
       },
       "tabs": {
         "timeline": "Хронология",
+        "companies": "Компании",
+        "transactions": "Транзакции",
         "deals": "Сделки",
         "notes": "Заметки",
         "tasks": "Задачи",
@@ -1731,6 +1736,153 @@
       "loading": "Загрузка…",
       "unknown": "Выбрано (нет в списке)",
       "clear": "Очистить выбор"
+    },
+    "companies": {
+      "title": "Компании",
+      "subtitle": "Юридические лица, с которыми вы работаете — владельцы, застройщики и управляющие компании.",
+      "addNew": "Добавить компанию",
+      "newTitle": "Новая компания",
+      "editTitle": "Редактировать компанию",
+      "save": "Сохранить компанию",
+      "searchPlaceholder": "Поиск по названию, рег. коду или эл. почте…",
+      "empty": "Пока нет компаний",
+      "emptyDescription": "Добавьте первую компанию, чтобы связать её с людьми и объектами.",
+      "noMatches": "Нет компаний по вашему запросу",
+      "loadError": "Не удалось загрузить компании. Попробуйте ещё раз.",
+      "confirmDelete": "Удалить эту компанию?",
+      "confirmDeleteDesc": "Это удалит компанию и её связи с людьми и объектами. Это действие нельзя отменить.",
+      "table": {
+        "name": "Название",
+        "registryCode": "Рег. код",
+        "people": "Люди",
+        "properties": "Объекты"
+      },
+      "fields": {
+        "name": "Название",
+        "registryCode": "Регистрационный код",
+        "email": "Эл. почта",
+        "phone": "Телефон",
+        "website": "Веб-сайт",
+        "address": "Адрес",
+        "notes": "Заметки",
+        "assignedAgent": "Назначенный агент",
+        "namePlaceholder": "напр. Estoria Capital Group OÜ",
+        "registryCodePlaceholder": "напр. 17477775",
+        "websitePlaceholder": "https://…",
+        "notesPlaceholder": "Внутренние заметки об этой компании",
+        "assignedAgentHelp": "Агент, ответственный за эти отношения."
+      },
+      "sections": {
+        "identity": "Данные компании",
+        "contact": "Контактные данные",
+        "assignment": "Назначение",
+        "notes": "Заметки"
+      },
+      "errors": {
+        "nameRequired": "Название компании обязательно",
+        "emailInvalid": "Введите корректный адрес эл. почты"
+      },
+      "toast": {
+        "created": "Компания создана",
+        "updated": "Компания обновлена",
+        "deleted": "Компания удалена",
+        "saveFailed": "Не удалось сохранить компанию",
+        "deleteFailed": "Не удалось удалить компанию"
+      },
+      "confirmDelete": "Удалить эту компанию?",
+      "confirmDeleteDesc": "Это удалит компанию и её связи. Люди и объекты не удаляются.",
+      "loadDetailError": "Не удалось загрузить компанию. Пожалуйста, попробуйте снова."
+    },
+    "relations": {
+      "connectedPeople": "Связанные люди",
+      "connectedCompanies": "Связанные компании",
+      "connectedProperties": "Связанные объекты",
+      "transactions": "Сделки",
+      "listingPrice": "Цена предложения",
+      "soldPrice": "Цена продажи",
+      "addPerson": "Добавить человека",
+      "addCompany": "Добавить компанию",
+      "linkProperty": "Связать объект",
+      "role": "Роль",
+      "ownership": "Доля",
+      "removeLink": "Удалить связь",
+      "primary": "Основной",
+      "confirmRemove": "Удалить эту связь?",
+      "companyDetails": "Данные компании",
+      "selectRole": "Выберите роль",
+      "add": "Добавить",
+      "loadError": "Не удалось загрузить связи.",
+      "noPeople": "Нет связанных людей",
+      "noPeopleDesc": "Свяжите с этой компанией владельца, члена правления или представителя.",
+      "noContacts": "Нет связанных людей",
+      "noContactsDesc": "Свяжите с этим объектом владельца, продавца, покупателя или арендатора.",
+      "noCompanies": "Нет связанных компаний",
+      "noCompaniesDesc": "Свяжите с этим объектом компанию-владельца, застройщика или управляющую компанию.",
+      "noProperties": "Нет связанных объектов",
+      "noPropertiesDesc": "Эта компания пока не связана ни с одним объектом.",
+      "noTransactions": "Нет сделок",
+      "noTransactionsDesc": "Сделки, связанные с этой записью, появятся здесь.",
+      "toast": {
+        "linked": "Связь добавлена",
+        "unlinked": "Связь удалена"
+      },
+      "roles": {
+        "contactCompany": {
+          "Owner": "Владелец",
+          "BoardMember": "Член правления",
+          "Employee": "Сотрудник",
+          "Representative": "Представитель",
+          "Accountant": "Бухгалтер",
+          "Other": "Другое"
+        },
+        "propertyContact": {
+          "Owner": "Владелец",
+          "CoOwner": "Совладелец",
+          "Seller": "Продавец",
+          "Buyer": "Покупатель",
+          "Tenant": "Арендатор",
+          "Landlord": "Арендодатель",
+          "Representative": "Представитель",
+          "InterestedParty": "Заинтересованное лицо",
+          "Other": "Другое"
+        },
+        "propertyCompany": {
+          "OwnerCompany": "Компания-владелец",
+          "SellerCompany": "Компания-продавец",
+          "BuyerCompany": "Компания-покупатель",
+          "ManagementCompany": "Управляющая компания",
+          "Developer": "Застройщик",
+          "Agency": "Агентство",
+          "Other": "Другое"
+        }
+      }
+    },
+    "documents": {
+      "title": "Документы",
+      "upload": "Загрузить документ",
+      "uploading": "Загрузка…",
+      "empty": "Пока нет документов",
+      "download": "Скачать",
+      "delete": "Удалить",
+      "confirmDelete": "Удалить этот документ?",
+      "category": "Категория",
+      "categories": {
+        "Contract": "Договор",
+        "Ownership": "Право собственности",
+        "Survey": "Осмотр",
+        "Floorplan": "Планировка",
+        "EnergyCertificate": "Энергетический сертификат",
+        "Identity": "Удостоверение личности",
+        "Financial": "Финансовый документ",
+        "Correspondence": "Переписка",
+        "Other": "Другое"
+      },
+      "dropHint": "Перетащите файл сюда или нажмите для выбора",
+      "notes": "Заметки",
+      "toast": {
+        "uploaded": "Документ загружен",
+        "deleted": "Документ удалён"
+      }
     }
   },
   "pagination": {

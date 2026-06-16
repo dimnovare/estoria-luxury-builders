@@ -54,6 +54,9 @@ const AuditLog            = lazy(() => import("@/pages/admin/AuditLog"));
 const AdminContacts       = lazy(() => import("@/pages/admin/AdminContacts"));
 const ContactForm         = lazy(() => import("@/pages/admin/ContactForm"));
 const ContactDetail       = lazy(() => import("@/pages/admin/ContactDetail"));
+const AdminCompanies      = lazy(() => import("@/pages/admin/AdminCompanies"));
+const CompanyForm         = lazy(() => import("@/pages/admin/CompanyForm"));
+const CompanyDetail       = lazy(() => import("@/pages/admin/CompanyDetail"));
 const AdminDeals          = lazy(() => import("@/pages/admin/AdminDeals"));
 const DealForm            = lazy(() => import("@/pages/admin/DealForm"));
 const DealDetail          = lazy(() => import("@/pages/admin/DealDetail"));
@@ -154,6 +157,10 @@ const App = () => (
             <Route path="contacts/new" element={<ContactForm />} />
             <Route path="contacts/:id" element={<ContactDetail />} />
             <Route path="contacts/:id/edit" element={<ContactForm />} />
+            <Route path="companies" element={<AdminCompanies />} />
+            <Route path="companies/new" element={<CompanyForm />} />
+            <Route path="companies/:id" element={<CompanyDetail />} />
+            <Route path="companies/:id/edit" element={<CompanyForm />} />
             <Route path="deals" element={<AdminDeals />} />
             <Route path="deals/new" element={<DealForm />} />
             <Route path="deals/:id" element={<DealDetail />} />

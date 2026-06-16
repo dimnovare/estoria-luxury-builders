@@ -508,6 +508,7 @@
       "activities": "Activities",
       "settings": "Settings",
       "inbox": "Inbox",
+      "companies": "Companies",
       "sections": {
         "crm": "CRM",
         "system": "System"
@@ -660,7 +661,9 @@
         "general": "General",
         "translations": "Translations",
         "images": "Images",
-        "features": "Features"
+        "features": "Features",
+        "connections": "Connections",
+        "documents": "Documents"
       },
       "fields": {
         "propertyType": "Property Type",
@@ -1276,6 +1279,8 @@
       },
       "tabs": {
         "timeline": "Timeline",
+        "companies": "Companies",
+        "transactions": "Transactions",
         "deals": "Deals",
         "notes": "Notes",
         "tasks": "Tasks",
@@ -1731,6 +1736,153 @@
       "loading": "Loading…",
       "unknown": "Selected (not in list)",
       "clear": "Clear selection"
+    },
+    "companies": {
+      "title": "Companies",
+      "subtitle": "Legal entities you work with — owners, developers and management companies.",
+      "addNew": "Add company",
+      "newTitle": "New company",
+      "editTitle": "Edit company",
+      "save": "Save company",
+      "searchPlaceholder": "Search by name, registry code or email…",
+      "empty": "No companies yet",
+      "emptyDescription": "Add the first company to link it to people and properties.",
+      "noMatches": "No companies match your search",
+      "loadError": "Could not load companies. Please try again.",
+      "confirmDelete": "Delete this company?",
+      "confirmDeleteDesc": "This removes the company and its links to people and properties. This action can't be undone.",
+      "table": {
+        "name": "Name",
+        "registryCode": "Registry code",
+        "people": "People",
+        "properties": "Properties"
+      },
+      "fields": {
+        "name": "Name",
+        "registryCode": "Registry code",
+        "email": "Email",
+        "phone": "Phone",
+        "website": "Website",
+        "address": "Address",
+        "notes": "Notes",
+        "assignedAgent": "Assigned agent",
+        "namePlaceholder": "e.g. Estoria Capital Group OÜ",
+        "registryCodePlaceholder": "e.g. 17477775",
+        "websitePlaceholder": "https://…",
+        "notesPlaceholder": "Internal notes about this company",
+        "assignedAgentHelp": "The agent responsible for this relationship."
+      },
+      "sections": {
+        "identity": "Company details",
+        "contact": "Contact details",
+        "assignment": "Assignment",
+        "notes": "Notes"
+      },
+      "errors": {
+        "nameRequired": "Company name is required",
+        "emailInvalid": "Enter a valid email address"
+      },
+      "toast": {
+        "created": "Company created",
+        "updated": "Company updated",
+        "deleted": "Company deleted",
+        "saveFailed": "Failed to save company",
+        "deleteFailed": "Failed to delete company"
+      },
+      "confirmDelete": "Delete this company?",
+      "confirmDeleteDesc": "This removes the company and its links. People and properties are not deleted.",
+      "loadDetailError": "Could not load this company. Please try again."
+    },
+    "relations": {
+      "connectedPeople": "Connected people",
+      "connectedCompanies": "Connected companies",
+      "connectedProperties": "Connected properties",
+      "transactions": "Transactions",
+      "listingPrice": "Listing price",
+      "soldPrice": "Sold price",
+      "addPerson": "Add person",
+      "addCompany": "Add company",
+      "linkProperty": "Link property",
+      "role": "Role",
+      "ownership": "Ownership",
+      "removeLink": "Remove link",
+      "primary": "Primary",
+      "confirmRemove": "Remove this connection?",
+      "companyDetails": "Company details",
+      "selectRole": "Select role",
+      "add": "Add",
+      "loadError": "Could not load connections.",
+      "noPeople": "No people linked",
+      "noPeopleDesc": "Link an owner, board member or representative to this company.",
+      "noContacts": "No people linked",
+      "noContactsDesc": "Link an owner, seller, buyer or tenant to this property.",
+      "noCompanies": "No companies linked",
+      "noCompaniesDesc": "Link an owner, developer or management company to this property.",
+      "noProperties": "No properties linked",
+      "noPropertiesDesc": "This company is not linked to any property yet.",
+      "noTransactions": "No transactions",
+      "noTransactionsDesc": "Deals linked to this record will appear here.",
+      "toast": {
+        "linked": "Connection added",
+        "unlinked": "Connection removed"
+      },
+      "roles": {
+        "contactCompany": {
+          "Owner": "Owner",
+          "BoardMember": "Board member",
+          "Employee": "Employee",
+          "Representative": "Representative",
+          "Accountant": "Accountant",
+          "Other": "Other"
+        },
+        "propertyContact": {
+          "Owner": "Owner",
+          "CoOwner": "Co-owner",
+          "Seller": "Seller",
+          "Buyer": "Buyer",
+          "Tenant": "Tenant",
+          "Landlord": "Landlord",
+          "Representative": "Representative",
+          "InterestedParty": "Interested party",
+          "Other": "Other"
+        },
+        "propertyCompany": {
+          "OwnerCompany": "Owner company",
+          "SellerCompany": "Seller company",
+          "BuyerCompany": "Buyer company",
+          "ManagementCompany": "Management company",
+          "Developer": "Developer",
+          "Agency": "Agency",
+          "Other": "Other"
+        }
+      }
+    },
+    "documents": {
+      "title": "Documents",
+      "upload": "Upload document",
+      "uploading": "Uploading…",
+      "empty": "No documents yet",
+      "download": "Download",
+      "delete": "Delete",
+      "confirmDelete": "Delete this document?",
+      "category": "Category",
+      "categories": {
+        "Contract": "Contract",
+        "Ownership": "Ownership",
+        "Survey": "Survey",
+        "Floorplan": "Floor plan",
+        "EnergyCertificate": "Energy certificate",
+        "Identity": "Identity",
+        "Financial": "Financial",
+        "Correspondence": "Correspondence",
+        "Other": "Other"
+      },
+      "dropHint": "Drag a file here or click to choose",
+      "notes": "Notes",
+      "toast": {
+        "uploaded": "Document uploaded",
+        "deleted": "Document deleted"
+      }
     }
   },
   "pagination": {

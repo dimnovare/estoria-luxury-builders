@@ -34,6 +34,8 @@ import PropertyPortalControls from '@/components/admin/PropertyPortalControls';
 import TranslateButton from '@/components/admin/TranslateButton';
 import EhakLocationPicker from '@/components/admin/EhakLocationPicker';
 import PropertyExtraDetails from '@/components/admin/PropertyExtraDetails';
+import PropertyConnectionsPanel from '@/components/admin/PropertyConnectionsPanel';
+import PropertyDocumentsPanel from '@/components/admin/PropertyDocumentsPanel';
 import type { PropertyExtraFields } from '@/lib/propertyExportOptions';
 import { initializePortalPublications } from '@/lib/propertyPortalPublications';
 import { toast } from 'sonner';
@@ -528,6 +530,12 @@ export default function PropertyForm() {
           <TabsTrigger value="translations" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('admin.properties.tabs.translations')}</TabsTrigger>
           <TabsTrigger value="images"       className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('admin.properties.tabs.images')}</TabsTrigger>
           <TabsTrigger value="features"     className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('admin.properties.tabs.features')}</TabsTrigger>
+          {isEdit && (
+            <TabsTrigger value="connections" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('admin.properties.tabs.connections', 'Connections')}</TabsTrigger>
+          )}
+          {isEdit && (
+            <TabsTrigger value="documents"   className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('admin.properties.tabs.documents', 'Documents')}</TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="general" className="mt-4">
@@ -1118,6 +1126,18 @@ export default function PropertyForm() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {isEdit && id && (
+          <TabsContent value="connections" className="mt-4">
+            <PropertyConnectionsPanel propertyId={id} />
+          </TabsContent>
+        )}
+
+        {isEdit && id && (
+          <TabsContent value="documents" className="mt-4">
+            <PropertyDocumentsPanel propertyId={id} />
+          </TabsContent>
+        )}
       </Tabs>
 
       {/* Save buttons */}

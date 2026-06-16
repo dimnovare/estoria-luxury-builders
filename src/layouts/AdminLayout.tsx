@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Building2, FileText, Users, Briefcase,
   Globe, GraduationCap, Mail, MessageSquare, ChevronLeft,
   ExternalLink, Menu, LogOut, ScrollText, UserCog, Contact, Handshake,
-  ListTodo, Cake, Bell, Settings, X,
+  ListTodo, Cake, Bell, Settings, X, Building,
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
 import { useAuth, type UserRole } from '@/hooks/useAuth';
@@ -38,11 +38,14 @@ const navItemDefs: NavItemDef[] = [
   { key: 'messages',   icon: MessageSquare,   path: '/admin/messages' },
   { key: 'inbox',      icon: Mail,            path: '/admin/inbox',      roles: ['Admin', 'Agent'] },
   { key: 'contacts',      icon: Contact,    path: '/admin/contacts',       section: 'CRM' },
-  { key: 'deals',         icon: Handshake,  path: '/admin/deals',          section: 'CRM' },
-  { key: 'tasks',         icon: ListTodo,   path: '/admin/tasks',          section: 'CRM' },
+  { key: 'companies',     icon: Building,    path: '/admin/companies',     section: 'CRM' },
   { key: 'birthdays',     icon: Cake,       path: '/admin/birthdays',      section: 'CRM' },
   { key: 'savedSearches', icon: Bell,       path: '/admin/saved-searches', section: 'CRM' },
   { key: 'activities',    icon: ScrollText, path: '/admin/activities',     section: 'CRM' },
+  // Deals + Tasks moved to the bottom of the CRM group to de-emphasise them
+  // (kept available, just lower priority than the relationship surfaces above).
+  { key: 'deals',         icon: Handshake,  path: '/admin/deals',          section: 'CRM' },
+  { key: 'tasks',         icon: ListTodo,   path: '/admin/tasks',          section: 'CRM' },
   // Admin / System section
   { key: 'settings',   icon: Settings,        path: '/admin/settings',   roles: ['Admin'], section: 'System' },
   { key: 'users',      icon: UserCog,         path: '/admin/users',      roles: ['Admin'], section: 'System' },
