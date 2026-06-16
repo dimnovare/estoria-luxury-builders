@@ -89,7 +89,7 @@ export default function ConnectionsDiagram({ nodes, edges }: Props) {
     <div className="w-full overflow-x-auto">
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        className="w-full"
+        className="block mx-auto w-full"
         style={{ maxWidth: W, minWidth: 340 }}
         role="img"
         aria-label={t('admin.relations.diagramAria', 'Connections map')}
