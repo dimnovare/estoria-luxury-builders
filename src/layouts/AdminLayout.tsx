@@ -224,7 +224,7 @@ export default function AdminLayout() {
                     aria-expanded={openSections[sec.key]}
                     className="w-full flex items-center justify-between px-4 pt-3 pb-1 hover:text-[hsl(40_33%_95%)] transition-colors"
                   >
-                    <span className="text-[10px] font-nav uppercase tracking-widest text-[hsl(0_0%_60%)]/60">
+                    <span className="text-[11px] font-nav uppercase tracking-wider text-[hsl(40_12%_66%)]">
                       {t(`admin.nav.sections.${sec.key}`)}
                     </span>
                     <ChevronDown
@@ -236,7 +236,7 @@ export default function AdminLayout() {
                   </button>
                 ) : (
                   <div className="px-4 pt-3 pb-1">
-                    <span className="text-[10px] font-nav uppercase tracking-widest text-[hsl(0_0%_60%)]/60">
+                    <span className="text-[11px] font-nav uppercase tracking-wider text-[hsl(40_12%_66%)]">
                       {t(`admin.nav.sections.${sec.key}`)}
                     </span>
                   </div>
