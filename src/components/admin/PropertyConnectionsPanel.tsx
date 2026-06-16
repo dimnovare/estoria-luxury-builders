@@ -14,9 +14,9 @@ import {
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { EmptyState } from '@/components/admin/EmptyState';
 import EntityLinkPicker from '@/components/admin/EntityLinkPicker';
-import ConnectionsDiagram, { type ConnNode } from '@/components/admin/ConnectionsDiagram';
+import ConnectionsDiagram from '@/components/admin/ConnectionsDiagram';
 import {
-  usePropertyConnections,
+  usePropertyConnections, useConnectionsGraph,
   useAddPropertyContact, useAddPropertyCompany,
   useRemovePropertyContact, useRemovePropertyCompany,
   useCreateCompany,
@@ -63,6 +63,7 @@ export default function PropertyConnectionsPanel({ propertyId }: Props) {
   const { t } = useTranslation();
 
   const { data, isLoading, isError, refetch } = usePropertyConnections(propertyId);
+  const { data: graph } = useConnectionsGraph('property', propertyId);
   const addContact = useAddPropertyContact();
   const addCompany = useAddPropertyCompany();
   const removeContact = useRemovePropertyContact();
@@ -187,7 +188,7 @@ export default function PropertyConnectionsPanel({ propertyId }: Props) {
   return (
     <div className="space-y-6">
       {/* ── Connections map ──────────────────────────────────────────── */}
-      {(contacts.length + companies.length) > 0 && (
+      {(graph?.nodes?.length ?? 0) > 1 && (
         <Card className="bg-card border-border shadow-sm">
           <CardContent className="p-3">
             <div className="flex items-center gap-2 mb-1">
@@ -196,25 +197,7 @@ export default function PropertyConnectionsPanel({ propertyId }: Props) {
                 {t('admin.relations.connectionsMap', 'Connections map')}
               </h3>
             </div>
-            <ConnectionsDiagram
-              center={{ label: t('admin.relations.thisProperty', 'This property'), type: 'property' }}
-              nodes={[
-                ...contacts.map((c): ConnNode => ({
-                  id: c.contactId,
-                  label: c.fullName,
-                  type: 'person',
-                  role: t(`admin.relations.roles.propertyContact.${c.role}`),
-                  href: `/admin/contacts/${c.contactId}`,
-                })),
-                ...companies.map((co): ConnNode => ({
-                  id: co.companyId,
-                  label: co.name,
-                  type: 'company',
-                  role: t(`admin.relations.roles.propertyCompany.${co.role}`),
-                  href: `/admin/companies/${co.companyId}`,
-                })),
-              ]}
-            />
+            <ConnectionsDiagram nodes={graph!.nodes} edges={graph!.edges} />
           </CardContent>
         </Card>
       )}

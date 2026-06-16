@@ -212,7 +212,40 @@ export const relationshipKeys = {
   property: (propertyId?: string) => ['relationships', 'property', propertyId] as const,
   contact: (contactId?: string) => ['relationships', 'contact', contactId] as const,
   documents: (propertyId?: string) => ['relationships', 'documents', propertyId] as const,
+  graph: (type?: string, id?: string) => ['relationships', 'graph', type, id] as const,
 };
+
+// ── Connections graph ────────────────────────────────────────────────────────
+
+export type GraphEntityType = 'property' | 'contact' | 'company';
+
+export interface GraphNode {
+  id: string;
+  type: 'person' | 'company' | 'property' | 'deal';
+  label: string;
+  isCenter: boolean;
+}
+
+export interface GraphEdge {
+  fromId: string;
+  toId: string;
+  role?: string | null;
+  kind: string;
+}
+
+export interface RelationshipGraph {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+}
+
+/** Neighbourhood graph (centre + 1-hop neighbours + links among them) for the map. */
+export function useConnectionsGraph(type: GraphEntityType, id?: string) {
+  return useQuery<RelationshipGraph>({
+    queryKey: relationshipKeys.graph(type, id),
+    queryFn: () => api.get(`/admin/relationships/graph/${type}/${id}`).then((r) => r.data),
+    enabled: !!id,
+  });
+}
 
 // ── Companies ────────────────────────────────────────────────────────────────
 
@@ -312,6 +345,7 @@ export function useAddContactCompany() {
       qc.invalidateQueries({ queryKey: relationshipKeys.contact(vars.contactId) });
       qc.invalidateQueries({ queryKey: relationshipKeys.company(vars.companyId) });
       qc.invalidateQueries({ queryKey: ['relationships', 'companies'] });
+      qc.invalidateQueries({ queryKey: ['relationships', 'graph'] });
     },
     onError: (err) => handleCrmError(err, i18n.t('admin.crm.toast.saveFailed')),
   });
@@ -332,6 +366,7 @@ export function useAddPropertyContact() {
     onSuccess: (_d, vars) => {
       qc.invalidateQueries({ queryKey: relationshipKeys.property(vars.propertyId) });
       qc.invalidateQueries({ queryKey: relationshipKeys.contact(vars.contactId) });
+      qc.invalidateQueries({ queryKey: ['relationships', 'graph'] });
     },
     onError: (err) => handleCrmError(err, i18n.t('admin.crm.toast.saveFailed')),
   });
@@ -352,6 +387,7 @@ export function useAddPropertyCompany() {
     onSuccess: (_d, vars) => {
       qc.invalidateQueries({ queryKey: relationshipKeys.property(vars.propertyId) });
       qc.invalidateQueries({ queryKey: relationshipKeys.company(vars.companyId) });
+      qc.invalidateQueries({ queryKey: ['relationships', 'graph'] });
     },
     onError: (err) => handleCrmError(err, i18n.t('admin.crm.toast.saveFailed')),
   });
@@ -371,6 +407,7 @@ export function useRemoveContactCompany() {
       if (vars.contactId) qc.invalidateQueries({ queryKey: relationshipKeys.contact(vars.contactId) });
       if (vars.companyId) qc.invalidateQueries({ queryKey: relationshipKeys.company(vars.companyId) });
       qc.invalidateQueries({ queryKey: ['relationships', 'companies'] });
+      qc.invalidateQueries({ queryKey: ['relationships', 'graph'] });
     },
     onError: (err) => handleCrmError(err, i18n.t('admin.relations.confirmRemove')),
   });
@@ -384,6 +421,7 @@ export function useRemovePropertyContact() {
     onSuccess: (_d, vars) => {
       if (vars.propertyId) qc.invalidateQueries({ queryKey: relationshipKeys.property(vars.propertyId) });
       if (vars.contactId) qc.invalidateQueries({ queryKey: relationshipKeys.contact(vars.contactId) });
+      qc.invalidateQueries({ queryKey: ['relationships', 'graph'] });
     },
     onError: (err) => handleCrmError(err, i18n.t('admin.relations.confirmRemove')),
   });
@@ -397,6 +435,7 @@ export function useRemovePropertyCompany() {
     onSuccess: (_d, vars) => {
       if (vars.propertyId) qc.invalidateQueries({ queryKey: relationshipKeys.property(vars.propertyId) });
       if (vars.companyId) qc.invalidateQueries({ queryKey: relationshipKeys.company(vars.companyId) });
+      qc.invalidateQueries({ queryKey: ['relationships', 'graph'] });
     },
     onError: (err) => handleCrmError(err, i18n.t('admin.relations.confirmRemove')),
   });

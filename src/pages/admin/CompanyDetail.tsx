@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   ArrowLeft, Pencil, Trash2, Mail, Phone as PhoneIcon, Globe, MapPin,
-  Building2, Users, Home, ArrowRightLeft, FileText, Download, Loader2, Hash,
+  Building2, Users, Home, ArrowRightLeft, FileText, Download, Loader2, Hash, Share2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,8 +12,9 @@ import { Separator } from '@/components/ui/separator';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { EmptyState } from '@/components/admin/EmptyState';
 import { ErrorState } from '@/components/admin/ErrorState';
+import ConnectionsDiagram from '@/components/admin/ConnectionsDiagram';
 import {
-  useCompany, useDeleteCompany, useDownloadPropertyDocument,
+  useCompany, useConnectionsGraph, useDeleteCompany, useDownloadPropertyDocument,
   type CompanyPersonDto, type CompanyPropertyDto, type DocumentDto, type TransactionDto,
 } from '@/hooks/api/useRelationships';
 import { handleCrmError } from '@/hooks/api/useCrm';
@@ -51,6 +52,7 @@ export default function CompanyDetail() {
   const navigate = useNavigate();
 
   const { data: company, isLoading, isError, refetch } = useCompany(id);
+  const { data: graph } = useConnectionsGraph('company', id);
   const deleteMutation = useDeleteCompany();
   const downloadDoc = useDownloadPropertyDocument();
 
@@ -186,6 +188,19 @@ export default function CompanyDetail() {
 
         {/* RIGHT — Connections */}
         <div className="lg:col-span-2 space-y-6">
+          {(graph?.nodes?.length ?? 0) > 1 && (
+            <Card className="bg-card border-border shadow-sm">
+              <CardContent className="p-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <Share2 className="h-4 w-4 text-primary" />
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {t('admin.relations.connectionsMap', 'Connections map')}
+                  </h3>
+                </div>
+                <ConnectionsDiagram nodes={graph!.nodes} edges={graph!.edges} />
+              </CardContent>
+            </Card>
+          )}
           {/* Connected people */}
           <section className="space-y-3">
             <div className="flex items-center gap-2">

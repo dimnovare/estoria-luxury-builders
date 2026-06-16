@@ -6,7 +6,7 @@ import {
   StickyNote, Clock, Users, FileSignature, ArrowRightLeft, Settings, Plus,
   Briefcase, Loader2, ListTodo, Building2, ExternalLink, ArrowRight, Share2,
 } from 'lucide-react';
-import ConnectionsDiagram, { type ConnNode } from '@/components/admin/ConnectionsDiagram';
+import ConnectionsDiagram from '@/components/admin/ConnectionsDiagram';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +26,7 @@ import {
   type Activity, type ActivityType,
 } from '@/hooks/api/useCrm';
 import {
-  useContactConnections, useAddContactCompany, useRemoveContactCompany,
+  useContactConnections, useConnectionsGraph, useAddContactCompany, useRemoveContactCompany,
   CONTACT_COMPANY_ROLES, type ContactCompanyRole,
 } from '@/hooks/api/useRelationships';
 import { toast } from 'sonner';
@@ -55,6 +55,7 @@ export default function ContactDetail() {
   const deleteNote = useDeleteNote();
 
   const { data: connections } = useContactConnections(id);
+  const { data: graph } = useConnectionsGraph('contact', id);
   const addCompany = useAddContactCompany();
   const removeCompany = useRemoveContactCompany();
 
@@ -263,7 +264,7 @@ export default function ContactDetail() {
 
         {/* RIGHT — Workspace */}
         <div className="lg:col-span-2 space-y-4">
-          {(linkedCompanies.length + linkedProperties.length) > 0 && (
+          {(graph?.nodes?.length ?? 0) > 1 && (
             <Card className="bg-card border-border shadow-sm">
               <CardContent className="p-3">
                 <div className="flex items-center gap-2 mb-1">
@@ -272,25 +273,7 @@ export default function ContactDetail() {
                     {t('admin.relations.connectionsMap', 'Connections map')}
                   </h3>
                 </div>
-                <ConnectionsDiagram
-                  center={{ label: contact.fullName, type: 'person' }}
-                  nodes={[
-                    ...linkedCompanies.map((c): ConnNode => ({
-                      id: c.companyId,
-                      label: c.companyName,
-                      type: 'company',
-                      role: t(`admin.relations.roles.contactCompany.${c.role}`),
-                      href: `/admin/companies/${c.companyId}`,
-                    })),
-                    ...linkedProperties.map((p): ConnNode => ({
-                      id: p.propertyId,
-                      label: p.title,
-                      type: 'property',
-                      role: t(`admin.relations.roles.propertyContact.${p.role}`),
-                      href: `/admin/properties/${p.propertyId}/edit`,
-                    })),
-                  ]}
-                />
+                <ConnectionsDiagram nodes={graph!.nodes} edges={graph!.edges} />
               </CardContent>
             </Card>
           )}
