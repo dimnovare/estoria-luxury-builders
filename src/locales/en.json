@@ -770,7 +770,7 @@
       "unpublish": "Unpublish",
       "portal": {
         "publishTo": "Publish to {{name}}",
-        "feedHelp": "Only active properties with valid portal data appear in the feed."
+        "feedHelp": "Only active listings with valid portal data are sent to the portals."
       },
       "geocodeButton": "Get from address",
       "geocodeMissing": "Geocode missing",

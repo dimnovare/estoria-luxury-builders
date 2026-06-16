@@ -770,7 +770,7 @@
       "unpublish": "Peida",
       "portal": {
         "publishTo": "Avalda portaalis {{name}}",
-        "feedHelp": "Söödasse satuvad ainult aktiivsed, kehtivate portaaliandmetega kuulutused."
+        "feedHelp": "Portaalidesse jõuavad ainult aktiivsed, kehtivate portaaliandmetega kuulutused."
       },
       "geocodeButton": "Hangi aadressilt",
       "geocodeMissing": "Geokodeeri puuduvad",
