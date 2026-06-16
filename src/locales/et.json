@@ -497,7 +497,7 @@
       "pages": "Lehed",
       "careers": "Karjäär",
       "newsletter": "Uudiskiri",
-      "messages": "Sõnumid",
+      "messages": "Külastajate päringud",
       "users": "Kasutajad",
       "auditLog": "Tegevuslogi",
       "contacts": "Kontaktid",
@@ -512,7 +512,10 @@
       "kvImportStatus": "KV.EE eksport",
       "sections": {
         "crm": "CRM",
-        "system": "Süsteem"
+        "clients": "Kliendid",
+        "website": "Veebileht",
+        "system": "Süsteem",
+        "tools": "Tööriistad"
       }
     },
     "kvImportStatus": {
@@ -551,6 +554,17 @@
     },
     "dashboard": {
       "title": "Töölaud",
+      "subtitle": "Siin näed, mis vajab täna tähelepanu.",
+      "overview": "Ülevaade",
+      "attention": {
+        "enquiries": "Uued külastajate päringud ootavad vastust",
+        "enquiriesHint": "Keegi võttis veebilehe kaudu ühendust.",
+        "viewEnquiries": "Vaata päringuid",
+        "allClear": "Kõik päringud on vastatud",
+        "allClearHint": "Praegu ei vaja miski kohest tähelepanu."
+      },
+      "replyEnquiries": "Vasta päringutele",
+      "addContact": "Lisa kontakt",
       "stats": {
         "properties": "Kinnisvara",
         "blogPosts": "Blogipostitused",
@@ -689,6 +703,13 @@
         "features": "Eripärad",
         "connections": "Seosed",
         "documents": "Dokumendid"
+      },
+      "kvStatus": {
+        "title": "KV.EE staatus",
+        "view": "Vaata kv.ee-s",
+        "notLive": "Pole veel kv.ee-s avaldatud",
+        "views": "vaatamist",
+        "expires": "aegub"
       },
       "fields": {
         "propertyType": "Objekti tüüp",
@@ -1234,6 +1255,7 @@
       "empty": "Kontakte pole veel",
       "emptyDescription": "Lisage oma esimene kontakt, et alustada.",
       "confirmDelete": "Kustuta kontakt",
+      "confirmDeleteNamed": "Kustutada \"{{name}}\"? Seda toimingut ei saa tagasi võtta.",
       "confirmDeleteDesc": "Kas olete kindel, et soovite selle kontakti kustutada? Seda toimingut ei saa tagasi võtta.",
       "filters": {
         "agent": "Maakler",
@@ -1815,6 +1837,7 @@
         "deleteFailed": "Ettevõtte kustutamine ebaõnnestus"
       },
       "confirmDelete": "Kas kustutada see ettevõte?",
+      "confirmDeleteNamed": "Kustutada \"{{name}}\"? See eemaldab ettevõtte ja selle seosed. Inimesi ja objekte ei kustutata.",
       "confirmDeleteDesc": "See eemaldab ettevõtte ja selle seosed. Inimesi ja objekte ei kustutata.",
       "loadDetailError": "Ettevõtet ei õnnestunud laadida. Palun proovi uuesti."
     },

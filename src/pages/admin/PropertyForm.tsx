@@ -31,6 +31,7 @@ import {
 import { useGeocodeProperty } from '@/hooks/api/usePropertyGeocode';
 import { propertyTypeLabel, transactionTypeLabel } from '@/lib/enumLabels';
 import PropertyPortalControls from '@/components/admin/PropertyPortalControls';
+import PropertyKvStatusCard from '@/components/admin/PropertyKvStatusCard';
 import TranslateButton from '@/components/admin/TranslateButton';
 import EhakLocationPicker from '@/components/admin/EhakLocationPicker';
 import PropertyExtraDetails from '@/components/admin/PropertyExtraDetails';
@@ -794,6 +795,7 @@ export default function PropertyForm() {
                         setPortalPublications(current => ({ ...current, [key]: enabled }))
                       }
                     />
+                    {isEdit && id && <PropertyKvStatusCard propertyId={id} />}
                   </div>
                 )}
               </AccordionContent>

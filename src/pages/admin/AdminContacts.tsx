@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { EmptyState } from '@/components/admin/EmptyState';
 import { ErrorState } from '@/components/admin/ErrorState';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
@@ -269,21 +269,16 @@ export default function AdminContacts() {
         </div>
       )}
 
-      {/* Delete confirmation */}
-      <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('admin.contacts.confirmDelete')}</DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-muted-foreground">{t('admin.contacts.confirmDeleteDesc')}</p>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteId(null)}>{t('admin.common.cancel')}</Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
-              {t('admin.common.delete')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Delete confirmation — names the contact so a mis-click can't wipe the wrong one */}
+      <ConfirmDialog
+        open={!!deleteId}
+        onOpenChange={(o) => !o && setDeleteId(null)}
+        onConfirm={handleDelete}
+        description={t('admin.contacts.confirmDeleteNamed', {
+          name: contacts.find((c) => c.id === deleteId)?.fullName ?? '',
+          defaultValue: 'Delete "{{name}}"? This can\'t be undone.',
+        })}
+      />
     </div>
   );
 }

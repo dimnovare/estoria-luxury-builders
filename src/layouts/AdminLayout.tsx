@@ -3,9 +3,9 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard, Building2, FileText, Users, Briefcase,
-  Globe, GraduationCap, Mail, MessageSquare, ChevronLeft,
+  Globe, GraduationCap, Mail, HelpCircle, ChevronLeft, ChevronDown,
   ExternalLink, Menu, LogOut, ScrollText, UserCog, Contact, Handshake,
-  ListTodo, Cake, Bell, Settings, X, Building, Radio,
+  Cake, Bell, Settings, X, Building, Radio,
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
 import { useAuth, type UserRole } from '@/hooks/useAuth';
@@ -26,31 +26,48 @@ interface NavItemDef {
   disabled?: boolean;
 }
 
+// Sidebar is organised for a non-technical owner: a few everyday items at the top
+// with no header, then plain-language groups. Lower groups (system/tools) collapse
+// by default so the everyday view stays calm. Tasks/Activities are intentionally
+// NOT here — they live in context on each contact/deal page.
 const navItemDefs: NavItemDef[] = [
+  // Everyday — the handful she touches daily (no section header)
   { key: 'dashboard',  icon: LayoutDashboard, path: '/admin' },
   { key: 'properties', icon: Building2,       path: '/admin/properties' },
-  { key: 'kvImportStatus', icon: Radio,       path: '/admin/kv-import-status', roles: ['Admin', 'Agent'] },
-  { key: 'blog',       icon: FileText,        path: '/admin/blog' },
-  { key: 'team',       icon: Users,           path: '/admin/team',       roles: ['Admin'] },
-  { key: 'services',   icon: Briefcase,       path: '/admin/services',   roles: ['Admin', 'Editor'] },
-  { key: 'pages',      icon: Globe,           path: '/admin/pages',      roles: ['Admin', 'Editor'] },
-  { key: 'careers',    icon: GraduationCap,   path: '/admin/careers',    roles: ['Admin', 'Editor'] },
-  { key: 'newsletter', icon: Mail,            path: '/admin/newsletter', roles: ['Admin', 'Marketing'] },
-  { key: 'messages',   icon: MessageSquare,   path: '/admin/messages' },
-  { key: 'inbox',      icon: Mail,            path: '/admin/inbox',      roles: ['Admin', 'Agent'] },
-  { key: 'contacts',      icon: Contact,    path: '/admin/contacts',       section: 'CRM' },
-  { key: 'companies',     icon: Building,    path: '/admin/companies',     section: 'CRM' },
-  { key: 'birthdays',     icon: Cake,       path: '/admin/birthdays',      section: 'CRM' },
-  { key: 'savedSearches', icon: Bell,       path: '/admin/saved-searches', section: 'CRM' },
-  { key: 'activities',    icon: ScrollText, path: '/admin/activities',     section: 'CRM' },
-  // Deals + Tasks moved to the bottom of the CRM group to de-emphasise them
-  // (kept available, just lower priority than the relationship surfaces above).
-  { key: 'deals',         icon: Handshake,  path: '/admin/deals',          section: 'CRM' },
-  { key: 'tasks',         icon: ListTodo,   path: '/admin/tasks',          section: 'CRM' },
-  // Admin / System section
-  { key: 'settings',   icon: Settings,        path: '/admin/settings',   roles: ['Admin'], section: 'System' },
-  { key: 'users',      icon: UserCog,         path: '/admin/users',      roles: ['Admin'], section: 'System' },
-  { key: 'auditLog',   icon: ScrollText,      path: '/admin/audit-log',  roles: ['Admin'], section: 'System' },
+  { key: 'messages',   icon: HelpCircle,     path: '/admin/messages',   roles: ['Admin', 'Agent'] },
+  { key: 'inbox',      icon: Mail,           path: '/admin/inbox',      roles: ['Admin', 'Agent'] },
+
+  // Kliendid — relationship work
+  { key: 'contacts',   icon: Contact,        path: '/admin/contacts',   section: 'clients' },
+  { key: 'companies',  icon: Building,       path: '/admin/companies',  section: 'clients' },
+
+  // Veebileht — public-site content (occasional)
+  { key: 'blog',       icon: FileText,       path: '/admin/blog',       section: 'website' },
+  { key: 'team',       icon: Users,          path: '/admin/team',       roles: ['Admin'],              section: 'website' },
+  { key: 'services',   icon: Briefcase,      path: '/admin/services',   roles: ['Admin', 'Editor'],    section: 'website' },
+  { key: 'pages',      icon: Globe,          path: '/admin/pages',      roles: ['Admin', 'Editor'],    section: 'website' },
+  { key: 'careers',    icon: GraduationCap,  path: '/admin/careers',    roles: ['Admin', 'Editor'],    section: 'website' },
+  { key: 'newsletter', icon: Mail,           path: '/admin/newsletter', roles: ['Admin', 'Marketing'], section: 'website' },
+
+  // Süsteem — admin-only, collapsed by default
+  { key: 'settings',   icon: Settings,       path: '/admin/settings',   roles: ['Admin'], section: 'system' },
+  { key: 'users',      icon: UserCog,        path: '/admin/users',      roles: ['Admin'], section: 'system' },
+  { key: 'auditLog',   icon: ScrollText,     path: '/admin/audit-log',  roles: ['Admin'], section: 'system' },
+
+  // Tööriistad — occasional tools, collapsed by default (Admin/Agent)
+  { key: 'deals',         icon: Handshake, path: '/admin/deals',           roles: ['Admin', 'Agent'], section: 'tools' },
+  { key: 'kvImportStatus',icon: Radio,     path: '/admin/kv-import-status', roles: ['Admin', 'Agent'], section: 'tools' },
+  { key: 'birthdays',     icon: Cake,      path: '/admin/birthdays',       roles: ['Admin', 'Agent'], section: 'tools' },
+  { key: 'savedSearches', icon: Bell,      path: '/admin/saved-searches',  roles: ['Admin', 'Agent'], section: 'tools' },
+];
+
+// Ordered sidebar groups. `collapsible` sections can be toggled; `defaultOpen=false`
+// keeps the advanced groups tucked away until the owner opens them.
+const NAV_SECTIONS: { key: string; collapsible: boolean; defaultOpen: boolean }[] = [
+  { key: 'clients', collapsible: false, defaultOpen: true },
+  { key: 'website', collapsible: true,  defaultOpen: true },
+  { key: 'system',  collapsible: true,  defaultOpen: false },
+  { key: 'tools',   collapsible: true,  defaultOpen: false },
 ];
 
 function getBreadcrumbs(pathname: string, t: TFunction) {
@@ -79,6 +96,27 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const { logout, email, hasAnyRole } = useAuth();
   const crumbs = useMemo(() => getBreadcrumbs(pathname, t), [pathname, t]);
+
+  // Collapsed/expanded state per nav group, remembered across sessions.
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
+    const defaults = Object.fromEntries(NAV_SECTIONS.map((s) => [s.key, s.defaultOpen]));
+    try {
+      const saved = JSON.parse(localStorage.getItem('estoria-admin-nav-sections') || '{}');
+      return { ...defaults, ...saved };
+    } catch {
+      return defaults;
+    }
+  });
+  const toggleSection = (key: string) =>
+    setOpenSections((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      try {
+        localStorage.setItem('estoria-admin-nav-sections', JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
 
   // Radix Dialog/Select/Popover/Dropdown portal to <body>, OUTSIDE the
   // .admin-theme wrapper, so they would inherit the dark :root tokens and render
@@ -110,6 +148,49 @@ export default function AdminLayout() {
     return pathname.startsWith(path);
   };
 
+  const renderItem = (item: NavItemDef) =>
+    item.disabled ? (
+      <div
+        key={item.path}
+        className="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-[hsl(0_0%_60%)]/40 cursor-not-allowed"
+        title={collapsed ? t(`admin.nav.${item.key}`) : undefined}
+        aria-label={t(`admin.nav.${item.key}`)}
+      >
+        <item.icon className="h-4 w-4 shrink-0" />
+        {!collapsed && <span>{t(`admin.nav.${item.key}`)}</span>}
+      </div>
+    ) : (
+      <Link
+        key={item.path}
+        to={item.path}
+        onClick={() => setMobileOpen(false)}
+        title={collapsed ? t(`admin.nav.${item.key}`) : undefined}
+        aria-label={t(`admin.nav.${item.key}`)}
+        className={cn(
+          'flex items-center gap-3 px-4 py-2.5 text-sm font-body transition-colors relative',
+          isActive(item.path)
+            ? 'text-[hsl(43_50%_54%)] bg-[hsl(43_50%_54%)]/5'
+            : 'text-[hsl(0_0%_60%)] hover:text-[hsl(40_33%_95%)] hover:bg-[hsl(0_0%_16%)]/30'
+        )}
+      >
+        {isActive(item.path) && (
+          <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[hsl(43_50%_54%)]" />
+        )}
+        <item.icon className="h-4 w-4 shrink-0" />
+        {!collapsed && <span className="flex-1">{t(`admin.nav.${item.key}`)}</span>}
+        {!collapsed && item.key === 'inbox' && inboxUnread > 0 && (
+          <span className="ml-auto text-[10px] font-semibold bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+            {inboxUnread}
+          </span>
+        )}
+        {!collapsed && item.key === 'messages' && unreadContacts > 0 && (
+          <span className="ml-auto text-[10px] font-semibold bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+            {unreadContacts}
+          </span>
+        )}
+      </Link>
+    );
+
   const sidebar = (
     <div className="flex flex-col h-full">
       {/* Logo */}
@@ -125,61 +206,42 @@ export default function AdminLayout() {
 
       {/* Nav */}
       <nav className="flex-1 py-4 space-y-1 overflow-y-auto">
-        {visibleNavItems.map((item, idx) => {
-          const prevItem = visibleNavItems[idx - 1];
-          const showSection = !collapsed && item.section && item.section !== prevItem?.section;
+        {/* Everyday items — no header */}
+        {visibleNavItems.filter((i) => !i.section).map(renderItem)}
+
+        {/* Grouped sections */}
+        {NAV_SECTIONS.map((sec) => {
+          const items = visibleNavItems.filter((i) => i.section === sec.key);
+          if (items.length === 0) return null;
+          // When the rail is icon-only (collapsed), show every item — no headers.
+          const open = collapsed || !sec.collapsible || openSections[sec.key];
           return (
-            <div key={item.path}>
-              {showSection && (
-                <div className="px-4 pt-4 pb-1">
-                  <span className="text-[10px] font-nav uppercase tracking-widest text-[hsl(0_0%_60%)]/60">
-                    {item.section === 'CRM'
-                      ? t('admin.nav.sections.crm')
-                      : item.section === 'System'
-                        ? t('admin.nav.sections.system')
-                        : item.section}
-                  </span>
-                </div>
-              )}
-              {item.disabled ? (
-                <div
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-[hsl(0_0%_60%)]/40 cursor-not-allowed"
-                  title={collapsed ? t(`admin.nav.${item.key}`) : undefined}
-                  aria-label={t(`admin.nav.${item.key}`)}
-                >
-                  <item.icon className="h-4 w-4 shrink-0" />
-                  {!collapsed && <span>{t(`admin.nav.${item.key}`)}</span>}
-                </div>
-              ) : (
-                <Link
-                  to={item.path}
-                  onClick={() => setMobileOpen(false)}
-                  title={collapsed ? t(`admin.nav.${item.key}`) : undefined}
-                  aria-label={t(`admin.nav.${item.key}`)}
-                  className={cn(
-                    'flex items-center gap-3 px-4 py-2.5 text-sm font-body transition-colors relative',
-                    isActive(item.path)
-                      ? 'text-[hsl(43_50%_54%)] bg-[hsl(43_50%_54%)]/5'
-                      : 'text-[hsl(0_0%_60%)] hover:text-[hsl(40_33%_95%)] hover:bg-[hsl(0_0%_16%)]/30'
-                  )}
-                >
-                  {isActive(item.path) && (
-                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[hsl(43_50%_54%)]" />
-                  )}
-                  <item.icon className="h-4 w-4 shrink-0" />
-                  {!collapsed && <span className="flex-1">{t(`admin.nav.${item.key}`)}</span>}
-                  {!collapsed && item.key === 'inbox' && inboxUnread > 0 && (
-                    <span className="ml-auto text-[10px] font-semibold bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
-                      {inboxUnread}
+            <div key={sec.key} className="pt-2">
+              {!collapsed &&
+                (sec.collapsible ? (
+                  <button
+                    onClick={() => toggleSection(sec.key)}
+                    aria-expanded={openSections[sec.key]}
+                    className="w-full flex items-center justify-between px-4 pt-3 pb-1 hover:text-[hsl(40_33%_95%)] transition-colors"
+                  >
+                    <span className="text-[10px] font-nav uppercase tracking-widest text-[hsl(0_0%_60%)]/60">
+                      {t(`admin.nav.sections.${sec.key}`)}
                     </span>
-                  )}
-                  {!collapsed && item.key === 'messages' && unreadContacts > 0 && (
-                    <span className="ml-auto text-[10px] font-semibold bg-[hsl(43_50%_54%)] text-[hsl(0_0%_4%)] px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
-                      {unreadContacts}
+                    <ChevronDown
+                      className={cn(
+                        'h-3 w-3 text-[hsl(0_0%_60%)]/60 transition-transform',
+                        !openSections[sec.key] && '-rotate-90'
+                      )}
+                    />
+                  </button>
+                ) : (
+                  <div className="px-4 pt-3 pb-1">
+                    <span className="text-[10px] font-nav uppercase tracking-widest text-[hsl(0_0%_60%)]/60">
+                      {t(`admin.nav.sections.${sec.key}`)}
                     </span>
-                  )}
-                </Link>
-              )}
+                  </div>
+                ))}
+              {open && items.map(renderItem)}
             </div>
           );
         })}
