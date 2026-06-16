@@ -509,9 +509,34 @@
       "settings": "Seaded",
       "inbox": "Postkast",
       "companies": "Ettevõtted",
+      "kvImportStatus": "KV.EE eksport",
       "sections": {
         "crm": "CRM",
         "system": "Süsteem"
+      }
+    },
+    "kvImportStatus": {
+      "title": "KV.EE eksporditud kuulutused",
+      "subtitle": "Mida KV.EE iga kuulutuse kohta tagasi raporteeris — kv.ee link, vaatamiste arv, aegumine ja võimalikud tõrked.",
+      "refresh": "Värskenda",
+      "searchPlaceholder": "Otsi objekti nime või kv.ee lingi järgi…",
+      "empty": "KV.EE pole veel ühtegi kuulutust raporteerinud",
+      "emptyDescription": "Kui KV.EE on objektid sisse importinud, kuvatakse siin nende staatus, vaatamised ja kv.ee lingid.",
+      "noMatches": "Otsingule ei vasta ükski kirje",
+      "loadError": "KV.EE staatuse laadimine ebaõnnestus. Palun proovi uuesti.",
+      "viewOnKv": "Vaata kv.ee-s",
+      "unknownProperty": "Tundmatu objekt",
+      "status": {
+        "ok": "Korras",
+        "error": "Tõrge"
+      },
+      "table": {
+        "property": "Objekt",
+        "status": "Staatus",
+        "kvListing": "kv.ee kuulutus",
+        "views": "Vaatamised",
+        "expires": "Aegub",
+        "received": "Raporteeritud"
       }
     },
     "login": {

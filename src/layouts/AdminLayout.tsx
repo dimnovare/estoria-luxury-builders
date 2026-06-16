@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Building2, FileText, Users, Briefcase,
   Globe, GraduationCap, Mail, MessageSquare, ChevronLeft,
   ExternalLink, Menu, LogOut, ScrollText, UserCog, Contact, Handshake,
-  ListTodo, Cake, Bell, Settings, X, Building,
+  ListTodo, Cake, Bell, Settings, X, Building, Radio,
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
 import { useAuth, type UserRole } from '@/hooks/useAuth';
@@ -29,6 +29,7 @@ interface NavItemDef {
 const navItemDefs: NavItemDef[] = [
   { key: 'dashboard',  icon: LayoutDashboard, path: '/admin' },
   { key: 'properties', icon: Building2,       path: '/admin/properties' },
+  { key: 'kvImportStatus', icon: Radio,       path: '/admin/kv-import-status', roles: ['Admin', 'Agent'] },
   { key: 'blog',       icon: FileText,        path: '/admin/blog' },
   { key: 'team',       icon: Users,           path: '/admin/team',       roles: ['Admin'] },
   { key: 'services',   icon: Briefcase,       path: '/admin/services',   roles: ['Admin', 'Editor'] },

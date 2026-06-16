@@ -52,6 +52,7 @@ const AdminUsers          = lazy(() => import("@/pages/admin/AdminUsers"));
 const UserForm            = lazy(() => import("@/pages/admin/UserForm"));
 const AuditLog            = lazy(() => import("@/pages/admin/AuditLog"));
 const AdminContacts       = lazy(() => import("@/pages/admin/AdminContacts"));
+const AdminKvImportStatus = lazy(() => import("@/pages/admin/AdminKvImportStatus"));
 const ContactForm         = lazy(() => import("@/pages/admin/ContactForm"));
 const ContactDetail       = lazy(() => import("@/pages/admin/ContactDetail"));
 const AdminCompanies      = lazy(() => import("@/pages/admin/AdminCompanies"));
@@ -171,6 +172,7 @@ const App = () => (
             <Route path="activities" element={<AdminActivities />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="inbox" element={<AdminInbox />} />
+            <Route path="kv-import-status" element={<AdminKvImportStatus />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

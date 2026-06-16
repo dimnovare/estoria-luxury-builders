@@ -509,9 +509,34 @@
       "settings": "Settings",
       "inbox": "Inbox",
       "companies": "Companies",
+      "kvImportStatus": "KV.EE export",
       "sections": {
         "crm": "CRM",
         "system": "System"
+      }
+    },
+    "kvImportStatus": {
+      "title": "KV.EE exported listings",
+      "subtitle": "What KV.EE reported back for each listing — its kv.ee link, view count, expiry and any failures.",
+      "refresh": "Refresh",
+      "searchPlaceholder": "Search by property name or kv.ee link…",
+      "empty": "KV.EE hasn't reported any listings yet",
+      "emptyDescription": "Once KV.EE imports your objects, their status, views and kv.ee links appear here.",
+      "noMatches": "No records match your search",
+      "loadError": "Failed to load KV.EE status. Please try again.",
+      "viewOnKv": "View on kv.ee",
+      "unknownProperty": "Unknown property",
+      "status": {
+        "ok": "OK",
+        "error": "Error"
+      },
+      "table": {
+        "property": "Property",
+        "status": "Status",
+        "kvListing": "kv.ee listing",
+        "views": "Views",
+        "expires": "Expires",
+        "received": "Reported"
       }
     },
     "login": {
