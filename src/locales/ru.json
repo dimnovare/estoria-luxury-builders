@@ -1850,6 +1850,16 @@
       "soldPrice": "Цена продажи",
       "addPerson": "Добавить человека",
       "addCompany": "Добавить компанию",
+      "createNewPerson": "Создать нового человека",
+      "createNewCompany": "Создать новую компанию",
+      "pickExistingPerson": "Выбрать существующего человека",
+      "pickExistingCompany": "Выбрать существующую компанию",
+      "personNamePlaceholder": "Имя",
+      "companyNamePlaceholder": "Название компании",
+      "createAndAdd": "Создать и добавить",
+      "connectionsMap": "Карта связей",
+      "thisProperty": "Этот объект",
+      "diagramAria": "Карта связей — кто с чем связан",
       "linkProperty": "Связать объект",
       "role": "Роль",
       "ownership": "Доля",
@@ -1908,6 +1918,10 @@
     "documents": {
       "title": "Документы",
       "upload": "Загрузить документ",
+      "error": {
+        "type": "Этот тип файла не поддерживается. Используйте PDF, Word, Excel или изображение.",
+        "size": "Файл слишком большой. Максимальный размер — 25 МБ."
+      },
       "uploading": "Загрузка…",
       "empty": "Пока нет документов",
       "download": "Скачать",

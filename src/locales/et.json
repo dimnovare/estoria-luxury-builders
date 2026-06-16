@@ -1850,6 +1850,16 @@
       "soldPrice": "Müügihind",
       "addPerson": "Lisa inimene",
       "addCompany": "Lisa ettevõte",
+      "createNewPerson": "Loo uus inimene",
+      "createNewCompany": "Loo uus ettevõte",
+      "pickExistingPerson": "Vali olemasolev inimene",
+      "pickExistingCompany": "Vali olemasolev ettevõte",
+      "personNamePlaceholder": "Nimi",
+      "companyNamePlaceholder": "Ettevõtte nimi",
+      "createAndAdd": "Loo ja lisa",
+      "connectionsMap": "Seoste kaart",
+      "thisProperty": "See objekt",
+      "diagramAria": "Seoste kaart — kes on kellega seotud",
       "linkProperty": "Seo objekt",
       "role": "Roll",
       "ownership": "Osalus",
@@ -1908,6 +1918,10 @@
     "documents": {
       "title": "Dokumendid",
       "upload": "Laadi dokument üles",
+      "error": {
+        "type": "Seda failitüüpi ei toetata. Kasuta PDF-i, Wordi, Exceli või pilti.",
+        "size": "See fail on liiga suur. Maksimaalne suurus on 25 MB."
+      },
       "uploading": "Üleslaadimine…",
       "empty": "Dokumente veel pole",
       "download": "Laadi alla",

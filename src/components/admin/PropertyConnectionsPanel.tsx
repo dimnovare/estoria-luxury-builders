@@ -2,25 +2,29 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Users, Building2, ArrowRightLeft, X, Plus, Loader2,
+  Users, Building2, ArrowRightLeft, X, Plus, Loader2, Share2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { EmptyState } from '@/components/admin/EmptyState';
 import EntityLinkPicker from '@/components/admin/EntityLinkPicker';
+import ConnectionsDiagram, { type ConnNode } from '@/components/admin/ConnectionsDiagram';
 import {
   usePropertyConnections,
   useAddPropertyContact, useAddPropertyCompany,
   useRemovePropertyContact, useRemovePropertyCompany,
+  useCreateCompany,
   PROPERTY_CONTACT_ROLES, PROPERTY_COMPANY_ROLES,
   type PropertyContactRole, type PropertyCompanyRole,
   type PropertyContactLinkDto, type PropertyCompanyLinkDto, type TransactionDto,
 } from '@/hooks/api/useRelationships';
+import { useCreateContact } from '@/hooks/api/useCrm';
 import { toast } from 'sonner';
 
 interface Props {
@@ -63,13 +67,19 @@ export default function PropertyConnectionsPanel({ propertyId }: Props) {
   const addCompany = useAddPropertyCompany();
   const removeContact = useRemovePropertyContact();
   const removeCompany = useRemovePropertyCompany();
+  const createContact = useCreateContact();
+  const createCompany = useCreateCompany();
 
   // Quick-add: person
   const [contactId, setContactId] = useState<string | null>(null);
   const [contactRole, setContactRole] = useState<PropertyContactRole>('Owner');
+  const [newContact, setNewContact] = useState(false);
+  const [newContactName, setNewContactName] = useState('');
   // Quick-add: company
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [companyRole, setCompanyRole] = useState<PropertyCompanyRole>('OwnerCompany');
+  const [newCompany, setNewCompany] = useState(false);
+  const [newCompanyName, setNewCompanyName] = useState('');
 
   // Pending removals (link id + kind) for confirm dialog
   const [pendingRemove, setPendingRemove] =
@@ -107,6 +117,41 @@ export default function PropertyConnectionsPanel({ propertyId }: Props) {
     );
   };
 
+  // Create a brand-new person, then link them — so the owner never has to leave
+  // the property to add someone who isn't in the system yet.
+  const handleCreateAndAddContact = async () => {
+    const name = newContactName.trim();
+    if (!name) return;
+    try {
+      const created = await createContact.mutateAsync({ fullName: name, preferredLanguage: 'et' });
+      const newId = (created as { id?: string })?.id;
+      if (!newId) return;
+      await addContact.mutateAsync({ propertyId, contactId: newId, role: contactRole });
+      setNewContactName('');
+      setNewContact(false);
+      setContactRole('Owner');
+      toast.success(t('admin.crm.toast.saved', 'Saved'));
+    } catch {
+      /* the create / link hooks surface their own error toasts */
+    }
+  };
+
+  const handleCreateAndAddCompany = async () => {
+    const name = newCompanyName.trim();
+    if (!name) return;
+    try {
+      const created = await createCompany.mutateAsync({ name });
+      if (!created?.id) return;
+      await addCompany.mutateAsync({ propertyId, companyId: created.id, role: companyRole });
+      setNewCompanyName('');
+      setNewCompany(false);
+      setCompanyRole('OwnerCompany');
+      toast.success(t('admin.crm.toast.saved', 'Saved'));
+    } catch {
+      /* the create / link hooks surface their own error toasts */
+    }
+  };
+
   const confirmRemove = () => {
     if (!pendingRemove) return;
     const { kind, id } = pendingRemove;
@@ -141,6 +186,39 @@ export default function PropertyConnectionsPanel({ propertyId }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* ── Connections map ──────────────────────────────────────────── */}
+      {(contacts.length + companies.length) > 0 && (
+        <Card className="bg-card border-border shadow-sm">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2 mb-1">
+              <Share2 className="h-4 w-4 text-primary" />
+              <h3 className="text-sm font-semibold text-foreground">
+                {t('admin.relations.connectionsMap', 'Connections map')}
+              </h3>
+            </div>
+            <ConnectionsDiagram
+              center={{ label: t('admin.relations.thisProperty', 'This property'), type: 'property' }}
+              nodes={[
+                ...contacts.map((c): ConnNode => ({
+                  id: c.contactId,
+                  label: c.fullName,
+                  type: 'person',
+                  role: t(`admin.relations.roles.propertyContact.${c.role}`),
+                  href: `/admin/contacts/${c.contactId}`,
+                })),
+                ...companies.map((co): ConnNode => ({
+                  id: co.companyId,
+                  label: co.name,
+                  type: 'company',
+                  role: t(`admin.relations.roles.propertyCompany.${co.role}`),
+                  href: `/admin/companies/${co.companyId}`,
+                })),
+              ]}
+            />
+          </CardContent>
+        </Card>
+      )}
+
       {/* ── Connected people ─────────────────────────────────────────── */}
       <section className="space-y-3">
         <div className="flex items-center gap-2">
@@ -198,15 +276,25 @@ export default function PropertyConnectionsPanel({ propertyId }: Props) {
           </div>
         )}
 
-        {/* Quick-add person */}
+        {/* Quick-add person — pick an existing one, or create a new one on the fly */}
         <Card className="bg-card border-border shadow-sm">
           <CardContent className="p-3 space-y-2">
-            <EntityLinkPicker
-              type="contact"
-              value={contactId}
-              onChange={(id) => setContactId(id)}
-              label={t('admin.relations.addPerson')}
-            />
+            {newContact ? (
+              <Input
+                value={newContactName}
+                onChange={(e) => setNewContactName(e.target.value)}
+                placeholder={t('admin.relations.personNamePlaceholder', 'Full name')}
+                className="h-11 bg-secondary border-border"
+                aria-label={t('admin.relations.createNewPerson', 'Create a new person')}
+              />
+            ) : (
+              <EntityLinkPicker
+                type="contact"
+                value={contactId}
+                onChange={(id) => setContactId(id)}
+                label={t('admin.relations.addPerson')}
+              />
+            )}
             <div className="flex items-end gap-2">
               <Select value={contactRole} onValueChange={(v) => setContactRole(v as PropertyContactRole)}>
                 <SelectTrigger className="h-11 bg-secondary border-border" aria-label={t('admin.relations.role')}>
@@ -220,17 +308,39 @@ export default function PropertyConnectionsPanel({ propertyId }: Props) {
                   ))}
                 </SelectContent>
               </Select>
-              <Button
-                className="h-11 shrink-0"
-                onClick={handleAddContact}
-                disabled={!contactId || addContact.isPending}
-              >
-                {addContact.isPending
-                  ? <Loader2 className="h-4 w-4 animate-spin" />
-                  : <Plus className="h-4 w-4 mr-1" />}
-                {t('admin.relations.add', 'Add')}
-              </Button>
+              {newContact ? (
+                <Button
+                  className="h-11 shrink-0"
+                  onClick={handleCreateAndAddContact}
+                  disabled={!newContactName.trim() || createContact.isPending || addContact.isPending}
+                >
+                  {(createContact.isPending || addContact.isPending)
+                    ? <Loader2 className="h-4 w-4 animate-spin" />
+                    : <Plus className="h-4 w-4 mr-1" />}
+                  {t('admin.relations.createAndAdd', 'Create & add')}
+                </Button>
+              ) : (
+                <Button
+                  className="h-11 shrink-0"
+                  onClick={handleAddContact}
+                  disabled={!contactId || addContact.isPending}
+                >
+                  {addContact.isPending
+                    ? <Loader2 className="h-4 w-4 animate-spin" />
+                    : <Plus className="h-4 w-4 mr-1" />}
+                  {t('admin.relations.add', 'Add')}
+                </Button>
+              )}
             </div>
+            <button
+              type="button"
+              className="text-xs text-primary hover:underline"
+              onClick={() => { setNewContact(!newContact); setContactId(null); setNewContactName(''); }}
+            >
+              {newContact
+                ? t('admin.relations.pickExistingPerson', 'Pick an existing person instead')
+                : `+ ${t('admin.relations.createNewPerson', 'Create a new person')}`}
+            </button>
           </CardContent>
         </Card>
       </section>
@@ -289,15 +399,25 @@ export default function PropertyConnectionsPanel({ propertyId }: Props) {
           </div>
         )}
 
-        {/* Quick-add company */}
+        {/* Quick-add company — pick an existing one, or create a new one on the fly */}
         <Card className="bg-card border-border shadow-sm">
           <CardContent className="p-3 space-y-2">
-            <EntityLinkPicker
-              type="company"
-              value={companyId}
-              onChange={(id) => setCompanyId(id)}
-              label={t('admin.relations.addCompany')}
-            />
+            {newCompany ? (
+              <Input
+                value={newCompanyName}
+                onChange={(e) => setNewCompanyName(e.target.value)}
+                placeholder={t('admin.relations.companyNamePlaceholder', 'Company name')}
+                className="h-11 bg-secondary border-border"
+                aria-label={t('admin.relations.createNewCompany', 'Create a new company')}
+              />
+            ) : (
+              <EntityLinkPicker
+                type="company"
+                value={companyId}
+                onChange={(id) => setCompanyId(id)}
+                label={t('admin.relations.addCompany')}
+              />
+            )}
             <div className="flex items-end gap-2">
               <Select value={companyRole} onValueChange={(v) => setCompanyRole(v as PropertyCompanyRole)}>
                 <SelectTrigger className="h-11 bg-secondary border-border" aria-label={t('admin.relations.role')}>
@@ -311,17 +431,39 @@ export default function PropertyConnectionsPanel({ propertyId }: Props) {
                   ))}
                 </SelectContent>
               </Select>
-              <Button
-                className="h-11 shrink-0"
-                onClick={handleAddCompany}
-                disabled={!companyId || addCompany.isPending}
-              >
-                {addCompany.isPending
-                  ? <Loader2 className="h-4 w-4 animate-spin" />
-                  : <Plus className="h-4 w-4 mr-1" />}
-                {t('admin.relations.add', 'Add')}
-              </Button>
+              {newCompany ? (
+                <Button
+                  className="h-11 shrink-0"
+                  onClick={handleCreateAndAddCompany}
+                  disabled={!newCompanyName.trim() || createCompany.isPending || addCompany.isPending}
+                >
+                  {(createCompany.isPending || addCompany.isPending)
+                    ? <Loader2 className="h-4 w-4 animate-spin" />
+                    : <Plus className="h-4 w-4 mr-1" />}
+                  {t('admin.relations.createAndAdd', 'Create & add')}
+                </Button>
+              ) : (
+                <Button
+                  className="h-11 shrink-0"
+                  onClick={handleAddCompany}
+                  disabled={!companyId || addCompany.isPending}
+                >
+                  {addCompany.isPending
+                    ? <Loader2 className="h-4 w-4 animate-spin" />
+                    : <Plus className="h-4 w-4 mr-1" />}
+                  {t('admin.relations.add', 'Add')}
+                </Button>
+              )}
             </div>
+            <button
+              type="button"
+              className="text-xs text-primary hover:underline"
+              onClick={() => { setNewCompany(!newCompany); setCompanyId(null); setNewCompanyName(''); }}
+            >
+              {newCompany
+                ? t('admin.relations.pickExistingCompany', 'Pick an existing company instead')
+                : `+ ${t('admin.relations.createNewCompany', 'Create a new company')}`}
+            </button>
           </CardContent>
         </Card>
       </section>

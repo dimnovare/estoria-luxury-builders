@@ -27,6 +27,14 @@ interface Props {
   propertyId: string;
 }
 
+const MAX_BYTES = 25 * 1024 * 1024;
+const ALLOWED_EXT = [
+  'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx',
+  'png', 'jpg', 'jpeg', 'webp', 'heic', 'gif',
+  'txt', 'csv', 'rtf', 'odt', 'ods',
+];
+const ACCEPT = ALLOWED_EXT.map((e) => `.${e}`).join(',');
+
 /** Human-readable file size (KB / MB) from a raw byte count. */
 function prettySize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -62,6 +70,26 @@ export default function PropertyDocumentsPanel({ propertyId }: Props) {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
+  // Validate type + size on selection so the owner gets a clear message up front
+  // instead of a confusing server rejection after pressing Upload.
+  const pickFile = (f: File | null) => {
+    if (!f) { setFile(null); return; }
+    const ext = f.name.split('.').pop()?.toLowerCase() ?? '';
+    if (!ALLOWED_EXT.includes(ext)) {
+      toast.error(t('admin.documents.error.type', 'This file type isn’t supported. Use PDF, Word, Excel, or an image.'));
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      setFile(null);
+      return;
+    }
+    if (f.size > MAX_BYTES) {
+      toast.error(t('admin.documents.error.size', 'This file is too big. The maximum size is 25 MB.'));
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      setFile(null);
+      return;
+    }
+    setFile(f);
+  };
+
   const handleUpload = () => {
     if (!file) return;
     upload.mutate(
@@ -88,8 +116,9 @@ export default function PropertyDocumentsPanel({ propertyId }: Props) {
               <input
                 ref={fileInputRef}
                 type="file"
+                accept={ACCEPT}
                 className="hidden"
-                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
                 aria-label={t('admin.documents.upload')}
               />
               <Button

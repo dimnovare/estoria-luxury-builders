@@ -1850,6 +1850,16 @@
       "soldPrice": "Sold price",
       "addPerson": "Add person",
       "addCompany": "Add company",
+      "createNewPerson": "Create a new person",
+      "createNewCompany": "Create a new company",
+      "pickExistingPerson": "Pick an existing person",
+      "pickExistingCompany": "Pick an existing company",
+      "personNamePlaceholder": "Full name",
+      "companyNamePlaceholder": "Company name",
+      "createAndAdd": "Create & add",
+      "connectionsMap": "Connections map",
+      "thisProperty": "This property",
+      "diagramAria": "Connections map — who is connected to what",
       "linkProperty": "Link property",
       "role": "Role",
       "ownership": "Ownership",
@@ -1908,6 +1918,10 @@
     "documents": {
       "title": "Documents",
       "upload": "Upload document",
+      "error": {
+        "type": "This file type isn’t supported. Use PDF, Word, Excel, or an image.",
+        "size": "This file is too big. The maximum size is 25 MB."
+      },
       "uploading": "Uploading…",
       "empty": "No documents yet",
       "download": "Download",

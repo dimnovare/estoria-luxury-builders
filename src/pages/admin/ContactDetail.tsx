@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next';
 import {
   ArrowLeft, Pencil, Trash2, Phone as PhoneIcon, Mail, Eye, Home, User,
   StickyNote, Clock, Users, FileSignature, ArrowRightLeft, Settings, Plus,
-  Briefcase, Loader2, ListTodo, Building2, ExternalLink, ArrowRight,
+  Briefcase, Loader2, ListTodo, Building2, ExternalLink, ArrowRight, Share2,
 } from 'lucide-react';
+import ConnectionsDiagram, { type ConnNode } from '@/components/admin/ConnectionsDiagram';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -261,7 +262,38 @@ export default function ContactDetail() {
         </div>
 
         {/* RIGHT — Workspace */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-4">
+          {(linkedCompanies.length + linkedProperties.length) > 0 && (
+            <Card className="bg-card border-border shadow-sm">
+              <CardContent className="p-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <Share2 className="h-4 w-4 text-primary" />
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {t('admin.relations.connectionsMap', 'Connections map')}
+                  </h3>
+                </div>
+                <ConnectionsDiagram
+                  center={{ label: contact.fullName, type: 'person' }}
+                  nodes={[
+                    ...linkedCompanies.map((c): ConnNode => ({
+                      id: c.companyId,
+                      label: c.companyName,
+                      type: 'company',
+                      role: t(`admin.relations.roles.contactCompany.${c.role}`),
+                      href: `/admin/companies/${c.companyId}`,
+                    })),
+                    ...linkedProperties.map((p): ConnNode => ({
+                      id: p.propertyId,
+                      label: p.title,
+                      type: 'property',
+                      role: t(`admin.relations.roles.propertyContact.${p.role}`),
+                      href: `/admin/properties/${p.propertyId}/edit`,
+                    })),
+                  ]}
+                />
+              </CardContent>
+            </Card>
+          )}
           <Tabs defaultValue="timeline">
             <TabsList className="bg-muted flex-wrap h-auto">
               <TabsTrigger value="timeline">{t('admin.contacts.tabs.timeline')}</TabsTrigger>
