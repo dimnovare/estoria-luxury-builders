@@ -83,6 +83,7 @@ function buildParams(filter?: PropertyFilter, page?: number): Record<string, unk
   if (filter.city) params.city = filter.city;
   if (filter.minPrice) params.minPrice = filter.minPrice;
   if (filter.maxPrice) params.maxPrice = filter.maxPrice;
+  if (filter.sort && filter.sort !== 'newest') params.sort = filter.sort;
   return params;
 }
 
