@@ -404,13 +404,81 @@ export function useDeleteProperty() {
   });
 }
 
+/**
+ * Downscale a photo in the browser before upload. A 4000px/3 MB camera shot
+ * becomes a ~2560px / ~1 MB JPEG — 3-5× smaller — which is plenty for web while
+ * making uploads fast and well under the request limit. Falls back to the
+ * original file on any failure or for formats the canvas can't encode (e.g. HEIC).
+ */
+async function downscaleImage(file: File, maxDim = 2560, quality = 0.85): Promise<File> {
+  if (!file.type.startsWith('image/') || file.type === 'image/gif') return file;
+  try {
+    const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+    const scale = Math.min(1, maxDim / Math.max(bmp.width, bmp.height));
+    // Already small enough and not oversized — keep as-is.
+    if (scale === 1 && file.size < 1_500_000) { bmp.close?.(); return file; }
+    const w = Math.round(bmp.width * scale);
+    const h = Math.round(bmp.height * scale);
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) { bmp.close?.(); return file; }
+    ctx.drawImage(bmp, 0, 0, w, h);
+    bmp.close?.();
+    const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/jpeg', quality));
+    if (!blob || blob.size >= file.size) return file; // no gain — keep original
+    const name = file.name.replace(/\.(png|webp|heic|heif|tiff?|bmp|jpeg|jpg)$/i, '') + '.jpg';
+    return new File([blob], name, { type: 'image/jpeg', lastModified: Date.now() });
+  } catch {
+    return file;
+  }
+}
+
+/** Run async tasks with bounded concurrency; never rejects (collects results). */
+async function runPool<T, R>(
+  items: T[], limit: number, fn: (item: T, index: number) => Promise<R>,
+): Promise<PromiseSettledResult<R>[]> {
+  const results: PromiseSettledResult<R>[] = new Array(items.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const i = next++;
+      try { results[i] = { status: 'fulfilled', value: await fn(items[i], i) }; }
+      catch (reason) { results[i] = { status: 'rejected', reason } as PromiseRejectedResult; }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
+}
+
+const UPLOAD_CONCURRENCY = 3;
+
 export function useUploadPropertyImages() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, files }: { id: string; files: FileList | File[] }) => {
-      const form = new FormData();
-      Array.from(files).forEach(f => form.append('files', f));
-      return api.post(`/admin/properties/${id}/images`, form).then(r => r.data);
+    // Each image uploads as its own small request, a few in parallel. This avoids
+    // the single 30 MB multipart request (10×3 MB used to 413 / time out) and
+    // parallelises the R2 puts. Images are downscaled client-side first.
+    mutationFn: async ({ id, files }: { id: string; files: FileList | File[] }) => {
+      const arr = Array.from(files);
+      if (arr.length === 0) return { uploaded: 0, failed: 0 };
+
+      const prepared = await Promise.all(arr.map(f => downscaleImage(f)));
+      const results = await runPool(prepared, UPLOAD_CONCURRENCY, async (file) => {
+        const form = new FormData();
+        form.append('files', file);
+        const r = await api.post(`/admin/properties/${id}/images`, form);
+        return r.data;
+      });
+
+      const failed = results.filter(r => r.status === 'rejected');
+      if (failed.length === arr.length) throw (failed[0] as PromiseRejectedResult).reason;
+      if (failed.length > 0) {
+        toast.error(`${failed.length} of ${arr.length} images failed to upload. The rest were saved — retry the failed ones.`);
+      } else {
+        toast.success(`${arr.length} image${arr.length > 1 ? 's' : ''} uploaded.`);
+      }
+      return { uploaded: arr.length - failed.length, failed: failed.length };
     },
     onSuccess: (_d, vars) =>
       qc.invalidateQueries({ queryKey: ['admin', 'property', vars.id] }),
