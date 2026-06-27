@@ -742,6 +742,7 @@
         "uploadCreate": "Save the property first, then add images",
         "uploadHint": "JPG, PNG, WebP — max 10MB each",
         "uploading": "Uploading…",
+        "uploadingCount": "Uploading {{done}} / {{total}}…",
         "cover": "Cover",
         "dragHint": "Drag images to reorder. The first image is used as the cover.",
         "reordered": "Image order saved.",

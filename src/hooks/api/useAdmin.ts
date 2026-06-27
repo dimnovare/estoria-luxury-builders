@@ -459,16 +459,25 @@ export function useUploadPropertyImages() {
     // Each image uploads as its own small request, a few in parallel. This avoids
     // the single 30 MB multipart request (10×3 MB used to 413 / time out) and
     // parallelises the R2 puts. Images are downscaled client-side first.
-    mutationFn: async ({ id, files }: { id: string; files: FileList | File[] }) => {
+    mutationFn: async ({ id, files, onProgress }: {
+      id: string; files: FileList | File[]; onProgress?: (done: number, total: number) => void;
+    }) => {
       const arr = Array.from(files);
       if (arr.length === 0) return { uploaded: 0, failed: 0 };
 
       const prepared = await Promise.all(arr.map(f => downscaleImage(f)));
+      let done = 0;
+      onProgress?.(0, prepared.length);
       const results = await runPool(prepared, UPLOAD_CONCURRENCY, async (file) => {
         const form = new FormData();
         form.append('files', file);
-        const r = await api.post(`/admin/properties/${id}/images`, form);
-        return r.data;
+        try {
+          const r = await api.post(`/admin/properties/${id}/images`, form);
+          return r.data;
+        } finally {
+          done++;
+          onProgress?.(done, prepared.length);
+        }
       });
 
       const failed = results.filter(r => r.status === 'rejected');

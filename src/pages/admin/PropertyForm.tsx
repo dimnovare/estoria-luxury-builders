@@ -61,6 +61,7 @@ export default function PropertyForm() {
   const createProperty = useCreateProperty();
   const updateProperty = useUpdateProperty();
   const uploadImages = useUploadPropertyImages();
+  const [uploadProg, setUploadProg] = useState<{ done: number; total: number } | null>(null);
   const deleteImage = useDeletePropertyImage();
   const reorderImages = useReorderPropertyImages();
   const reprocessImage = useReprocessPropertyImage();
@@ -475,12 +476,21 @@ export default function PropertyForm() {
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!isEdit || !id || !e.target.files?.length) return;
+    const total = e.target.files.length;
+    setUploadProg({ done: 0, total });
     try {
-      await uploadImages.mutateAsync({ id, files: e.target.files });
-      toast.success(t('admin.properties.toast.imagesUploaded'));
-      if (fileInputRef.current) fileInputRef.current.value = '';
+      // The hook downscales + uploads per file in parallel and shows its own
+      // success/partial toast; we just drive the progress bar here.
+      await uploadImages.mutateAsync({
+        id,
+        files: e.target.files,
+        onProgress: (done) => setUploadProg({ done, total }),
+      });
     } catch {
-      toast.error(t('admin.properties.toast.imageUploadFailed'));
+      /* hook surfaces the error toast */
+    } finally {
+      setUploadProg(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -928,8 +938,24 @@ export default function PropertyForm() {
                 disabled={!isEdit}
               />
               {uploadImages.isPending && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" /> {t('admin.properties.images.uploading')}
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {uploadProg
+                      ? t('admin.properties.images.uploadingCount', {
+                          done: uploadProg.done, total: uploadProg.total,
+                          defaultValue: `Uploading ${uploadProg.done} / ${uploadProg.total}…`,
+                        })
+                      : t('admin.properties.images.uploading')}
+                  </div>
+                  {uploadProg && uploadProg.total > 0 && (
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full bg-primary transition-all duration-300"
+                        style={{ width: `${Math.round((uploadProg.done / uploadProg.total) * 100)}%` }}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
 

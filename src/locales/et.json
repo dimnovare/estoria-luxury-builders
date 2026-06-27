@@ -742,6 +742,7 @@
         "uploadCreate": "Salvesta objekt esmalt, seejärel lisa pildid",
         "uploadHint": "JPG, PNG, WebP — kuni 10 MB pilt",
         "uploading": "Laadimine…",
+        "uploadingCount": "Üleslaadimine {{done}} / {{total}}…",
         "cover": "Kaanepilt",
         "dragHint": "Lohista pilte järjekorra muutmiseks. Esimest pilti kasutatakse kaanepildina.",
         "reordered": "Piltide järjekord salvestatud.",
