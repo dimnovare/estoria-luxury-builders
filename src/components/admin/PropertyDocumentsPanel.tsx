@@ -32,8 +32,16 @@ const ALLOWED_EXT = [
   'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx',
   'png', 'jpg', 'jpeg', 'webp', 'heic', 'gif',
   'txt', 'csv', 'rtf', 'odt', 'ods',
+  // Estonian / EU digitally-signed containers (DigiDoc)
+  'asice', 'sce', 'asics', 'scs', 'bdoc', 'ddoc', 'cdoc', 'edoc',
 ];
-const ACCEPT = ALLOWED_EXT.map((e) => `.${e}`).join(',');
+// Extensions plus the ASiC MIME types. macOS file pickers can grey out
+// zip-based .asice/.bdoc unless the MIME hint is present in `accept`.
+const ACCEPT = [
+  ...ALLOWED_EXT.map((e) => `.${e}`),
+  'application/vnd.etsi.asic-e+zip',
+  'application/vnd.etsi.asic-s+zip',
+].join(',');
 
 /** Human-readable file size (KB / MB) from a raw byte count. */
 function prettySize(bytes: number): string {
