@@ -993,7 +993,7 @@
       },
       "confirmDeleteDesc": "Kustutada teenus \"{{name}}\"? Seda toimingut ei saa tagasi võtta.",
       "dragToReorder": "Lohista ümberjärjestamiseks",
-      "translateHint": "Kirjuta teenus eesti keeles, seejärel tõlgi nimi ja kirjeldus ühe klikiga teistesse keeltesse. Saad seejärel muuta.",
+      "translateHint": "Kirjuta teenus eesti keeles, seejärel tõlgi nimi, kirjeldus ja hinnainfo ühe klikiga teistesse keeltesse. Saad seejärel muuta.",
       "copyFromEt": "Kopeeri eesti keelest",
       "validation": {
         "nameRequired": "Eestikeelne nimi on kohustuslik."

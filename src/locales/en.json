@@ -993,7 +993,7 @@
       },
       "confirmDeleteDesc": "Delete the \"{{name}}\" service? This action can't be undone.",
       "dragToReorder": "Drag to reorder",
-      "translateHint": "Write the service in Estonian, then translate the name and description to the other languages with one click. You can edit afterwards.",
+      "translateHint": "Write the service in Estonian, then translate the name, description and price info to the other languages with one click. You can edit afterwards.",
       "copyFromEt": "Copy from Estonian",
       "validation": {
         "nameRequired": "Estonian name is required."

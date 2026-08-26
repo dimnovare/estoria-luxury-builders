@@ -277,26 +277,26 @@ export default function AdminServices() {
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-border">
               <p className="text-xs text-muted-foreground">
-                {t('admin.services.translateHint', 'Write the service in Estonian, then translate the name and description to the other languages with one click. You can edit afterwards.')}
+                {t('admin.services.translateHint', 'Write the service in Estonian, then translate the name, description and price info to the other languages with one click. You can edit afterwards.')}
               </p>
               <TranslateButton
                 to={['en', 'ru']}
                 fields={{
                   name: translations.et?.name || '',
                   description: translations.et?.description || '',
+                  // Price info is prose around the number ("Alates 70 €/tund koos
+                  // käibemaksuga"), so it needs translating too — the amount and
+                  // currency are preserved by the translator.
+                  priceInfo: translations.et?.priceInfo || '',
                 }}
                 fieldLabels={{
                   name: t('admin.services.fields.name'),
                   description: t('admin.services.fields.description'),
+                  priceInfo: t('admin.services.fields.priceInfo'),
                 }}
                 onTranslated={(lang, f) => setTranslations(prev => ({
                   ...prev,
-                  [lang]: {
-                    ...prev[lang],
-                    ...f,
-                    // Prices/currency aren't localised — copy priceInfo verbatim from Estonian.
-                    priceInfo: prev.et?.priceInfo ?? prev[lang]?.priceInfo ?? '',
-                  },
+                  [lang]: { ...prev[lang], ...f },
                 }))}
               />
             </div>
