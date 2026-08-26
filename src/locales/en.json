@@ -451,6 +451,7 @@
       "aiTranslateDone": "Translated — review and edit if needed.",
       "aiTranslateFailed": "Couldn't translate. Please try again.",
       "aiTranslateEmpty": "Write the Estonian text first, then translate.",
+      "aiTranslateMissing": "Not translated: {{fields}} — this field is empty on the Estonian (ET) tab. Fill it in there, then translate.",
       "confirmDeleteTitle": "Delete this item?",
       "confirmDeleteDesc": "This action can't be undone.",
       "page": "Page {{page}} of {{totalPages}}",

@@ -11,6 +11,8 @@ interface TranslateButtonProps {
   to: string[];
   /** Current source-language field values (key → text). */
   fields: Record<string, string>;
+  /** Human labels per field key, used to name empty source fields in warnings. */
+  fieldLabels?: Record<string, string>;
   /** Called once per target language with that language's translated fields. */
   onTranslated: (lang: string, fields: Record<string, string>) => void;
   className?: string;
@@ -25,6 +27,7 @@ export default function TranslateButton({
   from = 'et',
   to,
   fields,
+  fieldLabels,
   onTranslated,
   className,
 }: TranslateButtonProps) {
@@ -38,6 +41,16 @@ export default function TranslateButton({
       toast.warning(t('admin.common.aiTranslateEmpty'));
       return;
     }
+
+    // Only fields filled in on the Estonian tab can be translated. Silently
+    // skipping the empty ones is what made "the description didn't translate"
+    // look like a broken translator — it was simply never written in Estonian.
+    const missing = Object.keys(fields).filter(k => !fields[k]?.trim());
+    if (missing.length > 0) {
+      const names = missing.map(k => fieldLabels?.[k] ?? k).join(', ');
+      toast.warning(t('admin.common.aiTranslateMissing', { fields: names }));
+    }
+
     translate.mutate(
       { from, to, fields },
       {

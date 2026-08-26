@@ -451,6 +451,7 @@
       "aiTranslateDone": "Tõlgitud — vaata üle ja paranda vajadusel.",
       "aiTranslateFailed": "Tõlkimine ebaõnnestus. Proovi uuesti.",
       "aiTranslateEmpty": "Kirjuta esmalt eestikeelne tekst, seejärel tõlgi.",
+      "aiTranslateMissing": "Tõlkimata: {{fields}} — see väli on eesti keele (ET) sakil tühi. Täida see seal ja tõlgi uuesti.",
       "confirmDeleteTitle": "Kustutada see kirje?",
       "confirmDeleteDesc": "Seda toimingut ei saa tagasi võtta.",
       "page": "Lehekülg {{page}} / {{totalPages}}",

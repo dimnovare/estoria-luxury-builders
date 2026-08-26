@@ -219,6 +219,10 @@ const sortedPages = useMemo(() => {
                     title: translations.et?.title || '',
                     body: translations.et?.body || '',
                   }}
+                  fieldLabels={{
+                    title: t('admin.pages.fields.title', 'Title'),
+                    body: t('admin.pages.fields.body', 'Content'),
+                  }}
                   onTranslated={(lang, f) => setTranslations(prev => ({
                     ...prev,
                     [lang]: {

@@ -435,6 +435,10 @@ export default function AdminTeam() {
                   role: translations.et?.role || '',
                   bio: translations.et?.bio || '',
                 }}
+                fieldLabels={{
+                  role: t('admin.team.fields.role', 'Role'),
+                  bio: t('admin.team.fields.bio', 'Bio'),
+                }}
                 onTranslated={(lang, f) => setTranslations(prev => ({
                   ...prev,
                   [lang]: {

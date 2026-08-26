@@ -285,6 +285,10 @@ export default function AdminServices() {
                   name: translations.et?.name || '',
                   description: translations.et?.description || '',
                 }}
+                fieldLabels={{
+                  name: t('admin.services.fields.name'),
+                  description: t('admin.services.fields.description'),
+                }}
                 onTranslated={(lang, f) => setTranslations(prev => ({
                   ...prev,
                   [lang]: {

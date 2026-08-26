@@ -278,6 +278,11 @@ export default function AdminCareers() {
                   location: translations.et?.location || '',
                   description: translations.et?.description || '',
                 }}
+                fieldLabels={{
+                  title: t('admin.careers.fields.title', 'Title'),
+                  location: t('admin.careers.fields.location', 'Location'),
+                  description: t('admin.careers.fields.description', 'Description'),
+                }}
                 onTranslated={(lang, f) => setTranslations(prev => ({
                   ...prev,
                   [lang]: { ...prev[lang], ...f },

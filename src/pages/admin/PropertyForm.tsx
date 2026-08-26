@@ -826,6 +826,10 @@ export default function PropertyForm() {
                     title: translations.et?.title || '',
                     description: translations.et?.description || '',
                   }}
+                  fieldLabels={{
+                    title: t('admin.properties.fields.title', 'Title'),
+                    description: t('admin.properties.fields.description', 'Description'),
+                  }}
                   onTranslated={(lang, f) => setTranslations(prev => ({
                     ...prev,
                     [lang]: {

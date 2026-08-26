@@ -235,6 +235,13 @@ export default function BlogForm() {
                 metaTitle: translations.et?.metaTitle || '',
                 metaDescription: translations.et?.metaDescription || '',
               }}
+              fieldLabels={{
+                title: t('admin.blog.fields.title', 'Title'),
+                excerpt: t('admin.blog.fields.excerpt', 'Excerpt'),
+                content: t('admin.blog.fields.content', 'Content'),
+                metaTitle: t('admin.blog.fields.metaTitle', 'Meta title'),
+                metaDescription: t('admin.blog.fields.metaDescription', 'Meta description'),
+              }}
               onTranslated={(lang, f) => setTranslations(prev => ({ ...prev, [lang]: { ...prev[lang], ...f } }))}
             />
           </div>
