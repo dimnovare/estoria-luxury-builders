@@ -410,11 +410,18 @@
       "Rent": "For Rent"
     },
     "propertyStatus": {
-      "Draft": "Draft",
+      "Draft": "In preparation",
       "Active": "Active",
+      "Passive": "Passive",
       "Sold": "Sold",
-      "Rented": "Rented",
-      "Archived": "Archived"
+      "Rented": "Rented out",
+      "Archived": "Closed"
+    },
+    "propertyClosureReason": {
+      "ClientWithdrew": "Client withdrew",
+      "AgentWithdrew": "Agent withdrew",
+      "ContractEnded": "Contract ended",
+      "Other": "Other reason"
     },
     "contactStatus": {
       "New": "New",
@@ -687,14 +694,17 @@
         "status": "Status",
         "type": "Type",
         "allStatuses": "All Statuses",
-        "allTypes": "All Types"
+        "allTypes": "All Types",
+        "allReasons": "All reasons",
+        "reason": "Closing reason"
       },
       "table": {
         "title": "Title",
         "type": "Type",
         "transaction": "Transaction",
         "price": "Price",
-        "status": "Status"
+        "status": "Status",
+        "address": "Address"
       },
       "noMatch": "No properties match your filters.",
       "tabs": {
@@ -803,7 +813,8 @@
         "imageRemoveFailed": "Failed to remove image",
         "copiedFromEn": "Copied English — now translate it.",
         "statusFailed": "Failed to update status",
-        "copiedFromEt": "Copied Estonian — now translate it."
+        "copiedFromEt": "Copied Estonian — now translate it.",
+        "statusChanged": "Status changed to {{status}}."
       },
       "validation": {
         "titleRequired": "An Estonian title is required",
@@ -834,8 +845,20 @@
       "empty": {
         "title": "No properties yet",
         "description": "Create your first listing, then add images and publish it to make it visible on the public site.",
-        "noMatchHint": "Try adjusting or clearing the filters above."
-      }
+        "noMatchHint": "Try adjusting or clearing the filters above.",
+        "completedTitle": "No completed objects yet",
+        "completedDesc": "When you mark an object sold, rented out or closed, it moves here."
+      },
+      "tabCurrent": "Active objects",
+      "tabCompleted": "Completed objects",
+      "completedAt": "Completed {{date}}",
+      "markCompleted": "Mark as completed",
+      "reopen": "Reopen",
+      "statusDialogTitle": "Change status",
+      "statusDialogDesc": "Pick the new status for this object.",
+      "closureReasonLabel": "Closing reason",
+      "closureReasonRequired": "Pick a closing reason.",
+      "noImage": "No photo yet"
     },
     "blog": {
       "title": "Blog Posts",
@@ -1799,7 +1822,7 @@
       "noMatches": "No companies match your search",
       "loadError": "Could not load companies. Please try again.",
       "confirmDelete": "Delete this company?",
-      "confirmDeleteDesc": "This removes the company and its links to people and properties. This action can't be undone.",
+      "confirmDeleteDesc": "This removes the company and its links. People and properties are not deleted.",
       "table": {
         "name": "Name",
         "registryCode": "Registry code",
@@ -1838,9 +1861,7 @@
         "saveFailed": "Failed to save company",
         "deleteFailed": "Failed to delete company"
       },
-      "confirmDelete": "Delete this company?",
       "confirmDeleteNamed": "Delete \"{{name}}\"? This removes the company and its links. People and properties are not deleted.",
-      "confirmDeleteDesc": "This removes the company and its links. People and properties are not deleted.",
       "loadDetailError": "Could not load this company. Please try again."
     },
     "relations": {

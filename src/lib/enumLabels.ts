@@ -30,6 +30,19 @@ export const propertyStatusLabel = (value: string | null | undefined, t: TFuncti
   return t(`enums.propertyStatus.${v}`, { defaultValue: v });
 };
 
+/**
+ * Closure reasons are multi-word PascalCase (AgentWithdrew), which `norm` would
+ * flatten to "Agentwithdrew" and miss the i18n key — so match the canonical key
+ * case-insensitively instead.
+ */
+const CLOSURE_REASON_KEYS = ['ClientWithdrew', 'AgentWithdrew', 'ContractEnded', 'Other'] as const;
+
+export const propertyClosureReasonLabel = (value: string | null | undefined, t: TFunction): string => {
+  if (!value) return '';
+  const key = CLOSURE_REASON_KEYS.find(k => k.toLowerCase() === value.toLowerCase()) ?? value;
+  return t(`enums.propertyClosureReason.${key}`, { defaultValue: key });
+};
+
 export const contactStatusLabel = (value: string | null | undefined, t: TFunction): string => {
   const v = norm(value);
   if (!v) return '';

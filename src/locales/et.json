@@ -410,11 +410,18 @@
       "Rent": "Üür"
     },
     "propertyStatus": {
-      "Draft": "Mustand",
+      "Draft": "Loomisel",
       "Active": "Aktiivne",
+      "Passive": "Passiivne",
       "Sold": "Müüdud",
-      "Rented": "Üüritud",
-      "Archived": "Arhiveeritud"
+      "Rented": "Üürile antud",
+      "Archived": "Lõpetatud"
+    },
+    "propertyClosureReason": {
+      "ClientWithdrew": "Klient loobus",
+      "AgentWithdrew": "Maakler loobus",
+      "ContractEnded": "Leping lõppes",
+      "Other": "Muu põhjus"
     },
     "contactStatus": {
       "New": "Uus",
@@ -687,14 +694,17 @@
         "status": "Staatus",
         "type": "Tüüp",
         "allStatuses": "Kõik staatused",
-        "allTypes": "Kõik tüübid"
+        "allTypes": "Kõik tüübid",
+        "allReasons": "Kõik põhjused",
+        "reason": "Lõpetamise põhjus"
       },
       "table": {
         "title": "Pealkiri",
         "type": "Tüüp",
         "transaction": "Tehing",
         "price": "Hind",
-        "status": "Staatus"
+        "status": "Staatus",
+        "address": "Aadress"
       },
       "noMatch": "Ükski objekt ei vasta valitud filtritele.",
       "tabs": {
@@ -803,7 +813,8 @@
         "geocodeFailedList": "Ava need ja kontrolli aadressi: {{list}}",
         "copiedFromEn": "Inglise keel kopeeritud — nüüd tõlgi see.",
         "statusFailed": "Oleku uuendamine ebaõnnestus",
-        "copiedFromEt": "Eestikeelne tekst kopeeritud — nüüd tõlgi see."
+        "copiedFromEt": "Eestikeelne tekst kopeeritud — nüüd tõlgi see.",
+        "statusChanged": "Staatus muudetud: {{status}}"
       },
       "validation": {
         "titleRequired": "Eestikeelne pealkiri on kohustuslik",
@@ -834,8 +845,20 @@
       "empty": {
         "title": "Objekte pole veel",
         "description": "Loo oma esimene kuulutus, seejärel lisa pildid ja avalda see, et see oleks avalikul saidil nähtav.",
-        "noMatchHint": "Proovi ülal olevaid filtreid muuta või tühjendada."
-      }
+        "noMatchHint": "Proovi ülal olevaid filtreid muuta või tühjendada.",
+        "completedTitle": "Lõpetatud objekte veel pole",
+        "completedDesc": "Kui märgid objekti müüduks, üürile antuks või lõpetatuks, liigub see siia."
+      },
+      "tabCurrent": "Aktiivsed objektid",
+      "tabCompleted": "Lõpetatud objektid",
+      "completedAt": "Lõpetatud {{date}}",
+      "markCompleted": "Märgi lõpetatuks",
+      "reopen": "Taasta töösse",
+      "statusDialogTitle": "Muuda staatust",
+      "statusDialogDesc": "Vali objekti uus staatus.",
+      "closureReasonLabel": "Lõpetamise põhjus",
+      "closureReasonRequired": "Vali lõpetamise põhjus.",
+      "noImage": "Fotot veel pole"
     },
     "blog": {
       "title": "Blogipostitused",
@@ -1798,8 +1821,8 @@
       "emptyDescription": "Lisa esimene ettevõte, et siduda see inimeste ja objektidega.",
       "noMatches": "Otsingule ei vasta ükski ettevõte",
       "loadError": "Ettevõtete laadimine ebaõnnestus. Palun proovi uuesti.",
-      "confirmDelete": "Kustutada see ettevõte?",
-      "confirmDeleteDesc": "See eemaldab ettevõtte ning selle seosed inimeste ja objektidega. Seda toimingut ei saa tagasi võtta.",
+      "confirmDelete": "Kas kustutada see ettevõte?",
+      "confirmDeleteDesc": "See eemaldab ettevõtte ja selle seosed. Inimesi ja objekte ei kustutata.",
       "table": {
         "name": "Nimi",
         "registryCode": "Registrikood",
@@ -1838,9 +1861,7 @@
         "saveFailed": "Ettevõtte salvestamine ebaõnnestus",
         "deleteFailed": "Ettevõtte kustutamine ebaõnnestus"
       },
-      "confirmDelete": "Kas kustutada see ettevõte?",
       "confirmDeleteNamed": "Kustutada \"{{name}}\"? See eemaldab ettevõtte ja selle seosed. Inimesi ja objekte ei kustutata.",
-      "confirmDeleteDesc": "See eemaldab ettevõtte ja selle seosed. Inimesi ja objekte ei kustutata.",
       "loadDetailError": "Ettevõtet ei õnnestunud laadida. Palun proovi uuesti."
     },
     "relations": {

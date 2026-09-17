@@ -70,6 +70,10 @@ export interface AdminProperty extends AdminPropertyExtraFields {
   propertyType: string;
   transactionType: string;
   status: string;
+  /** Set when the object moved into Sold / Rented / Archived. */
+  completedAt?: string | null;
+  /** Only present for Archived (Lõpetatud). */
+  closureReason?: string | null;
   coverImageUrl?: string;
   createdAt: string;
   agent: { id: string; name: string; slug: string; role: string; };
@@ -319,11 +323,26 @@ export function useCadastralLookup() {
   });
 }
 
-export function useAdminProperties(page = 1) {
+/** Which slice of the admin list to load — mirrors AdminPropertyScope server-side. */
+export type AdminPropertyScope = 'Current' | 'Completed' | 'All';
+
+export function useAdminProperties(
+  page = 1,
+  opts: { scope?: AdminPropertyScope; status?: string; closureReason?: string } = {},
+) {
+  const { scope = 'Current', status, closureReason } = opts;
   return useQuery<{ items: AdminProperty[]; totalCount: number }>({
-    queryKey: ['admin', 'properties', page],
+    queryKey: ['admin', 'properties', page, scope, status ?? null, closureReason ?? null],
     queryFn: () =>
-      api.get('/admin/properties', { params: { page, pageSize: 20 } }).then(r => r.data),
+      api.get('/admin/properties', {
+        params: {
+          page,
+          pageSize: 20,
+          scope,
+          ...(status ? { status } : {}),
+          ...(closureReason ? { closureReason } : {}),
+        },
+      }).then(r => r.data),
   });
 }
 
@@ -527,8 +546,8 @@ export function useReorderPropertyImages() {
 export function useSetPropertyStatus() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: string }) =>
-      api.patch(`/admin/properties/${id}/status`, { status }),
+    mutationFn: ({ id, status, closureReason }: { id: string; status: string; closureReason?: string | null }) =>
+      api.patch(`/admin/properties/${id}/status`, { status, closureReason: closureReason ?? null }),
     onSuccess: () =>
       qc.invalidateQueries({ queryKey: ['admin', 'properties'] }),
   });
