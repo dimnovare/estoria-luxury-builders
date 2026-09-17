@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Plus, Pencil, Trash2, Eye, EyeOff, MapPin, Loader2, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -15,6 +14,7 @@ import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import { EmptyState } from '@/components/admin/EmptyState';
 import { ErrorState } from '@/components/admin/ErrorState';
 import { TableSkeleton } from '@/components/admin/TableSkeleton';
+import PropertyStatusSelect, { CURRENT_STATUSES, COMPLETED_STATUSES } from '@/components/admin/PropertyStatusSelect';
 import {
   useAdminProperties, useDeleteProperty, useSetPropertyStatus,
   type AdminProperty, type AdminPropertyScope,
@@ -25,18 +25,6 @@ import {
 } from '@/lib/enumLabels';
 import { toast } from 'sonner';
 
-const statusColors: Record<string, string> = {
-  Active: 'bg-green-100 text-green-700 border-green-200',
-  Draft: 'bg-amber-100 text-amber-700 border-amber-200',
-  Passive: 'bg-gray-100 text-gray-600 border-gray-200',
-  Sold: 'bg-blue-100 text-blue-700 border-blue-200',
-  Rented: 'bg-purple-100 text-purple-700 border-purple-200',
-  Archived: 'bg-red-100 text-red-600 border-red-200',
-};
-
-/** Statuses that keep an object on the working list vs. move it to the archive. */
-const CURRENT_STATUSES = ['Draft', 'Active', 'Passive'] as const;
-const COMPLETED_STATUSES = ['Sold', 'Rented', 'Archived'] as const;
 const CLOSURE_REASONS = ['ClientWithdrew', 'AgentWithdrew', 'ContractEnded', 'Other'] as const;
 const TYPE_VALUES = ['Apartment', 'House', 'Commercial', 'Land', 'Office'] as const;
 
@@ -48,6 +36,7 @@ function pickTrans(p: AdminProperty, field: 'title' | 'address' | 'city'): strin
 
 export default function AdminProperties() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [scope, setScope] = useState<AdminPropertyScope>('Current');
   const [statusFilter, setStatusFilter] = useState('all');
   const [reasonFilter, setReasonFilter] = useState('all');
@@ -255,7 +244,19 @@ export default function AdminProperties() {
                 const title = pickTrans(p, 'title');
                 const primary = [address, city].filter(Boolean).join(', ');
                 return (
-                <TableRow key={p.id} className="border-border">
+                <TableRow
+                  key={p.id}
+                  onClick={(e) => {
+                    // The row is a shortcut for mouse users; the address link stays a
+                    // real anchor for keyboard, middle-click and open-in-new-tab.
+                    // Never hijack a click meant for a control inside the row, and
+                    // don't navigate when the user was selecting text.
+                    if ((e.target as HTMLElement).closest('a,button,[role="combobox"],input')) return;
+                    if (window.getSelection()?.toString()) return;
+                    navigate(`/admin/properties/${p.id}/edit`);
+                  }}
+                  className="group border-border cursor-pointer transition-colors hover:bg-muted/50"
+                >
                   <TableCell className="py-2">
                     <Link to={`/admin/properties/${p.id}/edit`}>
                       {p.coverImageUrl ? (
@@ -278,7 +279,10 @@ export default function AdminProperties() {
                     </Link>
                   </TableCell>
                   <TableCell className="text-sm">
-                    <Link to={`/admin/properties/${p.id}/edit`} className="block hover:underline">
+                    <Link
+                      to={`/admin/properties/${p.id}/edit`}
+                      className="block rounded-sm group-hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
                       <span className="text-foreground font-medium">
                         {primary || title || p.slug}
                       </span>
@@ -300,28 +304,12 @@ export default function AdminProperties() {
                     €{p.price.toLocaleString()}
                   </TableCell>
                   <TableCell>
-                    <Select value={p.status} onValueChange={(v) => handleStatusPick(p.id, v)} disabled={setStatus.isPending}>
-                      <SelectTrigger className="h-8 w-[170px] border-border bg-card text-xs">
-                        <SelectValue>
-                          <Badge
-                            variant="outline"
-                            className={`text-[10px] ${statusColors[p.status] ?? 'bg-gray-100 text-gray-600 border-gray-200'}`}
-                          >
-                            {propertyStatusLabel(p.status, t)}
-                          </Badge>
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[...CURRENT_STATUSES, ...COMPLETED_STATUSES].map(v => (
-                          <SelectItem key={v} value={v}>{propertyStatusLabel(v, t)}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {p.status === 'Archived' && p.closureReason && (
-                      <span className="block text-[11px] text-muted-foreground mt-1">
-                        {propertyClosureReasonLabel(p.closureReason, t)}
-                      </span>
-                    )}
+                    <PropertyStatusSelect
+                      value={p.status}
+                      reason={p.closureReason}
+                      disabled={setStatus.isPending}
+                      onChange={(v) => handleStatusPick(p.id, v)}
+                    />
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">

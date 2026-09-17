@@ -858,7 +858,9 @@
       "statusDialogDesc": "Выберите новый статус объекта.",
       "closureReasonLabel": "Причина завершения",
       "closureReasonRequired": "Выберите причину завершения.",
-      "noImage": "Фото пока нет"
+      "noImage": "Фото пока нет",
+      "statusGroupCurrent": "В работе",
+      "statusGroupCompleted": "Завершённые"
     },
     "blog": {
       "title": "Публикации блога",

@@ -858,7 +858,9 @@
       "statusDialogDesc": "Vali objekti uus staatus.",
       "closureReasonLabel": "Lõpetamise põhjus",
       "closureReasonRequired": "Vali lõpetamise põhjus.",
-      "noImage": "Fotot veel pole"
+      "noImage": "Fotot veel pole",
+      "statusGroupCurrent": "Töös",
+      "statusGroupCompleted": "Lõpetatud"
     },
     "blog": {
       "title": "Blogipostitused",

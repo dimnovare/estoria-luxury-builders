@@ -858,7 +858,9 @@
       "statusDialogDesc": "Pick the new status for this object.",
       "closureReasonLabel": "Closing reason",
       "closureReasonRequired": "Pick a closing reason.",
-      "noImage": "No photo yet"
+      "noImage": "No photo yet",
+      "statusGroupCurrent": "In progress",
+      "statusGroupCompleted": "Completed"
     },
     "blog": {
       "title": "Blog Posts",
