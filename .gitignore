@@ -32,3 +32,8 @@ playwright/.cache/
 
 # Playwright stored auth (contains a token)
 e2e/.auth/
+
+# Vercel CLI link + the OIDC token it writes into .env.local
+.vercel
+.env*
+!.env.example
